@@ -88,7 +88,7 @@
     <java.version>1.8</java.version>
     <aspectj.version>1.9.24</aspectj.version>
     <allure.version>2.29.1</allure.version>
-    <qase.version>4.1.10</qase.version>
+    <qase.version>4.1.12</qase.version>
     <reportportal.version>5.3.14</reportportal.version>
     <junit.version>5.13.3</junit.version>
     <junitPlatformLauncher.version>1.13.3</junitPlatformLauncher.version>
