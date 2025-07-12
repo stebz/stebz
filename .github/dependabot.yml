@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "03:00"
+    open-pull-requests-limit: 5
+    ignore:
+      - dependency-name: "org.apache.maven.plugins:maven-compiler-plugin"
+      - dependency-name: "org.apache.maven.plugins:maven-surefire-plugin"
+      - dependency-name: "org.apache.maven.plugins:maven-jar-plugin"
+      - dependency-name: "org.codehaus.mojo:flatten-maven-plugin"
+      - dependency-name: "org.sonatype.central:central-publishing-maven-plugin"
+      - dependency-name: "org.apache.maven.plugins:maven-source-plugin"
+      - dependency-name: "org.apache.maven.plugins:maven-javadoc-plugin"
+      - dependency-name: "org.apache.maven.plugins:maven-gpg-plugin"
+      - dependency-name: "org.mockito:mockito-core"
