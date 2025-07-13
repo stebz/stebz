@@ -57,7 +57,7 @@ public final class StebzMethods {
    * @param <T>   the type of the value
    * @return {@link Around} object of given value
    */
-  static <T> Around<T> around(final T value) {
+  public static <T> Around<T> around(final T value) {
     return new Around.Of<>(StepExecutor.get(), value);
   }
 
