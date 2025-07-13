@@ -64,7 +64,7 @@ Gradle (Kotlin DSL):
 
 <!-- @formatter:off -->
 ```kotlin
-implementation("org.stebz:{module name}:1.0")
+testImplementation("org.stebz:{module name}:1.0")
 ```
 <!-- @formatter:on -->
 
@@ -154,8 +154,8 @@ String functionStepResult = step(functionStep, 123);
 
 Or using the Around object.
 <!-- @formatter:off -->
-```
-String result = around(100)
+```java
+String result = around(123)
   .step(runnableStep)
   .step(supplierStep.noResult())
   .step(consumerStep)
@@ -311,7 +311,7 @@ public @interface CustomAttribute {
 ```
 <!-- @formatter:on -->
 
-In the future, this attribute can be extracted in this way:
+Later this attribute can be extracted in this way:
 
 <!-- @formatter:off -->
 ```java
