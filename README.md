@@ -250,11 +250,9 @@ public class StepImpl extends RunnableStep.Of {
   @WithComment("step comment")
   @WithParams
   @WithParam(name = "custom param", value = "custom param value")
-  public StepImpl(String parameter) {
-    super(() -> {
-      // step body
-    });
-  }
+  public StepImpl(String parameter) { super(() -> {
+    // step body
+  }); }
 }
 ```
 <!-- @formatter:on -->
@@ -367,6 +365,25 @@ public static void method(String parameter) {
 ```
 <!-- @formatter:on -->
 
+It is possible to make test blanks. When running the test, a `StepNotImplementedError` will be thrown.
+
+<!-- @formatter:off -->
+```java
+import static org.stebz.step.executable.RunnableStep.notImplemented;
+
+class ExampleTest {
+
+  @Test
+  void test() {
+    Given("Step 1", notImplemented());
+    When("Step 2", notImplemented());
+    Then("Step 3", notImplemented());
+    And("Step 3", notImplemented());
+  }
+}
+```
+<!-- @formatter:on -->
+
 ## Listeners
 
 Processing of steps occurs in listeners. Listeners can be specified via SPI mechanism or via properties.
@@ -374,6 +391,7 @@ Processing of steps occurs in listeners. Listeners can be specified via SPI mech
 ## Extensions
 
 Extensions allow you to add additional behavior to steps. For example, replace the value of some attribute or body.
+Extensions can be specified via SPI mechanism or via properties.
 
 ## Configuration
 
