@@ -42,8 +42,9 @@ public class SystemOutStepListener implements StepListener {
   private final ThreadLocal<AtomicInteger> depth;
   private final PrintStream printStream;
   private final boolean enabled;
-  private final String indent;
+  private final int order;
   private final KeywordPosition keywordPosition;
+  private final String indent;
   private final boolean logParams;
   private final boolean logComment;
 
@@ -74,11 +75,17 @@ public class SystemOutStepListener implements StepListener {
     this.depth = ThreadLocal.withInitial(AtomicInteger::new);
     this.printStream = printStream;
     this.enabled = properties.getBoolean("stebz.listeners.systemout.enabled", true);
-    this.indent = multiplyString(" ", properties.getInteger("stebz.listeners.systemout.indent", 2));
+    this.order = properties.getInteger("stebz.listeners.systemout.order", DEFAULT_ORDER);
     this.keywordPosition = properties.getEnum("stebz.listeners.systemout.keywordPosition",
       KeywordPosition.class, KeywordPosition.AT_START);
+    this.indent = multiplyString(" ", properties.getInteger("stebz.listeners.systemout.indent", 2));
     this.logParams = properties.getBoolean("stebz.listeners.systemout.params", true);
     this.logComment = properties.getBoolean("stebz.listeners.systemout.comment", true);
+  }
+
+  @Override
+  public int order() {
+    return this.order;
   }
 
   @Override
