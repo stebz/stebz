@@ -44,7 +44,7 @@ Maven:
 <dependency>
   <groupId>org.stebz</groupId>
   <artifactId>{module name}</artifactId>
-  <version>1.0</version>
+  <version>1.0.1</version>
   <scope>test</scope>
 </dependency>
 ```
@@ -55,7 +55,7 @@ Gradle (Groovy DSL):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  testImplementation 'org.stebz:{module name}:1.0'
+  testImplementation 'org.stebz:{module name}:1.0.1'
 }
 ```
 <!-- @formatter:on -->
@@ -64,7 +64,9 @@ Gradle (Kotlin DSL):
 
 <!-- @formatter:off -->
 ```kotlin
-testImplementation("org.stebz:{module name}:1.0")
+dependencies {
+  testImplementation("org.stebz:{module name}:1.0.1")
+}
 ```
 <!-- @formatter:on -->
 
