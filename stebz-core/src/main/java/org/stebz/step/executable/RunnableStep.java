@@ -27,6 +27,7 @@ import org.stebz.attribute.StepAttribute;
 import org.stebz.attribute.StepAttributes;
 import org.stebz.exception.StepNotImplementedError;
 import org.stebz.step.ExecutableStep;
+import org.stebz.util.function.ThrowingFunction;
 import org.stebz.util.function.ThrowingRunnable;
 
 import java.util.Map;
@@ -38,6 +39,28 @@ import static org.stebz.attribute.StepAttribute.PARAMS;
  * Runnable step.
  */
 public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RunnableStep> {
+
+  /**
+   * Returns {@code RunnableStep} with given action before body.
+   *
+   * @param before the action
+   * @return {@code RunnableStep} with given action before body
+   * @throws NullPointerException if {@code before} arg is null
+   * @see #withBody(Object)
+   * @see #withNewBody(ThrowingFunction)
+   */
+  RunnableStep withBefore(ThrowingRunnable<?> before);
+
+  /**
+   * Returns {@code RunnableStep} with given action after step body.
+   *
+   * @param after the action
+   * @return {@code RunnableStep} with given action after step body
+   * @throws NullPointerException if {@code after} arg is null
+   * @see #withBody(Object)
+   * @see #withNewBody(ThrowingFunction)
+   */
+  RunnableStep withAfter(ThrowingRunnable<?> after);
 
   /**
    * Returns {@code RunnableStep} with given body.
@@ -228,6 +251,11 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
     }
 
     @Override
+    public RunnableStep without(final StepAttribute<?> attribute) {
+      return new RunnableStep.Of(this.attributes.without(attribute), this.body);
+    }
+
+    @Override
     public ThrowingRunnable<?> body() {
       return this.body;
     }
@@ -238,8 +266,23 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
     }
 
     @Override
-    public RunnableStep without(final StepAttribute<?> attribute) {
-      return new RunnableStep.Of(this.attributes.without(attribute), this.body);
+    public RunnableStep withBefore(final ThrowingRunnable<?> before) {
+      if (before == null) { throw new NullPointerException("before arg is null"); }
+      final ThrowingRunnable<?> after = this.body;
+      return new Of(this.attributes, () -> {
+        before.run();
+        after.run();
+      });
+    }
+
+    @Override
+    public RunnableStep withAfter(final ThrowingRunnable<?> after) {
+      if (after == null) { throw new NullPointerException("after arg is null"); }
+      final ThrowingRunnable<?> before = this.body;
+      return new Of(this.attributes, () -> {
+        before.run();
+        after.run();
+      });
     }
 
     @Override
