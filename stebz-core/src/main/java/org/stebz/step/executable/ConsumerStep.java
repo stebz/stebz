@@ -28,6 +28,7 @@ import org.stebz.attribute.StepAttributes;
 import org.stebz.exception.StepNotImplementedError;
 import org.stebz.step.ExecutableStep;
 import org.stebz.util.function.ThrowingConsumer;
+import org.stebz.util.function.ThrowingFunction;
 
 import java.util.Map;
 
@@ -40,6 +41,28 @@ import static org.stebz.attribute.StepAttribute.PARAMS;
  * @param <T> the type of the step input value
  */
 public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, ConsumerStep<T>> {
+
+  /**
+   * Returns {@code ConsumerStep} with given action before body.
+   *
+   * @param before the action
+   * @return {@code ConsumerStep} with given action before body
+   * @throws NullPointerException if {@code before} arg is null
+   * @see #withBody(Object)
+   * @see #withNewBody(ThrowingFunction)
+   */
+  ConsumerStep<T> withBefore(ThrowingConsumer<? super T, ?> before);
+
+  /**
+   * Returns {@code ConsumerStep} with given action after step body.
+   *
+   * @param after the action
+   * @return {@code ConsumerStep} with given action after step body
+   * @throws NullPointerException if {@code after} arg is null
+   * @see #withBody(Object)
+   * @see #withNewBody(ThrowingFunction)
+   */
+  ConsumerStep<T> withAfter(ThrowingConsumer<? super T, ?> after);
 
   /**
    * Returns {@code ConsumerStep} with given body.
@@ -242,6 +265,11 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
     }
 
     @Override
+    public ConsumerStep<T> without(final StepAttribute<?> attribute) {
+      return new Of<>(this.attributes.without(attribute), this.body);
+    }
+
+    @Override
     public ThrowingConsumer<T, ?> body() {
       return this.body;
     }
@@ -252,8 +280,23 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
     }
 
     @Override
-    public ConsumerStep<T> without(final StepAttribute<?> attribute) {
-      return new Of<>(this.attributes.without(attribute), this.body);
+    public ConsumerStep<T> withBefore(final ThrowingConsumer<? super T, ?> before) {
+      if (before == null) { throw new NullPointerException("before arg is null"); }
+      final ThrowingConsumer<T, ?> after = this.body;
+      return new Of<>(this.attributes, context -> {
+        before.accept(context);
+        after.accept(context);
+      });
+    }
+
+    @Override
+    public ConsumerStep<T> withAfter(final ThrowingConsumer<? super T, ?> after) {
+      if (after == null) { throw new NullPointerException("after arg is null"); }
+      final ThrowingConsumer<T, ?> before = this.body;
+      return new Of<>(this.attributes, context -> {
+        before.accept(context);
+        after.accept(context);
+      });
     }
 
     @Override

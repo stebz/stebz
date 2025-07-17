@@ -27,6 +27,7 @@ import org.stebz.attribute.StepAttribute;
 import org.stebz.attribute.StepAttributes;
 import org.stebz.exception.StepNotImplementedError;
 import org.stebz.step.ExecutableStep;
+import org.stebz.util.function.ThrowingConsumer;
 import org.stebz.util.function.ThrowingFunction;
 
 import java.util.Map;
@@ -41,6 +42,39 @@ import static org.stebz.attribute.StepAttribute.PARAMS;
  * @param <R> the type of the step result
  */
 public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R, ?>, FunctionStep<T, R>> {
+
+  /**
+   * Returns {@code FunctionStep} with given action before body.
+   *
+   * @param before the action
+   * @return {@code FunctionStep} with given action before body
+   * @throws NullPointerException if {@code before} arg is null
+   * @see #withBody(Object)
+   * @see #withNewBody(ThrowingFunction)
+   */
+  FunctionStep<T, R> withBefore(ThrowingConsumer<? super T, ?> before);
+
+  /**
+   * Returns {@code FunctionStep} with given action after step body.
+   *
+   * @param after the action
+   * @return {@code FunctionStep} with given action after step body
+   * @throws NullPointerException if {@code after} arg is null
+   * @see #withBody(Object)
+   * @see #withNewBody(ThrowingFunction)
+   */
+  FunctionStep<T, R> withAfter(ThrowingConsumer<? super R, ?> after);
+
+  /**
+   * Returns {@code FunctionStep} with given action after step body.
+   *
+   * @param after the action
+   * @return {@code FunctionStep} with given action after step body
+   * @throws NullPointerException if {@code after} arg is null
+   * @see #withBody(Object)
+   * @see #withNewBody(ThrowingFunction)
+   */
+  FunctionStep<T, R> withAfter(ThrowingFunction<? super R, ? extends R, ?> after);
 
   /**
    * Returns this step as {@code ConsumerStep}.
@@ -234,6 +268,11 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
     }
 
     @Override
+    public FunctionStep<T, R> without(final StepAttribute<?> attribute) {
+      return new FunctionStep.Of<>(this.attributes.without(attribute), this.body);
+    }
+
+    @Override
     public ThrowingFunction<T, R, ?> body() {
       return this.body;
     }
@@ -244,8 +283,33 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
     }
 
     @Override
-    public FunctionStep<T, R> without(final StepAttribute<?> attribute) {
-      return new FunctionStep.Of<>(this.attributes.without(attribute), this.body);
+    public FunctionStep<T, R> withBefore(final ThrowingConsumer<? super T, ?> before) {
+      if (before == null) { throw new NullPointerException("before arg is null"); }
+      final ThrowingFunction<? super T, ? extends R, ?> after = this.body;
+      return new Of<>(this.attributes, context -> {
+        before.accept(context);
+        return after.apply(context);
+      });
+    }
+
+    @Override
+    public FunctionStep<T, R> withAfter(final ThrowingConsumer<? super R, ?> after) {
+      if (after == null) { throw new NullPointerException("after arg is null"); }
+      final ThrowingFunction<? super T, ? extends R, ?> before = this.body;
+      return new Of<>(this.attributes, context -> {
+        final R result = before.apply(context);
+        after.accept(result);
+        return result;
+      });
+    }
+
+    @Override
+    public FunctionStep<T, R> withAfter(final ThrowingFunction<? super R, ? extends R, ?> after) {
+      if (after == null) { throw new NullPointerException("after arg is null"); }
+      final ThrowingFunction<? super T, ? extends R, ?> before = this.body;
+      return new Of<>(this.attributes, context ->
+        after.apply(before.apply(context))
+      );
     }
 
     @Override
