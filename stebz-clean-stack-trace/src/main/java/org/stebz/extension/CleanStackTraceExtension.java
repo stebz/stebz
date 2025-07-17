@@ -59,7 +59,10 @@ public class CleanStackTraceExtension implements BeforeStepFailure {
     this.enabled = properties.getBoolean("stebz.extensions.cleanStackTrace.enabled", true);
     this.order = properties.getInteger("stebz.extensions.cleanStackTrace.order", DEFAULT_ORDER);
     final boolean stebzLines = properties.getBoolean("stebz.extensions.cleanStackTrace.stebzLines", true);
-    final boolean aspectjLines = properties.getBoolean("stebz.extensions.cleanStackTrace.aspectjLines", true);
+    Boolean aspectjLines = properties.getBoolean("stebz.extensions.cleanStackTrace.aspectjLines", null);
+    if (aspectjLines == null) {
+      aspectjLines = isStebzAnnotationsUsed();
+    }
     if (stebzLines && aspectjLines) {
       this.stackTraceElementFilter = stElem ->
         !stElem.getClassName().startsWith(STEBZ_CLASS_NAME_PREFIX)
@@ -76,6 +79,15 @@ public class CleanStackTraceExtension implements BeforeStepFailure {
           && !stElem.getMethodName().contains(ASPECTJ_METHOD_NAME_PART);
     } else {
       this.stackTraceElementFilter = stElem -> true;
+    }
+  }
+
+  private static boolean isStebzAnnotationsUsed() {
+    try {
+      Class.forName("org.stebz.aspect.StepAspects");
+      return true;
+    } catch (final ClassNotFoundException ex) {
+      return false;
     }
   }
 
