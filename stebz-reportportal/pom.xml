@@ -39,7 +39,7 @@
   <description>Module "stebz-reportportal" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.stebz.reportportal</automatic.module.name>
+    <automatic.module.name>org.stebz.reportportal</automatic.module.name>
   </properties>
 
   <dependencies>

@@ -39,7 +39,7 @@
   <description>Module "stebz-core" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.stebz.core</automatic.module.name>
+    <automatic.module.name>org.stebz.core</automatic.module.name>
   </properties>
 
   <dependencies>

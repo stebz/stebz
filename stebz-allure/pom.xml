@@ -39,7 +39,7 @@
   <description>Module "stebz-allure" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.stebz.allure</automatic.module.name>
+    <automatic.module.name>org.stebz.allure</automatic.module.name>
   </properties>
 
   <dependencies>

@@ -39,7 +39,7 @@
   <description>Module "stebz-gherkin-annotations" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.stebz.gherkin.annotations</automatic.module.name>
+    <automatic.module.name>org.stebz.gherkin.annotations</automatic.module.name>
   </properties>
 
   <dependencies>

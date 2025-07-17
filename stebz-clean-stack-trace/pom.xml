@@ -39,7 +39,7 @@
   <description>Module "stebz-clean-stack-trace" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.stebz.clean.stack.trace</automatic.module.name>
+    <automatic.module.name>org.stebz.clean.stack.trace</automatic.module.name>
   </properties>
 
   <dependencies>

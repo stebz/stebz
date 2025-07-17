@@ -39,7 +39,7 @@
   <description>Module "stebz-readable-reflective-name" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.stebz.readable.reflective.name</automatic.module.name>
+    <automatic.module.name>org.stebz.readable.reflective.name</automatic.module.name>
   </properties>
 
   <dependencies>

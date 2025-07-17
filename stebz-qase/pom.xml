@@ -39,7 +39,7 @@
   <description>Module "stebz-qase" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.stebz.qase</automatic.module.name>
+    <automatic.module.name>org.stebz.qase</automatic.module.name>
   </properties>
 
   <dependencies>

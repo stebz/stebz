@@ -39,7 +39,7 @@
   <description>Module "stebz-gherkin" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.stebz.gherkin</automatic.module.name>
+    <automatic.module.name>org.stebz.gherkin</automatic.module.name>
   </properties>
 
   <dependencies>
