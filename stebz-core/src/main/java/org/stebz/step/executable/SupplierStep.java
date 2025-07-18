@@ -23,7 +23,6 @@
  */
 package org.stebz.step.executable;
 
-import org.stebz.attribute.StepAttribute;
 import org.stebz.attribute.StepAttributes;
 import org.stebz.exception.StepNotImplementedError;
 import org.stebz.step.ExecutableStep;
@@ -51,7 +50,14 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @return {@code SupplierStep} with given action before body
    * @throws NullPointerException if {@code before} arg is null
    */
-  SupplierStep<R> withBefore(ThrowingRunnable<?> before);
+  default SupplierStep<R> withBefore(final ThrowingRunnable<?> before) {
+    if (before == null) { throw new NullPointerException("before arg is null"); }
+    final ThrowingSupplier<R, ?> after = this.body();
+    return this.withBody(() -> {
+      before.run();
+      return after.get();
+    });
+  }
 
   /**
    * Returns {@code SupplierStep} with given action after step body.
@@ -62,7 +68,15 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @see #withBody(Object)
    * @see #withNewBody(ThrowingFunction)
    */
-  SupplierStep<R> withAfter(ThrowingConsumer<? super R, ?> after);
+  default SupplierStep<R> withAfter(final ThrowingConsumer<? super R, ?> after) {
+    if (after == null) { throw new NullPointerException("after arg is null"); }
+    final ThrowingSupplier<R, ?> before = this.body();
+    return this.withBody(() -> {
+      final R result = before.get();
+      after.accept(result);
+      return result;
+    });
+  }
 
   /**
    * Returns {@code SupplierStep} with given action after step body.
@@ -73,14 +87,22 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @see #withBody(Object)
    * @see #withNewBody(ThrowingFunction)
    */
-  SupplierStep<R> withAfter(ThrowingFunction<? super R, ? extends R, ?> after);
+  default SupplierStep<R> withAfter(final ThrowingFunction<? super R, ? extends R, ?> after) {
+    if (after == null) { throw new NullPointerException("after arg is null"); }
+    final ThrowingSupplier<R, ?> before = this.body();
+    return this.withBody(() ->
+      after.apply(before.get())
+    );
+  }
 
   /**
    * Returns this step as {@code RunnableStep}.
    *
    * @return this step as {@code RunnableStep}
    */
-  RunnableStep noResult();
+  default RunnableStep noResult() {
+    return new RunnableStep.Of(this.attributes(), this.body()::get);
+  }
 
   /**
    * Returns {@code SupplierStep} with given body.
@@ -259,11 +281,6 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
     }
 
     @Override
-    public SupplierStep<R> without(final StepAttribute<?> attribute) {
-      return new SupplierStep.Of<>(this.attributes.without(attribute), this.body);
-    }
-
-    @Override
     public ThrowingSupplier<R, ?> body() {
       return this.body;
     }
@@ -271,41 +288,6 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
     @Override
     public SupplierStep<R> withBody(final ThrowingSupplier<R, ?> body) {
       return new Of<>(this.attributes, body);
-    }
-
-    @Override
-    public SupplierStep<R> withBefore(final ThrowingRunnable<?> before) {
-      if (before == null) { throw new NullPointerException("before arg is null"); }
-      final ThrowingSupplier<R, ?> after = this.body;
-      return new Of<>(this.attributes, () -> {
-        before.run();
-        return after.get();
-      });
-    }
-
-    @Override
-    public SupplierStep<R> withAfter(final ThrowingConsumer<? super R, ?> after) {
-      if (after == null) { throw new NullPointerException("after arg is null"); }
-      final ThrowingSupplier<R, ?> before = this.body;
-      return new Of<>(this.attributes, () -> {
-        final R result = before.get();
-        after.accept(result);
-        return result;
-      });
-    }
-
-    @Override
-    public SupplierStep<R> withAfter(final ThrowingFunction<? super R, ? extends R, ?> after) {
-      if (after == null) { throw new NullPointerException("after arg is null"); }
-      final ThrowingSupplier<R, ?> before = this.body;
-      return new Of<>(this.attributes, () ->
-        after.apply(before.get())
-      );
-    }
-
-    @Override
-    public RunnableStep noResult() {
-      return new RunnableStep.Of(this.attributes, this.body::get);
     }
 
     @Override
