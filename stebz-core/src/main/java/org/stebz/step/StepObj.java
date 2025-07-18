@@ -61,15 +61,6 @@ public interface StepObj<S extends StepObj<S>> {
   S withAttributes(StepAttributes attributes);
 
   /**
-   * Returns {@code StepObj} without given attribute.
-   *
-   * @param attribute the attribute
-   * @return {@code StepObj} without given attribute
-   * @throws NullPointerException if {@code attribute} arg is null
-   */
-  S without(StepAttribute<?> attribute);
-
-  /**
    * Returns {@code true} if given attribute value is present, otherwise returns {@code false}.
    *
    * @param attribute the attribute
@@ -191,6 +182,17 @@ public interface StepObj<S extends StepObj<S>> {
       attribute2, value2,
       attribute3, value3
     ));
+  }
+
+  /**
+   * Returns {@code StepObj} without given attribute.
+   *
+   * @param attribute the attribute
+   * @return {@code StepObj} without given attribute
+   * @throws NullPointerException if {@code attribute} arg is null
+   */
+  default S without(final StepAttribute<?> attribute) {
+    return this.withAttributes(this.attributes().without(attribute));
   }
 
   /**
