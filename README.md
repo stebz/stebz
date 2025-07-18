@@ -1,8 +1,8 @@
 # Stebz
 
-[![Maven Central](https://img.shields.io/maven-central/v/org.stebz/stebz)](https://central.sonatype.com/search?namespace=org.stebz)
-[![Javadoc](https://javadoc.io/badge2/org.stebz/stebz/javadoc.svg?color=blue)](https://javadoc.io/doc/org.stebz)
-![License](https://img.shields.io/github/license/stebz/stebz?logoSize=auto)
+[![Maven Central](https://img.shields.io/maven-central/v/org.stebz/stebz-core?color=blue)](https://central.sonatype.com/search?namespace=org.stebz&sort=name)
+[![Javadoc](https://javadoc.io/badge2/org.stebz/stebz-core/javadoc.svg?color=blue)](https://javadoc.io/doc/org.stebz)
+[![License](https://img.shields.io/github/license/stebz/stebz?color=blue)](https://github.com/stebz/stebz/blob/main/LICENSE)
 
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/stebz/stebz/tests.yml?branch=main)
 
@@ -44,7 +44,7 @@ Maven:
 <dependency>
   <groupId>org.stebz</groupId>
   <artifactId>{module name}</artifactId>
-  <version>1.0.1</version>
+  <version>1.1</version>
   <scope>test</scope>
 </dependency>
 ```
@@ -55,7 +55,7 @@ Gradle (Groovy DSL):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  testImplementation 'org.stebz:{module name}:1.0.1'
+  testImplementation 'org.stebz:{module name}:1.1'
 }
 ```
 <!-- @formatter:on -->
@@ -65,7 +65,7 @@ Gradle (Kotlin DSL):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  testImplementation("org.stebz:{module name}:1.0.1")
+  testImplementation("org.stebz:{module name}:1.1")
 }
 ```
 <!-- @formatter:on -->
@@ -170,11 +170,11 @@ It is convenient to add attributes right before calling a step.
 <!-- @formatter:off -->
 ```java
 step(runnableStep
-  .withName("new name")
+       .withName("new name")
   .withComment("comment")
   .withNewBody(originBody -> () -> {
-    // new body
-    originBody.run();
+  // new body
+  originBody.run();
   }));
 ```
 <!-- @formatter:on -->
@@ -188,7 +188,7 @@ static `step` method.
 ```java
 step("quick runnable step", () -> {
   // step body
-});
+  });
 
 String result = step("quick supplier step", () -> {
   // step body
@@ -340,7 +340,7 @@ String functionStepResult = Then(functionStep, 123);
 
 And("quick runnable step", () -> {
   // step body
-});
+  });
 
 String result = But("quick supplier step", () -> {
   // step body
@@ -473,12 +473,13 @@ The first priority is system properties, then properties from the properties fil
 | `stebz.listeners.reportportal.contextParam`       | `Boolean`             | `true`        | step context as parameter            |
 | `stebz.listeners.reportportal.commentDescription` | `Boolean`             | `true`        | attach the comment as a description  |
 
-### `stebz-systemout` module
+### `stebz-system-out` module
 
-| property                                       | type                  | default value | description                          |
-|------------------------------------------------|-----------------------|---------------|--------------------------------------|
-| `stebz.listeners.systemout.enabled`            | `Boolean`             | `true`        | is the listener enabled              |
-| `stebz.listeners.systemout.indent`             | `Integer`             | `2`           | number of spaces in indentation      |
-| `stebz.listeners.systemout.keywordPosition`    | `AT_START` / `AT_END` | `AT_START`    | position of keyword relative to name |
-| `stebz.listeners.systemout.params`             | `Boolean`             | `true`        | show step params                     |
-| `stebz.listeners.systemout.comment`            | `Boolean`             | `true`        | show step comment                    |
+| property                                    | type                  | default value | description                          |
+|---------------------------------------------|-----------------------|---------------|--------------------------------------|
+| `stebz.listeners.systemout.enabled`         | `Boolean`             | `true`        | is the listener enabled              |
+| `stebz.listeners.systemout.order`           | `Integer`             | `10000`       | listener order                       |
+| `stebz.listeners.systemout.indent`          | `Integer`             | `2`           | number of spaces in indentation      |
+| `stebz.listeners.systemout.keywordPosition` | `AT_START` / `AT_END` | `AT_START`    | position of keyword relative to name |
+| `stebz.listeners.systemout.params`          | `Boolean`             | `true`        | show step params                     |
+| `stebz.listeners.systemout.comment`         | `Boolean`             | `true`        | show step comment                    |
