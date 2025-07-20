@@ -377,12 +377,12 @@ public interface StepObj<S extends StepObj<S>> {
    * @param name  the param name
    * @param value the param value
    * @return {@code StepObj} with added param
-   * @see #withUpd(StepAttribute, ThrowingConsumer)
+   * @see #withUpdParams(ThrowingConsumer)
    * @see StepAttribute#PARAMS
    */
   default S withAddedParam(final String name,
                            final Object value) {
-    return this.withUpd(PARAMS, p -> p.put(name, value));
+    return this.withUpdParams(p -> p.put(name, value));
   }
 
   /**
@@ -391,11 +391,11 @@ public interface StepObj<S extends StepObj<S>> {
    * @param params the params
    * @return {@code StepObj} with added params
    * @throws NullPointerException if {@code params} arg is null
-   * @see #withUpd(StepAttribute, ThrowingConsumer)
+   * @see #withUpdParams(ThrowingConsumer)
    * @see StepAttribute#PARAMS
    */
   default S withAddedParams(final Map<String, Object> params) {
-    return this.withUpd(PARAMS, p -> p.putAll(params));
+    return this.withUpdParams(p -> p.putAll(params));
   }
 
   /**
@@ -452,6 +452,35 @@ public interface StepObj<S extends StepObj<S>> {
    */
   default S withoutParams() {
     return this.without(PARAMS);
+  }
+
+  /**
+   * Returns {@code StepObj} without given params.
+   *
+   * @param paramNames the param names
+   * @return {@code StepObj} without given params
+   * @throws NullPointerException if {@code paramNames} arg is null
+   * @see #withUpdParams(ThrowingConsumer)
+   * @see StepAttribute#PARAMS
+   */
+  default S withoutParams(final String... paramNames) {
+    return this.withUpdParams(params -> {
+      for (final String paramName : paramNames) {
+        params.remove(paramName);
+      }
+    });
+  }
+
+  /**
+   * Returns {@code StepObj} without given param.
+   *
+   * @param paramName the param name
+   * @return {@code StepObj} without given param
+   * @see #withUpdParams(ThrowingConsumer)
+   * @see StepAttribute#PARAMS
+   */
+  default S withoutParam(final String paramName) {
+    return this.withUpdParams(params -> params.remove(paramName));
   }
 
   /**
