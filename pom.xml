@@ -28,11 +28,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.stebz</groupId>
-  <artifactId>stebz-parent</artifactId>
+  <artifactId>stebz-aggregator</artifactId>
   <version>${revision}</version>
   <packaging>pom</packaging>
 
   <modules>
+    <module>stebz-bom</module>
+    <module>stebz-parent</module>
     <module>stebz-utils</module>
     <module>stebz-core</module>
     <module>stebz-methods</module>
@@ -41,18 +43,16 @@
     <module>stebz-gherkin-annotations</module>
     <module>stebz-clean-stack-trace</module>
     <module>stebz-readable-reflective-name</module>
-    <!-- bundle -->
     <module>stebz</module>
     <module>stebz-gherkin</module>
-    <!-- integration -->
     <module>stebz-allure</module>
     <module>stebz-qase</module>
     <module>stebz-reportportal</module>
     <module>stebz-system-out</module>
   </modules>
 
-  <name>Stebz Parent</name>
-  <description>Stebz Parent pom</description>
+  <name>Stebz Aggregator</name>
+  <description>Stebz Aggregator POM</description>
 
   <url>https://github.com/stebz</url>
 
@@ -84,118 +84,11 @@
 
   <properties>
     <revision>1.1</revision>
-    <automatic.module.name>org.stebz.parent</automatic.module.name>
+    <automatic.module.name>org.stebz.aggregator</automatic.module.name>
     <java.version>1.8</java.version>
-    <aspectj.version>1.9.24</aspectj.version>
-    <allure.version>2.29.1</allure.version>
-    <qase.version>4.1.12</qase.version>
-    <reportportal.version>5.3.14</reportportal.version>
-    <junit.version>5.13.3</junit.version>
-    <junitPlatformLauncher.version>1.13.3</junitPlatformLauncher.version>
-    <assertj.version>3.27.3</assertj.version>
-    <mockito.version>4.11.0</mockito.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <!-- self -->
-      <dependency>
-        <groupId>org.stebz</groupId>
-        <artifactId>stebz-utils</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.stebz</groupId>
-        <artifactId>stebz-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.stebz</groupId>
-        <artifactId>stebz-methods</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.stebz</groupId>
-        <artifactId>stebz-annotations</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.stebz</groupId>
-        <artifactId>stebz-gherkin-methods</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.stebz</groupId>
-        <artifactId>stebz-gherkin-annotations</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.stebz</groupId>
-        <artifactId>stebz-clean-stack-trace</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.stebz</groupId>
-        <artifactId>stebz-readable-reflective-name</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- used -->
-      <dependency>
-        <groupId>org.aspectj</groupId>
-        <artifactId>aspectjrt</artifactId>
-        <version>${aspectj.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.aspectj</groupId>
-        <artifactId>aspectjweaver</artifactId>
-        <version>${aspectj.version}</version>
-      </dependency>
-      <!-- integration -->
-      <dependency>
-        <groupId>io.qameta.allure</groupId>
-        <artifactId>allure-java-commons</artifactId>
-        <version>${allure.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.qase</groupId>
-        <artifactId>qase-java-commons</artifactId>
-        <version>${qase.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.epam.reportportal</groupId>
-        <artifactId>client-java</artifactId>
-        <version>${reportportal.version}</version>
-      </dependency>
-      <!-- test -->
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-api</artifactId>
-        <version>${junit.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.platform</groupId>
-        <artifactId>junit-platform-launcher</artifactId>
-        <version>${junitPlatformLauncher.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.qameta.allure</groupId>
-        <artifactId>allure-junit5</artifactId>
-        <version>${allure.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <version>${assertj.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>${mockito.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <build>
     <plugins>

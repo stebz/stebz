@@ -30,6 +30,7 @@
     <groupId>org.stebz</groupId>
     <artifactId>stebz-parent</artifactId>
     <version>${revision}</version>
+    <relativePath>../stebz-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>stebz-gherkin-methods</artifactId>
