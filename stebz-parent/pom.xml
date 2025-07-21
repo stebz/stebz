@@ -26,21 +26,20 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.stebz</groupId>
-    <artifactId>stebz-aggregator</artifactId>
-    <version>${revision}</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
 
+  <groupId>org.stebz</groupId>
   <artifactId>stebz-parent</artifactId>
+  <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Stebz Parent</name>
   <description>Stebz Parent POM</description>
 
   <properties>
+    <deploy.skip>false</deploy.skip>
     <automatic.module.name>org.stebz.parent</automatic.module.name>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <aspectj.version>1.9.24</aspectj.version>
     <allure.version>2.29.1</allure.version>
     <qase.version>4.1.12</qase.version>
