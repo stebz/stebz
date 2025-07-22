@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1 (22.07.2024)
+## 1.2 (22.07.2024)
 
 * #4 added `stebz-repeat-and-retry` extension by @evpl in PR #23
 * #16 added `withoutParam(String)` and `withoutParams(String[])` `StepObj` methods by @evpl in PR #17
