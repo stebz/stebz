@@ -41,6 +41,9 @@ import java.util.concurrent.TimeUnit;
 @Retention(RetentionPolicy.RUNTIME)
 @StepAttributeAnnotation(WithRetry.KEY)
 public @interface WithRetry {
+  /**
+   * {@link WithRetry} step attribute annotation key.
+   */
   String KEY = "extension:with_retry";
 
   /**

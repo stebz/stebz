@@ -40,6 +40,9 @@ import java.util.concurrent.TimeUnit;
 @Retention(RetentionPolicy.RUNTIME)
 @StepAttributeAnnotation(WithRepeat.KEY)
 public @interface WithRepeat {
+  /**
+   * {@link WithRepeat} step attribute annotation key.
+   */
   String KEY = "extension:with_repeat";
 
   /**
