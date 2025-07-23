@@ -72,7 +72,7 @@
     <allure.version>2.29.1</allure.version>
     <qase.version>4.1.12</qase.version>
     <reportportal.version>5.3.14</reportportal.version>
-    <junit.version>5.13.3</junit.version>
+    <junit.version>5.13.4</junit.version>
     <junitPlatformLauncher.version>1.13.3</junitPlatformLauncher.version>
     <assertj.version>3.27.3</assertj.version>
     <mockito.version>4.11.0</mockito.version>
