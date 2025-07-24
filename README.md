@@ -26,16 +26,21 @@ Multi-approach and flexible Java framework for test steps managing.
 
 Requires Java 8+ version.
 
-In most cases it is enough to add one of the bundle dependencies (more information in the [modules](#modules) section):
+In most cases it is enough to add one of the bundle dependencies:
 
 - `stebz`
 - `stebz-gherkin`
 
-And one of integration dependencies:
+One of integration dependencies:
 
 - `stebz-allure`
 - `stebz-qase`
 - `stebz-reportportal`
+
+And maybe some extensions:
+
+- `stebz-readable-reflective-name`
+- `stebz-repeat-and-retry`
 
 Maven:
 
@@ -74,9 +79,12 @@ dependencies {
 
 Or you can choose only [modules](#modules) those you need.
 
-You can also use BOM for version control.
+Also, you can use BOM for version control.
 
 <!-- @formatter:off -->
+
+Maven:
+
 ```xml
 <dependencyManagement>
   <dependencies>
@@ -228,11 +236,11 @@ It is convenient to add attributes right before calling a step.
 <!-- @formatter:off -->
 ```java
 step(runnableStep
-       .withName("new name")
+  .withName("new name")
   .withComment("comment")
   .withNewBody(originBody -> () -> {
-  // new body
-  originBody.run();
+    // new body
+    originBody.run();
   }));
 ```
 <!-- @formatter:on -->
@@ -481,7 +489,7 @@ The first priority is system properties, then properties from the properties fil
 | `stebz.gherkin.keywords.background` | `String`                 | `Background`  | value of Background keyword |
 | `stebz.gherkin.keywords.asterisk`   | `String`                 | `*`           | value of asterisk keyword   |
 
-### `stebz-clean-stack-trace` module
+### `CleanStackTraceExtension` (`stebz-clean-stack-trace` module)
 
 | property                                        | type      | default value | description              |
 |-------------------------------------------------|-----------|---------------|--------------------------|
@@ -490,7 +498,7 @@ The first priority is system properties, then properties from the properties fil
 | `stebz.extensions.cleanStackTrace.stebzLines`   | `Boolean` | `true`        | removes Stebz lines      |
 | `stebz.extensions.cleanStackTrace.aspectjLines` | `Boolean` | `true`        | removes AspectJ lines    |
 
-### `stebz-readable-reflective-name` module
+### `ReadableReflectiveNameExtension` (`stebz-readable-reflective-name` module)
 
 | property                                                | type      | default value | description              |
 |---------------------------------------------------------|-----------|---------------|--------------------------|
@@ -498,14 +506,21 @@ The first priority is system properties, then properties from the properties fil
 | `stebz.extensions.readableReflectiveName.order`         | `Integer` | `10000`       | extension order          |
 | `stebz.extensions.readableReflectiveName.wordSeparator` | `String`  | `_`           | default word separator   |
 
-### `stebz-repeat-and-retry` module
+### `RepeatExtension` (`stebz-repeat-and-retry` module)
 
-| property                                                | type      | default value | description              |
-|---------------------------------------------------------|-----------|---------------|--------------------------|
-| `stebz.extensions.readableReflectiveName.enabled`       | `Boolean` | `true`        | is the extension enabled |
-| `stebz.extensions.readableReflectiveName.order`         | `Integer` | `10000`       | extension order          |
+| property                          | type      | default value | description              |
+|-----------------------------------|-----------|---------------|--------------------------|
+| `stebz.extensions.repeat.enabled` | `Boolean` | `true`        | is the extension enabled |
+| `stebz.extensions.repeat.order`   | `Integer` | `10000`       | extension order          |
 
-### `stebz-allure` module
+### `RetryExtension` (`stebz-repeat-and-retry` module)
+
+| property                         | type      | default value | description              |
+|----------------------------------|-----------|---------------|--------------------------|
+| `stebz.extensions.retry.enabled` | `Boolean` | `true`        | is the extension enabled |
+| `stebz.extensions.retry.order`   | `Integer` | `10000`       | extension order          |
+
+### `AllureListener` (`stebz-allure` module)
 
 | property                                   | type                  | default value | description                          |
 |--------------------------------------------|-----------------------|---------------|--------------------------------------|
@@ -516,7 +531,7 @@ The first priority is system properties, then properties from the properties fil
 | `stebz.listeners.allure.contextParam`      | `Boolean`             | `true`        | step context as parameter            |
 | `stebz.listeners.allure.commentAttachment` | `Boolean`             | `true`        | attach the comment as an attachment  |
 
-### `stebz-qase` module
+### `QaseListener` (`stebz-qase` module)
 
 | property                                 | type                  | default value | description                          |
 |------------------------------------------|-----------------------|---------------|--------------------------------------|
@@ -527,7 +542,7 @@ The first priority is system properties, then properties from the properties fil
 | `stebz.listeners.qase.contextParam`      | `Boolean`             | `true`        | step context as parameter            |
 | `stebz.listeners.qase.commentAttachment` | `Boolean`             | `true`        | attach the comment as an attachment  |
 
-### `stebz-reportportal` module
+### `ReportPortalListener` (`stebz-reportportal` module)
 
 | property                                          | type                  | default value | description                          |
 |---------------------------------------------------|-----------------------|---------------|--------------------------------------|
@@ -538,7 +553,7 @@ The first priority is system properties, then properties from the properties fil
 | `stebz.listeners.reportportal.contextParam`       | `Boolean`             | `true`        | step context as parameter            |
 | `stebz.listeners.reportportal.commentDescription` | `Boolean`             | `true`        | attach the comment as a description  |
 
-### `stebz-system-out` module
+### `SystemOutListener` (`stebz-system-out` module)
 
 | property                                    | type                  | default value | description                          |
 |---------------------------------------------|-----------------------|---------------|--------------------------------------|
