@@ -3,9 +3,9 @@ updates:
   - package-ecosystem: maven
     directory: "/stebz-parent"
     schedule:
-      interval: "daily"
-      time: "03:00"
-    open-pull-requests-limit: 5
+      interval: "cron"
+      cronjob: "0 3 * * *"
+    open-pull-requests-limit: 10
     ignore:
       - dependency-name: "org.stebz:*"
       - dependency-name: "*-plugin"
