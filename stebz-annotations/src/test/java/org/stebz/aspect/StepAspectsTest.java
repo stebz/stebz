@@ -89,14 +89,15 @@ final class StepAspectsTest {
 
   @Test
   void staticMethodConsumerStep() {
-    final ConsumerStep<String> step = MethodSteps.staticMethodConsumerStep("value1", "value2");
+    final ConsumerStep<String> step = MethodSteps.staticMethodConsumerStep("value2", "value3");
 
     assertThat(step.getName())
       .isEqualTo("name value");
     assertThat(step.getParams())
       .containsExactly(
         entry("param1", "value1"),
-        entry("param2", "value2")
+        entry("param2", "value2"),
+        entry("param3", "value3")
       );
     assertThat(StaticStepListener.lastStep)
       .isNull();

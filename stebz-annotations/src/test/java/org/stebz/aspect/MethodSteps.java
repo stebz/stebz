@@ -35,6 +35,8 @@ import org.stebz.step.executable.FunctionStep;
 import org.stebz.step.executable.RunnableStep;
 import org.stebz.step.executable.SupplierStep;
 
+import static org.stebz.attribute.StepAttribute.params;
+
 final class MethodSteps {
 
   MethodSteps() {
@@ -48,9 +50,9 @@ final class MethodSteps {
 
   @WithName("name value")
   @WithParams
-  public static ConsumerStep<String> staticMethodConsumerStep(final String param1,
-                                                              final String param2) {
-    return ConsumerStep.empty();
+  public static ConsumerStep<String> staticMethodConsumerStep(final String param2,
+                                                              final String param3) {
+    return ConsumerStep.of("old name", params("param1", "value1"), ConsumerStep.emptyBody());
   }
 
   @Step

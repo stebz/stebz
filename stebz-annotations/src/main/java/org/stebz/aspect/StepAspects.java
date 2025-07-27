@@ -60,7 +60,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -233,44 +232,23 @@ public class StepAspects {
                                                   final String[] parameterNames, /* nullable */
                                                   final Object[] parameterValues /* nullable */) {
     final Map<String, Annotation> attrAnnotations = extractAttrAnnotations(declaredAnnotations);
-    final Keyword keywordAttrValue = extractKeyword(attrAnnotations);
-    final String nameAttrValue = extractName(attrAnnotations, reflectiveName);
-    final String commentAttrValue = extractComment(attrAnnotations);
-    final Boolean hiddenAttrValue = extractHidden(attrAnnotations);
-    final Map<String, Object> paramsAttrValue = new LinkedHashMap<>();
-    if (stepSourceType != StepSourceType.FIELD) {
-      extractParams(attrAnnotations, paramsAttrValue, parameters, parameterNames, parameterValues);
-    }
-    extractCustomParams(attrAnnotations, paramsAttrValue);
-    removeDefaultAnnotations(attrAnnotations);
-
     final StepAttributes.Builder builder = originAttributes.asBuilder();
+    addKeyword(builder, attrAnnotations);
+    addName(builder, attrAnnotations, originAttributes.get(NAME), reflectiveName);
+    addComment(builder, attrAnnotations);
+    addParams(builder, attrAnnotations, originAttributes.get(PARAMS), parameters, parameterNames, parameterValues);
+    addHidden(builder, attrAnnotations);
+    removeDefaultAnnotations(attrAnnotations);
     builder.add(JOIN_POINT, joinPoint);
     builder.add(STEP_SOURCE_TYPE, stepSourceType);
     builder.add(STEP_SOURCE, stepSource);
     builder.add(DECLARED_ANNOTATIONS, declaredAnnotations);
     builder.add(REFLECTIVE_NAME, reflectiveName);
-    if (keywordAttrValue != null) {
-      builder.add(KEYWORD, keywordAttrValue);
-    }
-    if (nameAttrValue != null && !nameAttrValue.isEmpty()) {
-      builder.add(NAME, nameAttrValue);
-    }
-    if (commentAttrValue != null && !commentAttrValue.isEmpty()) {
-      builder.add(COMMENT, commentAttrValue);
-    }
-    if (!paramsAttrValue.isEmpty()) {
-      paramsAttrValue.putAll(originAttributes.get(PARAMS));
-      builder.add(PARAMS, paramsAttrValue);
-    }
     if (!attrAnnotations.isEmpty()) {
       attrAnnotations.forEach((key, value) -> builder.add(
         (StepAttribute<Object>) CACHED_CUSTOM_ATTRS.computeIfAbsent(key, StepAttribute::nullable),
         value
       ));
-    }
-    if (hiddenAttrValue == Boolean.TRUE) {
-      builder.add(HIDDEN, true);
     }
     return builder.build();
   }
@@ -298,97 +276,97 @@ public class StepAspects {
     annotations.remove(WithParams.KEY);
   }
 
-  private static Keyword extractKeyword(final Map<String, Annotation> annotations) {
+  private static void addKeyword(final StepAttributes.Builder builder,
+                                 final Map<String, Annotation> annotations) {
     final WithKeyword annotation = (WithKeyword) annotations.get(WithKeyword.KEY);
     if (annotation != null) {
       final String value = annotation.value();
-      return value.isEmpty()
+      builder.add(KEYWORD, value.isEmpty()
         ? Keyword.empty()
-        : CACHED_KEYWORDS.computeIfAbsent(value, Keyword.Of::new);
+        : CACHED_KEYWORDS.computeIfAbsent(value, Keyword.Of::new));
     }
-    return null;
   }
 
-  private static String extractName(final Map<String, Annotation> annotations,
-                                    final String reflectiveName) {
+  private static void addName(final StepAttributes.Builder builder,
+                              final Map<String, Annotation> annotations,
+                              final String currentName,
+                              final String reflectiveName) {
     final Step stepAnnotation = (Step) annotations.get(Step.KEY);
     if (stepAnnotation != null) {
       final String value = stepAnnotation.value();
       if (!value.isEmpty()) {
-        return value;
+        builder.add(NAME, value);
+        return;
       }
     }
     final WithName nameAnnotation = (WithName) annotations.get(WithName.KEY);
     if (nameAnnotation != null) {
       final String value = nameAnnotation.value();
       if (!value.isEmpty()) {
-        return value;
+        builder.add(NAME, value);
+        return;
       }
     }
-    return reflectiveName;
+    if (currentName.isEmpty()) {
+      builder.add(NAME, reflectiveName);
+    }
   }
 
-  private static String extractComment(final Map<String, Annotation> annotations) {
+  private static void addComment(final StepAttributes.Builder builder,
+                                 final Map<String, Annotation> annotations) {
     final WithComment annotation = (WithComment) annotations.get(WithComment.KEY);
-    return annotation == null
-      ? null
-      : annotation.value();
+    if (annotation != null) {
+      final String value = annotation.value();
+      if (!value.isEmpty()) {
+        builder.add(COMMENT, value);
+      }
+    }
   }
 
-  private static Boolean extractHidden(final Map<String, Annotation> annotations) {
+  private static void addHidden(final StepAttributes.Builder builder,
+                                final Map<String, Annotation> annotations) {
     final WithHidden annotation = (WithHidden) annotations.get(WithHidden.KEY);
-    return annotation == null
-      ? null
-      : annotation.value();
+    if (annotation != null) {
+      builder.add(HIDDEN, annotation.value());
+    }
   }
 
-  private static Map<String, Object> extractCustomParams(final Map<String, Annotation> annotations,
-                                                         final Map<String, Object> params) {
+  private static void addParams(final StepAttributes.Builder builder,
+                                final Map<String, Annotation> annotations,
+                                final Map<String, Object> paramsMap,
+                                final Parameter[] parameters,
+                                final String[] names,
+                                final Object[] values) {
+    if (values != null && values.length != 0
+      && (annotations.containsKey(WithParams.KEY) || annotations.containsKey(Step.KEY))
+    ) {
+      for (int idx = 0; idx < parameters.length; idx++) {
+        final Param annot = parameters[idx].getAnnotation(Param.class);
+        if (annot == null) {
+          paramsMap.put(names[idx], values[idx]);
+        } else {
+          if (annot.hide()) {
+            continue;
+          }
+          paramsMap.put(
+            annot.name().isEmpty() ? names[idx] : annot.name(),
+            annot.value().isEmpty() ? values[idx] : annot.value()
+          );
+        }
+      }
+    }
+
     final WithParam paramAnnotation = (WithParam) annotations.get(WithParam.KEY);
     if (paramAnnotation != null) {
-      params.put(paramAnnotation.name(), paramAnnotation.value());
+      paramsMap.put(paramAnnotation.name(), paramAnnotation.value());
     }
     final WithParam.List listAnnotation = (WithParam.List) annotations.get(WithParam.List.KEY);
     if (listAnnotation != null) {
       for (final WithParam param : listAnnotation.value()) {
-        params.put(param.name(), param.value());
+        paramsMap.put(param.name(), param.value());
       }
     }
-    return params;
-  }
-
-  private static Map<String, Object> extractParams(final Map<String, Annotation> annotations,
-                                                   final Map<String, Object> params,
-                                                   final Parameter[] parameters,
-                                                   final String[] names,
-                                                   final Object[] values) {
-    if (values.length == 0 || (annotations.get(WithParams.KEY) == null && annotations.get(Step.KEY) == null)) {
-      return params;
-    }
-    for (int idx = 0; idx < parameters.length; idx++) {
-      final Parameter parameter = parameters[idx];
-      final Param annot = parameter.getAnnotation(Param.class);
-      String name;
-      Object value;
-      if (annot == null) {
-        name = names[idx];
-        value = values[idx];
-      } else {
-        if (annot.hide()) {
-          continue;
-        }
-        name = annot.name();
-        if (name.isEmpty()) {
-          name = names[idx];
-        }
-        final String annotValue = annot.value();
-        value = annotValue.isEmpty()
-          ? values[idx]
-          : annotValue;
-      }
-      params.put(name, value);
-    }
-    return params;
+    builder.add(PARAMS, paramsMap);
   }
 
   private static final class StepAttributesSetters {
