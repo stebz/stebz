@@ -91,14 +91,9 @@ public class StepAspects {
         attributesFieldSetter(lookup, FunctionStep.Of.class)
       );
     });
-
-  private static MethodHandle attributesFieldSetter(final MethodHandles.Lookup lookup,
-                                                    final Class<?> cls
-  ) throws NoSuchFieldException, IllegalAccessException {
-    final Field field = cls.getDeclaredField("attributes");
-    field.setAccessible(true);
-    return lookup.unreflectSetter(field);
-  }
+  private static final ThreadLocal<Integer> CAPTURED_STEP_COUNT = new ThreadLocal<>();
+  private static final ThreadLocal<StepAttributes> CAPTURED_ATTRIBUTES = new ThreadLocal<>();
+  private static final ThreadLocal<ProceedingJoinPoint> CAPTURED_JOINT_POINT = new ThreadLocal<>();
 
   /**
    * Executes step field getter, creates {@code StepObj} and adds step attributes to step.
@@ -190,11 +185,23 @@ public class StepAspects {
       method.getName(),
       method.getParameters(), signature.getParameterNames(), joinPoint.getArgs()
     );
-    if (signature.getReturnType() == void.class) {
-      StepExecutor.get().execute(new RunnableStep.Of(attributes, joinPoint::proceed));
+
+    final Integer capturedStepCount = CAPTURED_STEP_COUNT.get();
+    if (capturedStepCount != null) {
+      if (capturedStepCount != 0) {
+        throw new IllegalArgumentException("Only one step can be captured");
+      }
+      CAPTURED_STEP_COUNT.set(1);
+      CAPTURED_ATTRIBUTES.set(attributes);
+      CAPTURED_JOINT_POINT.set(joinPoint);
       return null;
     } else {
-      return StepExecutor.get().execute(new SupplierStep.Of<>(attributes, joinPoint::proceed));
+      if (signature.getReturnType() == void.class) {
+        StepExecutor.get().execute(new RunnableStep.Of(attributes, joinPoint::proceed));
+        return null;
+      } else {
+        return StepExecutor.get().execute(new SupplierStep.Of<>(attributes, joinPoint::proceed));
+      }
     }
   }
 
@@ -215,10 +222,48 @@ public class StepAspects {
       constructor.getDeclaringClass().getSimpleName(),
       constructor.getParameters(), signature.getParameterNames(), joinPoint.getArgs()
     );
-    return StepExecutor.get().execute(new SupplierStep.Of<>(attributes, () -> {
-      joinPoint.proceed();
+
+    final Integer capturedStepCount = CAPTURED_STEP_COUNT.get();
+    if (capturedStepCount != null) {
+      if (capturedStepCount != 0) {
+        throw new IllegalArgumentException("Only one step can be captured");
+      }
+      CAPTURED_STEP_COUNT.set(1);
+      CAPTURED_ATTRIBUTES.set(attributes);
+      CAPTURED_JOINT_POINT.set(joinPoint);
       return joinPoint.getThis();
-    }));
+    } else {
+      return StepExecutor.get().execute(new SupplierStep.Of<>(attributes, () -> {
+        joinPoint.proceed();
+        return joinPoint.getThis();
+      }));
+    }
+  }
+
+  static void enableCaptureMode() {
+    CAPTURED_STEP_COUNT.set(0);
+  }
+
+  static void disableCaptureMode() {
+    CAPTURED_STEP_COUNT.remove();
+    CAPTURED_ATTRIBUTES.remove();
+    CAPTURED_JOINT_POINT.remove();
+  }
+
+  static StepAttributes capturedAttributes() {
+    return CAPTURED_ATTRIBUTES.get();
+  }
+
+  static ProceedingJoinPoint capturedJointPoint() {
+    return CAPTURED_JOINT_POINT.get();
+  }
+
+  private static MethodHandle attributesFieldSetter(final MethodHandles.Lookup lookup,
+                                                    final Class<?> cls
+  ) throws NoSuchFieldException, IllegalAccessException {
+    final Field field = cls.getDeclaredField("attributes");
+    field.setAccessible(true);
+    return lookup.unreflectSetter(field);
   }
 
   @SuppressWarnings("unchecked")

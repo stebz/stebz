@@ -24,62 +24,68 @@
 package org.stebz.util.function;
 
 /**
- * The {@link java.util.function.Function} specialization with {@code [Object,Object->Object]} signature that might
- * throw an exception.
+ * The {@link java.util.function.Consumer} specialization with {@code [Object,Object,Object,Object->void]} signature
+ * that might throw an exception.
  *
  * @param <T1> the type of the first input argument
  * @param <T2> the type of the second input argument
- * @param <R>  the type of the result
+ * @param <T3> the type of the third input argument
+ * @param <T4> the type of the fourth input argument
  * @param <E>  the type of the throwing exception
  */
 @FunctionalInterface
-public interface ThrowingFunction2<T1, T2, R, E extends Throwable> {
+public interface ThrowingConsumer4<T1, T2, T3, T4, E extends Throwable> {
 
   /**
-   * Applies this function to the given argument.
+   * Performs this operation on the given argument.
    *
    * @param t1 the first input argument
    * @param t2 the second input argument
-   * @return result
-   * @throws E if function threw exception
+   * @param t3 the third input argument
+   * @param t4 the fourth input argument
+   * @throws E if consumer threw exception
    */
-  R apply(T1 t1,
-          T2 t2) throws E;
+  void accept(T1 t1,
+              T2 t2,
+              T3 t3,
+              T4 t4) throws E;
 
   /**
-   * Returns given function.
+   * Returns given consumer.
    *
-   * @param function the function
+   * @param consumer the consumer
    * @param <T1>     the type of the first input argument
    * @param <T2>     the type of the second input argument
-   * @param <R>      the type of the result
+   * @param <T3>     the type of the third input argument
+   * @param <T4>     the type of the fourth input argument
    * @param <E>      the type of the throwing exception
-   * @return function
-   * @throws NullPointerException if {@code function} arg is {@code null}
+   * @return unchecked consumer
+   * @throws NullPointerException if {@code consumer} arg is {@code null}
    */
   @SuppressWarnings("unchecked")
-  static <T1, T2, R, E extends Throwable> ThrowingFunction2<T1, T2, R, E> of(
-    final ThrowingFunction2<? super T1, ? super T2, ? extends R, ? extends E> function
+  static <T1, T2, T3, T4, E extends Throwable> ThrowingConsumer4<T1, T2, T3, T4, E> of(
+    final ThrowingConsumer4<? super T1, ? super T2, ? super T3, ? super T4, ? extends E> consumer
   ) {
-    if (function == null) { throw new NullPointerException("function arg is null"); }
-    return (ThrowingFunction2<T1, T2, R, E>) function;
+    if (consumer == null) { throw new NullPointerException("consumer arg is null"); }
+    return (ThrowingConsumer4<T1, T2, T3, T4, E>) consumer;
   }
 
   /**
-   * Returns given function as an unchecked function.
+   * Returns given consumer as an unchecked consumer.
    *
-   * @param origin the origin function
+   * @param origin the origin consumer
    * @param <T1>   the type of the first input argument
    * @param <T2>   the type of the second input argument
-   * @param <R>    the type of the result
-   * @return unchecked function
+   * @param <T3>   the type of the third input argument
+   * @param <T4>   the type of the fourth input argument
+   * @return unchecked consumer
    * @throws NullPointerException if {@code origin} arg is {@code null}
    */
   @SuppressWarnings("unchecked")
-  static <T1, T2, R> ThrowingFunction2<T1, T2, R, Error> unchecked(
-    final ThrowingFunction2<? super T1, ? super T2, ? extends R, ?> origin
+  static <T1, T2, T3, T4> ThrowingConsumer4<T1, T2, T3, T4, Error> unchecked(
+    final ThrowingConsumer4<? super T1, ? super T2, ? super T3, ? super T4, ?> origin
   ) {
     if (origin == null) { throw new NullPointerException("origin arg is null"); }
-    return (ThrowingFunction2<T1, T2, R, Error>) origin;
+    return (ThrowingConsumer4<T1, T2, T3, T4, Error>) origin;
   }
 }

@@ -54,11 +54,11 @@ public interface ThrowingFunction<T, R, E extends Throwable> {
    * @throws NullPointerException if {@code function} arg is {@code null}
    */
   @SuppressWarnings("unchecked")
-  static <T, R, E extends Throwable> ThrowingFunction<T, R, RuntimeException> of(
+  static <T, R, E extends Throwable> ThrowingFunction<T, R, E> of(
     final ThrowingFunction<? super T, ? extends R, ? extends E> function
   ) {
     if (function == null) { throw new NullPointerException("function arg is null"); }
-    return (ThrowingFunction<T, R, RuntimeException>) function;
+    return (ThrowingFunction<T, R, E>) function;
   }
 
   /**

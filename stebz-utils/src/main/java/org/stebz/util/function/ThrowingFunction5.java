@@ -24,27 +24,36 @@
 package org.stebz.util.function;
 
 /**
- * The {@link java.util.function.Function} specialization with {@code [Object,Object->Object]} signature that might
- * throw an exception.
+ * The {@link java.util.function.Function} specialization with {@code [Object,Object,Object,Object,Object->Object]}
+ * signature that might throw an exception.
  *
  * @param <T1> the type of the first input argument
  * @param <T2> the type of the second input argument
+ * @param <T3> the type of the third input argument
+ * @param <T4> the type of the fourth input argument
+ * @param <T5> the type of the fifth input argument
  * @param <R>  the type of the result
  * @param <E>  the type of the throwing exception
  */
 @FunctionalInterface
-public interface ThrowingFunction2<T1, T2, R, E extends Throwable> {
+public interface ThrowingFunction5<T1, T2, T3, T4, T5, R, E extends Throwable> {
 
   /**
    * Applies this function to the given argument.
    *
    * @param t1 the first input argument
    * @param t2 the second input argument
+   * @param t3 the third input argument
+   * @param t4 the fourth input argument
+   * @param t5 the fifth input argument
    * @return result
    * @throws E if function threw exception
    */
   R apply(T1 t1,
-          T2 t2) throws E;
+          T2 t2,
+          T3 t3,
+          T4 t4,
+          T5 t5) throws E;
 
   /**
    * Returns given function.
@@ -52,17 +61,20 @@ public interface ThrowingFunction2<T1, T2, R, E extends Throwable> {
    * @param function the function
    * @param <T1>     the type of the first input argument
    * @param <T2>     the type of the second input argument
+   * @param <T3>     the type of the third input argument
+   * @param <T4>     the type of the fourth input argument
+   * @param <T5>     the type of the fifth input argument
    * @param <R>      the type of the result
    * @param <E>      the type of the throwing exception
    * @return function
    * @throws NullPointerException if {@code function} arg is {@code null}
    */
   @SuppressWarnings("unchecked")
-  static <T1, T2, R, E extends Throwable> ThrowingFunction2<T1, T2, R, E> of(
-    final ThrowingFunction2<? super T1, ? super T2, ? extends R, ? extends E> function
+  static <T1, T2, T3, T4, T5, R, E extends Throwable> ThrowingFunction5<T1, T2, T3, T4, T5, R, E> of(
+    final ThrowingFunction5<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? extends R, ? extends E> function
   ) {
     if (function == null) { throw new NullPointerException("function arg is null"); }
-    return (ThrowingFunction2<T1, T2, R, E>) function;
+    return (ThrowingFunction5<T1, T2, T3, T4, T5, R, E>) function;
   }
 
   /**
@@ -71,15 +83,18 @@ public interface ThrowingFunction2<T1, T2, R, E extends Throwable> {
    * @param origin the origin function
    * @param <T1>   the type of the first input argument
    * @param <T2>   the type of the second input argument
+   * @param <T3>   the type of the third input argument
+   * @param <T4>   the type of the fourth input argument
+   * @param <T5>   the type of the fifth input argument
    * @param <R>    the type of the result
    * @return unchecked function
    * @throws NullPointerException if {@code origin} arg is {@code null}
    */
   @SuppressWarnings("unchecked")
-  static <T1, T2, R> ThrowingFunction2<T1, T2, R, Error> unchecked(
-    final ThrowingFunction2<? super T1, ? super T2, ? extends R, ?> origin
+  static <T1, T2, T3, T4, T5, R> ThrowingFunction5<T1, T2, T3, T4, T5, R, Error> unchecked(
+    final ThrowingFunction5<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? extends R, ?> origin
   ) {
     if (origin == null) { throw new NullPointerException("origin arg is null"); }
-    return (ThrowingFunction2<T1, T2, R, Error>) origin;
+    return (ThrowingFunction5<T1, T2, T3, T4, T5, R, Error>) origin;
   }
 }
