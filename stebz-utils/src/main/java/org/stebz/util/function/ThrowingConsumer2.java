@@ -24,62 +24,58 @@
 package org.stebz.util.function;
 
 /**
- * The {@link java.util.function.Function} specialization with {@code [Object,Object->Object]} signature that might
- * throw an exception.
+ * The {@link java.util.function.Consumer} specialization with {@code [Object,Object->void]} signature that might throw
+ * an exception.
  *
  * @param <T1> the type of the first input argument
  * @param <T2> the type of the second input argument
- * @param <R>  the type of the result
  * @param <E>  the type of the throwing exception
  */
 @FunctionalInterface
-public interface ThrowingFunction2<T1, T2, R, E extends Throwable> {
+public interface ThrowingConsumer2<T1, T2, E extends Throwable> {
 
   /**
-   * Applies this function to the given argument.
+   * Performs this operation on the given argument.
    *
    * @param t1 the first input argument
    * @param t2 the second input argument
-   * @return result
-   * @throws E if function threw exception
+   * @throws E if consumer threw exception
    */
-  R apply(T1 t1,
-          T2 t2) throws E;
+  void accept(T1 t1,
+              T2 t2) throws E;
 
   /**
-   * Returns given function.
+   * Returns given consumer.
    *
-   * @param function the function
+   * @param consumer the consumer
    * @param <T1>     the type of the first input argument
    * @param <T2>     the type of the second input argument
-   * @param <R>      the type of the result
    * @param <E>      the type of the throwing exception
-   * @return function
-   * @throws NullPointerException if {@code function} arg is {@code null}
+   * @return unchecked consumer
+   * @throws NullPointerException if {@code consumer} arg is {@code null}
    */
   @SuppressWarnings("unchecked")
-  static <T1, T2, R, E extends Throwable> ThrowingFunction2<T1, T2, R, E> of(
-    final ThrowingFunction2<? super T1, ? super T2, ? extends R, ? extends E> function
+  static <T1, T2, E extends Throwable> ThrowingConsumer2<T1, T2, E> of(
+    final ThrowingConsumer2<? super T1, ? super T2, ? extends E> consumer
   ) {
-    if (function == null) { throw new NullPointerException("function arg is null"); }
-    return (ThrowingFunction2<T1, T2, R, E>) function;
+    if (consumer == null) { throw new NullPointerException("consumer arg is null"); }
+    return (ThrowingConsumer2<T1, T2, E>) consumer;
   }
 
   /**
-   * Returns given function as an unchecked function.
+   * Returns given consumer as an unchecked consumer.
    *
-   * @param origin the origin function
+   * @param origin the origin consumer
    * @param <T1>   the type of the first input argument
    * @param <T2>   the type of the second input argument
-   * @param <R>    the type of the result
-   * @return unchecked function
+   * @return unchecked consumer
    * @throws NullPointerException if {@code origin} arg is {@code null}
    */
   @SuppressWarnings("unchecked")
-  static <T1, T2, R> ThrowingFunction2<T1, T2, R, Error> unchecked(
-    final ThrowingFunction2<? super T1, ? super T2, ? extends R, ?> origin
+  static <T1, T2> ThrowingConsumer2<T1, T2, Error> unchecked(
+    final ThrowingConsumer2<? super T1, ? super T2, ?> origin
   ) {
     if (origin == null) { throw new NullPointerException("origin arg is null"); }
-    return (ThrowingFunction2<T1, T2, R, Error>) origin;
+    return (ThrowingConsumer2<T1, T2, Error>) origin;
   }
 }

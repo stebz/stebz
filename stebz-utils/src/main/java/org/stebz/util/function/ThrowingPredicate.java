@@ -51,11 +51,11 @@ public interface ThrowingPredicate<T, E extends Throwable> {
    * @throws NullPointerException if {@code predicate} arg is {@code null}
    */
   @SuppressWarnings("unchecked")
-  static <T, E extends Throwable> ThrowingPredicate<T, RuntimeException> of(
+  static <T, E extends Throwable> ThrowingPredicate<T, E> of(
     final ThrowingPredicate<? super T, ? extends E> predicate
   ) {
-    if (predicate == null) { throw new NullPointerException("function arg is null"); }
-    return (ThrowingPredicate<T, RuntimeException>) predicate;
+    if (predicate == null) { throw new NullPointerException("predicate arg is null"); }
+    return (ThrowingPredicate<T, E>) predicate;
   }
 
   /**
