@@ -3,8 +3,10 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.stebz/stebz-core?color=blue)](https://central.sonatype.com/search?namespace=org.stebz&sort=name)
 [![Javadoc](https://javadoc.io/badge2/org.stebz/stebz-core/javadoc.svg?color=blue)](https://javadoc.io/doc/org.stebz)
 [![License](https://img.shields.io/github/license/stebz/stebz?color=blue)](https://github.com/stebz/stebz/blob/main/LICENSE)
-
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/stebz/stebz/tests.yml?branch=main)
+
+[![Telegram](https://img.shields.io/badge/-telegram-black?color=blue&logo=telegram&label=EN)](https://t.me/stebz_en/)
+[![Telegram](https://img.shields.io/badge/-telegram-black?color=blue&logo=telegram&label=RU)](https://t.me/stebz_ru/)
 
 Multi-approach and flexible Java framework for test steps managing.
 
