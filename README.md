@@ -50,7 +50,7 @@ Maven:
   <dependency>
     <groupId>org.stebz</groupId>
     <artifactId>{module name}</artifactId>
-    <version>1.2</version>
+    <version>1.3</version>
     <scope>test</scope>
   </dependency>
 </dependencies>
@@ -62,7 +62,7 @@ Gradle (Groovy DSL):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  testImplementation 'org.stebz:{module name}:1.2'
+  testImplementation 'org.stebz:{module name}:1.3'
 }
 ```
 <!-- @formatter:on -->
@@ -72,7 +72,7 @@ Gradle (Kotlin DSL):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  testImplementation("org.stebz:{module name}:1.2")
+  testImplementation("org.stebz:{module name}:1.3")
 }
 ```
 <!-- @formatter:on -->
@@ -91,7 +91,7 @@ Maven:
     <dependency>
       <groupId>org.stebz</groupId>
       <artifactId>stebz-bom</artifactId>
-      <version>1.2</version>
+      <version>1.3</version>
       <scope>import</scope>
       <type>pom</type>
     </dependency>
@@ -105,7 +105,7 @@ Gradle (Groovy DSL):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation platform('org.stebz:stebz-bom:1.2')
+  implementation platform('org.stebz:stebz-bom:1.3')
 }
 ```
 <!-- @formatter:on -->
@@ -115,7 +115,7 @@ Gradle (Kotlin DSL):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation(platform("org.stebz:stebz-bom:1.2"))
+  implementation(platform("org.stebz:stebz-bom:1.3"))
 }
 ```
 <!-- @formatter:on -->
@@ -254,7 +254,7 @@ static `step` method.
 ```java
 step("quick runnable step", () -> {
   // step body
-  });
+});
 
 String result = step("quick supplier step", () -> {
   // step body
@@ -293,7 +293,7 @@ If the annotation is on a field subtype of `StepObj` or a method returning a sub
 of an object implementing `StepObj`, then the annotation value will be added to the step. Otherwise, if there is an
 annotation on a method or constructor, the call itself will be considered a quick step.
 
-First case:
+Step objects:
 
 <!-- @formatter:off -->
 ```java
@@ -325,7 +325,7 @@ public class StepImpl extends RunnableStep.Of {
 ```
 <!-- @formatter:on -->
 
-Second case:
+Quick steps:
 
 <!-- @formatter:off -->
 ```java
@@ -350,20 +350,52 @@ public class MyObject {
 ```
 <!-- @formatter:on -->
 
+Quick steps can also be retrieved as objects using the `captured` method.
+
+Via the method reference:
+
+<!-- @formatter:off -->
+```java
+RunnableStep runnableStep = captured(MyClass::method, "arg");
+
+SupplierStep<MyObject> supplierStep = captured(MyObject::new, "arg");
+```
+<!-- @formatter:on -->
+
+Or via lambda expression:
+
+<!-- @formatter:off -->
+```java
+RunnableStep runnableStep = captured(() -> MyClass.method("arg"));
+
+SupplierStep<MyObject> supplierStep = captured(() -> new MyObject("arg"));
+```
+<!-- @formatter:on -->
+
+The `captured` method can be combined with the `captured` method in your tests:
+
+<!-- @formatter:off -->
+```java
+step(captured(MyClass::method, "arg")
+  .withName("Custom name")
+  .withComment("Custom comment"));
+```
+<!-- @formatter:on -->
+
 ## Annotation attributes
 
 There are several default annotation attributes.
 
-| annotation       | corresponding attributes |
-|------------------|--------------------------|
-| `WithKeyword`    | keyword                  |
-| `WithName`       | name                     |
-| `WithParams`     | params                   |
-| `WithParam`      | params                   |
-| `WithParam.List` | params                   |
-| `WithComment`    | comment                  |
-| `WithHidden`     | hidden                   |
-| `Step`           | name, params             |
+| annotation       | corresponding attributes                          |
+|------------------|---------------------------------------------------|
+| `WithKeyword`    | keyword                                           |
+| `WithName`       | name                                              |
+| `WithParams`     | params                                            |
+| `WithParam`      | params                                            |
+| `WithParam.List` | params                                            |
+| `WithComment`    | comment                                           |
+| `WithHidden`     | hidden                                            |
+| `Step`           | alias for `WithName` and `WithParams` combination |
 
 It is possible to create custom attributes.
 
@@ -406,7 +438,7 @@ String functionStepResult = Then(functionStep, 123);
 
 And("quick runnable step", () -> {
   // step body
-  });
+});
 
 String result = But("quick supplier step", () -> {
   // step body
