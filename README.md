@@ -372,7 +372,7 @@ SupplierStep<MyObject> supplierStep = captured(() -> new MyObject("arg"));
 ```
 <!-- @formatter:on -->
 
-The `captured` method can be combined with the `captured` method in your tests:
+The `captured` method can be combined with the `step` method in your tests:
 
 <!-- @formatter:off -->
 ```java
