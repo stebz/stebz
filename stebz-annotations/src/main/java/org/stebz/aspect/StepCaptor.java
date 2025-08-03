@@ -24,7 +24,6 @@
 package org.stebz.aspect;
 
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.reflect.ConstructorSignature;
 import org.stebz.attribute.StepAttributes;
 import org.stebz.step.executable.RunnableStep;
 import org.stebz.step.executable.SupplierStep;
@@ -284,8 +283,7 @@ public final class StepCaptor {
     if (reference == null) { throw new NullPointerException("reference arg is null"); }
     enableCaptureMode();
     try {
-      ThrowingSupplier.unchecked(reference).get();
-      return supplierStep();
+      return supplierStep(ThrowingSupplier.unchecked(reference).get());
     } finally {
       disableCaptureMode();
     }
@@ -308,8 +306,7 @@ public final class StepCaptor {
     if (reference == null) { throw new NullPointerException("reference arg is null"); }
     enableCaptureMode();
     try {
-      ThrowingFunction.unchecked(reference).apply(value);
-      return supplierStep();
+      return supplierStep(ThrowingFunction.unchecked(reference).apply(value));
     } finally {
       disableCaptureMode();
     }
@@ -337,8 +334,7 @@ public final class StepCaptor {
     if (reference == null) { throw new NullPointerException("reference arg is null"); }
     enableCaptureMode();
     try {
-      ThrowingFunction2.unchecked(reference).apply(value1, value2);
-      return supplierStep();
+      return supplierStep(ThrowingFunction2.unchecked(reference).apply(value1, value2));
     } finally {
       disableCaptureMode();
     }
@@ -369,8 +365,7 @@ public final class StepCaptor {
     if (reference == null) { throw new NullPointerException("reference arg is null"); }
     enableCaptureMode();
     try {
-      ThrowingFunction3.unchecked(reference).apply(value1, value2, value3);
-      return supplierStep();
+      return supplierStep(ThrowingFunction3.unchecked(reference).apply(value1, value2, value3));
     } finally {
       disableCaptureMode();
     }
@@ -404,8 +399,7 @@ public final class StepCaptor {
     if (reference == null) { throw new NullPointerException("reference arg is null"); }
     enableCaptureMode();
     try {
-      ThrowingFunction4.unchecked(reference).apply(value1, value2, value3, value4);
-      return supplierStep();
+      return supplierStep(ThrowingFunction4.unchecked(reference).apply(value1, value2, value3, value4));
     } finally {
       disableCaptureMode();
     }
@@ -442,8 +436,7 @@ public final class StepCaptor {
     if (reference == null) { throw new NullPointerException("reference arg is null"); }
     enableCaptureMode();
     try {
-      ThrowingFunction5.unchecked(reference).apply(value1, value2, value3, value4, value5);
-      return supplierStep();
+      return supplierStep(ThrowingFunction5.unchecked(reference).apply(value1, value2, value3, value4, value5));
     } finally {
       disableCaptureMode();
     }
@@ -483,8 +476,7 @@ public final class StepCaptor {
     if (reference == null) { throw new NullPointerException("reference arg is null"); }
     enableCaptureMode();
     try {
-      ThrowingFunction6.unchecked(reference).apply(value1, value2, value3, value4, value5, value6);
-      return supplierStep();
+      return supplierStep(ThrowingFunction6.unchecked(reference).apply(value1, value2, value3, value4, value5, value6));
     } finally {
       disableCaptureMode();
     }
@@ -500,7 +492,7 @@ public final class StepCaptor {
   }
 
   @SuppressWarnings("unchecked")
-  private static <R> SupplierStep<R> supplierStep() {
+  private static <R> SupplierStep<R> supplierStep(final R result) {
     final StepAttributes attributes = capturedAttributes();
     final ProceedingJoinPoint joinPoint = capturedJointPoint();
     if (attributes == null || joinPoint == null) {
@@ -508,9 +500,9 @@ public final class StepCaptor {
     }
     return (SupplierStep<R>) new SupplierStep.Of<>(
       attributes,
-      joinPoint.getSignature() instanceof ConstructorSignature
-        ? () -> { joinPoint.proceed(); return joinPoint.getThis(); }
-        : joinPoint::proceed
+      result == null
+        ? joinPoint::proceed
+        : () -> { joinPoint.proceed(); return result; }
     );
   }
 }
