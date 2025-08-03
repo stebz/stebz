@@ -73,6 +73,27 @@ final class StepCaptorTest {
   }
 
   @Test
+  void capturedMethodSupplierStepWithCustomResult() throws Throwable {
+    final SupplierStep<Integer> step = captured(() -> {
+      new MethodSteps().quickInstanceMethodStep("value");
+      return 100;
+    });
+
+    assertThat(step.getName())
+      .isEqualTo("quickInstanceMethodStep");
+    assertThat(step.getParams())
+      .containsExactly(
+        entry("param", "value")
+      );
+    assertThat(step.getHidden())
+      .isTrue();
+    assertThat(step.body().get())
+      .isEqualTo(100);
+    assertThat(StaticStepListener.lastStep)
+      .isNull();
+  }
+
+  @Test
   void capturedConstructorSupplierStep() throws Throwable {
     final SupplierStep<QuickConstructorStep> step = captured(QuickConstructorStep::new, "value1", "value2");
 
@@ -85,6 +106,26 @@ final class StepCaptorTest {
       );
     assertThat(step.body().get())
       .isInstanceOf(QuickConstructorStep.class);
+    assertThat(StaticStepListener.lastStep)
+      .isNull();
+  }
+
+  @Test
+  void capturedConstructorSupplierStepWithCustomResult() throws Throwable {
+    final SupplierStep<Integer> step = captured(() -> {
+      new QuickConstructorStep("value1", "value2");
+      return 100;
+    });
+
+    assertThat(step.getName())
+      .isEqualTo("name value");
+    assertThat(step.getParams())
+      .containsExactly(
+        entry("param1", "******"),
+        entry("param name", "param value")
+      );
+    assertThat(step.body().get())
+      .isEqualTo(100);
     assertThat(StaticStepListener.lastStep)
       .isNull();
   }
