@@ -1,6 +1,7 @@
 # Stebz
 
 [![Maven Central](https://img.shields.io/maven-central/v/org.stebz/stebz-core?color=blue)](https://central.sonatype.com/search?namespace=org.stebz&sort=name)
+![Maven Central Last Update](https://img.shields.io/maven-central/last-update/org.stebz/stebz?color=blue)
 [![Javadoc](https://javadoc.io/badge2/org.stebz/stebz-core/javadoc.svg?color=blue)](https://javadoc.io/doc/org.stebz)
 [![License](https://img.shields.io/github/license/stebz/stebz?color=blue)](https://github.com/stebz/stebz/blob/main/LICENSE)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/stebz/stebz/tests.yml?branch=main)
@@ -52,7 +53,7 @@ Maven:
   <dependency>
     <groupId>org.stebz</groupId>
     <artifactId>{module name}</artifactId>
-    <version>1.3</version>
+    <version>1.3.1</version>
     <scope>test</scope>
   </dependency>
 </dependencies>
@@ -64,7 +65,7 @@ Gradle (Groovy DSL):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  testImplementation 'org.stebz:{module name}:1.3'
+  testImplementation 'org.stebz:{module name}:1.3.1'
 }
 ```
 <!-- @formatter:on -->
@@ -74,7 +75,7 @@ Gradle (Kotlin DSL):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  testImplementation("org.stebz:{module name}:1.3")
+  testImplementation("org.stebz:{module name}:1.3.1")
 }
 ```
 <!-- @formatter:on -->
@@ -93,7 +94,7 @@ Maven:
     <dependency>
       <groupId>org.stebz</groupId>
       <artifactId>stebz-bom</artifactId>
-      <version>1.3</version>
+      <version>1.3.1</version>
       <scope>import</scope>
       <type>pom</type>
     </dependency>
@@ -107,7 +108,7 @@ Gradle (Groovy DSL):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation platform('org.stebz:stebz-bom:1.3')
+  implementation platform('org.stebz:stebz-bom:1.3.1')
 }
 ```
 <!-- @formatter:on -->
@@ -117,7 +118,7 @@ Gradle (Kotlin DSL):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation(platform("org.stebz:stebz-bom:1.3"))
+  implementation(platform("org.stebz:stebz-bom:1.3.1"))
 }
 ```
 <!-- @formatter:on -->
