@@ -27,6 +27,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.stebz.step.executable.RunnableStep;
 import org.stebz.step.executable.SupplierStep;
+import org.stebz.util.function.ThrowingSupplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -126,6 +127,22 @@ final class StepCaptorTest {
       );
     assertThat(step.body().get())
       .isEqualTo(100);
+    assertThat(StaticStepListener.lastStep)
+      .isNull();
+  }
+
+  @Test
+  void capturedConstructorSupplierStepReturnsNewInstances() throws Throwable {
+    final SupplierStep<QuickConstructorStep> step = captured(QuickConstructorStep::new, "value1", "value2");
+    final ThrowingSupplier<QuickConstructorStep, ?> body = step.body();
+    final QuickConstructorStep firstResult = body.get();
+
+    assertThat(body.get())
+      .isInstanceOf(QuickConstructorStep.class)
+      .isNotSameAs(firstResult);
+    assertThat(body.get())
+      .isInstanceOf(QuickConstructorStep.class)
+      .isNotSameAs(firstResult);
     assertThat(StaticStepListener.lastStep)
       .isNull();
   }
