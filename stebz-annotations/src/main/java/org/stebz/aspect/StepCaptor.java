@@ -24,6 +24,7 @@
 package org.stebz.aspect;
 
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.reflect.ConstructorSignature;
 import org.stebz.attribute.StepAttributes;
 import org.stebz.step.executable.RunnableStep;
 import org.stebz.step.executable.SupplierStep;
@@ -42,10 +43,14 @@ import org.stebz.util.function.ThrowingFunction6;
 import org.stebz.util.function.ThrowingRunnable;
 import org.stebz.util.function.ThrowingSupplier;
 
+import java.lang.reflect.Constructor;
+
 import static org.stebz.aspect.StepAspects.capturedAttributes;
 import static org.stebz.aspect.StepAspects.capturedJointPoint;
 import static org.stebz.aspect.StepAspects.disableCaptureMode;
+import static org.stebz.aspect.StepAspects.disableIgnoreMode;
 import static org.stebz.aspect.StepAspects.enableCaptureMode;
+import static org.stebz.aspect.StepAspects.enableIgnoreMode;
 
 /**
  * Step captor. Contains methods for step capturing.
@@ -488,7 +493,12 @@ public final class StepCaptor {
     if (attributes == null || joinPoint == null) {
       throw new IllegalArgumentException("reference does not contain any steps");
     }
-    return new RunnableStep.Of(attributes, joinPoint::proceed);
+    return new RunnableStep.Of(
+      attributes,
+      joinPoint.getSignature() instanceof ConstructorSignature
+        ? new CtorStepBody<>(joinPoint)::get
+        : joinPoint::proceed
+    );
   }
 
   @SuppressWarnings("unchecked")
@@ -498,11 +508,85 @@ public final class StepCaptor {
     if (attributes == null || joinPoint == null) {
       throw new IllegalArgumentException("reference does not contain any steps");
     }
-    return (SupplierStep<R>) new SupplierStep.Of<>(
-      attributes,
-      result == null
-        ? joinPoint::proceed
-        : () -> { joinPoint.proceed(); return result; }
-    );
+    if (joinPoint.getSignature() instanceof ConstructorSignature) {
+      final ThrowingSupplier<R, ?> body = new CtorStepBody<>(joinPoint);
+      return new SupplierStep.Of<>(
+        attributes,
+        result == null || result == joinPoint.getThis()
+          ? body
+          : () -> { body.get(); return result; }
+      );
+    } else {
+      return (SupplierStep<R>) new SupplierStep.Of<>(
+        attributes,
+        result == null
+          ? joinPoint::proceed
+          : () -> { joinPoint.proceed(); return result; }
+      );
+    }
+  }
+
+  private static final class CtorStepBody<R> implements ThrowingSupplier<R, Throwable> {
+    /**
+     * Possible values:
+     * <p>0 -> return instance via join point
+     * <p>1 -> init ctor and args values and return new instance via reflection
+     * <p>2 -> return new instance via reflection
+     */
+    private volatile int state = 0;
+    private volatile Constructor<?> ctor = null;
+    private volatile Object[] args = null;
+    private volatile ProceedingJoinPoint joinPoint;
+
+    private CtorStepBody(final ProceedingJoinPoint joinPoint) {
+      this.joinPoint = joinPoint;
+    }
+
+    @Override
+    public R get() throws Throwable {
+      if (this.state == 2) {
+        return newInstance(this.ctor, this.args);
+      }
+      ProceedingJoinPoint storedJoinPoint = null;
+      int currentState = 0;
+      synchronized (this) {
+        switch (this.state) {
+          case 0:
+            storedJoinPoint = this.joinPoint;
+            this.state = 1;
+            break;
+          case 1:
+            this.ctor = ((ConstructorSignature) this.joinPoint.getSignature()).getConstructor();
+            this.ctor.setAccessible(true);
+            this.args = this.joinPoint.getArgs();
+            this.joinPoint = null;
+            this.state = 2;
+            currentState = 1;
+            break;
+          case 2:
+            currentState = 2;
+        }
+      }
+      return currentState == 0
+        ? joinPointInstance(storedJoinPoint)
+        : newInstance(this.ctor, this.args);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <R> R joinPointInstance(final ProceedingJoinPoint joinPoint) throws Throwable {
+      joinPoint.proceed();
+      return (R) joinPoint.getThis();
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <R> R newInstance(final Constructor<?> ctor,
+                                     final Object[] args) throws ReflectiveOperationException {
+      enableIgnoreMode();
+      try {
+        return (R) ctor.newInstance(args);
+      } finally {
+        disableIgnoreMode();
+      }
+    }
   }
 }

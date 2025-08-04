@@ -91,7 +91,7 @@ public class StepAspects {
         attributesFieldSetter(lookup, FunctionStep.Of.class)
       );
     });
-  private static final ThreadLocal<Integer> CAPTURED_STEP_COUNT = new ThreadLocal<>();
+  private static final ThreadLocal<QuickStepMode> QUICK_STEP_MODE = new ThreadLocal<>();
   private static final ThreadLocal<StepAttributes> CAPTURED_ATTRIBUTES = new ThreadLocal<>();
   private static final ThreadLocal<ProceedingJoinPoint> CAPTURED_JOINT_POINT = new ThreadLocal<>();
 
@@ -175,7 +175,15 @@ public class StepAspects {
    * @return method result
    */
   @Around("execution(@(@org.stebz.annotation.StepAttributeAnnotation *) !org.stebz.step.StepObj+ *(..))")
-  public Object quickMethodStep(final ProceedingJoinPoint joinPoint) {
+  public Object quickMethodStep(final ProceedingJoinPoint joinPoint) throws Throwable {
+    final QuickStepMode quickStepMode = QUICK_STEP_MODE.get();
+    if (quickStepMode == QuickStepMode.IGNORE) {
+      return joinPoint.proceed();
+    }
+    if (quickStepMode == QuickStepMode.FORBIDDEN_CAPTURE) {
+      throw new IllegalArgumentException("Only one step can be captured");
+    }
+
     final MethodSignature signature = (MethodSignature) joinPoint.getSignature();
     final Method method = signature.getMethod();
     final StepAttributes attributes = extractAttributes(
@@ -186,22 +194,18 @@ public class StepAspects {
       method.getParameters(), signature.getParameterNames(), joinPoint.getArgs()
     );
 
-    final Integer capturedStepCount = CAPTURED_STEP_COUNT.get();
-    if (capturedStepCount != null) {
-      if (capturedStepCount != 0) {
-        throw new IllegalArgumentException("Only one step can be captured");
-      }
-      CAPTURED_STEP_COUNT.set(1);
+    if (quickStepMode == QuickStepMode.CAPTURE) {
+      QUICK_STEP_MODE.set(QuickStepMode.FORBIDDEN_CAPTURE);
       CAPTURED_ATTRIBUTES.set(attributes);
       CAPTURED_JOINT_POINT.set(joinPoint);
       return null;
+    }
+
+    if (signature.getReturnType() == void.class) {
+      StepExecutor.get().execute(new RunnableStep.Of(attributes, joinPoint::proceed));
+      return null;
     } else {
-      if (signature.getReturnType() == void.class) {
-        StepExecutor.get().execute(new RunnableStep.Of(attributes, joinPoint::proceed));
-        return null;
-      } else {
-        return StepExecutor.get().execute(new SupplierStep.Of<>(attributes, joinPoint::proceed));
-      }
+      return StepExecutor.get().execute(new SupplierStep.Of<>(attributes, joinPoint::proceed));
     }
   }
 
@@ -212,7 +216,16 @@ public class StepAspects {
    * @return constructor result
    */
   @Around("execution(@(@org.stebz.annotation.StepAttributeAnnotation *) !org.stebz.step.StepObj+.new(..))")
-  public Object quickCtorStep(final ProceedingJoinPoint joinPoint) {
+  public Object quickCtorStep(final ProceedingJoinPoint joinPoint) throws Throwable {
+    final QuickStepMode quickStepMode = QUICK_STEP_MODE.get();
+    if (quickStepMode == QuickStepMode.IGNORE) {
+      joinPoint.proceed();
+      return joinPoint.getThis();
+    }
+    if (quickStepMode == QuickStepMode.FORBIDDEN_CAPTURE) {
+      throw new IllegalArgumentException("Only one step can be captured");
+    }
+
     final ConstructorSignature signature = (ConstructorSignature) joinPoint.getSignature();
     final Constructor<?> constructor = signature.getConstructor();
     final StepAttributes attributes = extractAttributes(
@@ -223,29 +236,33 @@ public class StepAspects {
       constructor.getParameters(), signature.getParameterNames(), joinPoint.getArgs()
     );
 
-    final Integer capturedStepCount = CAPTURED_STEP_COUNT.get();
-    if (capturedStepCount != null) {
-      if (capturedStepCount != 0) {
-        throw new IllegalArgumentException("Only one step can be captured");
-      }
-      CAPTURED_STEP_COUNT.set(1);
+    if (quickStepMode == QuickStepMode.CAPTURE) {
+      QUICK_STEP_MODE.set(QuickStepMode.FORBIDDEN_CAPTURE);
       CAPTURED_ATTRIBUTES.set(attributes);
       CAPTURED_JOINT_POINT.set(joinPoint);
       return joinPoint.getThis();
-    } else {
-      return StepExecutor.get().execute(new SupplierStep.Of<>(attributes, () -> {
-        joinPoint.proceed();
-        return joinPoint.getThis();
-      }));
     }
+
+    return StepExecutor.get().execute(new SupplierStep.Of<>(attributes, () -> {
+      joinPoint.proceed();
+      return joinPoint.getThis();
+    }));
+  }
+
+  static void enableIgnoreMode() {
+    QUICK_STEP_MODE.set(QuickStepMode.IGNORE);
+  }
+
+  static void disableIgnoreMode() {
+    QUICK_STEP_MODE.remove();
   }
 
   static void enableCaptureMode() {
-    CAPTURED_STEP_COUNT.set(0);
+    QUICK_STEP_MODE.set(QuickStepMode.CAPTURE);
   }
 
   static void disableCaptureMode() {
-    CAPTURED_STEP_COUNT.remove();
+    QUICK_STEP_MODE.remove();
     CAPTURED_ATTRIBUTES.remove();
     CAPTURED_JOINT_POINT.remove();
   }
@@ -412,6 +429,12 @@ public class StepAspects {
       }
     }
     builder.add(PARAMS, paramsMap);
+  }
+
+  private enum QuickStepMode {
+    CAPTURE,
+    FORBIDDEN_CAPTURE,
+    IGNORE
   }
 
   private static final class StepAttributesSetters {
