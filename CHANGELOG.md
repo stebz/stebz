@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.1 (04.08.2025)
+
+* #37 added support for custom result in the captured method by @evpl in PR #38
+* #39 fixed captured constructor step by @evpl in PR #40
+
 ## 1.3 (02.08.2025)
 
 * #3 added ability to capture quick steps by @evpl in PR #36
