@@ -35,6 +35,7 @@ import org.stebz.util.function.ThrowingSupplier;
 
 import java.util.Map;
 
+import static org.stebz.attribute.StepAttribute.EXPECTED_RESULT;
 import static org.stebz.attribute.StepAttribute.KEYWORD;
 import static org.stebz.attribute.StepAttribute.NAME;
 import static org.stebz.attribute.StepAttribute.PARAMS;
@@ -368,6 +369,81 @@ public final class StebzMethods {
   }
 
   /**
+   * Executes step with given attributes.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  public static void step(final String name,
+                          final String expectedResult,
+                          final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(NAME, name, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with given attributes.
+   *
+   * @param keyword        the step keyword
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  public static void step(final Keyword keyword,
+                          final String name,
+                          final String expectedResult,
+                          final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, keyword, NAME, name, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with given attributes.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  @SuppressWarnings("unchecked")
+  public static void step(final String name,
+                          final Map<String, ?> params,
+                          final String expectedResult,
+                          final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with given attributes.
+   *
+   * @param keyword        the step keyword
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  @SuppressWarnings("unchecked")
+  public static void step(final Keyword keyword,
+                          final String name,
+                          final Map<String, ?> params,
+                          final String expectedResult,
+                          final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(
+        KEYWORD, keyword, NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
    * Executes step with given attributes and returns step result.
    *
    * @param name the step name
@@ -442,6 +518,81 @@ public final class StebzMethods {
   }
 
   /**
+   * Executes step with given attributes and returns step result.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  public static <R> R step(final String name,
+                           final String expectedResult,
+                           final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(NAME, name, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with given attributes and returns step result.
+   *
+   * @param keyword        the step keyword
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  public static <R> R step(final Keyword keyword,
+                           final String name,
+                           final String expectedResult,
+                           final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, keyword, NAME, name, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with given attributes and returns step result.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  @SuppressWarnings("unchecked")
+  public static <R> R step(final String name,
+                           final Map<String, ?> params,
+                           final String expectedResult,
+                           final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with given attributes and returns step result.
+   *
+   * @param keyword        the step keyword
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  @SuppressWarnings("unchecked")
+  public static <R> R step(final Keyword keyword,
+                           final String name,
+                           final Map<String, ?> params,
+                           final String expectedResult,
+                           final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(
+        KEYWORD, keyword, NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
    * Executes step with given attributes.
    *
    * @param name the step name
@@ -495,6 +646,73 @@ public final class StebzMethods {
                           final Map<String, ?> params) {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(KEYWORD, keyword, NAME, name, PARAMS, (Map<String, Object>) params),
+      RunnableStep.emptyBody()
+    ));
+  }
+
+  /**
+   * Executes step with given attributes.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   */
+  public static void step(final String name,
+                          final String expectedResult) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(NAME, name, EXPECTED_RESULT, expectedResult),
+      RunnableStep.emptyBody()
+    ));
+  }
+
+  /**
+   * Executes step with given attributes.
+   *
+   * @param keyword        the step keyword
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   */
+  public static void step(final Keyword keyword,
+                          final String name,
+                          final String expectedResult) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, keyword, NAME, name, EXPECTED_RESULT, expectedResult),
+      RunnableStep.emptyBody()
+    ));
+  }
+
+  /**
+   * Executes step with given attributes.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   */
+  @SuppressWarnings("unchecked")
+  public static void step(final String name,
+                          final Map<String, ?> params,
+                          final String expectedResult) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      RunnableStep.emptyBody()
+    ));
+  }
+
+  /**
+   * Executes step with given attributes.
+   *
+   * @param keyword        the step keyword
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   */
+  @SuppressWarnings("unchecked")
+  public static void step(final Keyword keyword,
+                          final String name,
+                          final Map<String, ?> params,
+                          final String expectedResult) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(
+        KEYWORD, keyword, NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
       RunnableStep.emptyBody()
     ));
   }

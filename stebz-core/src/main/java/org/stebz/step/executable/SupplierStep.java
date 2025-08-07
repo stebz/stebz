@@ -33,6 +33,7 @@ import org.stebz.util.function.ThrowingSupplier;
 
 import java.util.Map;
 
+import static org.stebz.attribute.StepAttribute.EXPECTED_RESULT;
 import static org.stebz.attribute.StepAttribute.NAME;
 import static org.stebz.attribute.StepAttribute.PARAMS;
 
@@ -117,7 +118,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} with given name and body.
+   * Returns {@code SupplierStep} with given attributes and body.
    *
    * @param name the step name
    * @param body the step body
@@ -131,7 +132,42 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} with given name, params and body.
+   * Returns {@code SupplierStep} with given attributes and body.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return {@code SupplierStep} with given name and body
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
+   */
+  static <R> SupplierStep<R> of(final String name,
+                                final String expectedResult,
+                                final ThrowingSupplier<R, ?> body) {
+    return new Of<>(name, expectedResult, body);
+  }
+
+  /**
+   * Returns {@code SupplierStep} with given attributes and body.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return {@code SupplierStep} with given name, params and body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
+   */
+  static <R> SupplierStep<R> of(final String name,
+                                final Map<String, ?> params,
+                                final String expectedResult,
+                                final ThrowingSupplier<R, ?> body) {
+    return new Of<>(name, params, expectedResult, body);
+  }
+
+  /**
+   * Returns {@code SupplierStep} with given attributes and body.
    *
    * @param name   the step name
    * @param params the step params
@@ -230,6 +266,23 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
     /**
      * Ctor.
      *
+     * @param name           the step name
+     * @param expectedResult the step expected result
+     * @param body           the step body
+     * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
+     */
+    public Of(final String name,
+              final String expectedResult,
+              final ThrowingSupplier<R, ?> body) {
+      this(new StepAttributes.Of(
+        NAME, name,
+        EXPECTED_RESULT, expectedResult
+      ), body);
+    }
+
+    /**
+     * Ctor.
+     *
      * @param name   the step name
      * @param params the step params
      * @param body   the step body
@@ -242,6 +295,28 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
       this(new StepAttributes.Of(
         NAME, name,
         PARAMS, (Map<String, Object>) params
+      ), body);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param name           the step name
+     * @param params         the step params
+     * @param expectedResult the step expected result
+     * @param body           the step body
+     * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+     *                              {@code body} arg is null
+     */
+    @SuppressWarnings("unchecked")
+    public Of(final String name,
+              final Map<String, ?> params,
+              final String expectedResult,
+              final ThrowingSupplier<R, ?> body) {
+      this(new StepAttributes.Of(
+        NAME, name,
+        PARAMS, (Map<String, Object>) params,
+        EXPECTED_RESULT, expectedResult
       ), body);
     }
 

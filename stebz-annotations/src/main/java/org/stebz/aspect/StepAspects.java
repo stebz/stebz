@@ -35,6 +35,7 @@ import org.stebz.annotation.Param;
 import org.stebz.annotation.Step;
 import org.stebz.annotation.StepAttributeAnnotation;
 import org.stebz.annotation.WithComment;
+import org.stebz.annotation.WithExpectedResult;
 import org.stebz.annotation.WithHidden;
 import org.stebz.annotation.WithKeyword;
 import org.stebz.annotation.WithName;
@@ -69,6 +70,7 @@ import static org.stebz.attribute.ReflectiveStepAttributes.REFLECTIVE_NAME;
 import static org.stebz.attribute.ReflectiveStepAttributes.STEP_SOURCE;
 import static org.stebz.attribute.ReflectiveStepAttributes.STEP_SOURCE_TYPE;
 import static org.stebz.attribute.StepAttribute.COMMENT;
+import static org.stebz.attribute.StepAttribute.EXPECTED_RESULT;
 import static org.stebz.attribute.StepAttribute.HIDDEN;
 import static org.stebz.attribute.StepAttribute.KEYWORD;
 import static org.stebz.attribute.StepAttribute.NAME;
@@ -300,6 +302,7 @@ public class StepAspects {
     addComment(builder, attrAnnotations);
     addParams(builder, attrAnnotations, originAttributes.get(PARAMS), parameters, parameterNames, parameterValues);
     addHidden(builder, attrAnnotations);
+    addExpectedResult(builder, attrAnnotations);
     removeDefaultAnnotations(attrAnnotations);
     builder.add(JOIN_POINT, joinPoint);
     builder.add(STEP_SOURCE_TYPE, stepSourceType);
@@ -330,6 +333,7 @@ public class StepAspects {
   private static void removeDefaultAnnotations(final Map<String, Annotation> annotations) {
     annotations.remove(Step.KEY);
     annotations.remove(WithComment.KEY);
+    annotations.remove(WithExpectedResult.KEY);
     annotations.remove(WithHidden.KEY);
     annotations.remove(WithKeyword.KEY);
     annotations.remove(WithName.KEY);
@@ -390,6 +394,17 @@ public class StepAspects {
     final WithHidden annotation = (WithHidden) annotations.get(WithHidden.KEY);
     if (annotation != null) {
       builder.add(HIDDEN, annotation.value());
+    }
+  }
+
+  private static void addExpectedResult(final StepAttributes.Builder builder,
+                                        final Map<String, Annotation> annotations) {
+    final WithExpectedResult annotation = (WithExpectedResult) annotations.get(WithExpectedResult.KEY);
+    if (annotation != null) {
+      final String value = annotation.value();
+      if (!value.isEmpty()) {
+        builder.add(EXPECTED_RESULT, value);
+      }
     }
   }
 

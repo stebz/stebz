@@ -224,6 +224,39 @@ public interface StepAttributes {
   }
 
   /**
+   * Returns {@code StepAttributes} with given attributes values.
+   *
+   * @param attribute1 the first attribute
+   * @param value1     the first attribute value
+   * @param attribute2 the second attribute
+   * @param value2     the second attribute value
+   * @param attribute3 the third attribute
+   * @param value3     the third attribute value
+   * @param attribute4 the fourth attribute
+   * @param value4     the fourth attribute value
+   * @param <V1>       the type of the first attribute
+   * @param <V2>       the type of the second attribute
+   * @param <V3>       the type of the third attribute
+   * @param <V4>       the type of the fourth attribute
+   * @return {@code StepAttributes} with given attributes values
+   * @throws NullPointerException if {@code attribute1} arg or {@code attribute2} arg or {@code attribute3} arg or
+   *                              {@code attribute4} arg is null or if {@code attribute1} is not nullable and
+   *                              {@code value1} is null or if {@code attribute2} is not nullable and {@code value2} is
+   *                              null or if {@code attribute3} is not nullable and {@code value3} is null or if
+   *                              {@code attribute4} is not nullable and {@code value4} is null
+   */
+  static <V1, V2, V3, V4> StepAttributes of(final StepAttribute<V1> attribute1,
+                                            final V1 value1,
+                                            final StepAttribute<V2> attribute2,
+                                            final V2 value2,
+                                            final StepAttribute<V3> attribute3,
+                                            final V3 value3,
+                                            final StepAttribute<V4> attribute4,
+                                            final V4 value4) {
+    return new StepAttributes.Of(attribute1, value1, attribute2, value2, attribute3, value3, attribute4, value4);
+  }
+
+  /**
    * Returns empty {@code StepAttributes.Builder}.
    *
    * @return empty {@code StepAttributes.Builder}
@@ -372,6 +405,59 @@ public interface StepAttributes {
       map.put(attribute1, value1);
       map.put(attribute2, value2);
       map.put(attribute3, value3);
+      this.map = map;
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param attribute1 the first attribute
+     * @param value1     the first attribute value
+     * @param attribute2 the second attribute
+     * @param value2     the second attribute value
+     * @param attribute3 the third attribute
+     * @param value3     the third attribute value
+     * @param attribute4 the fourth attribute
+     * @param value4     the fourth attribute value
+     * @param <V1>       the type of the first attribute
+     * @param <V2>       the type of the second attribute
+     * @param <V3>       the type of the third attribute
+     * @param <V4>       the type of the fourth attribute
+     * @throws NullPointerException if {@code attribute1} arg or {@code attribute2} arg or {@code attribute3} arg or
+     *                              {@code attribute4} arg is null or if {@code attribute1} is not nullable and
+     *                              {@code value1} is null or if {@code attribute2} is not nullable and {@code value2}
+     *                              is null or if {@code attribute3} is not nullable and {@code value3} is null or if
+     *                              {@code attribute4} is not nullable and {@code value4} is null
+     */
+    public <V1, V2, V3, V4> Of(final StepAttribute<V1> attribute1,
+                               final V1 value1,
+                               final StepAttribute<V2> attribute2,
+                               final V2 value2,
+                               final StepAttribute<V3> attribute3,
+                               final V3 value3,
+                               final StepAttribute<V4> attribute4,
+                               final V4 value4) {
+      if (attribute1 == null) { throw new NullPointerException("attribute1 arg is null"); }
+      if (attribute2 == null) { throw new NullPointerException("attribute2 arg is null"); }
+      if (attribute3 == null) { throw new NullPointerException("attribute3 arg is null"); }
+      if (attribute4 == null) { throw new NullPointerException("attribute4 arg is null"); }
+      if (!attribute1.nullable() && value1 == null) {
+        throw new IllegalArgumentException("value1 arg is null but attribute1 is not nullable");
+      }
+      if (!attribute2.nullable() && value2 == null) {
+        throw new IllegalArgumentException("value2 arg is null but attribute2 is not nullable");
+      }
+      if (!attribute3.nullable() && value3 == null) {
+        throw new IllegalArgumentException("value3 arg is null but attribute3 is not nullable");
+      }
+      if (!attribute4.nullable() && value4 == null) {
+        throw new IllegalArgumentException("value4 arg is null but attribute4 is not nullable");
+      }
+      final Map<StepAttribute<?>, Object> map = new HashMap<>();
+      map.put(attribute1, value1);
+      map.put(attribute2, value2);
+      map.put(attribute3, value3);
+      map.put(attribute4, value4);
       this.map = map;
     }
 

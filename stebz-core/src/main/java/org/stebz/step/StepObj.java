@@ -32,6 +32,7 @@ import org.stebz.util.function.ThrowingFunction;
 import java.util.Map;
 
 import static org.stebz.attribute.StepAttribute.COMMENT;
+import static org.stebz.attribute.StepAttribute.EXPECTED_RESULT;
 import static org.stebz.attribute.StepAttribute.HIDDEN;
 import static org.stebz.attribute.StepAttribute.KEYWORD;
 import static org.stebz.attribute.StepAttribute.NAME;
@@ -251,6 +252,17 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
+   * Returns expected result attribute value.
+   *
+   * @return expected result attribute value
+   * @see #get(StepAttribute)
+   * @see StepAttribute#EXPECTED_RESULT
+   */
+  default String getExpectedResult() {
+    return this.get(EXPECTED_RESULT);
+  }
+
+  /**
    * Returns {@code StepObj} with given keyword attribute value.
    *
    * @param keyword the keyword attribute value
@@ -300,32 +312,6 @@ public interface StepObj<S extends StepObj<S>> {
    */
   default S withNewName(final ThrowingFunction<? super String, String, ?> generator) {
     return this.withNew(NAME, generator);
-  }
-
-  /**
-   * Returns {@code StepObj} with given comment attribute value.
-   *
-   * @param comment the comment attribute value
-   * @return {@code StepObj} with given comment attribute value
-   * @throws NullPointerException if {@code comment} arg is null
-   * @see #with(StepAttribute, Object)
-   * @see StepAttribute#COMMENT
-   */
-  default S withComment(final String comment) {
-    return this.with(COMMENT, comment);
-  }
-
-  /**
-   * Returns {@code StepObj} with given comment attribute value created by {@code generator}.
-   *
-   * @param generator the generator
-   * @return {@code StepObj} with given comment attribute value
-   * @throws NullPointerException {@code generator} arg is null
-   * @see #with(StepAttribute, Object)
-   * @see StepAttribute#COMMENT
-   */
-  default S withNewComment(final ThrowingFunction<? super String, String, ?> generator) {
-    return this.withNew(COMMENT, generator);
   }
 
   /**
@@ -414,6 +400,58 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
+   * Returns {@code StepObj} with given expected result attribute value.
+   *
+   * @param expectedResult the expected result attribute value
+   * @return {@code StepObj} with given expected result attribute value
+   * @throws NullPointerException if {@code expectedResult} arg is null
+   * @see #with(StepAttribute, Object)
+   * @see StepAttribute#EXPECTED_RESULT
+   */
+  default S withExpectedResult(final String expectedResult) {
+    return this.with(EXPECTED_RESULT, expectedResult);
+  }
+
+  /**
+   * Returns {@code StepObj} with given expected result attribute value created by {@code generator}.
+   *
+   * @param generator the generator
+   * @return {@code StepObj} with given expected result attribute value
+   * @throws NullPointerException {@code generator} arg is null
+   * @see #with(StepAttribute, Object)
+   * @see StepAttribute#EXPECTED_RESULT
+   */
+  default S withNewExpectedResult(final ThrowingFunction<? super String, String, ?> generator) {
+    return this.withNew(EXPECTED_RESULT, generator);
+  }
+
+  /**
+   * Returns {@code StepObj} with given comment attribute value.
+   *
+   * @param comment the comment attribute value
+   * @return {@code StepObj} with given comment attribute value
+   * @throws NullPointerException if {@code comment} arg is null
+   * @see #with(StepAttribute, Object)
+   * @see StepAttribute#COMMENT
+   */
+  default S withComment(final String comment) {
+    return this.with(COMMENT, comment);
+  }
+
+  /**
+   * Returns {@code StepObj} with given comment attribute value created by {@code generator}.
+   *
+   * @param generator the generator
+   * @return {@code StepObj} with given comment attribute value
+   * @throws NullPointerException {@code generator} arg is null
+   * @see #with(StepAttribute, Object)
+   * @see StepAttribute#COMMENT
+   */
+  default S withNewComment(final ThrowingFunction<? super String, String, ?> generator) {
+    return this.withNew(COMMENT, generator);
+  }
+
+  /**
    * Returns {@code StepObj} with hidden attribute value.
    *
    * @param hidden the hidden attribute value
@@ -445,17 +483,6 @@ public interface StepObj<S extends StepObj<S>> {
    */
   default S withoutName() {
     return this.without(NAME);
-  }
-
-  /**
-   * Returns {@code StepObj} without comment attribute.
-   *
-   * @return {@code StepObj} without comment attribute
-   * @see #without(StepAttribute)
-   * @see StepAttribute#COMMENT
-   */
-  default S withoutComment() {
-    return this.without(COMMENT);
   }
 
   /**
@@ -496,6 +523,28 @@ public interface StepObj<S extends StepObj<S>> {
    */
   default S withoutParam(final String paramName) {
     return this.withUpdParams(params -> params.remove(paramName));
+  }
+
+  /**
+   * Returns {@code StepObj} without expected result attribute.
+   *
+   * @return {@code StepObj} without expected result attribute
+   * @see #without(StepAttribute)
+   * @see StepAttribute#COMMENT
+   */
+  default S withoutExpectedResult() {
+    return this.without(EXPECTED_RESULT);
+  }
+
+  /**
+   * Returns {@code StepObj} without comment attribute.
+   *
+   * @return {@code StepObj} without comment attribute
+   * @see #without(StepAttribute)
+   * @see StepAttribute#COMMENT
+   */
+  default S withoutComment() {
+    return this.without(COMMENT);
   }
 
   /**

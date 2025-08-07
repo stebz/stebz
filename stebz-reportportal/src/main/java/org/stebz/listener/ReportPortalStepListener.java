@@ -50,12 +50,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ReportPortalStepListener implements StepListener {
   private static final TemplateConfiguration TEMPLATE_CONFIG = new TemplateConfiguration();
+  private static final String CONTEXT_PARAM_NAME = "context";
+  private static final String EXPECTED_RESULT_DESC_LINE_PREFIX = "Expected result: ";
+  private static final String COMMENT_DESC_LINE_PREFIX = "Comment: ";
   private final boolean enabled;
   private final int order;
   private final KeywordPosition keywordPosition;
   private final boolean processName;
   private final boolean contextParam;
-  private final boolean commentDescription;
   private final boolean isStebzAnnotationsUsed;
 
   /**
@@ -77,7 +79,6 @@ public class ReportPortalStepListener implements StepListener {
       KeywordPosition.class, KeywordPosition.AT_START);
     this.processName = properties.getBoolean("stebz.listeners.reportportal.processName", true);
     this.contextParam = properties.getBoolean("stebz.listeners.reportportal.contextParam", true);
-    this.commentDescription = properties.getBoolean("stebz.listeners.reportportal.commentDescription", true);
     this.isStebzAnnotationsUsed = isStebzAnnotationsUsed();
   }
 
@@ -107,12 +108,11 @@ public class ReportPortalStepListener implements StepListener {
     }
     final Map<String, Object> params = step.getParams();
     if (this.contextParam && context.isPresent()) {
-      params.putIfAbsent("context", context.get());
+      params.putIfAbsent(CONTEXT_PARAM_NAME, context.get());
     }
-    final String comment;
     final StartTestItemRQ startTestItemRQ = StepRequestUtils.buildStartStepRequest(
       this.keywordPosition.concat(step.getKeyword(), this.processStepName(step, step.getName(), params)),
-      this.commentDescription && !(comment = step.getComment()).isEmpty() ? comment : null
+      this.processStepDescription(step.getExpectedResult(), step.getComment())
     );
     if (!params.isEmpty()) {
       final List<ParameterResource> rpParams = new ArrayList<>();
@@ -168,6 +168,27 @@ public class ReportPortalStepListener implements StepListener {
       addReflectionParams(step, paramsToProcess);
     }
     return TemplateProcessing.processTemplate(name, paramsToProcess, TEMPLATE_CONFIG);
+  }
+
+  private String processStepDescription(final String expectedResult,
+                                        final String comment) {
+    if (expectedResult.isEmpty()) {
+      return comment.isEmpty()
+        ? null
+        : commentDescLine(comment);
+    } else {
+      return comment.isEmpty()
+        ? expectedResultDescLine(expectedResult)
+        : expectedResultDescLine(expectedResult) + System.lineSeparator() + commentDescLine(comment);
+    }
+  }
+
+  private static String expectedResultDescLine(final String expectedResult) {
+    return EXPECTED_RESULT_DESC_LINE_PREFIX + expectedResult;
+  }
+
+  private static String commentDescLine(final String comment) {
+    return COMMENT_DESC_LINE_PREFIX + comment;
   }
 
   private static void addReflectionParams(final StepObj<?> step,
