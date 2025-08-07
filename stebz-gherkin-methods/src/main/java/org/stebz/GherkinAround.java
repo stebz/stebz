@@ -35,6 +35,7 @@ import org.stebz.util.function.ThrowingFunction;
 
 import java.util.Map;
 
+import static org.stebz.attribute.StepAttribute.EXPECTED_RESULT;
 import static org.stebz.attribute.StepAttribute.KEYWORD;
 import static org.stebz.attribute.StepAttribute.NAME;
 import static org.stebz.attribute.StepAttribute.PARAMS;
@@ -151,6 +152,30 @@ public interface GherkinAround<T> {
                          ThrowingConsumer<? super T, ?> body);
 
   /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes on the context value.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  GherkinAround<T> Given(String name,
+                         String expectedResult,
+                         ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes on the context value.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  GherkinAround<T> Given(String name,
+                         Map<String, ?> params,
+                         String expectedResult,
+                         ThrowingConsumer<? super T, ?> body);
+
+  /**
    * Executes step with {@link GherkinKeywords#given()} keyword and given attributes on the context value and returns
    * step result.
    *
@@ -177,6 +202,32 @@ public interface GherkinAround<T> {
               ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes on the context value and returns
+   * step result
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  <R> R Given(String name,
+              String expectedResult,
+              ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes on the context value and returns
+   * step result
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  <R> R Given(String name,
+              Map<String, ?> params,
+              String expectedResult,
+              ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
    * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
    *
    * @param name the step name
@@ -193,6 +244,26 @@ public interface GherkinAround<T> {
    */
   GherkinAround<T> Given(String name,
                          Map<String, ?> params);
+
+  /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   */
+  GherkinAround<T> Given(String name,
+                         String expectedResult);
+
+  /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   */
+  GherkinAround<T> Given(String name,
+                         Map<String, ?> params,
+                         String expectedResult);
 
   /**
    * Executes given step with {@link GherkinKeywords#when()} keyword.
@@ -294,6 +365,30 @@ public interface GherkinAround<T> {
                         ThrowingConsumer<? super T, ?> body);
 
   /**
+   * Executes step with {@link GherkinKeywords#when()} keyword and given attributes on the context value.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  GherkinAround<T> When(String name,
+                        String expectedResult,
+                        ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#when()} keyword and given attributes on the context value.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  GherkinAround<T> When(String name,
+                        Map<String, ?> params,
+                        String expectedResult,
+                        ThrowingConsumer<? super T, ?> body);
+
+  /**
    * Executes step with {@link GherkinKeywords#when()} keyword and given attributes on the context value and returns
    * step result.
    *
@@ -320,6 +415,32 @@ public interface GherkinAround<T> {
              ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
+   * Executes step with {@link GherkinKeywords#when()} keyword and given attributes on the context value and returns
+   * step result
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  <R> R When(String name,
+             String expectedResult,
+             ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#when()} keyword and given attributes on the context value and returns
+   * step result
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  <R> R When(String name,
+             Map<String, ?> params,
+             String expectedResult,
+             ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
    * Executes step with {@link GherkinKeywords#when()} keyword and given attributes.
    *
    * @param name the step name
@@ -336,6 +457,26 @@ public interface GherkinAround<T> {
    */
   GherkinAround<T> When(String name,
                         Map<String, ?> params);
+
+  /**
+   * Executes step with {@link GherkinKeywords#when()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   */
+  GherkinAround<T> When(String name,
+                        String expectedResult);
+
+  /**
+   * Executes step with {@link GherkinKeywords#when()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   */
+  GherkinAround<T> When(String name,
+                        Map<String, ?> params,
+                        String expectedResult);
 
   /**
    * Executes given step with {@link GherkinKeywords#then()} keyword.
@@ -437,6 +578,30 @@ public interface GherkinAround<T> {
                         ThrowingConsumer<? super T, ?> body);
 
   /**
+   * Executes step with {@link GherkinKeywords#then()} keyword and given attributes on the context value.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  GherkinAround<T> Then(String name,
+                        String expectedResult,
+                        ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#then()} keyword and given attributes on the context value.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  GherkinAround<T> Then(String name,
+                        Map<String, ?> params,
+                        String expectedResult,
+                        ThrowingConsumer<? super T, ?> body);
+
+  /**
    * Executes step with {@link GherkinKeywords#then()} keyword and given attributes on the context value and returns
    * step result.
    *
@@ -463,6 +628,32 @@ public interface GherkinAround<T> {
              ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
+   * Executes step with {@link GherkinKeywords#then()} keyword and given attributes on the context value and returns
+   * step result
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  <R> R Then(String name,
+             String expectedResult,
+             ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#then()} keyword and given attributes on the context value and returns
+   * step result
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  <R> R Then(String name,
+             Map<String, ?> params,
+             String expectedResult,
+             ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
    * Executes step with {@link GherkinKeywords#then()} keyword and given attributes.
    *
    * @param name the step name
@@ -479,6 +670,26 @@ public interface GherkinAround<T> {
    */
   GherkinAround<T> Then(String name,
                         Map<String, ?> params);
+
+  /**
+   * Executes step with {@link GherkinKeywords#then()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   */
+  GherkinAround<T> Then(String name,
+                        String expectedResult);
+
+  /**
+   * Executes step with {@link GherkinKeywords#then()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   */
+  GherkinAround<T> Then(String name,
+                        Map<String, ?> params,
+                        String expectedResult);
 
   /**
    * Executes given step with {@link GherkinKeywords#and()} keyword.
@@ -580,6 +791,30 @@ public interface GherkinAround<T> {
                        ThrowingConsumer<? super T, ?> body);
 
   /**
+   * Executes step with {@link GherkinKeywords#and()} keyword and given attributes on the context value.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  GherkinAround<T> And(String name,
+                       String expectedResult,
+                       ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#and()} keyword and given attributes on the context value.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  GherkinAround<T> And(String name,
+                       Map<String, ?> params,
+                       String expectedResult,
+                       ThrowingConsumer<? super T, ?> body);
+
+  /**
    * Executes step with {@link GherkinKeywords#and()} keyword and given attributes on the context value and returns step
    * result.
    *
@@ -606,6 +841,32 @@ public interface GherkinAround<T> {
             ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
+   * Executes step with {@link GherkinKeywords#and()} keyword and given attributes on the context value and returns step
+   * result
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  <R> R And(String name,
+            String expectedResult,
+            ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#and()} keyword and given attributes on the context value and returns step
+   * result
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  <R> R And(String name,
+            Map<String, ?> params,
+            String expectedResult,
+            ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
    * Executes step with {@link GherkinKeywords#and()} keyword and given attributes.
    *
    * @param name the step name
@@ -622,6 +883,26 @@ public interface GherkinAround<T> {
    */
   GherkinAround<T> And(String name,
                        Map<String, ?> params);
+
+  /**
+   * Executes step with {@link GherkinKeywords#and()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   */
+  GherkinAround<T> And(String name,
+                       String expectedResult);
+
+  /**
+   * Executes step with {@link GherkinKeywords#and()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   */
+  GherkinAround<T> And(String name,
+                       Map<String, ?> params,
+                       String expectedResult);
 
   /**
    * Executes given step with {@link GherkinKeywords#but()} keyword.
@@ -723,6 +1004,30 @@ public interface GherkinAround<T> {
                        ThrowingConsumer<? super T, ?> body);
 
   /**
+   * Executes step with {@link GherkinKeywords#but()} keyword and given attributes on the context value.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  GherkinAround<T> But(String name,
+                       String expectedResult,
+                       ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#but()} keyword and given attributes on the context value.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  GherkinAround<T> But(String name,
+                       Map<String, ?> params,
+                       String expectedResult,
+                       ThrowingConsumer<? super T, ?> body);
+
+  /**
    * Executes step with {@link GherkinKeywords#but()} keyword and given attributes on the context value and returns step
    * result.
    *
@@ -749,6 +1054,32 @@ public interface GherkinAround<T> {
             ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
+   * Executes step with {@link GherkinKeywords#but()} keyword and given attributes on the context value and returns step
+   * result
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  <R> R But(String name,
+            String expectedResult,
+            ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#but()} keyword and given attributes on the context value and returns step
+   * result
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  <R> R But(String name,
+            Map<String, ?> params,
+            String expectedResult,
+            ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
    * Executes step with {@link GherkinKeywords#but()} keyword and given attributes.
    *
    * @param name the step name
@@ -765,6 +1096,26 @@ public interface GherkinAround<T> {
    */
   GherkinAround<T> But(String name,
                        Map<String, ?> params);
+
+  /**
+   * Executes step with {@link GherkinKeywords#but()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   */
+  GherkinAround<T> But(String name,
+                       String expectedResult);
+
+  /**
+   * Executes step with {@link GherkinKeywords#but()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   */
+  GherkinAround<T> But(String name,
+                       Map<String, ?> params,
+                       String expectedResult);
 
   /**
    * Default {@code GherkinAround} implementation.
@@ -872,6 +1223,31 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> Given(final String name,
+                                  final String expectedResult,
+                                  final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, given(), NAME, name, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public GherkinAround<T> Given(final String name,
+                                  final Map<String, ?> params,
+                                  final String expectedResult,
+                                  final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(
+          KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public <R> R Given(final String name,
                        final ThrowingFunction<? super T, ? extends R, ?> body) {
       return this.executor.execute(new FunctionStep.Of<>(
@@ -892,6 +1268,29 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public <R> R Given(final String name,
+                       final String expectedResult,
+                       final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(KEYWORD, given(), NAME, name, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <R> R Given(final String name,
+                       final Map<String, ?> params,
+                       final String expectedResult,
+                       final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(
+          KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+    }
+
+    @Override
     public GherkinAround<T> Given(final String name) {
       this.executor.execute(new RunnableStep.Of(
         new StepAttributes.Of(KEYWORD, given(), NAME, name),
@@ -906,6 +1305,27 @@ public interface GherkinAround<T> {
                                   final Map<String, ?> params) {
       this.executor.execute(new RunnableStep.Of(
         new StepAttributes.Of(KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params),
+        RunnableStep.emptyBody()
+      ));
+      return this;
+    }
+
+    @Override
+    public GherkinAround<T> Given(final String name,
+                                  final String expectedResult) {
+      this.executor.execute(new RunnableStep.Of(
+        new StepAttributes.Of(KEYWORD, given(), NAME, name, EXPECTED_RESULT, expectedResult),
+        RunnableStep.emptyBody()
+      ));
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public GherkinAround<T> Given(final String name, final Map<String, ?> params, final String expectedResult) {
+      this.executor.execute(new RunnableStep.Of(
+        new StepAttributes.Of(
+          KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
         RunnableStep.emptyBody()
       ));
       return this;
@@ -994,6 +1414,31 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> When(final String name,
+                                 final String expectedResult,
+                                 final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, when(), NAME, name, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public GherkinAround<T> When(final String name,
+                                 final Map<String, ?> params,
+                                 final String expectedResult,
+                                 final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(
+          KEYWORD, when(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public <R> R When(final String name,
                       final ThrowingFunction<? super T, ? extends R, ?> body) {
       return this.executor.execute(new FunctionStep.Of<>(
@@ -1014,6 +1459,29 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public <R> R When(final String name,
+                      final String expectedResult,
+                      final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(KEYWORD, when(), NAME, name, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <R> R When(final String name,
+                      final Map<String, ?> params,
+                      final String expectedResult,
+                      final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(
+          KEYWORD, when(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+    }
+
+    @Override
     public GherkinAround<T> When(final String name) {
       this.executor.execute(new RunnableStep.Of(
         new StepAttributes.Of(KEYWORD, when(), NAME, name),
@@ -1028,6 +1496,27 @@ public interface GherkinAround<T> {
                                  final Map<String, ?> params) {
       this.executor.execute(new RunnableStep.Of(
         new StepAttributes.Of(KEYWORD, when(), NAME, name, PARAMS, (Map<String, Object>) params),
+        RunnableStep.emptyBody()
+      ));
+      return this;
+    }
+
+    @Override
+    public GherkinAround<T> When(final String name,
+                                 final String expectedResult) {
+      this.executor.execute(new RunnableStep.Of(
+        new StepAttributes.Of(KEYWORD, when(), NAME, name, EXPECTED_RESULT, expectedResult),
+        RunnableStep.emptyBody()
+      ));
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public GherkinAround<T> When(final String name, final Map<String, ?> params, final String expectedResult) {
+      this.executor.execute(new RunnableStep.Of(
+        new StepAttributes.Of(
+          KEYWORD, when(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
         RunnableStep.emptyBody()
       ));
       return this;
@@ -1116,6 +1605,31 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> Then(final String name,
+                                 final String expectedResult,
+                                 final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, then(), NAME, name, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public GherkinAround<T> Then(final String name,
+                                 final Map<String, ?> params,
+                                 final String expectedResult,
+                                 final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(
+          KEYWORD, then(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public <R> R Then(final String name,
                       final ThrowingFunction<? super T, ? extends R, ?> body) {
       return this.executor.execute(new FunctionStep.Of<>(
@@ -1136,6 +1650,29 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public <R> R Then(final String name,
+                      final String expectedResult,
+                      final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(KEYWORD, then(), NAME, name, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <R> R Then(final String name,
+                      final Map<String, ?> params,
+                      final String expectedResult,
+                      final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(
+          KEYWORD, then(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+    }
+
+    @Override
     public GherkinAround<T> Then(final String name) {
       this.executor.execute(new RunnableStep.Of(
         new StepAttributes.Of(KEYWORD, then(), NAME, name),
@@ -1150,6 +1687,27 @@ public interface GherkinAround<T> {
                                  final Map<String, ?> params) {
       this.executor.execute(new RunnableStep.Of(
         new StepAttributes.Of(KEYWORD, then(), NAME, name, PARAMS, (Map<String, Object>) params),
+        RunnableStep.emptyBody()
+      ));
+      return this;
+    }
+
+    @Override
+    public GherkinAround<T> Then(final String name,
+                                 final String expectedResult) {
+      this.executor.execute(new RunnableStep.Of(
+        new StepAttributes.Of(KEYWORD, then(), NAME, name, EXPECTED_RESULT, expectedResult),
+        RunnableStep.emptyBody()
+      ));
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public GherkinAround<T> Then(final String name, final Map<String, ?> params, final String expectedResult) {
+      this.executor.execute(new RunnableStep.Of(
+        new StepAttributes.Of(
+          KEYWORD, then(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
         RunnableStep.emptyBody()
       ));
       return this;
@@ -1238,6 +1796,31 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> And(final String name,
+                                final String expectedResult,
+                                final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, and(), NAME, name, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public GherkinAround<T> And(final String name,
+                                final Map<String, ?> params,
+                                final String expectedResult,
+                                final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(
+          KEYWORD, and(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public <R> R And(final String name,
                      final ThrowingFunction<? super T, ? extends R, ?> body) {
       return this.executor.execute(new FunctionStep.Of<>(
@@ -1258,6 +1841,29 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public <R> R And(final String name,
+                     final String expectedResult,
+                     final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(KEYWORD, and(), NAME, name, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <R> R And(final String name,
+                     final Map<String, ?> params,
+                     final String expectedResult,
+                     final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(
+          KEYWORD, and(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+    }
+
+    @Override
     public GherkinAround<T> And(final String name) {
       this.executor.execute(new RunnableStep.Of(
         new StepAttributes.Of(KEYWORD, and(), NAME, name),
@@ -1272,6 +1878,27 @@ public interface GherkinAround<T> {
                                 final Map<String, ?> params) {
       this.executor.execute(new RunnableStep.Of(
         new StepAttributes.Of(KEYWORD, and(), NAME, name, PARAMS, (Map<String, Object>) params),
+        RunnableStep.emptyBody()
+      ));
+      return this;
+    }
+
+    @Override
+    public GherkinAround<T> And(final String name,
+                                final String expectedResult) {
+      this.executor.execute(new RunnableStep.Of(
+        new StepAttributes.Of(KEYWORD, and(), NAME, name, EXPECTED_RESULT, expectedResult),
+        RunnableStep.emptyBody()
+      ));
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public GherkinAround<T> And(final String name, final Map<String, ?> params, final String expectedResult) {
+      this.executor.execute(new RunnableStep.Of(
+        new StepAttributes.Of(
+          KEYWORD, and(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
         RunnableStep.emptyBody()
       ));
       return this;
@@ -1360,6 +1987,31 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> But(final String name,
+                                final String expectedResult,
+                                final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, but(), NAME, name, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public GherkinAround<T> But(final String name,
+                                final Map<String, ?> params,
+                                final String expectedResult,
+                                final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(
+          KEYWORD, but(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public <R> R But(final String name,
                      final ThrowingFunction<? super T, ? extends R, ?> body) {
       return this.executor.execute(new FunctionStep.Of<>(
@@ -1380,6 +2032,29 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public <R> R But(final String name,
+                     final String expectedResult,
+                     final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(KEYWORD, but(), NAME, name, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <R> R But(final String name,
+                     final Map<String, ?> params,
+                     final String expectedResult,
+                     final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(
+          KEYWORD, but(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+    }
+
+    @Override
     public GherkinAround<T> But(final String name) {
       this.executor.execute(new RunnableStep.Of(
         new StepAttributes.Of(KEYWORD, but(), NAME, name),
@@ -1394,6 +2069,27 @@ public interface GherkinAround<T> {
                                 final Map<String, ?> params) {
       this.executor.execute(new RunnableStep.Of(
         new StepAttributes.Of(KEYWORD, but(), NAME, name, PARAMS, (Map<String, Object>) params),
+        RunnableStep.emptyBody()
+      ));
+      return this;
+    }
+
+    @Override
+    public GherkinAround<T> But(final String name,
+                                final String expectedResult) {
+      this.executor.execute(new RunnableStep.Of(
+        new StepAttributes.Of(KEYWORD, but(), NAME, name, EXPECTED_RESULT, expectedResult),
+        RunnableStep.emptyBody()
+      ));
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public GherkinAround<T> But(final String name, final Map<String, ?> params, final String expectedResult) {
+      this.executor.execute(new RunnableStep.Of(
+        new StepAttributes.Of(
+          KEYWORD, but(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
         RunnableStep.emptyBody()
       ));
       return this;

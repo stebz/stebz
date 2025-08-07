@@ -52,6 +52,10 @@ public interface StepAttribute<V> {
    */
   StepAttribute<Map<String, Object>> PARAMS = nonNull("default:params", emptyMap(), LinkedHashMap::new);
   /**
+   * Expected result step attribute (default).
+   */
+  StepAttribute<String> EXPECTED_RESULT = nonNull("default:expected_result", "");
+  /**
    * Comment step attribute (default).
    */
   StepAttribute<String> COMMENT = nonNull("default:comment", "");

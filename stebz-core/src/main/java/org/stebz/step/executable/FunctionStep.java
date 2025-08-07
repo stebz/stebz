@@ -31,6 +31,7 @@ import org.stebz.util.function.ThrowingFunction;
 
 import java.util.Map;
 
+import static org.stebz.attribute.StepAttribute.EXPECTED_RESULT;
 import static org.stebz.attribute.StepAttribute.NAME;
 import static org.stebz.attribute.StepAttribute.PARAMS;
 
@@ -119,13 +120,13 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} with given name and body.
+   * Returns {@code FunctionStep} with given attributes and body.
    *
    * @param name the step name
    * @param body the step body
    * @param <T>  the type of the step input value
    * @param <R>  the type of the step result
-   * @return {@code FunctionStep} with given name and body
+   * @return {@code FunctionStep} with given attributes and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   static <T, R> FunctionStep<T, R> of(final String name,
@@ -134,20 +135,57 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} with given name, params and body.
+   * Returns {@code FunctionStep} with given attributes and body.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <T>            the type of the step input value
+   * @param <R>            the type of the step result
+   * @return {@code FunctionStep} with given attributes and body
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
+   */
+  static <T, R> FunctionStep<T, R> of(final String name,
+                                      final String expectedResult,
+                                      final ThrowingFunction<T, R, ?> body) {
+    return new Of<>(name, expectedResult, body);
+  }
+
+  /**
+   * Returns {@code FunctionStep} with given attributes and body.
    *
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
    * @param <T>    the type of the step input value
    * @param <R>    the type of the step result
-   * @return {@code FunctionStep} with given name, params and body
+   * @return {@code FunctionStep} with given attributes and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   static <T, R> FunctionStep<T, R> of(final String name,
                                       final Map<String, ?> params,
                                       final ThrowingFunction<T, R, ?> body) {
     return new Of<>(name, params, body);
+  }
+
+  /**
+   * Returns {@code FunctionStep} with given attributes and body.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <T>            the type of the step input value
+   * @param <R>            the type of the step result
+   * @return {@code FunctionStep} with given attributes and body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
+   */
+  static <T, R> FunctionStep<T, R> of(final String name,
+                                      final Map<String, ?> params,
+                                      final String expectedResult,
+                                      final ThrowingFunction<T, R, ?> body) {
+    return new Of<>(name, params, expectedResult, body);
   }
 
   /**
@@ -239,6 +277,23 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
     /**
      * Ctor.
      *
+     * @param name           the step name
+     * @param expectedResult the step expected result
+     * @param body           the step body
+     * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
+     */
+    public Of(final String name,
+              final String expectedResult,
+              final ThrowingFunction<T, R, ?> body) {
+      this(new StepAttributes.Of(
+        NAME, name,
+        EXPECTED_RESULT, expectedResult
+      ), body);
+    }
+
+    /**
+     * Ctor.
+     *
      * @param name   the step name
      * @param params the step params
      * @param body   the step body
@@ -251,6 +306,28 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
       this(new StepAttributes.Of(
         NAME, name,
         PARAMS, (Map<String, Object>) params
+      ), body);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param name           the step name
+     * @param params         the step params
+     * @param expectedResult the step expected result
+     * @param body           the step body
+     * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+     *                              {@code body} arg is null
+     */
+    @SuppressWarnings("unchecked")
+    public Of(final String name,
+              final Map<String, ?> params,
+              final String expectedResult,
+              final ThrowingFunction<T, R, ?> body) {
+      this(new StepAttributes.Of(
+        NAME, name,
+        PARAMS, (Map<String, Object>) params,
+        EXPECTED_RESULT, expectedResult
       ), body);
     }
 
