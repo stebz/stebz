@@ -30,31 +30,25 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Step attribute annotation. Annotations marked with {@link StepAttributeAnnotation} annotation except default
- * annotations are converted into step attributes via {@link org.stebz.aspect.StepAspects} in accordance with
- * {@link org.stebz.attribute.StepAttribute#nullable(String)} method.
- * <p>Default annotations list:
- * <ul>
- *   <li>{@link Step}</li>
- *   <li>{@link WithComment}</li>
- *   <li>{@link WithExpectedResult}</li>
- *   <li>{@link WithHidden}</li>
- *   <li>{@link WithKeyword}</li>
- *   <li>{@link WithName}</li>
- *   <li>{@link WithParam}</li>
- *   <li>{@link WithParam.List}</li>
- *   <li>{@link WithParams}</li>
- * </ul>
+ * Step attribute annotation. Maps to {@link org.stebz.attribute.StepAttribute#EXPECTED_RESULT} attribute via
+ * {@link org.stebz.aspect.StepAspects}.
+ *
+ * @see org.stebz.attribute.StepAttribute#EXPECTED_RESULT
  */
 @Documented
-@Target(ElementType.ANNOTATION_TYPE)
+@Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface StepAttributeAnnotation {
+@StepAttributeAnnotation(WithExpectedResult.KEY)
+public @interface WithExpectedResult {
+  /**
+   * {@link WithExpectedResult} step attribute annotation key.
+   */
+  String KEY = "annotation:with_expected_result";
 
   /**
-   * Returns attribute key.
+   * Returns expected result attribute value.
    *
-   * @return attribute key
+   * @return expected result attribute value
    */
   String value();
 }

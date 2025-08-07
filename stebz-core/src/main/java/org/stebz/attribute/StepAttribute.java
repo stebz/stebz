@@ -59,6 +59,10 @@ public interface StepAttribute<V> {
    * Hidden step attribute (default).
    */
   StepAttribute<Boolean> HIDDEN = nonNull("default:hidden", false);
+  /**
+   * Expected result step attribute (default).
+   */
+  StepAttribute<String> EXPECTED_RESULT = nonNull("default:expected_result", "");
 
   /**
    * Returns attribute key.

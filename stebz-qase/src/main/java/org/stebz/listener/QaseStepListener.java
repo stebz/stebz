@@ -46,6 +46,8 @@ import java.util.stream.Collectors;
  * Qase {@code StepListener} implementation.
  */
 public class QaseStepListener implements StepListener {
+  private static final String CONTEXT_PARAM_NAME = "context";
+  private static final String COMMENT_ATTACHMENT_NAME = "Comment";
   private final boolean enabled;
   private final int order;
   private final KeywordPosition keywordPosition;
@@ -99,17 +101,22 @@ public class QaseStepListener implements StepListener {
     }
     final Map<String, Object> params = step.getParams();
     if (this.contextParam && context.isPresent()) {
-      params.putIfAbsent("context", context.get());
+      params.putIfAbsent(CONTEXT_PARAM_NAME, context.get());
     }
     StepStorage.startStep();
     final StepResult stepResult = StepStorage.getCurrentStep();
     stepResult.data.action =
       this.keywordPosition.concat(step.getKeyword(), this.processStepName(step, step.getName(), params));
+
+    final String expectedResult = step.getExpectedResult();
+    if (!expectedResult.isEmpty()) {
+      stepResult.data.expectedResult = expectedResult;
+    }
     if (this.commentAttachment) {
       final String comment = step.getComment();
       if (!comment.isEmpty()) {
         final Attachment attachment = new Attachment();
-        attachment.fileName = "Comment";
+        attachment.fileName = COMMENT_ATTACHMENT_NAME;
         attachment.content = comment;
         attachment.mimeType = "text/plain";
         stepResult.attachments.add(attachment);

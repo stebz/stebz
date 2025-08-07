@@ -50,11 +50,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Allure {@code StepListener} implementation.
  */
 public class AllureStepListener implements StepListener {
+  private static final String CONTEXT_PARAM_NAME = "context";
+  private static final String COMMENT_ATTACHMENT_NAME = "Comment";
+  private static final String EXPECTED_RESULT_ATTACHMENT_NAME = "Expected result";
   private final boolean enabled;
   private final int order;
   private final KeywordPosition keywordPosition;
   private final boolean processName;
   private final boolean contextParam;
+  private final boolean expectedResultAttachment;
   private final boolean commentAttachment;
   private final boolean isStebzAnnotationsUsed;
 
@@ -77,6 +81,7 @@ public class AllureStepListener implements StepListener {
       KeywordPosition.class, KeywordPosition.AT_START);
     this.processName = properties.getBoolean("stebz.listeners.allure.processName", true);
     this.contextParam = properties.getBoolean("stebz.listeners.allure.contextParam", true);
+    this.expectedResultAttachment = properties.getBoolean("stebz.listeners.allure.expectedResultAttachment", true);
     this.commentAttachment = properties.getBoolean("stebz.listeners.allure.commentAttachment", true);
     this.isStebzAnnotationsUsed = isStebzAnnotationsUsed();
   }
@@ -104,7 +109,7 @@ public class AllureStepListener implements StepListener {
     final StepResult stepResult = new StepResult();
     final Map<String, Object> params = step.getParams();
     if (this.contextParam && context.isPresent()) {
-      params.putIfAbsent("context", context.get());
+      params.putIfAbsent(CONTEXT_PARAM_NAME, context.get());
     }
     if (!params.isEmpty()) {
       final List<Parameter> allureParams = stepResult.getParameters();
@@ -117,10 +122,16 @@ public class AllureStepListener implements StepListener {
     );
 
     Allure.getLifecycle().startStep(UUID.randomUUID().toString(), stepResult);
+    if (this.expectedResultAttachment) {
+      final String expectedResult = step.getExpectedResult();
+      if (!expectedResult.isEmpty()) {
+        Allure.addAttachment(EXPECTED_RESULT_ATTACHMENT_NAME, expectedResult);
+      }
+    }
     if (this.commentAttachment) {
       final String comment = step.getComment();
       if (!comment.isEmpty()) {
-        Allure.addAttachment("Comment", comment);
+        Allure.addAttachment(COMMENT_ATTACHMENT_NAME, comment);
       }
     }
   }
