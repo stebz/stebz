@@ -70,7 +70,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <aspectj.version>1.9.24</aspectj.version>
     <allure.version>2.29.1</allure.version>
-    <qase.version>4.1.13</qase.version>
+    <qase.version>4.1.14</qase.version>
     <reportportal.version>5.3.14</reportportal.version>
     <junit.version>5.13.4</junit.version>
     <junitPlatformLauncher.version>1.13.4</junitPlatformLauncher.version>
