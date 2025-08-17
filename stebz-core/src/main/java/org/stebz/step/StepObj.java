@@ -372,6 +372,21 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
+   * Returns {@code StepObj} with added to params attribute value param. Alias for
+   * {@link #withAddedParam(String, Object)} method.
+   *
+   * @param name  the param name
+   * @param value the param value
+   * @return {@code StepObj} with added param
+   * @see #withUpdParams(ThrowingConsumer)
+   * @see StepAttribute#PARAMS
+   */
+  default S withParam(final String name,
+                      final Object value) {
+    return this.withAddedParam(name, value);
+  }
+
+  /**
    * Returns {@code StepObj} with added to params attribute value param.
    *
    * @param name  the param name
