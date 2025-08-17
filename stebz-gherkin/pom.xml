@@ -66,6 +66,11 @@
     </dependency>
     <dependency>
       <groupId>org.stebz</groupId>
+      <artifactId>stebz-gherkin-keywords</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.stebz</groupId>
       <artifactId>stebz-gherkin-methods</artifactId>
       <scope>compile</scope>
     </dependency>

@@ -74,6 +74,11 @@
     <dependencies>
       <dependency>
         <groupId>org.stebz</groupId>
+        <artifactId>stebz-parent</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.stebz</groupId>
         <artifactId>stebz-utils</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -90,6 +95,11 @@
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-annotations</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.stebz</groupId>
+        <artifactId>stebz-gherkin-keywords</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

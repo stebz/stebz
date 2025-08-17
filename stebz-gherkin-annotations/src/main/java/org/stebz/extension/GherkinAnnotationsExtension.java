@@ -24,73 +24,69 @@
 package org.stebz.extension;
 
 import org.stebz.annotation.And;
-import org.stebz.annotation.Asterisk;
-import org.stebz.annotation.Background;
 import org.stebz.annotation.But;
 import org.stebz.annotation.Given;
 import org.stebz.annotation.Then;
 import org.stebz.annotation.When;
-import org.stebz.annotation._And;
 import org.stebz.attribute.Keyword;
-import org.stebz.executor.StartupPropertiesReader;
+import org.stebz.attribute.StepAttribute;
 import org.stebz.step.StepObj;
 import org.stebz.util.container.NullableOptional;
 import org.stebz.util.function.ThrowingFunction;
-import org.stebz.util.property.PropertiesReader;
+import org.stebz.util.function.ThrowingSupplier.Caching;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.stebz.attribute.GherkinAnnotationStepAttributes.GHERKIN_KEYWORD;
 import static org.stebz.attribute.StepAttribute.KEYWORD;
 import static org.stebz.attribute.StepAttribute.NAME;
+import static org.stebz.util.function.ThrowingSupplier.caching;
 
 /**
  * Gherkin annotations {@link StebzExtension}.
  */
 public class GherkinAnnotationsExtension implements InterceptStep {
-  private static final Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>> GET_VALUE_MAP;
-  private final Map<Class<? extends Annotation>, Keyword> keywords;
-
-  static {
-    final Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>> getValueMap = new HashMap<>();
-    getValueMap.put(Given.class, annot -> ((Given) annot).value());
-    getValueMap.put(When.class, annot -> ((When) annot).value());
-    getValueMap.put(Then.class, annot -> ((Then) annot).value());
-    getValueMap.put(And.class, annot -> ((And) annot).value());
-    getValueMap.put(But.class, annot -> ((But) annot).value());
-    getValueMap.put(Background.class, annot -> ((Background) annot).value());
-    getValueMap.put(Asterisk.class, annot -> ((Asterisk) annot).value());
-    getValueMap.put(_And.class, annot -> ((_And) annot).value());
-    GET_VALUE_MAP = getValueMap;
-  }
+  /**
+   * Gherkin keyword attribute key.
+   */
+  public static final String GHERKIN_KEYWORD_ATTRIBUTE_KEY = "extension:gherkin_keyword";
+  /**
+   * Gherkin keyword annotation attribute.
+   *
+   * @see Given
+   * @see When
+   * @see Then
+   * @see And
+   * @see But
+   */
+  public static final StepAttribute<Annotation> GHERKIN_KEYWORD =
+    StepAttribute.nullable(GHERKIN_KEYWORD_ATTRIBUTE_KEY);
+  private static final Caching<Map<Class<? extends Annotation>, Keyword>> KEYWORDS =
+    caching(() -> {
+      final Map<Class<? extends Annotation>, Keyword> keywords = new HashMap<>();
+      keywords.put(Given.class, GherkinKeywords.given());
+      keywords.put(When.class, GherkinKeywords.when());
+      keywords.put(Then.class, GherkinKeywords.then());
+      keywords.put(And.class, GherkinKeywords.and());
+      keywords.put(But.class, GherkinKeywords.but());
+      return keywords;
+    });
+  private static final Caching<Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>>> VALUES =
+    caching(() -> {
+      final Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>> values = new HashMap<>();
+      values.put(Given.class, annot -> ((Given) annot).value());
+      values.put(When.class, annot -> ((When) annot).value());
+      values.put(Then.class, annot -> ((Then) annot).value());
+      values.put(And.class, annot -> ((And) annot).value());
+      values.put(But.class, annot -> ((But) annot).value());
+      return values;
+    });
 
   /**
    * Ctor.
    */
   public GherkinAnnotationsExtension() {
-    this(StartupPropertiesReader.get());
-  }
-
-  /**
-   * Ctor.
-   *
-   * @param properties the properties reader
-   */
-  private GherkinAnnotationsExtension(final PropertiesReader properties) {
-    final Map<Class<? extends Annotation>, Keyword> keywords = new HashMap<>();
-    keywords.put(Given.class, new Keyword.Of(properties.getString("stebz.gherkin.keywords.given", "Given")));
-    keywords.put(When.class, new Keyword.Of(properties.getString("stebz.gherkin.keywords.when", "When")));
-    keywords.put(Then.class, new Keyword.Of(properties.getString("stebz.gherkin.keywords.then", "Then")));
-    keywords.put(And.class, new Keyword.Of(properties.getString("stebz.gherkin.keywords.and", "And")));
-    keywords.put(But.class, new Keyword.Of(properties.getString("stebz.gherkin.keywords.but", "But")));
-    keywords.put(Background.class,
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.background", "Background")));
-    Keyword asteriskKeyword = new Keyword.Of(properties.getString("stebz.gherkin.keywords.asterisk", "*"));
-    keywords.put(Asterisk.class, asteriskKeyword);
-    keywords.put(_And.class, asteriskKeyword);
-    this.keywords = keywords;
   }
 
   @Override
@@ -102,12 +98,12 @@ public class GherkinAnnotationsExtension implements InterceptStep {
     }
 
     final Class<? extends Annotation> annotationType = annotation.annotationType();
-    final Keyword keyword = this.keywords.get(annotationType);
+    final Keyword keyword = KEYWORDS.get().get(annotationType);
     if (keyword == null) {
       return step;
     }
 
-    final ThrowingFunction<Annotation, String, Error> getValueFunction = GET_VALUE_MAP.get(annotationType);
+    final ThrowingFunction<Annotation, String, Error> getValueFunction = VALUES.get().get(annotationType);
     if (getValueFunction == null) {
       return step;
     }

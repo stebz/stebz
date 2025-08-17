@@ -37,7 +37,7 @@ import org.stebz.step.executable.RunnableStep;
 import java.lang.annotation.Annotation;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.stebz.attribute.GherkinAnnotationStepAttributes.GHERKIN_KEYWORD;
+import static org.stebz.extension.GherkinAnnotationsExtension.GHERKIN_KEYWORD;
 
 /**
  * Tests for {@link GherkinAnnotationsExtension}.

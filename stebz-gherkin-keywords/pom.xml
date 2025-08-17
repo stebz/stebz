@@ -33,14 +33,14 @@
     <relativePath>../stebz-parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>stebz-gherkin-methods</artifactId>
+  <artifactId>stebz-gherkin-keywords</artifactId>
   <packaging>jar</packaging>
 
-  <name>Stebz Gherkin Methods</name>
-  <description>Module "stebz-gherkin-methods" of Stebz</description>
+  <name>Stebz Gherkin Keywords</name>
+  <description>Module "stebz-gherkin-keywords" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.gherkin.methods</automatic.module.name>
+    <automatic.module.name>org.stebz.gherkin.keywords</automatic.module.name>
   </properties>
 
   <dependencies>
@@ -52,11 +52,6 @@
     <dependency>
       <groupId>org.stebz</groupId>
       <artifactId>stebz-core</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.stebz</groupId>
-      <artifactId>stebz-gherkin-keywords</artifactId>
       <scope>compile</scope>
     </dependency>
     <dependency>

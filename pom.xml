@@ -39,6 +39,7 @@
     <module>stebz-core</module>
     <module>stebz-methods</module>
     <module>stebz-annotations</module>
+    <module>stebz-gherkin-keywords</module>
     <module>stebz-gherkin-methods</module>
     <module>stebz-gherkin-annotations</module>
     <module>stebz-clean-stack-trace</module>
