@@ -67,6 +67,17 @@ public final class StebzGherkinMethods {
   }
 
   /**
+   * Returns {@link GherkinAround} object of given value. Alias for {@link #around(Object)} method.
+   *
+   * @param value the value
+   * @param <T>   the type of the value
+   * @return {@link GherkinAround} object of given value
+   */
+  public static <T> GherkinAround<T> gherkinAround(final T value) {
+    return around(value);
+  }
+
+  /**
    * Executes given step with {@link GherkinKeywords#given()} keyword.
    *
    * @param step the step
