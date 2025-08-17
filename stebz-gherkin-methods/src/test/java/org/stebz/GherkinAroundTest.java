@@ -21,37 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.stebz.attribute;
+package org.stebz;
 
-import java.lang.annotation.Annotation;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.stebz.executor.StepExecutor;
+import org.stebz.extension.GherkinKeywords;
+import org.stebz.step.StepObj;
+import org.stebz.step.executable.ConsumerStep;
+import org.stebz.util.container.NullableOptional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Gherkin annotations step attributes.
+ * Tests for {@link GherkinAround}.
  */
-public final class GherkinAnnotationStepAttributes {
-  /**
-   * Gherkin keyword attribute key.
-   */
-  public static final String GHERKIN_KEYWORD_ATTRIBUTE_KEY = "extension:gherkin_keyword";
+final class GherkinAroundTest {
 
-  /**
-   * Gherkin keyword annotation attribute.
-   *
-   * @see org.stebz.annotation._And
-   * @see org.stebz.annotation.And
-   * @see org.stebz.annotation.Asterisk
-   * @see org.stebz.annotation.Background
-   * @see org.stebz.annotation.But
-   * @see org.stebz.annotation.Given
-   * @see org.stebz.annotation.Then
-   * @see org.stebz.annotation.When
-   */
-  public static final StepAttribute<Annotation> GHERKIN_KEYWORD =
-    StepAttribute.nullable(GHERKIN_KEYWORD_ATTRIBUTE_KEY);
+  @BeforeEach
+  void clearListener() {
+    StaticStepListener.clear();
+  }
 
-  /**
-   * Utility class ctor.
-   */
-  private GherkinAnnotationStepAttributes() {
+  @Test
+  void stepMethodWithConsumerStep() {
+    final String context = "context value";
+    final GherkinAround<String> around = new GherkinAround.Of<>(StepExecutor.get(), context);
+    final ConsumerStep<String> originStep = ConsumerStep.empty();
+
+    around.Given(originStep);
+    final StepObj<?> stepFromListener = StaticStepListener.lastStep;
+    assertThat(stepFromListener.getKeyword())
+      .isSameAs(GherkinKeywords.given());
+    final NullableOptional<Object> contextFromListener = StaticStepListener.lastContext;
+    assertThat(contextFromListener)
+      .isEqualTo(NullableOptional.of(context));
   }
 }

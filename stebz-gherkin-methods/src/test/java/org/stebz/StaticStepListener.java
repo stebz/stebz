@@ -29,18 +29,21 @@ import org.stebz.util.container.NullableOptional;
 
 public final class StaticStepListener implements StepListener {
   static StepObj<?> lastStep = null;
+  static NullableOptional<Object> lastContext;
 
   public StaticStepListener() {
   }
 
   public static void clear() {
     lastStep = null;
+    lastContext = null;
   }
 
   @Override
   public void onStepStart(final StepObj<?> step,
                           final NullableOptional<Object> context) {
     lastStep = step;
+    lastContext = context;
   }
 
   @Override
