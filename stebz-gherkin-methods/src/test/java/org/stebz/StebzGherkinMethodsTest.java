@@ -41,42 +41,6 @@ final class StebzGherkinMethodsTest {
   }
 
   @Test
-  void whenKeywordValue() {
-    assertThat(StebzGherkinMethods.when().value())
-      .isEqualTo("When");
-  }
-
-  @Test
-  void thenKeywordValue() {
-    assertThat(StebzGherkinMethods.then().value())
-      .isEqualTo("Then");
-  }
-
-  @Test
-  void andKeywordValue() {
-    assertThat(StebzGherkinMethods.and().value())
-      .isEqualTo("And");
-  }
-
-  @Test
-  void butKeywordValue() {
-    assertThat(StebzGherkinMethods.but().value())
-      .isEqualTo("But");
-  }
-
-  @Test
-  void backgroundKeywordValue() {
-    assertThat(StebzGherkinMethods.background().value())
-      .isEqualTo("Background");
-  }
-
-  @Test
-  void asteriskKeywordValue() {
-    assertThat(StebzGherkinMethods.asterisk().value())
-      .isEqualTo("*");
-  }
-
-  @Test
   void givenMethodWithRunnableStep() {
     final RunnableStep originStep = RunnableStep.empty();
 

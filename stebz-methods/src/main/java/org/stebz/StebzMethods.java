@@ -304,20 +304,6 @@ public final class StebzMethods {
   /**
    * Executes step with given attributes.
    *
-   * @param keyword the step keyword
-   * @param body    the step body
-   */
-  public static void step(final Keyword keyword,
-                          final ThrowingRunnable<?> body) {
-    StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, keyword),
-      body
-    ));
-  }
-
-  /**
-   * Executes step with given attributes.
-   *
    * @param name the step name
    * @param body the step body
    */
@@ -341,23 +327,6 @@ public final class StebzMethods {
                           final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(KEYWORD, keyword, NAME, name),
-      body
-    ));
-  }
-
-  /**
-   * Executes step with given attributes.
-   *
-   * @param keyword the step keyword
-   * @param params  the step params
-   * @param body    the step body
-   */
-  @SuppressWarnings("unchecked")
-  public static void step(final Keyword keyword,
-                          final Map<String, ?> params,
-                          final ThrowingRunnable<?> body) {
-    StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, keyword, PARAMS, (Map<String, Object>) params),
       body
     ));
   }
@@ -401,22 +370,6 @@ public final class StebzMethods {
   /**
    * Executes step with given attributes and returns step result.
    *
-   * @param keyword the step keyword
-   * @param body    the step body
-   * @param <R>     the type of the step result
-   * @return step result
-   */
-  public static <R> R step(final Keyword keyword,
-                           final ThrowingSupplier<? extends R, ?> body) {
-    return StepExecutor.get().execute(new SupplierStep.Of<>(
-      new StepAttributes.Of(KEYWORD, keyword),
-      body
-    ));
-  }
-
-  /**
-   * Executes step with given attributes and returns step result.
-   *
    * @param name the step name
    * @param body the step body
    * @param <R>  the type of the step result
@@ -444,25 +397,6 @@ public final class StebzMethods {
                            final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
       new StepAttributes.Of(KEYWORD, keyword, NAME, name),
-      body
-    ));
-  }
-
-  /**
-   * Executes step with given attributes and returns step result.
-   *
-   * @param keyword the step keyword
-   * @param params  the step params
-   * @param body    the step body
-   * @param <R>     the type of the step result
-   * @return step result
-   */
-  @SuppressWarnings("unchecked")
-  public static <R> R step(final Keyword keyword,
-                           final Map<String, ?> params,
-                           final ThrowingSupplier<? extends R, ?> body) {
-    return StepExecutor.get().execute(new SupplierStep.Of<>(
-      new StepAttributes.Of(KEYWORD, keyword, PARAMS, (Map<String, Object>) params),
       body
     ));
   }
@@ -529,21 +463,6 @@ public final class StebzMethods {
                           final String name) {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(KEYWORD, keyword, NAME, name),
-      RunnableStep.emptyBody()
-    ));
-  }
-
-  /**
-   * Executes step with given attributes.
-   *
-   * @param keyword the step keyword
-   * @param params  the step params
-   */
-  @SuppressWarnings("unchecked")
-  public static void step(final Keyword keyword,
-                          final Map<String, ?> params) {
-    StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, keyword, PARAMS, (Map<String, Object>) params),
       RunnableStep.emptyBody()
     ));
   }

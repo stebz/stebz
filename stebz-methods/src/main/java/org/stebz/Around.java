@@ -47,13 +47,6 @@ import static org.stebz.attribute.StepAttribute.PARAMS;
 public interface Around<T> {
 
   /**
-   * Returns context value.
-   *
-   * @return context value
-   */
-  T context();
-
-  /**
    * Executes given step.
    *
    * @param step the step
@@ -72,7 +65,7 @@ public interface Around<T> {
                  RunnableStep step);
 
   /**
-   * Executes given step with keyword.
+   * Executes given step with name.
    *
    * @param name the name
    * @param step the step
@@ -224,16 +217,6 @@ public interface Around<T> {
   /**
    * Executes step with given attributes on the context value.
    *
-   * @param keyword the step keyword
-   * @param body    the step body
-   * @return {@code Around} object
-   */
-  Around<T> step(Keyword keyword,
-                 ThrowingConsumer<? super T, ?> body);
-
-  /**
-   * Executes step with given attributes on the context value.
-   *
    * @param name the step name
    * @param body the step body
    * @return {@code Around} object
@@ -251,18 +234,6 @@ public interface Around<T> {
    */
   Around<T> step(Keyword keyword,
                  String name,
-                 ThrowingConsumer<? super T, ?> body);
-
-  /**
-   * Executes step with given attributes on the context value.
-   *
-   * @param keyword the step keyword
-   * @param params  the step params
-   * @param body    the step body
-   * @return {@code Around} object
-   */
-  Around<T> step(Keyword keyword,
-                 Map<String, ?> params,
                  ThrowingConsumer<? super T, ?> body);
 
   /**
@@ -294,17 +265,6 @@ public interface Around<T> {
   /**
    * Executes step with given attributes on the context value and returns step result.
    *
-   * @param keyword the step keyword
-   * @param body    the step body
-   * @param <R>     the type of the step result
-   * @return step result
-   */
-  <R> R step(Keyword keyword,
-             ThrowingFunction<? super T, ? extends R, ?> body);
-
-  /**
-   * Executes step with given attributes on the context value and returns step result.
-   *
    * @param name the step name
    * @param body the step body
    * @param <R>  the type of the step result
@@ -324,19 +284,6 @@ public interface Around<T> {
    */
   <R> R step(Keyword keyword,
              String name,
-             ThrowingFunction<? super T, ? extends R, ?> body);
-
-  /**
-   * Executes step with given attributes on the context value and returns step result.
-   *
-   * @param keyword the step keyword
-   * @param params  the step params
-   * @param body    the step body
-   * @param <R>     the type of the step result
-   * @return step result
-   */
-  <R> R step(Keyword keyword,
-             Map<String, ?> params,
              ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
@@ -388,16 +335,6 @@ public interface Around<T> {
   /**
    * Executes step with given attributes.
    *
-   * @param keyword the step keyword
-   * @param params  the step params
-   * @return {@code Around} object
-   */
-  Around<T> step(Keyword keyword,
-                 Map<String, ?> params);
-
-  /**
-   * Executes step with given attributes.
-   *
    * @param name   the step name
    * @param params the step params
    * @return {@code Around} object
@@ -438,11 +375,6 @@ public interface Around<T> {
       if (executor == null) { throw new NullPointerException("executor arg is null"); }
       this.executor = executor;
       this.context = context;
-    }
-
-    @Override
-    public T context() {
-      return this.context;
     }
 
     @Override
@@ -574,16 +506,6 @@ public interface Around<T> {
     }
 
     @Override
-    public Around<T> step(final Keyword keyword,
-                          final ThrowingConsumer<? super T, ?> body) {
-      this.executor.execute(new ConsumerStep.Of<>(
-        new StepAttributes.Of(KEYWORD, keyword),
-        body
-      ), this.context);
-      return this;
-    }
-
-    @Override
     public Around<T> step(final String name,
                           final ThrowingConsumer<? super T, ?> body) {
       this.executor.execute(new ConsumerStep.Of<>(
@@ -599,18 +521,6 @@ public interface Around<T> {
                           final ThrowingConsumer<? super T, ?> body) {
       this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, keyword, NAME, name),
-        body
-      ), this.context);
-      return this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Around<T> step(final Keyword keyword,
-                          final Map<String, ?> params,
-                          final ThrowingConsumer<? super T, ?> body) {
-      this.executor.execute(new ConsumerStep.Of<>(
-        new StepAttributes.Of(KEYWORD, keyword, PARAMS, (Map<String, Object>) params),
         body
       ), this.context);
       return this;
@@ -642,15 +552,6 @@ public interface Around<T> {
     }
 
     @Override
-    public <R> R step(final Keyword keyword,
-                      final ThrowingFunction<? super T, ? extends R, ?> body) {
-      return this.executor.execute(new FunctionStep.Of<>(
-        new StepAttributes.Of(KEYWORD, keyword),
-        body
-      ), this.context);
-    }
-
-    @Override
     public <R> R step(final String name,
                       final ThrowingFunction<? super T, ? extends R, ?> body) {
       return this.executor.execute(new FunctionStep.Of<>(
@@ -665,17 +566,6 @@ public interface Around<T> {
                       final ThrowingFunction<? super T, ? extends R, ?> body) {
       return this.executor.execute(new FunctionStep.Of<>(
         new StepAttributes.Of(KEYWORD, keyword, NAME, name),
-        body
-      ), this.context);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <R> R step(final Keyword keyword,
-                      final Map<String, ?> params,
-                      final ThrowingFunction<? super T, ? extends R, ?> body) {
-      return this.executor.execute(new FunctionStep.Of<>(
-        new StepAttributes.Of(KEYWORD, keyword, PARAMS, (Map<String, Object>) params),
         body
       ), this.context);
     }
@@ -717,17 +607,6 @@ public interface Around<T> {
                           final String name) {
       this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, keyword, NAME, name),
-        ConsumerStep.emptyBody()
-      ), this.context);
-      return this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Around<T> step(final Keyword keyword,
-                          final Map<String, ?> params) {
-      this.executor.execute(new ConsumerStep.Of<>(
-        new StepAttributes.Of(KEYWORD, keyword, PARAMS, (Map<String, Object>) params),
         ConsumerStep.emptyBody()
       ), this.context);
       return this;

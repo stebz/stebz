@@ -29,7 +29,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static org.stebz.attribute.GherkinAnnotationStepAttributes.GHERKIN_KEYWORD_ATTRIBUTE_KEY;
+import static org.stebz.extension.GherkinAnnotationsExtension.GHERKIN_KEYWORD_ATTRIBUTE_KEY;
 
 /**
  * Alias for the combination of the {@link WithName} and {@link WithKeyword} annotations. The keyword is "Given".
