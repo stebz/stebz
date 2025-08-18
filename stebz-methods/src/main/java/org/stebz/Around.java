@@ -476,6 +476,7 @@ public interface Around<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @return {@code Around} object
    */
   Around<T> step(String name,
                  String expectedResult);
@@ -486,6 +487,7 @@ public interface Around<T> {
    * @param keyword        the step keyword
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @return {@code Around} object
    */
   Around<T> step(Keyword keyword,
                  String name,
@@ -497,6 +499,7 @@ public interface Around<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @return {@code Around} object
    */
   Around<T> step(String name,
                  Map<String, ?> params,
@@ -509,6 +512,7 @@ public interface Around<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @return {@code Around} object
    */
   Around<T> step(Keyword keyword,
                  String name,

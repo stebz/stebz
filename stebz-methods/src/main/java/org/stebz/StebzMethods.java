@@ -523,6 +523,8 @@ public final class StebzMethods {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
    */
   public static <R> R step(final String name,
                            final String expectedResult,
@@ -540,6 +542,8 @@ public final class StebzMethods {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
    */
   public static <R> R step(final Keyword keyword,
                            final String name,
@@ -558,6 +562,8 @@ public final class StebzMethods {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
    */
   @SuppressWarnings("unchecked")
   public static <R> R step(final String name,
@@ -578,6 +584,8 @@ public final class StebzMethods {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
    */
   @SuppressWarnings("unchecked")
   public static <R> R step(final Keyword keyword,

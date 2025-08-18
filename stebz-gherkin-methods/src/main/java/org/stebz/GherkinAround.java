@@ -157,6 +157,7 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @return {@code Around} object
    */
   GherkinAround<T> Given(String name,
                          String expectedResult,
@@ -169,6 +170,7 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @return {@code Around} object
    */
   GherkinAround<T> Given(String name,
                          Map<String, ?> params,
@@ -208,6 +210,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
    */
   <R> R Given(String name,
               String expectedResult,
@@ -221,6 +225,8 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
    */
   <R> R Given(String name,
               Map<String, ?> params,
@@ -250,6 +256,7 @@ public interface GherkinAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @return {@code Around} object
    */
   GherkinAround<T> Given(String name,
                          String expectedResult);
@@ -260,6 +267,7 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @return {@code Around} object
    */
   GherkinAround<T> Given(String name,
                          Map<String, ?> params,
@@ -370,6 +378,7 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @return {@code Around} object
    */
   GherkinAround<T> When(String name,
                         String expectedResult,
@@ -382,6 +391,7 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @return {@code Around} object
    */
   GherkinAround<T> When(String name,
                         Map<String, ?> params,
@@ -421,6 +431,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
    */
   <R> R When(String name,
              String expectedResult,
@@ -434,6 +446,8 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
    */
   <R> R When(String name,
              Map<String, ?> params,
@@ -463,6 +477,7 @@ public interface GherkinAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @return {@code Around} object
    */
   GherkinAround<T> When(String name,
                         String expectedResult);
@@ -473,6 +488,7 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @return {@code Around} object
    */
   GherkinAround<T> When(String name,
                         Map<String, ?> params,
@@ -583,6 +599,7 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @return {@code Around} object
    */
   GherkinAround<T> Then(String name,
                         String expectedResult,
@@ -595,6 +612,7 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @return {@code Around} object
    */
   GherkinAround<T> Then(String name,
                         Map<String, ?> params,
@@ -634,6 +652,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
    */
   <R> R Then(String name,
              String expectedResult,
@@ -647,6 +667,8 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
    */
   <R> R Then(String name,
              Map<String, ?> params,
@@ -676,6 +698,7 @@ public interface GherkinAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @return {@code Around} object
    */
   GherkinAround<T> Then(String name,
                         String expectedResult);
@@ -686,6 +709,7 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @return {@code Around} object
    */
   GherkinAround<T> Then(String name,
                         Map<String, ?> params,
@@ -796,6 +820,7 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @return {@code Around} object
    */
   GherkinAround<T> And(String name,
                        String expectedResult,
@@ -808,6 +833,7 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @return {@code Around} object
    */
   GherkinAround<T> And(String name,
                        Map<String, ?> params,
@@ -847,6 +873,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
    */
   <R> R And(String name,
             String expectedResult,
@@ -860,6 +888,8 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
    */
   <R> R And(String name,
             Map<String, ?> params,
@@ -889,6 +919,7 @@ public interface GherkinAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @return {@code Around} object
    */
   GherkinAround<T> And(String name,
                        String expectedResult);
@@ -899,6 +930,7 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @return {@code Around} object
    */
   GherkinAround<T> And(String name,
                        Map<String, ?> params,
@@ -1009,6 +1041,7 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @return {@code Around} object
    */
   GherkinAround<T> But(String name,
                        String expectedResult,
@@ -1021,6 +1054,7 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @return {@code Around} object
    */
   GherkinAround<T> But(String name,
                        Map<String, ?> params,
@@ -1060,6 +1094,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
    */
   <R> R But(String name,
             String expectedResult,
@@ -1073,6 +1109,8 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
    */
   <R> R But(String name,
             Map<String, ?> params,
@@ -1102,6 +1140,7 @@ public interface GherkinAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @return {@code Around} object
    */
   GherkinAround<T> But(String name,
                        String expectedResult);
@@ -1112,6 +1151,7 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @return {@code Around} object
    */
   GherkinAround<T> But(String name,
                        Map<String, ?> params,
