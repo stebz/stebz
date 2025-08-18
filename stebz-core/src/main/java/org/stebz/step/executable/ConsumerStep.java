@@ -43,38 +43,71 @@ import static org.stebz.attribute.StepAttribute.PARAMS;
 public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, ConsumerStep<T>> {
 
   /**
-   * Returns {@code ConsumerStep} with given action before body.
+   * Returns {@code ConsumerStep} with given block before body.
    *
-   * @param before the action
-   * @return {@code ConsumerStep} with given action before body
-   * @throws NullPointerException if {@code before} arg is null
+   * @param beforeBlock the before block
+   * @return {@code ConsumerStep} with given block before body
+   * @throws NullPointerException if {@code beforeBlock} arg is null
    * @see #withBody(Object)
    * @see #withNewBody(ThrowingFunction)
    */
-  default ConsumerStep<T> withBefore(final ThrowingConsumer<? super T, ?> before) {
-    if (before == null) { throw new NullPointerException("before arg is null"); }
-    final ThrowingConsumer<T, ?> after = this.body();
+  default ConsumerStep<T> withBefore(final ThrowingConsumer<? super T, ?> beforeBlock) {
+    if (beforeBlock == null) { throw new NullPointerException("beforeBlock arg is null"); }
+    final ThrowingConsumer<T, ?> body = this.body();
     return this.withBody(context -> {
-      before.accept(context);
-      after.accept(context);
+      beforeBlock.accept(context);
+      body.accept(context);
     });
   }
 
   /**
-   * Returns {@code ConsumerStep} with given action after step body.
+   * Returns {@code ConsumerStep} with given block after step body.
    *
-   * @param after the action
-   * @return {@code ConsumerStep} with given action after step body
-   * @throws NullPointerException if {@code after} arg is null
+   * @param afterBlock the after block
+   * @return {@code ConsumerStep} with given block after step body
+   * @throws NullPointerException if {@code afterBlock} arg is null
    * @see #withBody(Object)
    * @see #withNewBody(ThrowingFunction)
    */
-  default ConsumerStep<T> withAfter(final ThrowingConsumer<? super T, ?> after) {
-    if (after == null) { throw new NullPointerException("after arg is null"); }
-    final ThrowingConsumer<T, ?> before = this.body();
+  default ConsumerStep<T> withAfter(final ThrowingConsumer<? super T, ?> afterBlock) {
+    if (afterBlock == null) { throw new NullPointerException("afterBlock arg is null"); }
+    final ThrowingConsumer<T, ?> body = this.body();
     return this.withBody(context -> {
-      before.accept(context);
-      after.accept(context);
+      body.accept(context);
+      afterBlock.accept(context);
+    });
+  }
+
+  /**
+   * Returns {@code ConsumerStep} with given finally block after step body.
+   *
+   * @param finallyBlock the finally block
+   * @return {@code ConsumerStep} with given finally block after step body
+   * @throws NullPointerException if {@code finallyBlock} arg is null
+   * @see #withBody(Object)
+   * @see #withNewBody(ThrowingFunction)
+   */
+  default ConsumerStep<T> withFinally(final ThrowingConsumer<? super T, ?> finallyBlock) {
+    if (finallyBlock == null) { throw new NullPointerException("finallyBlock arg is null"); }
+    final ThrowingConsumer<T, ?> body = this.body();
+    return this.withBody(context -> {
+      Throwable mainEx = null;
+      try {
+        body.accept(context);
+      } catch (final Throwable ex) {
+        mainEx = ex;
+      }
+      try {
+        body.accept(context);
+      } catch (final Throwable ex) {
+        if (mainEx != null) {
+          ex.addSuppressed(mainEx);
+        }
+        mainEx = ex;
+      }
+      if (mainEx != null) {
+        throw mainEx;
+      }
     });
   }
 
