@@ -27,7 +27,9 @@ import org.stebz.attribute.StepAttributes;
 import org.stebz.exception.StepNotImplementedError;
 import org.stebz.step.ExecutableStep;
 import org.stebz.util.function.ThrowingConsumer;
+import org.stebz.util.function.ThrowingConsumer2;
 import org.stebz.util.function.ThrowingFunction;
+import org.stebz.util.function.ThrowingFunction2;
 
 import java.util.Map;
 
@@ -44,57 +46,92 @@ import static org.stebz.attribute.StepAttribute.PARAMS;
 public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R, ?>, FunctionStep<T, R>> {
 
   /**
-   * Returns {@code FunctionStep} with given action before body.
+   * Returns {@code FunctionStep} with given block before body.
    *
-   * @param before the action
-   * @return {@code FunctionStep} with given action before body
-   * @throws NullPointerException if {@code before} arg is null
+   * @param beforeBlock the before block
+   * @return {@code FunctionStep} with given block before body
+   * @throws NullPointerException if {@code beforeBlock} arg is null
    * @see #withBody(Object)
    * @see #withNewBody(ThrowingFunction)
    */
-  default FunctionStep<T, R> withBefore(final ThrowingConsumer<? super T, ?> before) {
-    if (before == null) { throw new NullPointerException("before arg is null"); }
-    final ThrowingFunction<? super T, ? extends R, ?> after = this.body();
+  default FunctionStep<T, R> withBefore(final ThrowingConsumer<? super T, ?> beforeBlock) {
+    if (beforeBlock == null) { throw new NullPointerException("beforeBlock arg is null"); }
+    final ThrowingFunction<? super T, ? extends R, ?> body = this.body();
     return this.withBody(context -> {
-      before.accept(context);
-      return after.apply(context);
+      beforeBlock.accept(context);
+      return body.apply(context);
     });
   }
 
   /**
-   * Returns {@code FunctionStep} with given action after step body.
+   * Returns {@code FunctionStep} with given block after step body.
    *
-   * @param after the action
-   * @return {@code FunctionStep} with given action after step body
-   * @throws NullPointerException if {@code after} arg is null
+   * @param afterBlock the after block
+   * @return {@code FunctionStep} with given block after step body
+   * @throws NullPointerException if {@code afterBlock} arg is null
    * @see #withBody(Object)
    * @see #withNewBody(ThrowingFunction)
    */
-  default FunctionStep<T, R> withAfter(final ThrowingConsumer<? super R, ?> after) {
-    if (after == null) { throw new NullPointerException("after arg is null"); }
-    final ThrowingFunction<? super T, ? extends R, ?> before = this.body();
+  default FunctionStep<T, R> withAfter(final ThrowingConsumer2<? super T, ? super R, ?> afterBlock) {
+    if (afterBlock == null) { throw new NullPointerException("afterBlock arg is null"); }
+    final ThrowingFunction<? super T, ? extends R, ?> body = this.body();
     return this.withBody(context -> {
-      final R result = before.apply(context);
-      after.accept(result);
+      final R result = body.apply(context);
+      afterBlock.accept(context, result);
       return result;
     });
   }
 
   /**
-   * Returns {@code FunctionStep} with given action after step body.
+   * Returns {@code FunctionStep} with given block after step body.
    *
-   * @param after the action
-   * @return {@code FunctionStep} with given action after step body
-   * @throws NullPointerException if {@code after} arg is null
+   * @param afterBlock the after block
+   * @return {@code FunctionStep} with given block after step body
+   * @throws NullPointerException if {@code afterBlock} arg is null
    * @see #withBody(Object)
    * @see #withNewBody(ThrowingFunction)
    */
-  default FunctionStep<T, R> withAfter(final ThrowingFunction<? super R, ? extends R, ?> after) {
-    if (after == null) { throw new NullPointerException("after arg is null"); }
-    final ThrowingFunction<? super T, ? extends R, ?> before = this.body();
+  default FunctionStep<T, R> withAfter(final ThrowingFunction2<? super T, ? super R, ? extends R, ?> afterBlock) {
+    if (afterBlock == null) { throw new NullPointerException("afterBlock arg is null"); }
+    final ThrowingFunction<? super T, ? extends R, ?> body = this.body();
     return this.withBody(context ->
-      after.apply(before.apply(context))
+      afterBlock.apply(context, body.apply(context))
     );
+  }
+
+  /**
+   * Returns {@code FunctionStep} with given finally block after step body.
+   *
+   * @param finallyBlock the finally block
+   * @return {@code FunctionStep} with given finally block after step body
+   * @throws NullPointerException if {@code finallyBlock} arg is null
+   * @see #withBody(Object)
+   * @see #withNewBody(ThrowingFunction)
+   */
+  default FunctionStep<T, R> withFinally(final ThrowingConsumer<? super T, ?> finallyBlock) {
+    if (finallyBlock == null) { throw new NullPointerException("finallyBlock arg is null"); }
+    final ThrowingFunction<? super T, ? extends R, ?> body = this.body();
+    return this.withBody(context -> {
+      Throwable mainEx = null;
+      R result = null;
+      try {
+        result = body.apply(context);
+      } catch (final Throwable ex) {
+        mainEx = ex;
+      }
+      try {
+        finallyBlock.accept(context);
+      } catch (final Throwable ex) {
+        if (mainEx != null) {
+          ex.addSuppressed(mainEx);
+        }
+        mainEx = ex;
+      }
+      if (mainEx != null) {
+        throw mainEx;
+      }
+      return result;
+    });
   }
 
   /**
