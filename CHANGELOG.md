@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.4 (18.08.2025)
+
+* #44 add stebz-gherkin-keywords module by @evpl
+* #46 add GherkinAround object by @evpl
+* #47 add StebObj withParam method by @evpl
+* #48 add StebzGherkinMethods gherkinAround method by @evpl
+* #49 add expected result attribute by @evpl in PR #50
+* #51 add withFinally method by @evpl in PR #52
+* Bump io.qase:qase-java-commons from 4.1.13 to 4.1.16 in /stebz-parent by @dependabot[bot] in PR #43
+* Bump org.assertj:assertj-core from 3.27.3 to 3.27.4 in /stebz-parent by @dependabot[bot] in PR #41
+
 ## 1.3.1 (04.08.2025)
 
 * #37 added support for custom result in the captured method by @evpl in PR #38
