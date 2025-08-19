@@ -1,13 +1,16 @@
 # Stebz
 
 [![Maven Central](https://img.shields.io/maven-central/v/org.stebz/stebz-core?color=blue)](https://central.sonatype.com/search?namespace=org.stebz&sort=name)
-[![Javadoc](https://javadoc.io/badge2/org.stebz/stebz-core/javadoc.svg?color=blue)](https://javadoc.io/doc/org.stebz)
-![Maven Central Last Update](https://img.shields.io/maven-central/last-update/org.stebz/stebz?color=blue)
+[![Javadoc](https://img.shields.io/badge/javadoc-latest-blue.svg)](https://javadoc.io/doc/org.stebz)
 [![License](https://img.shields.io/github/license/stebz/stebz?color=blue)](https://github.com/stebz/stebz/blob/main/LICENSE)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/stebz/stebz/tests.yml?branch=main)
+![Maven Central Last Update](https://img.shields.io/maven-central/last-update/org.stebz/stebz?color=blue)
 
-[![Telegram](https://img.shields.io/badge/-telegram-black?color=blue&logo=telegram&label=EN)](https://t.me/stebz_en/)
-[![Telegram](https://img.shields.io/badge/-telegram-black?color=blue&logo=telegram&label=RU)](https://t.me/stebz_ru/)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/stebz/stebz/tests.yml?branch=main)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/stebz/stebz/latest?color=brightgreen)
+![GitHub last commit](https://img.shields.io/github/last-commit/stebz/stebz?color=brightgreen)
+
+[![Telegram](https://img.shields.io/badge/-telegram-black?color=blue&logo=telegram&label=chat)](https://t.me/stebz_en/)
+[![Telegram RU](https://img.shields.io/badge/-telegram-black?color=blue&logo=telegram&label=chat%20(ru))](https://t.me/stebz_ru/)
 
 Multi-approach and flexible Java framework for test steps managing.
 
@@ -240,11 +243,11 @@ It is convenient to add attributes right before calling a step.
 <!-- @formatter:off -->
 ```java
 step(runnableStep
-  .withName("new name")
+       .withName("new name")
   .withComment("comment")
   .withNewBody(originBody -> () -> {
-    // new body
-    originBody.run();
+  // new body
+  originBody.run();
   }));
 ```
 <!-- @formatter:on -->
@@ -444,7 +447,7 @@ String functionStepResult = Then(functionStep, 123);
 
 And("quick runnable step", () -> {
   // step body
-});
+  });
 
 String result = But("quick supplier step", () -> {
   // step body
