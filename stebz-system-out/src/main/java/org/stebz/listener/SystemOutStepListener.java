@@ -46,6 +46,7 @@ public class SystemOutStepListener implements StepListener {
   private final KeywordPosition keywordPosition;
   private final String indent;
   private final boolean logParams;
+  private final boolean logExpectedResult;
   private final boolean logComment;
 
   /**
@@ -80,6 +81,7 @@ public class SystemOutStepListener implements StepListener {
       KeywordPosition.class, KeywordPosition.AT_START);
     this.indent = multiplyString(" ", properties.getInteger("stebz.listeners.systemout.indent", 2));
     this.logParams = properties.getBoolean("stebz.listeners.systemout.params", true);
+    this.logExpectedResult = properties.getBoolean("stebz.listeners.systemout.expectedResult", true);
     this.logComment = properties.getBoolean("stebz.listeners.systemout.comment", true);
   }
 
@@ -111,6 +113,14 @@ public class SystemOutStepListener implements StepListener {
               .collect(Collectors.joining(", "))
           )
           .append(')');
+      }
+    }
+    if (this.logExpectedResult) {
+      final String expectedResult = step.getExpectedResult();
+      if (!expectedResult.isEmpty()) {
+        sb.append(", ")
+          .append("expected result = ")
+          .append(expectedResult);
       }
     }
     if (this.logComment) {
