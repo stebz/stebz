@@ -3,11 +3,11 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.stebz/stebz-core?color=blue)](https://central.sonatype.com/search?namespace=org.stebz&sort=name)
 [![Javadoc](https://img.shields.io/badge/javadoc-latest-blue.svg)](https://javadoc.io/doc/org.stebz)
 [![License](https://img.shields.io/github/license/stebz/stebz?color=blue)](https://github.com/stebz/stebz/blob/main/LICENSE)
-![Maven Central Last Update](https://img.shields.io/maven-central/last-update/org.stebz/stebz?color=blue)
+[![Maven Central Last Update](https://img.shields.io/maven-central/last-update/org.stebz/stebz?color=blue)](https://central.sonatype.com/search?namespace=org.stebz&sort=name)
 
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/stebz/stebz/tests.yml?branch=main)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/stebz/stebz/latest?color=brightgreen)
-![GitHub last commit](https://img.shields.io/github/last-commit/stebz/stebz?color=brightgreen)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/stebz/stebz/tests.yml?branch=main)](https://github.com/stebz/stebz/actions/workflows/tests.yml/)
+[![GitHub commits since latest release](https://img.shields.io/github/commits-since/stebz/stebz/latest?color=brightgreen)](https://github.com/stebz/stebz/commits/main/)
+[![GitHub last commit](https://img.shields.io/github/last-commit/stebz/stebz?color=brightgreen)](https://github.com/stebz/stebz/commits/main/)
 
 [![Telegram](https://img.shields.io/badge/-telegram-black?color=blue&logo=telegram&label=chat)](https://t.me/stebz_en/)
 [![Telegram RU](https://img.shields.io/badge/-telegram-black?color=blue&logo=telegram&label=chat%20(ru))](https://t.me/stebz_ru/)
@@ -57,7 +57,6 @@ Maven:
     <groupId>org.stebz</groupId>
     <artifactId>{module name}</artifactId>
     <version>1.4</version>
-    <scope>test</scope>
   </dependency>
 </dependencies>
 ```
@@ -68,7 +67,7 @@ Gradle (Groovy DSL):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  testImplementation 'org.stebz:{module name}:1.4'
+  implementation 'org.stebz:{module name}:1.4'
 }
 ```
 <!-- @formatter:on -->
@@ -78,7 +77,7 @@ Gradle (Kotlin DSL):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  testImplementation("org.stebz:{module name}:1.4")
+  implementation("org.stebz:{module name}:1.4")
 }
 ```
 <!-- @formatter:on -->
@@ -228,6 +227,7 @@ String functionStepResult = step(functionStep, 123);
 <!-- @formatter:on -->
 
 Or using the Around object.
+
 <!-- @formatter:off -->
 ```java
 String result = around(123)
@@ -243,11 +243,11 @@ It is convenient to add attributes right before calling a step.
 <!-- @formatter:off -->
 ```java
 step(runnableStep
-       .withName("new name")
+  .withName("new name")
   .withComment("comment")
   .withNewBody(originBody -> () -> {
-  // new body
-  originBody.run();
+    // new body
+    originBody.run();
   }));
 ```
 <!-- @formatter:on -->
@@ -447,7 +447,7 @@ String functionStepResult = Then(functionStep, 123);
 
 And("quick runnable step", () -> {
   // step body
-  });
+});
 
 String result = But("quick supplier step", () -> {
   // step body
