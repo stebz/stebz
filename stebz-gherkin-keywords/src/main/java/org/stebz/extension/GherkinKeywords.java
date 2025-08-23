@@ -52,7 +52,7 @@ public final class GherkinKeywords implements StebzExtension {
       new Keyword.Of(properties.getString("stebz.gherkin.keywords.feature", "Feature")),
       new Keyword.Of(properties.getString("stebz.gherkin.keywords.rule", "Rule")),
       new Keyword.Of(properties.getString("stebz.gherkin.keywords.scenario", "Scenario")),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.scenarioOutline", "Scenario outline")),
+      new Keyword.Of(properties.getString("stebz.gherkin.keywords.scenarioOutline", "Scenario Outline")),
       new Keyword.Of(properties.getString("stebz.gherkin.keywords.examples", "Examples")),
       new Keyword.Of(properties.getString("stebz.gherkin.keywords.background", "Background")),
       new Keyword.Of(properties.getString("stebz.gherkin.keywords.given", "Given")),
@@ -201,7 +201,7 @@ public final class GherkinKeywords implements StebzExtension {
   private static Keywords defaultKeywords() {
     return new Keywords(
       new Keyword.Of("Feature"), new Keyword.Of("Rule"), new Keyword.Of("Scenario"),
-      new Keyword.Of("Scenario outline"), new Keyword.Of("Examples"), new Keyword.Of("Background"),
+      new Keyword.Of("Scenario Outline"), new Keyword.Of("Examples"), new Keyword.Of("Background"),
       new Keyword.Of("Given"), new Keyword.Of("When"), new Keyword.Of("Then"),
       new Keyword.Of("And"), new Keyword.Of("But"), new Keyword.Of("*")
     );

@@ -53,7 +53,7 @@ final class GherkinKeywordsTest {
   @Test
   void scenarioOutlineKeywordDefaultValue() {
     assertThat(GherkinKeywords.scenarioOutline().value())
-      .isEqualTo("Scenario outline");
+      .isEqualTo("Scenario Outline");
   }
 
   @Test
