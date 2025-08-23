@@ -437,8 +437,6 @@ Methods way:
 
 <!-- @formatter:off -->
 ```java
-Background(runnableStep);
-
 String supplierStepResult = Given(supplierStep);
 
 When(consumerStep, 123);
@@ -495,12 +493,37 @@ class ExampleTest {
 
 ## Listeners
 
-Processing of steps occurs in listeners. Listeners can be specified via SPI mechanism or via properties.
+Processing of steps occurs in listeners.
+
+Examples of listener modules: `stebz-allure`, `stebz-qase`, `stebz-reportportal`, `stebz-system-out`.
+
+To create a custom listener you need to implement the `org.stebz.listener.StepListener` interface
+and [specify it via SPI mechanism or via properties](#stebz-core-module).
 
 ## Extensions
 
-Extensions allow you to add additional behavior to steps. For example, replace the value of some attribute or body.
-Extensions can be specified via SPI mechanism or via properties.
+Extensions allow you to add additional behavior to steps. For example, replace the step name or body.
+
+Examples of extension modules: `stebz-repeat-and-retry`, `stebz-readable-reflective-name`.
+
+List on extension interfaces:
+
+| interface                | description                             |
+|--------------------------|-----------------------------------------|
+| `StebzExtension`         | Base extension interface                |
+| `InterceptStepContext`   | Intercepts and replaces step context    |
+| `InterceptStep`          | Intercepts and replaces step            |
+| `BeforeStepStart`        | Calling before step start               |
+| `AfterStepStart`         | Calling after step start                |
+| `InterceptStepResult`    | Intercepts and replaces step result     |
+| `BeforeStepSuccess`      | Calling before step success             |
+| `AfterStepSuccess`       | Calling after step success              |
+| `InterceptStepException` | Intercepts and replaces step exceptions |
+| `BeforeStepFailure`      | Calling before step failure             |
+| `AfterStepFailure`       | Calling after step failure              |
+
+To create a custom extension you need to implement one or more `org.stebz.extension.StebzExtension` interfaces
+and [specify it via SPI mechanism or via properties](#stebz-core-module).
 
 ## Configuration
 
