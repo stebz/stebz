@@ -29,6 +29,9 @@ Multi-approach and flexible Java framework for test steps managing.
   * [Listeners](#listeners)
   * [Extensions](#extensions)
   * [Configuration](#configuration)
+* [How to contribute](#how-to-contribute)
+* [Contributors](#contributors)
+* [License](#license)
 
 ## What is Stebz
 
@@ -707,3 +710,15 @@ System properties have first priority, file properties have second priority.
 | `stebz.listeners.systemout.keywordPosition` | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name |
 | `stebz.listeners.systemout.params`          | `Boolean`             | `true`        | show step params                          |
 | `stebz.listeners.systemout.comment`         | `Boolean`             | `true`        | show step comment                         |
+
+## How to contribute
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for specific guidelines.
+
+## Contributors
+
+* [@evpl](https://github.com/evpl) as Evgenii Plugatar
+
+## License
+
+Stebz is open-source project, and distributed under the [MIT](LICENSE) license.
