@@ -45,17 +45,17 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   /**
    * Returns {@code ConsumerStep} with given block before body.
    *
-   * @param beforeBlock the before block
+   * @param block the before block
    * @return {@code ConsumerStep} with given block before body
-   * @throws NullPointerException if {@code beforeBlock} arg is null
+   * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withNewBody(ThrowingFunction)
    */
-  default ConsumerStep<T> withBefore(final ThrowingConsumer<? super T, ?> beforeBlock) {
-    if (beforeBlock == null) { throw new NullPointerException("beforeBlock arg is null"); }
+  default ConsumerStep<T> withBefore(final ThrowingConsumer<? super T, ?> block) {
+    if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingConsumer<T, ?> body = this.body();
     return this.withBody(context -> {
-      beforeBlock.accept(context);
+      block.accept(context);
       body.accept(context);
     });
   }
@@ -63,32 +63,73 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   /**
    * Returns {@code ConsumerStep} with given block after step body.
    *
-   * @param afterBlock the after block
+   * @param block the after block
    * @return {@code ConsumerStep} with given block after step body
-   * @throws NullPointerException if {@code afterBlock} arg is null
+   * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withNewBody(ThrowingFunction)
    */
-  default ConsumerStep<T> withAfter(final ThrowingConsumer<? super T, ?> afterBlock) {
-    if (afterBlock == null) { throw new NullPointerException("afterBlock arg is null"); }
+  default ConsumerStep<T> withAfter(final ThrowingConsumer<? super T, ?> block) {
+    if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingConsumer<T, ?> body = this.body();
     return this.withBody(context -> {
       body.accept(context);
-      afterBlock.accept(context);
+      block.accept(context);
+    });
+  }
+
+  /**
+   * Returns {@code ConsumerStep} with given block after step body. Alias for {@link #withAfter(ThrowingConsumer)}
+   * methods.
+   *
+   * @param block the after block
+   * @return {@code ConsumerStep} with given block after step body
+   * @throws NullPointerException if {@code block} arg is null
+   * @see #withBody(Object)
+   * @see #withNewBody(ThrowingFunction)
+   */
+  default ConsumerStep<T> withOnSuccess(final ThrowingConsumer<? super T, ?> block) {
+    return this.withAfter(block);
+  }
+
+  /**
+   * Returns {@code ConsumerStep} with given block that be executed after step body in case of step failure.
+   *
+   * @param block the on failure block
+   * @return {@code ConsumerStep} with given block that be executed after step body in case of step failure
+   * @throws NullPointerException if {@code block} arg is null
+   * @see #withBody(Object)
+   * @see #withNewBody(ThrowingFunction)
+   */
+  default ConsumerStep<T> withOnFailure(final ThrowingConsumer<? super T, ?> block) {
+    if (block == null) { throw new NullPointerException("block arg is null"); }
+    final ThrowingConsumer<T, ?> body = this.body();
+    return this.withBody(context -> {
+      try {
+        body.accept(context);
+      } catch (final Throwable stepEx) {
+        try {
+          block.accept(context);
+        } catch (final Throwable afterEx) {
+          afterEx.addSuppressed(stepEx);
+          throw afterEx;
+        }
+        throw stepEx;
+      }
     });
   }
 
   /**
    * Returns {@code ConsumerStep} with given finally block after step body.
    *
-   * @param finallyBlock the finally block
+   * @param block the finally block
    * @return {@code ConsumerStep} with given finally block after step body
-   * @throws NullPointerException if {@code finallyBlock} arg is null
+   * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withNewBody(ThrowingFunction)
    */
-  default ConsumerStep<T> withFinally(final ThrowingConsumer<? super T, ?> finallyBlock) {
-    if (finallyBlock == null) { throw new NullPointerException("finallyBlock arg is null"); }
+  default ConsumerStep<T> withFinally(final ThrowingConsumer<? super T, ?> block) {
+    if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingConsumer<T, ?> body = this.body();
     return this.withBody(context -> {
       Throwable mainEx = null;

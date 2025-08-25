@@ -47,17 +47,17 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   /**
    * Returns {@code SupplierStep} with given block before step body.
    *
-   * @param beforeBlock the before block
+   * @param block the before block
    * @return {@code SupplierStep} with given block before step body
-   * @throws NullPointerException if {@code beforeBlock} arg is null
+   * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withNewBody(ThrowingFunction)
    */
-  default SupplierStep<R> withBefore(final ThrowingRunnable<?> beforeBlock) {
-    if (beforeBlock == null) { throw new NullPointerException("beforeBlock arg is null"); }
+  default SupplierStep<R> withBefore(final ThrowingRunnable<?> block) {
+    if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingSupplier<R, ?> body = this.body();
     return this.withBody(() -> {
-      beforeBlock.run();
+      block.run();
       return body.get();
     });
   }
@@ -65,18 +65,18 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   /**
    * Returns {@code SupplierStep} with given block after step body.
    *
-   * @param afterBlock the after block
+   * @param block the after block
    * @return {@code SupplierStep} with given block after step body
-   * @throws NullPointerException if {@code afterBlock} arg is null
+   * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withNewBody(ThrowingFunction)
    */
-  default SupplierStep<R> withAfter(final ThrowingConsumer<? super R, ?> afterBlock) {
-    if (afterBlock == null) { throw new NullPointerException("afterBlock arg is null"); }
+  default SupplierStep<R> withAfter(final ThrowingConsumer<? super R, ?> block) {
+    if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingSupplier<R, ?> body = this.body();
     return this.withBody(() -> {
       final R result = body.get();
-      afterBlock.accept(result);
+      block.accept(result);
       return result;
     });
   }
@@ -84,31 +84,92 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   /**
    * Returns {@code SupplierStep} with given block after step body.
    *
-   * @param afterBlock the after block
+   * @param block the after block
    * @return {@code SupplierStep} with given block after step body
-   * @throws NullPointerException if {@code afterBlock} arg is null
+   * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withNewBody(ThrowingFunction)
    */
-  default SupplierStep<R> withAfter(final ThrowingFunction<? super R, ? extends R, ?> afterBlock) {
-    if (afterBlock == null) { throw new NullPointerException("afterBlock arg is null"); }
+  default SupplierStep<R> withAfter(final ThrowingFunction<? super R, ? extends R, ?> block) {
+    if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingSupplier<R, ?> body = this.body();
     return this.withBody(() ->
-      afterBlock.apply(body.get())
+      block.apply(body.get())
     );
+  }
+
+  /**
+   * Returns {@code SupplierStep} with given block after step body. Alias for {@link #withAfter(ThrowingConsumer)}
+   * method.
+   *
+   * @param block the after block
+   * @return {@code SupplierStep} with given block after step body
+   * @throws NullPointerException if {@code block} arg is null
+   * @see #withBody(Object)
+   * @see #withNewBody(ThrowingFunction)
+   */
+  default SupplierStep<R> withOnSuccess(final ThrowingConsumer<? super R, ?> block) {
+    if (block == null) { throw new NullPointerException("block arg is null"); }
+    final ThrowingSupplier<R, ?> body = this.body();
+    return this.withBody(() -> {
+      final R result = body.get();
+      block.accept(result);
+      return result;
+    });
+  }
+
+  /**
+   * Returns {@code SupplierStep} with given block after step body. Alias for {@link #withAfter(ThrowingFunction)}
+   * methods.
+   *
+   * @param block the after block
+   * @return {@code SupplierStep} with given block after step body
+   * @throws NullPointerException if {@code block} arg is null
+   * @see #withBody(Object)
+   * @see #withNewBody(ThrowingFunction)
+   */
+  default SupplierStep<R> withOnSuccess(final ThrowingFunction<? super R, ? extends R, ?> block) {
+    return this.withAfter(block);
+  }
+
+  /**
+   * Returns {@code SupplierStep} with given block that be executed after step body in case of step failure.
+   *
+   * @param block the on failure block
+   * @return {@code SupplierStep} with given block that be executed after step body in case of step failure
+   * @throws NullPointerException if {@code block} arg is null
+   * @see #withBody(Object)
+   * @see #withNewBody(ThrowingFunction)
+   */
+  default SupplierStep<R> withOnFailure(final ThrowingRunnable<?> block) {
+    if (block == null) { throw new NullPointerException("block arg is null"); }
+    final ThrowingSupplier<R, ?> body = this.body();
+    return this.withBody(() -> {
+      try {
+        return body.get();
+      } catch (final Throwable stepEx) {
+        try {
+          block.run();
+        } catch (final Throwable afterEx) {
+          afterEx.addSuppressed(stepEx);
+          throw afterEx;
+        }
+        throw stepEx;
+      }
+    });
   }
 
   /**
    * Returns {@code SupplierStep} with given finally block after step body.
    *
-   * @param finallyBlock the finally block
+   * @param block the finally block
    * @return {@code SupplierStep} with given finally block after step body
-   * @throws NullPointerException if {@code finallyBlock} arg is null
+   * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withNewBody(ThrowingFunction)
    */
-  default SupplierStep<R> withFinally(final ThrowingRunnable<?> finallyBlock) {
-    if (finallyBlock == null) { throw new NullPointerException("finallyBlock arg is null"); }
+  default SupplierStep<R> withFinally(final ThrowingRunnable<?> block) {
+    if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingSupplier<R, ?> body = this.body();
     return this.withBody(() -> {
       Throwable mainEx = null;
@@ -119,7 +180,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
         mainEx = ex;
       }
       try {
-        finallyBlock.run();
+        block.run();
       } catch (final Throwable ex) {
         if (mainEx != null) {
           ex.addSuppressed(mainEx);
