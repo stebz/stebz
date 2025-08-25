@@ -44,6 +44,7 @@ void separateMethods() {
   step(user_sees_logout_button());
 }
 
+@Test
 void aroundContext() {
   around(
     step(I_send_get_user_request(123))).
@@ -67,6 +68,7 @@ void separateMethods() {
   And(user_sees_logout_button());
 }
 
+@Test
 void aroundContext() {
   around(
     When(I_send_get_user_request(123))).
