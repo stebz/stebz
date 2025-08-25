@@ -80,7 +80,7 @@ void aroundContext() {
 ```
 <!-- @formatter:on -->
 
-You can read about many additional features in the [Docs](#docs) section.
+See details in [Docs](#docs) section.
 
 ## How to use
 
