@@ -43,17 +43,17 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
   /**
    * Returns {@code RunnableStep} with given block before step body.
    *
-   * @param beforeBlock the before block
+   * @param block the before block
    * @return {@code RunnableStep} with given block before step body
-   * @throws NullPointerException if {@code beforeBlock} arg is null
+   * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withNewBody(ThrowingFunction)
    */
-  default RunnableStep withBefore(final ThrowingRunnable<?> beforeBlock) {
-    if (beforeBlock == null) { throw new NullPointerException("beforeBlock arg is null"); }
+  default RunnableStep withBefore(final ThrowingRunnable<?> block) {
+    if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingRunnable<?> body = this.body();
     return this.withBody(() -> {
-      beforeBlock.run();
+      block.run();
       body.run();
     });
   }
@@ -61,32 +61,73 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
   /**
    * Returns {@code RunnableStep} with given block after step body.
    *
-   * @param afterBlock the after block
+   * @param block the after block
    * @return {@code RunnableStep} with given block after step body
-   * @throws NullPointerException if {@code afterBlock} arg is null
+   * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withNewBody(ThrowingFunction)
    */
-  default RunnableStep withAfter(final ThrowingRunnable<?> afterBlock) {
-    if (afterBlock == null) { throw new NullPointerException("afterBlock arg is null"); }
+  default RunnableStep withAfter(final ThrowingRunnable<?> block) {
+    if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingRunnable<?> body = this.body();
     return this.withBody(() -> {
       body.run();
-      afterBlock.run();
+      block.run();
+    });
+  }
+
+  /**
+   * Returns {@code RunnableStep} with given block after step body. Alias for {@link #withAfter(ThrowingRunnable)}
+   * method.
+   *
+   * @param block the after block
+   * @return {@code RunnableStep} with given block after step body
+   * @throws NullPointerException if {@code block} arg is null
+   * @see #withBody(Object)
+   * @see #withNewBody(ThrowingFunction)
+   */
+  default RunnableStep withOnSuccess(final ThrowingRunnable<?> block) {
+    return this.withAfter(block);
+  }
+
+  /**
+   * Returns {@code RunnableStep} with given block that be executed after step body in case of step failure.
+   *
+   * @param block the on failure block
+   * @return {@code RunnableStep} with given block that be executed after step body in case of step failure
+   * @throws NullPointerException if {@code block} arg is null
+   * @see #withBody(Object)
+   * @see #withNewBody(ThrowingFunction)
+   */
+  default RunnableStep withOnFailure(final ThrowingRunnable<?> block) {
+    if (block == null) { throw new NullPointerException("block arg is null"); }
+    final ThrowingRunnable<?> body = this.body();
+    return this.withBody(() -> {
+      try {
+        body.run();
+      } catch (final Throwable stepEx) {
+        try {
+          block.run();
+        } catch (final Throwable afterEx) {
+          afterEx.addSuppressed(stepEx);
+          throw afterEx;
+        }
+        throw stepEx;
+      }
     });
   }
 
   /**
    * Returns {@code RunnableStep} with given finally block after step body.
    *
-   * @param finallyBlock the finally block
+   * @param block the finally block
    * @return {@code RunnableStep} with given finally block after step body
-   * @throws NullPointerException if {@code finallyBlock} arg is null
+   * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withNewBody(ThrowingFunction)
    */
-  default RunnableStep withFinally(final ThrowingRunnable<?> finallyBlock) {
-    if (finallyBlock == null) { throw new NullPointerException("finallyBlock arg is null"); }
+  default RunnableStep withFinally(final ThrowingRunnable<?> block) {
+    if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingRunnable<?> body = this.body();
     return this.withBody(() -> {
       Throwable mainEx = null;
@@ -96,7 +137,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
         mainEx = ex;
       }
       try {
-        finallyBlock.run();
+        block.run();
       } catch (final Throwable ex) {
         if (mainEx != null) {
           ex.addSuppressed(mainEx);
