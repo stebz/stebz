@@ -72,6 +72,7 @@
     <allure.version>2.29.1</allure.version>
     <qase.version>4.1.17</qase.version>
     <reportportal.version>5.3.14</reportportal.version>
+    <testit.version>2.7.8</testit.version>
     <junit.version>5.13.4</junit.version>
     <junitPlatformLauncher.version>1.13.4</junitPlatformLauncher.version>
     <assertj.version>3.27.4</assertj.version>
@@ -114,6 +115,11 @@
         <groupId>com.epam.reportportal</groupId>
         <artifactId>client-java</artifactId>
         <version>${reportportal.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ru.testit</groupId>
+        <artifactId>testit-java-commons</artifactId>
+        <version>${testit.version}</version>
       </dependency>
       <!-- test -->
       <dependency>
