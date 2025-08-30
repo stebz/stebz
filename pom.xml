@@ -50,6 +50,7 @@
     <module>stebz-allure</module>
     <module>stebz-qase</module>
     <module>stebz-reportportal</module>
+    <module>stebz-testit</module>
     <module>stebz-system-out</module>
   </modules>
 
