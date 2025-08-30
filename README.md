@@ -18,7 +18,7 @@ Multi-approach and flexible Java framework for test steps managing.
 
 * [What is Stebz](#what-is-stebz)
 * [How to use](#how-to-use)
-* [Docs](#docs)
+* [Documentation](#documentation)
   * [Modules](#modules)
   * [Step objects](#step-objects)
   * [Quick steps](#quick-steps)
@@ -29,8 +29,9 @@ Multi-approach and flexible Java framework for test steps managing.
   * [Listeners](#listeners)
   * [Extensions](#extensions)
   * [Configuration](#configuration)
-* [How to contribute](#how-to-contribute)
-* [Contributors](#contributors)
+* [Contributing](#contributing)
+  * [How to contribute](#how-to-contribute)
+  * [Contributors](#contributors)
 * [License](#license)
 
 ## What is Stebz
@@ -43,18 +44,20 @@ The main feature of Stebz is flexible test steps.
 void separateMethods() {
   step(user_is_authorized_as("user1", "123456")
     .withName("user authorized as simple user"));
-  step(user_sees_balance(10000));
+  step(user_sees_balance(10000)
+    .withComment("balance is always 10000 for this user"));
   step(user_sees_logout_button());
 }
 
 @Test
 void aroundContext() {
   around(
-    step(I_send_get_user_request(123))).
+    step(I_send_get_user_request(123))
+      .withBefore(() -> AuthUtils.checkAuth())).
     step(response_status_code_should_be(200)).
     step(response_json_path_value_should_be("user.balance", 10000)
-      .withName("response user should have balance {value}")
-      .withBefore(response -> Logger.info("Response body: " + response.body())));
+      .withName("response user balance should be {value}")
+      .withOnFailure(response -> Logger.warn("Incorrect body: " + response.body())));
 }
 ```
 <!-- @formatter:on -->
@@ -67,23 +70,25 @@ And in the Gherkin style too.
 void separateMethods() {
   When(user_is_authorized_as("user1", "123456")
     .withName("user authorized as simple user"));
-  Then(user_sees_balance(10000));
+  Then(user_sees_balance(10000)
+    .withComment("balance is always 10000 for this user"));
   And(user_sees_logout_button());
 }
 
 @Test
 void aroundContext() {
   around(
-    When(I_send_get_user_request(123))).
+    When(I_send_get_user_request(123)
+      .withBefore(() -> AuthUtils.checkAuth()))).
     Then(response_status_code_should_be(200)).
     And(response_json_path_value_should_be("user.balance", 10000)
-      .withName("response user should have balance {value}")
-      .withBefore(response -> Logger.info("Response body: " + response.body())));
+      .withName("response user balance should be {value}")
+      .withOnFailure(response -> Logger.warn("Incorrect body: " + response.body())));
 }
 ```
 <!-- @formatter:on -->
 
-See details in [Docs](#docs) section.
+See details in [Documentation](#documentation).
 
 ## How to use
 
@@ -99,6 +104,7 @@ One of integration dependencies:
 - `stebz-allure`
 - `stebz-qase`
 - `stebz-reportportal`
+- `stebz-testit`
 
 And maybe some extensions:
 
@@ -113,7 +119,7 @@ Maven:
   <dependency>
     <groupId>org.stebz</groupId>
     <artifactId>{module name}</artifactId>
-    <version>1.4</version>
+    <version>1.5</version>
   </dependency>
 </dependencies>
 ```
@@ -124,7 +130,7 @@ Gradle:
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation 'org.stebz:{module name}:1.4'
+  implementation 'org.stebz:{module name}:1.5'
 }
 ```
 <!-- @formatter:on -->
@@ -134,7 +140,7 @@ Gradle (Kotlin DSL):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation("org.stebz:{module name}:1.4")
+  implementation("org.stebz:{module name}:1.5")
 }
 ```
 <!-- @formatter:on -->
@@ -152,7 +158,7 @@ Maven:
     <dependency>
       <groupId>org.stebz</groupId>
       <artifactId>stebz-bom</artifactId>
-      <version>1.4</version>
+      <version>1.5</version>
       <scope>import</scope>
       <type>pom</type>
     </dependency>
@@ -166,7 +172,7 @@ Gradle:
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation platform('org.stebz:stebz-bom:1.4')
+  implementation platform('org.stebz:stebz-bom:1.5')
 }
 ```
 <!-- @formatter:on -->
@@ -176,12 +182,12 @@ Gradle (Kotlin DSL):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation(platform("org.stebz:stebz-bom:1.4"))
+  implementation(platform("org.stebz:stebz-bom:1.5"))
 }
 ```
 <!-- @formatter:on -->
 
-## Docs
+## Documentation
 
 ### Modules
 
@@ -219,6 +225,7 @@ dependencies {
 | `stebz-allure`       | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations` (optional) | Allure report integration                            |
 | `stebz-qase`         | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations` (optional) | Qase report integration                              |
 | `stebz-reportportal` | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations` (optional) | ReportPortal report integration                      |
+| `stebz-testit`       | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations` (optional) | TestIT report integration                            |
 | `stebz-system-out`   | `stebz-utils`<br/>`stebz-core`                                    | System.out report integration (mainly for debugging) |
 
 ### Step objects
@@ -304,10 +311,9 @@ step(runnableStep
   .withName("new name")
   .withExpectedResult("expected result")
   .withComment("comment")
-  .withNewBody(originBody -> () -> {
-    // new body
-    originBody.run();
-  }));
+  .withBefore(() -> Logger.info("..."))
+  .withOnSuccess(() -> Logger.info("..."))
+  .withOnFailure(() -> Logger.warn("...")));
 ```
 <!-- @formatter:on -->
 
@@ -585,7 +591,7 @@ class ExampleTest {
 
 Processing of steps occurs in listeners.
 
-Examples of listener modules: `stebz-allure`, `stebz-qase`, `stebz-reportportal`, `stebz-system-out`.
+Examples of listener modules: `stebz-allure`, `stebz-qase`, `stebz-reportportal`, `stebz-testit`, `stebz-system-out`.
 
 To create a custom listener you need to implement the `org.stebz.listener.StepListener` interface
 and [specify it via SPI mechanism or via properties](#stebz-core-module).
@@ -643,12 +649,12 @@ System properties have first priority, file properties have second priority.
 
 #### `stebz-clean-stack-trace` module
 
-| property                                        | type      | default value | description                       |
-|-------------------------------------------------|-----------|---------------|-----------------------------------|
-| `stebz.extensions.cleanStackTrace.enabled`      | `Boolean` | `true`        | enable extension                  |
-| `stebz.extensions.cleanStackTrace.order`        | `Integer` | `10000`       | extension order                   |
-| `stebz.extensions.cleanStackTrace.stebzLines`   | `Boolean` | `true`        | removes Stebz stack trace lines   |
-| `stebz.extensions.cleanStackTrace.aspectjLines` | `Boolean` | `true`        | removes AspectJ stack trace lines |
+| property                                        | type      | default value                                   | description                       |
+|-------------------------------------------------|-----------|-------------------------------------------------|-----------------------------------|
+| `stebz.extensions.cleanStackTrace.enabled`      | `Boolean` | `true`                                          | enable extension                  |
+| `stebz.extensions.cleanStackTrace.order`        | `Integer` | `10000`                                         | extension order                   |
+| `stebz.extensions.cleanStackTrace.stebzLines`   | `Boolean` | `true` if `stebz-annotations` module is present | removes Stebz stack trace lines   |
+| `stebz.extensions.cleanStackTrace.aspectjLines` | `Boolean` | `true` if `stebz-annotations` module is present | removes AspectJ stack trace lines |
 
 #### `stebz-readable-reflective-name` module
 
@@ -700,6 +706,16 @@ System properties have first priority, file properties have second priority.
 | `stebz.listeners.reportportal.processName`        | `Boolean`             | `true`        | process step name with parameters         |
 | `stebz.listeners.reportportal.contextParam`       | `Boolean`             | `true`        | step context as parameter                 |
 
+#### `stebz-testit` module
+
+| property                                 | type                  | default value | description                               |
+|------------------------------------------|-----------------------|---------------|-------------------------------------------|
+| `stebz.listeners.testit.enabled`         | `Boolean`             | `true`        | enable listener                           |
+| `stebz.listeners.testit.order`           | `Integer`             | `10000`       | listener order                            |
+| `stebz.listeners.testit.keywordPosition` | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name |
+| `stebz.listeners.testit.processName`     | `Boolean`             | `true`        | process step name with parameters         |
+| `stebz.listeners.testit.contextParam`    | `Boolean`             | `true`        | step context as parameter                 |
+
 #### `stebz-system-out` module
 
 | property                                    | type                  | default value | description                               |
@@ -711,11 +727,13 @@ System properties have first priority, file properties have second priority.
 | `stebz.listeners.systemout.params`          | `Boolean`             | `true`        | show step params                          |
 | `stebz.listeners.systemout.comment`         | `Boolean`             | `true`        | show step comment                         |
 
-## How to contribute
+## Contributing
+
+### How to contribute
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for specific guidelines.
 
-## Contributors
+### Contributors
 
 * [@evpl](https://github.com/evpl) as Evgenii Plugatar
 

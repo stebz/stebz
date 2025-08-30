@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5 (31.08.2025)
+
+* #53 add expected result output to SystemOutStepListener by @evpl in PR #54
+* #57 add withOnSuccess and withOnFailure methods by @evpl in PR #58
+* #60 add Test IT StepListener by @evpl in PR #61
+
 ## 1.4 (18.08.2025)
 
 * #44 add stebz-gherkin-keywords module by @evpl
@@ -8,8 +14,6 @@
 * #48 add StebzGherkinMethods gherkinAround method by @evpl
 * #49 add expected result attribute by @evpl in PR #50
 * #51 add withFinally method by @evpl in PR #52
-* Bump io.qase:qase-java-commons from 4.1.13 to 4.1.16 in /stebz-parent by @dependabot[bot] in PR #43
-* Bump org.assertj:assertj-core from 3.27.3 to 3.27.4 in /stebz-parent by @dependabot[bot] in PR #41
 
 ## 1.3.1 (04.08.2025)
 
@@ -20,7 +24,6 @@
 
 * #3 added ability to capture quick steps by @evpl in PR #36
 * #32 fixed overriding step name with reflective name if step already has name by @evpl in PR #35
-* Bump io.qase:qase-java-commons from 4.1.12 to 4.1.13 in /stebz-parent by @dependabot[bot] in PR #31
 
 ## 1.2 (22.07.2025)
 
@@ -37,7 +40,6 @@
 
 ## 1.0.1 (13.07.2025)
 
-* Bump io.qase:qase-java-commons from 4.1.10 to 4.1.12 by @dependabot[bot] in PR #1
 * #6 made the `StebzMethods.around()` method public by @evpl in PR #7
 * #5 added order property to `SystemOutStepListener` by @evpl in PR #8
 
