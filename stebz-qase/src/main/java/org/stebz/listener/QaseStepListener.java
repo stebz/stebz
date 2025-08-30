@@ -163,7 +163,10 @@ public class QaseStepListener implements StepListener {
     if (this.isStebzAnnotationsUsed) {
       addReflectionParams(step, paramsToProcess);
     }
-    for (final Map.Entry<String, Object> entry : params.entrySet()) {
+    if (paramsToProcess.isEmpty()) {
+      return name;
+    }
+    for (final Map.Entry<String, Object> entry : paramsToProcess.entrySet()) {
       final String paramName = '{' + entry.getKey() + '}';
       if (name.contains(paramName)) {
         name = name.replaceAll("\\" + paramName, asString(entry.getValue()));

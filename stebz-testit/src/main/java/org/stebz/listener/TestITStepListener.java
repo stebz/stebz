@@ -166,7 +166,9 @@ public class TestITStepListener implements StepListener {
     if (this.isStebzAnnotationsUsed) {
       addReflectionParams(step, paramsToProcess);
     }
-    return Utils.setParameters(name, params);
+    return paramsToProcess.isEmpty()
+      ? name
+      : Utils.setParameters(name, paramsToProcess);
   }
 
   private String processStepDescription(final String expectedResult,

@@ -167,7 +167,9 @@ public class ReportPortalStepListener implements StepListener {
     if (this.isStebzAnnotationsUsed) {
       addReflectionParams(step, paramsToProcess);
     }
-    return TemplateProcessing.processTemplate(name, paramsToProcess, TEMPLATE_CONFIG);
+    return paramsToProcess.isEmpty()
+      ? name
+      : TemplateProcessing.processTemplate(name, paramsToProcess, TEMPLATE_CONFIG);
   }
 
   private String processStepDescription(final String expectedResult,

@@ -179,7 +179,9 @@ public class AllureStepListener implements StepListener {
     if (this.isStebzAnnotationsUsed) {
       addReflectionParams(step, paramsToProcess);
     }
-    return NamingUtils.processNameTemplate(name, paramsToProcess);
+    return paramsToProcess.isEmpty()
+      ? name
+      : NamingUtils.processNameTemplate(name, paramsToProcess);
   }
 
   private static void addReflectionParams(final StepObj<?> step,
