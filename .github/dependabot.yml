@@ -10,3 +10,5 @@ updates:
       - dependency-name: "org.stebz:*"
       - dependency-name: "*-plugin"
       - dependency-name: "org.mockito:mockito-core"
+      - dependency-name: "ru.testit:testit-java-commons"
+        version: [ "*-TMS-*" ]
