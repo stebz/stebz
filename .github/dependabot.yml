@@ -10,5 +10,13 @@ updates:
       - dependency-name: "org.stebz:*"
       - dependency-name: "*-plugin"
       - dependency-name: "org.mockito:mockito-core"
+      - dependency-name: "io.qameta.allure:allure-java-commons"
+        update-types: [ "version-update:semver-patch" ]
+      - dependency-name: "io.qameta.allure:allure-junit5"
+        update-types: [ "version-update:semver-patch" ]
+      - dependency-name: "io.qase:qase-java-commons"
+        update-types: [ "version-update:semver-patch" ]
+      - dependency-name: "com.epam.reportportal:client-java"
+        update-types: [ "version-update:semver-patch" ]
       - dependency-name: "ru.testit:testit-java-commons"
-        versions: [ "*-TMS-*" ]
+        update-types: [ "version-update:semver-patch" ]
