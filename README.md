@@ -36,7 +36,7 @@ Multi-approach and flexible Java framework for test steps managing.
 
 ## What is Stebz
 
-The main feature of Stebz is flexible test steps.
+The main feature of Stebz is flexible test steps:
 
 <!-- @formatter:off -->
 ```java
@@ -45,7 +45,7 @@ void separateMethods() {
   step(user_is_authorized_as("user1", "123456")
     .withName("user authorized as simple user"));
   step(user_sees_balance(10000)
-    .withComment("balance is always 10000 for this user"));
+    .withComment("user1 balance is always 10000"));
   step(user_sees_logout_button());
 }
 
@@ -62,7 +62,7 @@ void aroundContext() {
 ```
 <!-- @formatter:on -->
 
-And in the Gherkin style too.
+And in the Gherkin style too:
 
 <!-- @formatter:off -->
 ```java
@@ -71,7 +71,7 @@ void separateMethods() {
   When(user_is_authorized_as("user1", "123456")
     .withName("user authorized as simple user"));
   Then(user_sees_balance(10000)
-    .withComment("balance is always 10000 for this user"));
+    .withComment("user1 balance is always 10000"));
   And(user_sees_logout_button());
 }
 
@@ -85,6 +85,32 @@ void aroundContext() {
       .withName("response user balance should be {value}")
       .withOnFailure(response -> Logger.warn("Incorrect body: " + response.body())));
 }
+```
+<!-- @formatter:on -->
+
+And the steps in the methods way might look like:
+
+<!-- @formatter:off -->
+```java
+public static RunnableStep user_is_authorized_as(String username,
+                                                 String password) { return RunnableStep.of(
+  "user is authorized as {username}", params("username", username, "password", password), () -> {
+    // step body
+  }
+); }
+```
+<!-- @formatter:on -->
+
+Or using annotations:
+
+<!-- @formatter:off -->
+```java
+@WithName("user is authorized as {username}")
+@WithParams
+public static RunnableStep user_is_authorized_as(String username,
+                                                 String password) { return RunnableStep.of(() -> {
+  // step body
+}); }
 ```
 <!-- @formatter:on -->
 
@@ -317,6 +343,30 @@ step(runnableStep
 ```
 <!-- @formatter:on -->
 
+It is possible to make test blanks. When running the test, a `StepNotImplementedError` will be thrown.
+
+<!-- @formatter:off -->
+```java
+import static org.stebz.step.executable.RunnableStep.notImplemented;
+
+class ExampleTest {
+
+  @Test
+  void test() {
+    step(notImplemented()
+      .withName("Step 1")
+      .withExpectedResult("Expected result 1"));
+    step(notImplemented()
+      .withName("Step 2")
+      .withExpectedResult("Expected result 2"));
+    step(notImplemented()
+      .withName("Step 3")
+      .withExpectedResult("Expected result 3"));
+  }
+}
+```
+<!-- @formatter:on -->
+
 ### Quick steps
 
 If there is no need to save the object, but you need to quickly call a step, then this can be done using the
@@ -357,30 +407,6 @@ StepAttribute<String> customAttribute = StepAttribute.nonNull("custom_attribute"
 RunnableStep stepWithCustomAttribute = step.with(customAttribute, "attribute value");
 
 String attributeValue = stepWithCustomAttribute.get(customAttribute);
-```
-<!-- @formatter:on -->
-
-It is possible to make test blanks. When running the test, a `StepNotImplementedError` will be thrown.
-
-<!-- @formatter:off -->
-```java
-import static org.stebz.step.executable.RunnableStep.notImplemented;
-
-class ExampleTest {
-
-  @Test
-  void test() {
-    step(notImplemented()
-      .withName("Step 1")
-      .withExpectedResult("Expected result 1"));
-    step(notImplemented()
-      .withName("Step 2")
-      .withExpectedResult("Expected result 2"));
-    step(notImplemented()
-      .withName("Step 3")
-      .withExpectedResult("Expected result 3"));
-  }
-}
 ```
 <!-- @formatter:on -->
 
@@ -593,6 +619,26 @@ Processing of steps occurs in listeners.
 
 Examples of listener modules: `stebz-allure`, `stebz-qase`, `stebz-reportportal`, `stebz-testit`, `stebz-system-out`.
 
+`StepListener` interface.
+
+<!-- @formatter:off -->
+```java
+public interface StepListener {
+
+  void onStepStart(StepObj<?> step,
+                   NullableOptional<Object> context);
+
+  void onStepSuccess(StepObj<?> step,
+                     NullableOptional<Object> context,
+                     NullableOptional<Object> result);
+
+  void onStepFailure(StepObj<?> step,
+                     NullableOptional<Object> context,
+                     Throwable exception);
+}
+```
+<!-- @formatter:on -->
+
 To create a custom listener you need to implement the `org.stebz.listener.StepListener` interface
 and [specify it via SPI mechanism or via properties](#stebz-core-module).
 
@@ -604,19 +650,45 @@ Examples of extension modules: `stebz-repeat-and-retry`, `stebz-readable-reflect
 
 List on extension interfaces:
 
-| interface                | description                            |
-|--------------------------|----------------------------------------|
-| `StebzExtension`         | Base extension interface               |
-| `InterceptStepContext`   | Intercepts and replaces step context   |
-| `InterceptStep`          | Intercepts and replaces step           |
-| `BeforeStepStart`        | Calling before step start              |
-| `AfterStepStart`         | Calling after step start               |
-| `InterceptStepResult`    | Intercepts and replaces step result    |
-| `BeforeStepSuccess`      | Calling before step success            |
-| `AfterStepSuccess`       | Calling after step success             |
-| `InterceptStepException` | Intercepts and replaces step exception |
-| `BeforeStepFailure`      | Calling before step failure            |
-| `AfterStepFailure`       | Calling after step failure             |
+| interface                | description                                                              |
+|--------------------------|--------------------------------------------------------------------------|
+| `StebzExtension`         | Base extension interface                                                 |
+| `InterceptStepContext`   | Intercepts and replaces step context                                     |
+| `InterceptStep`          | Intercepts and replaces step                                             |
+| `BeforeStepStart`        | Calling before step start (before `StepListener.onStepStart` method)     |
+| `AfterStepStart`         | Calling after step start (after `StepListener.onStepStart` method)       |
+| `InterceptStepResult`    | Intercepts and replaces step result                                      |
+| `BeforeStepSuccess`      | Calling before step success (before `StepListener.onStepSuccess` method) |
+| `AfterStepSuccess`       | Calling after step success (after `StepListener.onStepSuccess` method)   |
+| `InterceptStepException` | Intercepts and replaces step exception                                   |
+| `BeforeStepFailure`      | Calling before step failure (before `StepListener.onStepFailure` method) |
+| `AfterStepFailure`       | Calling after step failure (after `StepListener.onStepFailure` method)   |
+
+For example, the `InterceptStepException` interface.
+
+<!-- @formatter:off -->
+```java
+public interface InterceptStepException extends StebzExtension {
+
+  Throwable interceptStepException(StepObj<?> step,
+                                   NullableOptional<Object> context,
+                                   Throwable exception);
+}
+```
+<!-- @formatter:on -->
+
+And `BeforeStepFailure` interface.
+
+<!-- @formatter:off -->
+```java
+public interface BeforeStepFailure extends StebzExtension {
+
+  void beforeStepFailure(StepObj<?> step,
+                         NullableOptional<Object> context,
+                         Throwable exception);
+}
+```
+<!-- @formatter:on -->
 
 To create a custom extension you need to implement one or more `org.stebz.extension.StebzExtension` interfaces
 and [specify it via SPI mechanism or via properties](#stebz-core-module).
