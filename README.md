@@ -30,6 +30,9 @@ Multi-approach and flexible Java framework for test steps managing.
   * [Gherkin style](#gherkin-style)
   * [Listeners](#listeners)
   * [Extensions](#extensions)
+    * [Clean stack trace extension](#stebz-clean-stack-trace-extension)
+    * [Readable reflective name extension](#stebz-readable-reflective-name-extension)
+    * [Repeat and retry extension](#stebz-repeat-and-retry-extension)
   * [Configuration](#configuration)
 * [Contributing](#contributing)
   * [How to contribute](#how-to-contribute)
@@ -153,7 +156,7 @@ Maven:
 ```
 <!-- @formatter:on -->
 
-Gradle:
+Gradle (Groovy):
 
 <!-- @formatter:off -->
 ```groovy
@@ -163,7 +166,7 @@ dependencies {
 ```
 <!-- @formatter:on -->
 
-Gradle (Kotlin DSL):
+Gradle (Kotlin):
 
 <!-- @formatter:off -->
 ```kotlin
@@ -777,6 +780,133 @@ public interface BeforeStepFailure extends StebzExtension {
 
 To create a custom extension you need to implement one or more `org.stebz.extension.StebzExtension` interfaces
 and [specify it via SPI mechanism or via properties](#stebz-core-module).
+
+#### `stebz-clean-stack-trace` extension
+
+Removes references to Stebz and AspectJ from step exception stack trace.
+
+<!-- @formatter:off -->
+```java
+class ExampleTest {
+
+  @Test
+  void test() {
+    step("Step 1", () -> {
+      step("Step 2", () -> {
+        step("Step 3", () -> {
+          throw new AssertionError();
+        });
+      });
+    });
+  }
+}
+```
+<!-- @formatter:on -->
+
+Error stack trace without extension:
+
+<!-- @formatter:off -->
+```
+java.lang.AssertionError
+  at my.project.ExampleTest.lambda$test$0(ExampleTest.java:14)
+  at org.stebz.executor.StepExecutor$Of.lambda$execute$11(StepExecutor.java:179)
+  at org.stebz.executor.StepExecutor$Of.exec(StepExecutor.java:236)
+  at org.stebz.executor.StepExecutor$Of.execute(StepExecutor.java:178)
+  at org.stebz.StebzMethods.step(StebzMethods.java:456)
+  at my.project.ExampleTest.lambda$test$1(ExampleTest.java:13)
+  at org.stebz.executor.StepExecutor$Of.lambda$execute$10(StepExecutor.java:169)
+  at org.stebz.executor.StepExecutor$Of.exec(StepExecutor.java:236)
+  at org.stebz.executor.StepExecutor$Of.execute(StepExecutor.java:168)
+  at org.stebz.StebzMethods.step(StebzMethods.java:313)
+  at my.project.ExampleTest.lambda$test$2(ExampleTest.java:12)
+  at org.stebz.executor.StepExecutor$Of.lambda$execute$10(StepExecutor.java:169)
+  at org.stebz.executor.StepExecutor$Of.exec(StepExecutor.java:236)
+  at org.stebz.executor.StepExecutor$Of.execute(StepExecutor.java:168)
+  at org.stebz.StebzMethods.step(StebzMethods.java:313)
+  at my.project.ExampleTest.test(ExampleTest.java:11)
+  at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+  at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+  at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+```
+<!-- @formatter:on -->
+
+Error stack trace with extension:
+
+<!-- @formatter:off -->
+```
+java.lang.AssertionError
+  at my.project.ExampleTest.lambda$test$0(ExampleTest.java:14)
+  at my.project.ExampleTest.lambda$test$1(ExampleTest.java:13)
+  at my.project.ExampleTest.lambda$test$2(ExampleTest.java:12)
+  at my.project.ExampleTest.test(ExampleTest.java:11)
+  at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+  at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+  at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+```
+<!-- @formatter:on -->
+
+#### `stebz-readable-reflective-name` extension
+
+Replaces underscores in a step name with spaces.
+
+<!-- @formatter:off -->
+```java
+@Step
+public static RunnableStep user_is_authorized(String username,
+                                              String password) { return RunnableStep.of(() -> {
+  // step body
+}); }
+```
+<!-- @formatter:on -->
+
+The name of this step will be "user is authorized".
+
+It is also possible to specify the separator symbols manually.
+
+<!-- @formatter:off -->
+```java
+@Step
+@NameWordSeparator("__")
+public static RunnableStep user__is__authorized(String username,
+                                               String password) { return RunnableStep.of(() -> {
+  // step body
+}); }
+```
+<!-- @formatter:on -->
+
+#### `stebz-repeat-and-retry` extension
+
+Allows to modify the body of a step by adding simple or only on error repetitions.
+
+Via annotations:
+
+<!-- @formatter:off -->
+```java
+@Step
+@WithRetry(count = 2, on = TimeoutException.class)
+public static RunnableStep send_unstable_request() { return RunnableStep.of(() -> {
+  // step body
+}); }
+
+@Step
+@WithRepeat(count = 3)
+public static RunnableStep send_request_multiple_times() { return RunnableStep.of(() -> {
+  // step body
+}); }
+```
+<!-- @formatter:on -->
+
+Via step attributes:
+
+<!-- @formatter:off -->
+```java
+step(send_request()
+  .with(RETRY, retryOptions().count(2).on(TimeoutException.class)));
+
+step(send_request()
+  .with(REPEAT, repeatOptions().count(3)));
+```
+<!-- @formatter:on -->
 
 ### Configuration
 
