@@ -18,6 +18,8 @@ Multi-approach and flexible Java framework for test steps managing.
 
 * [What is Stebz](#what-is-stebz)
 * [How to use](#how-to-use)
+  * [BOM](#bom)
+  * [Aspects](#aspects)
 * [Documentation](#documentation)
   * [Modules](#modules)
   * [Step objects](#step-objects)
@@ -173,7 +175,9 @@ dependencies {
 
 Or you can choose only [modules](#modules) those you need.
 
-Also, you can use BOM.
+### BOM
+
+Also, you can use BOM (Bill of Materials) to ensure correct versions of all the dependencies are used.
 
 Maven:
 
@@ -193,7 +197,7 @@ Maven:
 ```
 <!-- @formatter:on -->
 
-Gradle:
+Gradle (Groovy):
 
 <!-- @formatter:off -->
 ```groovy
@@ -203,12 +207,93 @@ dependencies {
 ```
 <!-- @formatter:on -->
 
-Gradle (Kotlin DSL):
+Gradle (Kotlin):
 
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
   implementation(platform("org.stebz:stebz-bom:1.5"))
+}
+```
+<!-- @formatter:on -->
+
+### Aspects
+
+If your project already uses Allure / Qase / ReportPortal / Test IT with `@Step` annotations, then you don't need any
+additional configuration.
+
+Otherwise, you need to manually enable aspects using the AspectJ library.
+
+Maven:
+
+<!-- @formatter:off -->
+```xml
+<properties>
+  <aspectj.version>1.9.24</aspectj.version> 
+</properties>
+
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-surefire-plugin</artifactId>
+  <version>3.2.3</version>
+  <configuration>
+    <argLine>
+      -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+    </argLine>
+  </configuration>
+  <dependencies>
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjweaver</artifactId>
+      <version>${aspectj.version}</version>
+    </dependency>
+  </dependencies>
+</plugin>
+```
+<!-- @formatter:on -->
+
+Gradle (Groovy):
+
+<!-- @formatter:off -->
+```groovy
+def aspectJVersion = '1.9.24'
+
+configurations {
+  agent {
+    canBeResolved = true
+    canBeConsumed = true
+  }
+}
+
+dependencies {
+  agent "org.aspectj:aspectjweaver:$aspectJVersion"
+}
+
+test {
+  jvmArgs = [ "-javaagent:${configurations.agent.singleFile}" ]
+}
+```
+<!-- @formatter:on -->
+
+Gradle (Kotlin):
+
+<!-- @formatter:off -->
+```kotlin
+val aspectJVersion = "1.9.24"
+
+val agent: Configuration by configurations.creating {
+  isCanBeConsumed = true
+  isCanBeResolved = true
+}
+
+dependencies {
+  agent("org.aspectj:aspectjweaver:${aspectJVersion}")
+}
+
+tasks.test {
+  jvmArgs = listOf(
+    "-javaagent:${agent.singleFile}"
+  )
 }
 ```
 <!-- @formatter:on -->
@@ -251,7 +336,7 @@ dependencies {
 | `stebz-allure`       | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations` (optional) | Allure report integration                            |
 | `stebz-qase`         | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations` (optional) | Qase report integration                              |
 | `stebz-reportportal` | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations` (optional) | ReportPortal report integration                      |
-| `stebz-testit`       | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations` (optional) | TestIT report integration                            |
+| `stebz-testit`       | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations` (optional) | Test IT report integration                           |
 | `stebz-system-out`   | `stebz-utils`<br/>`stebz-core`                                    | System.out report integration (mainly for debugging) |
 
 ### Step objects
@@ -619,7 +704,7 @@ Processing of steps occurs in listeners.
 
 Examples of listener modules: `stebz-allure`, `stebz-qase`, `stebz-reportportal`, `stebz-testit`, `stebz-system-out`.
 
-`StepListener` interface.
+`StepListener` interface:
 
 <!-- @formatter:off -->
 ```java
@@ -757,7 +842,7 @@ System properties have first priority, file properties have second priority.
 | `stebz.listeners.allure.expectedResultAttachment` | `Boolean`             | `true`        | attach the expected result as an attachment |
 | `stebz.listeners.allure.commentAttachment`        | `Boolean`             | `true`        | attach the comment as an attachment         |
 
-### `stebz-qase` module
+#### `stebz-qase` module
 
 | property                                 | type                  | default value | description                               |
 |------------------------------------------|-----------------------|---------------|-------------------------------------------|
