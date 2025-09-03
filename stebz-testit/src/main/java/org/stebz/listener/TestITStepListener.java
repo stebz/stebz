@@ -77,7 +77,7 @@ public class TestITStepListener implements StepListener {
       KeywordPosition.class, KeywordPosition.AT_START);
     this.keywordToUppercase = properties.getBoolean("stebz.listeners.testit.keywordToUppercase", false);
     this.processName = properties.getBoolean("stebz.listeners.testit.processName", true);
-    this.contextParam = properties.getBoolean("stebz.listeners.testit.contextParam", true);
+    this.contextParam = properties.getBoolean("stebz.listeners.testit.contextParam", false);
     this.isStebzAnnotationsUsed = isStebzAnnotationsUsed();
   }
 

@@ -80,7 +80,7 @@ public class ReportPortalStepListener implements StepListener {
       KeywordPosition.class, KeywordPosition.AT_START);
     this.keywordToUppercase = properties.getBoolean("stebz.listeners.reportportal.keywordToUppercase", false);
     this.processName = properties.getBoolean("stebz.listeners.reportportal.processName", true);
-    this.contextParam = properties.getBoolean("stebz.listeners.reportportal.contextParam", true);
+    this.contextParam = properties.getBoolean("stebz.listeners.reportportal.contextParam", false);
     this.isStebzAnnotationsUsed = isStebzAnnotationsUsed();
   }
 
