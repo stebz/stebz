@@ -56,6 +56,7 @@ public class ReportPortalStepListener implements StepListener {
   private final boolean enabled;
   private final int order;
   private final KeywordPosition keywordPosition;
+  private final boolean keywordToUppercase;
   private final boolean processName;
   private final boolean contextParam;
   private final boolean isStebzAnnotationsUsed;
@@ -77,6 +78,7 @@ public class ReportPortalStepListener implements StepListener {
     this.order = properties.getInteger("stebz.listeners.reportportal.order", DEFAULT_ORDER);
     this.keywordPosition = properties.getEnum("stebz.listeners.reportportal.keywordPosition",
       KeywordPosition.class, KeywordPosition.AT_START);
+    this.keywordToUppercase = properties.getBoolean("stebz.listeners.reportportal.keywordToUppercase", false);
     this.processName = properties.getBoolean("stebz.listeners.reportportal.processName", true);
     this.contextParam = properties.getBoolean("stebz.listeners.reportportal.contextParam", true);
     this.isStebzAnnotationsUsed = isStebzAnnotationsUsed();
@@ -111,7 +113,10 @@ public class ReportPortalStepListener implements StepListener {
       params.putIfAbsent(CONTEXT_PARAM_NAME, context.get());
     }
     final StartTestItemRQ startTestItemRQ = StepRequestUtils.buildStartStepRequest(
-      this.keywordPosition.concat(step.getKeyword(), this.processStepName(step, step.getName(), params)),
+      this.keywordPosition.concat(
+        this.keywordValue(step.getKeyword()),
+        this.processStepName(step, step.getName(), params)
+      ),
       this.processStepDescription(step.getExpectedResult(), step.getComment())
     );
     if (!params.isEmpty()) {
@@ -210,35 +215,37 @@ public class ReportPortalStepListener implements StepListener {
     }
   }
 
+  private String keywordValue(final Keyword keyword) {
+    return this.keywordToUppercase
+      ? keyword.value().toUpperCase()
+      : keyword.value();
+  }
+
   private enum KeywordPosition {
     AT_START {
       @Override
-      String concat(final Keyword keyword,
+      String concat(final String keywordValue,
                     final String name) {
-        if (name.isEmpty()) {
-          return keyword.value();
-        }
-        final String keywordValue = keyword.value();
-        return keywordValue.isEmpty()
+        return name.isEmpty()
+          ? keywordValue
+          : keywordValue.isEmpty()
           ? name
           : keywordValue + ' ' + name;
       }
     },
     AT_END {
       @Override
-      String concat(final Keyword keyword,
+      String concat(final String keywordValue,
                     final String name) {
-        if (name.isEmpty()) {
-          return keyword.value();
-        }
-        final String keywordValue = keyword.value();
-        return keywordValue.isEmpty()
+        return name.isEmpty()
+          ? keywordValue
+          : keywordValue.isEmpty()
           ? name
           : name + ' ' + keywordValue;
       }
     };
 
-    abstract String concat(Keyword keyword,
+    abstract String concat(String keywordValue,
                            String name);
   }
 }
