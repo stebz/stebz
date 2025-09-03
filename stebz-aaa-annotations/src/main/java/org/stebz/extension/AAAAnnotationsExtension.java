@@ -23,11 +23,11 @@
  */
 package org.stebz.extension;
 
+import org.stebz.annotation.Act;
 import org.stebz.annotation.And;
-import org.stebz.annotation.But;
-import org.stebz.annotation.Given;
-import org.stebz.annotation.Then;
-import org.stebz.annotation.When;
+import org.stebz.annotation.Arrange;
+import org.stebz.annotation.Assert;
+import org.stebz.annotation.Setup;
 import org.stebz.attribute.Keyword;
 import org.stebz.attribute.StepAttribute;
 import org.stebz.step.StepObj;
@@ -44,54 +44,54 @@ import static org.stebz.attribute.StepAttribute.NAME;
 import static org.stebz.util.function.ThrowingSupplier.caching;
 
 /**
- * Gherkin annotations {@link StebzExtension}.
+ * AAA annotations {@link StebzExtension}.
  */
-public class GherkinAnnotationsExtension implements InterceptStep {
+public class AAAAnnotationsExtension implements InterceptStep {
   /**
-   * Gherkin keyword attribute key.
+   * AAA keyword attribute key.
    */
-  public static final String GHERKIN_KEYWORD_ATTRIBUTE_KEY = "extension:gherkin_keyword";
+  public static final String AAA_KEYWORD_ATTRIBUTE_KEY = "extension:aaa_keyword";
   /**
-   * Gherkin keyword annotation attribute.
+   * AAA keyword annotation attribute.
    *
-   * @see Given
-   * @see When
-   * @see Then
+   * @see Act
    * @see And
-   * @see But
+   * @see Arrange
+   * @see Assert
+   * @see Setup
    */
-  public static final StepAttribute<Annotation> GHERKIN_KEYWORD = StepAttribute.nullable(GHERKIN_KEYWORD_ATTRIBUTE_KEY);
+  public static final StepAttribute<Annotation> AAA_KEYWORD = StepAttribute.nullable(AAA_KEYWORD_ATTRIBUTE_KEY);
   private static final Caching<Map<Class<? extends Annotation>, Keyword>> KEYWORDS =
     caching(() -> {
       final Map<Class<? extends Annotation>, Keyword> keywords = new HashMap<>();
-      keywords.put(Given.class, GherkinKeywords.given());
-      keywords.put(When.class, GherkinKeywords.when());
-      keywords.put(Then.class, GherkinKeywords.then());
-      keywords.put(And.class, GherkinKeywords.and());
-      keywords.put(But.class, GherkinKeywords.but());
+      keywords.put(Act.class, AAAKeywords.act());
+      keywords.put(And.class, AAAKeywords.and());
+      keywords.put(Arrange.class, AAAKeywords.arrange());
+      keywords.put(Assert.class, AAAKeywords._assert());
+      keywords.put(Setup.class, AAAKeywords.setup());
       return keywords;
     });
   private static final Caching<Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>>> VALUES =
     caching(() -> {
       final Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>> values = new HashMap<>();
-      values.put(Given.class, annot -> ((Given) annot).value());
-      values.put(When.class, annot -> ((When) annot).value());
-      values.put(Then.class, annot -> ((Then) annot).value());
+      values.put(Act.class, annot -> ((Act) annot).value());
       values.put(And.class, annot -> ((And) annot).value());
-      values.put(But.class, annot -> ((But) annot).value());
+      values.put(Arrange.class, annot -> ((Arrange) annot).value());
+      values.put(Assert.class, annot -> ((Assert) annot).value());
+      values.put(Setup.class, annot -> ((Setup) annot).value());
       return values;
     });
 
   /**
    * Ctor.
    */
-  public GherkinAnnotationsExtension() {
+  public AAAAnnotationsExtension() {
   }
 
   @Override
   public StepObj<?> interceptStep(final StepObj<?> step,
                                   final NullableOptional<Object> context) {
-    final Annotation annotation = step.get(GHERKIN_KEYWORD);
+    final Annotation annotation = step.get(AAA_KEYWORD);
     if (annotation == null) {
       return step;
     }
