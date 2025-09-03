@@ -89,8 +89,7 @@ final class AllureStepListenerTest {
         .isEqualTo(keyword.value() + " " + name);
       assertThat(stepResultRef.get().getParameters()).containsExactly(
         new Parameter().setName(paramName1).setValue(paramValue1),
-        new Parameter().setName(paramName2).setValue(paramValue2),
-        new Parameter().setName("context").setValue(context)
+        new Parameter().setName(paramName2).setValue(paramValue2)
       );
     } finally {
       Allure.getLifecycle().stopStep();
