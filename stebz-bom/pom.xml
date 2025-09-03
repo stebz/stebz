@@ -99,6 +99,21 @@
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
+        <artifactId>stebz-aaa-keywords</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.stebz</groupId>
+        <artifactId>stebz-aaa-methods</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.stebz</groupId>
+        <artifactId>stebz-aaa-annotations</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.stebz</groupId>
         <artifactId>stebz-gherkin-keywords</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -134,6 +149,11 @@
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
+        <artifactId>stebz-aaa</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.stebz</groupId>
         <artifactId>stebz-gherkin</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -150,6 +170,11 @@
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-reportportal</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.stebz</groupId>
+        <artifactId>stebz-testit</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

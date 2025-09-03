@@ -39,6 +39,9 @@
     <module>stebz-core</module>
     <module>stebz-methods</module>
     <module>stebz-annotations</module>
+    <module>stebz-aaa-keywords</module>
+    <module>stebz-aaa-methods</module>
+    <module>stebz-aaa-annotations</module>
     <module>stebz-gherkin-keywords</module>
     <module>stebz-gherkin-methods</module>
     <module>stebz-gherkin-annotations</module>
@@ -52,6 +55,7 @@
     <module>stebz-reportportal</module>
     <module>stebz-testit</module>
     <module>stebz-system-out</module>
+    <module>stebz-aaa</module>
   </modules>
 
   <name>Stebz Aggregator</name>
