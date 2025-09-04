@@ -856,25 +856,37 @@ and [specify it via SPI mechanism or via properties](#stebz-core-module).
 
 Specify and configure main Allure dependency `io.qameta.allure:allure-java-commons`.
 
-Then specify Stebz dependencies (`org.stebz:stebz` or `org.stebz:stebz-gherkin`) and `org.stebz:stebz-allure`.
+Then specify Stebz dependencies:
+
+- `org.stebz:stebz` / `org.stebz:stebz-aaa` / `org.stebz:stebz-gherkin`
+- `org.stebz:stebz-allure`
 
 #### `stebz-qase` listener
 
 Specify and configure main Qase dependency `io.qase:qase-java-commons`.
 
-Then specify Stebz dependencies (`org.stebz:stebz` or `org.stebz:stebz-gherkin`) and `org.stebz:stebz-allure`.
+Then specify Stebz dependencies:
+
+- `org.stebz:stebz` / `org.stebz:stebz-aaa` / `org.stebz:stebz-gherkin`
+- `org.stebz:stebz-qase`
 
 #### `stebz-reportportal` listener
 
 Specify and configure main ReportPortal dependency `com.epam.reportportal:client-java`.
 
-Then specify Stebz dependencies (`org.stebz:stebz` or `org.stebz:stebz-gherkin`) and `org.stebz:stebz-allure`.
+Then specify Stebz dependencies:
+
+- `org.stebz:stebz` / `org.stebz:stebz-aaa` / `org.stebz:stebz-gherkin`
+- `org.stebz:stebz-reportportal`
 
 #### `stebz-testit` listener
 
 Specify and configure main Test IT dependency `ru.testit:testit-java-commons`.
 
-Then specify Stebz dependencies (`org.stebz:stebz` or `org.stebz:stebz-gherkin`) and `org.stebz:stebz-allure`.
+Then specify Stebz dependencies:
+
+- `org.stebz:stebz` / `org.stebz:stebz-aaa` / `org.stebz:stebz-gherkin`
+- `org.stebz:stebz-testit`
 
 ### Extensions
 
