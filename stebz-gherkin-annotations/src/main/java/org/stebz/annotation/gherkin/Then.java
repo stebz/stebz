@@ -21,44 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.stebz.extension;
+package org.stebz.annotation.gherkin;
 
-import org.junit.jupiter.api.Test;
+import org.stebz.annotation.Step;
+import org.stebz.annotation.StepAttributeAnnotation;
+import org.stebz.annotation.WithKeyword;
+import org.stebz.annotation.WithName;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import static org.stebz.extension.GherkinAnnotationsExtension.GHERKIN_KEYWORD_ATTRIBUTE_KEY;
 
 /**
- * Tests for {@link AAAKeywords}.
+ * Alias for the combination of the {@link WithName} and {@link WithKeyword} annotations. The keyword is "Then".
  */
-final class AAAKeywordsTest {
+@Documented
+@Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+@StepAttributeAnnotation(GHERKIN_KEYWORD_ATTRIBUTE_KEY)
+public @interface Then {
 
-  @Test
-  void actKeywordDefaultValue() {
-    assertThat(AAAKeywords.act().value())
-      .isEqualTo("Act");
-  }
-
-  @Test
-  void andKeywordDefaultValue() {
-    assertThat(AAAKeywords.and().value())
-      .isEqualTo("And");
-  }
-
-  @Test
-  void arrangeKeywordDefaultValue() {
-    assertThat(AAAKeywords.arrange().value())
-      .isEqualTo("Arrange");
-  }
-
-  @Test
-  void assertKeywordDefaultValue() {
-    assertThat(AAAKeywords._assert().value())
-      .isEqualTo("Assert");
-  }
-
-  @Test
-  void setupKeywordDefaultValue() {
-    assertThat(AAAKeywords.setup().value())
-      .isEqualTo("Setup");
-  }
+  /**
+   * Returns name attribute value. Non empty value overrides {@link WithName#value()} and {@link Step#value()}.
+   *
+   * @return name attribute value
+   */
+  String value() default "";
 }

@@ -49,13 +49,13 @@
     <module>stebz-readable-reflective-name</module>
     <module>stebz-repeat-and-retry</module>
     <module>stebz</module>
+    <module>stebz-aaa</module>
     <module>stebz-gherkin</module>
     <module>stebz-allure</module>
     <module>stebz-qase</module>
     <module>stebz-reportportal</module>
     <module>stebz-testit</module>
     <module>stebz-system-out</module>
-    <module>stebz-aaa</module>
   </modules>
 
   <name>Stebz Aggregator</name>

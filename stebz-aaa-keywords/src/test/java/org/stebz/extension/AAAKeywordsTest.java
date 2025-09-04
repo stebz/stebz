@@ -57,8 +57,14 @@ final class AAAKeywordsTest {
   }
 
   @Test
-  void setupKeywordDefaultValue() {
-    assertThat(AAAKeywords.setup().value())
-      .isEqualTo("Setup");
+  void butKeywordDefaultValue() {
+    assertThat(AAAKeywords.but().value())
+      .isEqualTo("But");
+  }
+
+  @Test
+  void asteriskKeywordDefaultValue() {
+    assertThat(AAAKeywords.asterisk().value())
+      .isEqualTo("*");
   }
 }

@@ -21,47 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.stebz.extension;
-
-import org.stebz.annotation.gherkin.And;
-import org.stebz.annotation.gherkin.But;
-import org.stebz.annotation.gherkin.Given;
-import org.stebz.annotation.Step;
-import org.stebz.annotation.gherkin.Then;
-import org.stebz.annotation.gherkin.When;
-import org.stebz.annotation.WithName;
-import org.stebz.step.executable.RunnableStep;
-
-final class MethodSteps {
-
-  MethodSteps() {
-  }
-
-  @Given
-  static RunnableStep gherkinKeywordAnnotationWithoutName() {
-    return RunnableStep.empty();
-  }
-
-  @But
-  @WithName("step name")
-  static RunnableStep gherkinKeywordAnnotationWithoutNameAndWithNameAnnotation() {
-    return RunnableStep.empty();
-  }
-
-  @When("custom name")
-  static RunnableStep gherkinKeywordAnnotationWithName() {
-    return RunnableStep.empty();
-  }
-
-  @Then("custom name")
-  @Step("step name")
-  static RunnableStep gherkinKeywordAnnotationWithNameAndStepAnnotation() {
-    return RunnableStep.empty();
-  }
-
-  @And("custom name")
-  @WithName("step name")
-  static RunnableStep gherkinKeywordAnnotationWithNameAndWithNameAnnotation() {
-    return RunnableStep.empty();
-  }
-}
+/**
+ * Arrange-Act-Assert annotations.
+ */
+package org.stebz.annotation.aaa;

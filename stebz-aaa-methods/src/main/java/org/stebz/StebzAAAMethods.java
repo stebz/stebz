@@ -43,10 +43,10 @@ import static org.stebz.extension.AAAKeywords._assert;
 import static org.stebz.extension.AAAKeywords.act;
 import static org.stebz.extension.AAAKeywords.and;
 import static org.stebz.extension.AAAKeywords.arrange;
-import static org.stebz.extension.AAAKeywords.setup;
+import static org.stebz.extension.AAAKeywords.but;
 
 /**
- * Stebz AAA methods.
+ * Stebz Arrange-Act-Assert methods.
  */
 public final class StebzAAAMethods {
 
@@ -1331,83 +1331,83 @@ public final class StebzAAAMethods {
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword.
+   * Executes given step with {@link AAAKeywords#but()} keyword.
    *
    * @param step the step
    */
-  public static void Setup(final RunnableStep step) {
-    StepExecutor.get().execute(step.withKeyword(setup()));
+  public static void But(final RunnableStep step) {
+    StepExecutor.get().execute(step.withKeyword(but()));
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name.
+   * Executes given step with {@link AAAKeywords#but()} keyword and name.
    *
    * @param name the name
    * @param step the step
    */
-  public static void Setup(final String name,
-                           final RunnableStep step) {
-    StepExecutor.get().execute(step.with(KEYWORD, setup(), NAME, name));
+  public static void But(final String name,
+                         final RunnableStep step) {
+    StepExecutor.get().execute(step.with(KEYWORD, but(), NAME, name));
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and returns step result.
+   * Executes given step with {@link AAAKeywords#but()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R Setup(final SupplierStep<R> step) {
-    return StepExecutor.get().execute(step.with(KEYWORD, setup()));
+  public static <R> R But(final SupplierStep<R> step) {
+    return StepExecutor.get().execute(step.with(KEYWORD, but()));
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name and returns step result.
+   * Executes given step with {@link AAAKeywords#but()} keyword and name and returns step result.
    *
    * @param name the name
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R Setup(final String name,
-                            final SupplierStep<R> step) {
-    return StepExecutor.get().execute(step.with(KEYWORD, setup(), NAME, name));
+  public static <R> R But(final String name,
+                          final SupplierStep<R> step) {
+    return StepExecutor.get().execute(step.with(KEYWORD, but(), NAME, name));
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword on given value.
+   * Executes given step with {@link AAAKeywords#but()} keyword on given value.
    *
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
    */
-  public static <T> void Setup(final ConsumerStep<? super T> step,
-                               final T value) {
+  public static <T> void But(final ConsumerStep<? super T> step,
+                             final T value) {
     StepExecutor.get().execute(
-      step.with(KEYWORD, setup()),
+      step.with(KEYWORD, but()),
       value
     );
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name on given value.
+   * Executes given step with {@link AAAKeywords#but()} keyword and name on given value.
    *
    * @param name  the name
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
    */
-  public static <T> void Setup(final String name,
-                               final ConsumerStep<? super T> step,
-                               final T value) {
+  public static <T> void But(final String name,
+                             final ConsumerStep<? super T> step,
+                             final T value) {
     StepExecutor.get().execute(
-      step.with(KEYWORD, setup(), NAME, name),
+      step.with(KEYWORD, but(), NAME, name),
       value
     );
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword on given value and returns step result.
+   * Executes given step with {@link AAAKeywords#but()} keyword on given value and returns step result.
    *
    * @param step  the step
    * @param value the value
@@ -1415,16 +1415,16 @@ public final class StebzAAAMethods {
    * @param <R>   the type of the step result
    * @return step result
    */
-  public static <T, R> R Setup(final FunctionStep<? super T, ? extends R> step,
-                               final T value) {
+  public static <T, R> R But(final FunctionStep<? super T, ? extends R> step,
+                             final T value) {
     return StepExecutor.get().execute(
-      step.with(KEYWORD, setup()),
+      step.with(KEYWORD, but()),
       value
     );
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name on given value and returns step result.
+   * Executes given step with {@link AAAKeywords#but()} keyword and name on given value and returns step result.
    *
    * @param name  the name
    * @param step  the step
@@ -1433,64 +1433,64 @@ public final class StebzAAAMethods {
    * @param <R>   the type of the step result
    * @return step result
    */
-  public static <T, R> R Setup(final String name,
-                               final FunctionStep<? super T, ? extends R> step,
-                               final T value) {
+  public static <T, R> R But(final String name,
+                             final FunctionStep<? super T, ? extends R> step,
+                             final T value) {
     return StepExecutor.get().execute(
-      step.with(KEYWORD, setup(), NAME, name),
+      step.with(KEYWORD, but(), NAME, name),
       value
     );
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#but()} keyword and given attributes.
    *
    * @param name the step name
    * @param body the step body
    */
-  public static void Setup(final String name,
-                           final ThrowingRunnable<?> body) {
+  public static void But(final String name,
+                         final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, setup(), NAME, name),
+      new StepAttributes.Of(KEYWORD, but(), NAME, name),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#but()} keyword and given attributes.
    *
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
    */
   @SuppressWarnings("unchecked")
-  public static void Setup(final String name,
-                           final Map<String, ?> params,
-                           final ThrowingRunnable<?> body) {
+  public static void But(final String name,
+                         final Map<String, ?> params,
+                         final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params),
+      new StepAttributes.Of(KEYWORD, but(), NAME, name, PARAMS, (Map<String, Object>) params),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#but()} keyword and given attributes.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    */
-  public static void Setup(final String name,
-                           final String expectedResult,
-                           final ThrowingRunnable<?> body) {
+  public static void But(final String name,
+                         final String expectedResult,
+                         final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, setup(), NAME, name, EXPECTED_RESULT, expectedResult),
+      new StepAttributes.Of(KEYWORD, but(), NAME, name, EXPECTED_RESULT, expectedResult),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#but()} keyword and given attributes.
    *
    * @param name           the step name
    * @param params         the step params
@@ -1498,35 +1498,35 @@ public final class StebzAAAMethods {
    * @param body           the step body
    */
   @SuppressWarnings("unchecked")
-  public static void Setup(final String name,
-                           final Map<String, ?> params,
-                           final String expectedResult,
-                           final ThrowingRunnable<?> body) {
+  public static void But(final String name,
+                         final Map<String, ?> params,
+                         final String expectedResult,
+                         final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
-        KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        KEYWORD, but(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes and returns step result.
+   * Executes step with {@link AAAKeywords#but()} keyword and given attributes and returns step result.
    *
    * @param name the step name
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
    */
-  public static <R> R Setup(final String name,
-                            final ThrowingSupplier<? extends R, ?> body) {
+  public static <R> R But(final String name,
+                          final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
-      new StepAttributes.Of(KEYWORD, setup(), NAME, name),
+      new StepAttributes.Of(KEYWORD, but(), NAME, name),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes and returns step result.
+   * Executes step with {@link AAAKeywords#but()} keyword and given attributes and returns step result.
    *
    * @param name   the step name
    * @param params the step params
@@ -1535,17 +1535,17 @@ public final class StebzAAAMethods {
    * @return step result
    */
   @SuppressWarnings("unchecked")
-  public static <R> R Setup(final String name,
-                            final Map<String, ?> params,
-                            final ThrowingSupplier<? extends R, ?> body) {
+  public static <R> R But(final String name,
+                          final Map<String, ?> params,
+                          final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
-      new StepAttributes.Of(KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params),
+      new StepAttributes.Of(KEYWORD, but(), NAME, name, PARAMS, (Map<String, Object>) params),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes and returns step result.
+   * Executes step with {@link AAAKeywords#but()} keyword and given attributes and returns step result.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
@@ -1553,17 +1553,17 @@ public final class StebzAAAMethods {
    * @param <R>            the type of the step result
    * @return step result
    */
-  public static <R> R Setup(final String name,
-                            final String expectedResult,
-                            final ThrowingSupplier<? extends R, ?> body) {
+  public static <R> R But(final String name,
+                          final String expectedResult,
+                          final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
-      new StepAttributes.Of(KEYWORD, setup(), NAME, name, EXPECTED_RESULT, expectedResult),
+      new StepAttributes.Of(KEYWORD, but(), NAME, name, EXPECTED_RESULT, expectedResult),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes and returns step result.
+   * Executes step with {@link AAAKeywords#but()} keyword and given attributes and returns step result.
    *
    * @param name           the step name
    * @param params         the step params
@@ -1573,72 +1573,72 @@ public final class StebzAAAMethods {
    * @return step result
    */
   @SuppressWarnings("unchecked")
-  public static <R> R Setup(final String name,
-                            final Map<String, ?> params,
-                            final String expectedResult,
-                            final ThrowingSupplier<? extends R, ?> body) {
+  public static <R> R But(final String name,
+                          final Map<String, ?> params,
+                          final String expectedResult,
+                          final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
       new StepAttributes.Of(
-        KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        KEYWORD, but(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#but()} keyword and given attributes.
    *
    * @param name the step name
    */
-  public static void Setup(final String name) {
+  public static void But(final String name) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, setup(), NAME, name),
+      new StepAttributes.Of(KEYWORD, but(), NAME, name),
       RunnableStep.emptyBody()
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#but()} keyword and given attributes.
    *
    * @param name   the step name
    * @param params the step params
    */
   @SuppressWarnings("unchecked")
-  public static void Setup(final String name,
-                           final Map<String, ?> params) {
+  public static void But(final String name,
+                         final Map<String, ?> params) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params),
+      new StepAttributes.Of(KEYWORD, but(), NAME, name, PARAMS, (Map<String, Object>) params),
       RunnableStep.emptyBody()
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#but()} keyword and given attributes.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    */
-  public static void Setup(final String name,
-                           final String expectedResult) {
+  public static void But(final String name,
+                         final String expectedResult) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, setup(), NAME, name, EXPECTED_RESULT, expectedResult),
+      new StepAttributes.Of(KEYWORD, but(), NAME, name, EXPECTED_RESULT, expectedResult),
       RunnableStep.emptyBody()
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#but()} keyword and given attributes.
    *
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
    */
   @SuppressWarnings("unchecked")
-  public static void Setup(final String name,
-                           final Map<String, ?> params,
-                           final String expectedResult) {
+  public static void But(final String name,
+                         final Map<String, ?> params,
+                         final String expectedResult) {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
-        KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        KEYWORD, but(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
       RunnableStep.emptyBody()
     ));
   }

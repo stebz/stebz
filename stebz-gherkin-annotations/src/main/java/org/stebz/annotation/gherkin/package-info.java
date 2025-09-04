@@ -21,29 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.stebz.annotation;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import static org.stebz.extension.AAAAnnotationsExtension.AAA_KEYWORD_ATTRIBUTE_KEY;
-
 /**
- * Alias for the combination of the {@link WithName} and {@link WithKeyword} annotations. The keyword is "Assert".
+ * Gherkin annotations.
  */
-@Documented
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
-@Retention(RetentionPolicy.RUNTIME)
-@StepAttributeAnnotation(AAA_KEYWORD_ATTRIBUTE_KEY)
-public @interface Assert {
-
-  /**
-   * Returns name attribute value. Non empty value overrides {@link WithName#value()} and {@link Step#value()}.
-   *
-   * @return name attribute value
-   */
-  String value() default "";
-}
+package org.stebz.annotation.gherkin;

@@ -23,11 +23,11 @@
  */
 package org.stebz.extension;
 
-import org.stebz.annotation.Act;
-import org.stebz.annotation.And;
-import org.stebz.annotation.Arrange;
-import org.stebz.annotation.Assert;
-import org.stebz.annotation.Setup;
+import org.stebz.annotation.aaa.Act;
+import org.stebz.annotation.aaa.And;
+import org.stebz.annotation.aaa.Arrange;
+import org.stebz.annotation.aaa.Assert;
+import org.stebz.annotation.aaa.But;
 import org.stebz.attribute.Keyword;
 import org.stebz.attribute.StepAttribute;
 import org.stebz.step.StepObj;
@@ -44,21 +44,21 @@ import static org.stebz.attribute.StepAttribute.NAME;
 import static org.stebz.util.function.ThrowingSupplier.caching;
 
 /**
- * AAA annotations {@link StebzExtension}.
+ * Arrange-Act-Assert annotations {@link StebzExtension}.
  */
 public class AAAAnnotationsExtension implements InterceptStep {
   /**
-   * AAA keyword attribute key.
+   * Arrange-Act-Assert keyword attribute key.
    */
   public static final String AAA_KEYWORD_ATTRIBUTE_KEY = "extension:aaa_keyword";
   /**
-   * AAA keyword annotation attribute.
+   * Arrange-Act-Assert keyword annotation attribute.
    *
    * @see Act
    * @see And
    * @see Arrange
    * @see Assert
-   * @see Setup
+   * @see But
    */
   public static final StepAttribute<Annotation> AAA_KEYWORD = StepAttribute.nullable(AAA_KEYWORD_ATTRIBUTE_KEY);
   private static final Caching<Map<Class<? extends Annotation>, Keyword>> KEYWORDS =
@@ -68,7 +68,7 @@ public class AAAAnnotationsExtension implements InterceptStep {
       keywords.put(And.class, AAAKeywords.and());
       keywords.put(Arrange.class, AAAKeywords.arrange());
       keywords.put(Assert.class, AAAKeywords._assert());
-      keywords.put(Setup.class, AAAKeywords.setup());
+      keywords.put(But.class, AAAKeywords.but());
       return keywords;
     });
   private static final Caching<Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>>> VALUES =
@@ -78,7 +78,7 @@ public class AAAAnnotationsExtension implements InterceptStep {
       values.put(And.class, annot -> ((And) annot).value());
       values.put(Arrange.class, annot -> ((Arrange) annot).value());
       values.put(Assert.class, annot -> ((Assert) annot).value());
-      values.put(Setup.class, annot -> ((Setup) annot).value());
+      values.put(But.class, annot -> ((But) annot).value());
       return values;
     });
 

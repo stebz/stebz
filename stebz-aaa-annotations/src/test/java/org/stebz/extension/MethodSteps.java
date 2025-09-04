@@ -21,29 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.stebz.annotation;
+package org.stebz.extension;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.stebz.annotation.Step;
+import org.stebz.annotation.WithName;
+import org.stebz.annotation.aaa.Act;
+import org.stebz.annotation.aaa.And;
+import org.stebz.annotation.aaa.Arrange;
+import org.stebz.annotation.aaa.Assert;
+import org.stebz.annotation.aaa.But;
+import org.stebz.step.executable.RunnableStep;
 
-import static org.stebz.extension.GherkinAnnotationsExtension.GHERKIN_KEYWORD_ATTRIBUTE_KEY;
+final class MethodSteps {
 
-/**
- * Alias for the combination of the {@link WithName} and {@link WithKeyword} annotations. The keyword is "But".
- */
-@Documented
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
-@Retention(RetentionPolicy.RUNTIME)
-@StepAttributeAnnotation(GHERKIN_KEYWORD_ATTRIBUTE_KEY)
-public @interface But {
+  MethodSteps() {
+  }
 
-  /**
-   * Returns name attribute value. Non empty value overrides {@link WithName#value()} and {@link Step#value()}.
-   *
-   * @return name attribute value
-   */
-  String value() default "";
+  @Arrange
+  static RunnableStep aaaKeywordAnnotationWithoutName() {
+    return RunnableStep.empty();
+  }
+
+  @Act
+  @WithName("step name")
+  static RunnableStep aaaKeywordAnnotationWithoutNameAndWithNameAnnotation() {
+    return RunnableStep.empty();
+  }
+
+  @Assert("custom name")
+  static RunnableStep aaaKeywordAnnotationWithName() {
+    return RunnableStep.empty();
+  }
+
+  @And("custom name")
+  @Step("step name")
+  static RunnableStep aaaKeywordAnnotationWithNameAndStepAnnotation() {
+    return RunnableStep.empty();
+  }
+
+  @But("custom name")
+  @WithName("step name")
+  static RunnableStep aaaKeywordAnnotationWithNameAndWithNameAnnotation() {
+    return RunnableStep.empty();
+  }
 }

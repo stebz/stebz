@@ -53,7 +53,8 @@ public final class AAAKeywords implements StebzExtension {
       new Keyword.Of(properties.getString("stebz.aaa.keywords.and", "And")),
       new Keyword.Of(properties.getString("stebz.aaa.keywords.arrange", "Arrange")),
       new Keyword.Of(properties.getString("stebz.aaa.keywords.assert", "Assert")),
-      new Keyword.Of(properties.getString("stebz.aaa.keywords.setup", "Setup"))
+      new Keyword.Of(properties.getString("stebz.aaa.keywords.but", "But")),
+      new Keyword.Of(properties.getString("stebz.aaa.keywords.asterisk", "*"))
     ));
   }
 
@@ -94,12 +95,21 @@ public final class AAAKeywords implements StebzExtension {
   }
 
   /**
-   * Returns "Setup" keyword.
+   * Returns "But" keyword.
    *
-   * @return "Setup" keyword
+   * @return "But" keyword
    */
-  public static Keyword setup() {
-    return getKeywords().setup;
+  public static Keyword but() {
+    return getKeywords().but;
+  }
+
+  /**
+   * Returns "Asterisk" keyword.
+   *
+   * @return "Asterisk" keyword
+   */
+  public static Keyword asterisk() {
+    return getKeywords().asterisk;
   }
 
   private static void setKeywords(final Keywords keywordsToSet) {
@@ -131,7 +141,7 @@ public final class AAAKeywords implements StebzExtension {
   private static Keywords defaultKeywords() {
     return new Keywords(
       new Keyword.Of("Act"), new Keyword.Of("And"), new Keyword.Of("Arrange"),
-      new Keyword.Of("Assert"), new Keyword.Of("Setup")
+      new Keyword.Of("Assert"), new Keyword.Of("But"), new Keyword.Of("*")
     );
   }
 
@@ -140,18 +150,21 @@ public final class AAAKeywords implements StebzExtension {
     private final Keyword and;
     private final Keyword arrange;
     private final Keyword _assert;
-    private final Keyword setup;
+    private final Keyword but;
+    private final Keyword asterisk;
 
     private Keywords(final Keyword act,
                      final Keyword and,
                      final Keyword arrange,
                      final Keyword _assert,
-                     final Keyword setup) {
+                     final Keyword but,
+                     final Keyword asterisk) {
       this.act = act;
       this.and = and;
       this.arrange = arrange;
       this._assert = _assert;
-      this.setup = setup;
+      this.but = but;
+      this.asterisk = asterisk;
     }
   }
 }

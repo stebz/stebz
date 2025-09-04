@@ -23,11 +23,11 @@
  */
 package org.stebz.extension;
 
-import org.stebz.annotation.And;
-import org.stebz.annotation.But;
-import org.stebz.annotation.Given;
-import org.stebz.annotation.Then;
-import org.stebz.annotation.When;
+import org.stebz.annotation.gherkin.And;
+import org.stebz.annotation.gherkin.But;
+import org.stebz.annotation.gherkin.Given;
+import org.stebz.annotation.gherkin.Then;
+import org.stebz.annotation.gherkin.When;
 import org.stebz.attribute.Keyword;
 import org.stebz.attribute.StepAttribute;
 import org.stebz.step.StepObj;

@@ -21,7 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.stebz.annotation;
+package org.stebz.annotation.aaa;
+
+import org.stebz.annotation.Step;
+import org.stebz.annotation.StepAttributeAnnotation;
+import org.stebz.annotation.WithKeyword;
+import org.stebz.annotation.WithName;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -29,16 +34,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static org.stebz.extension.GherkinAnnotationsExtension.GHERKIN_KEYWORD_ATTRIBUTE_KEY;
+import static org.stebz.extension.AAAAnnotationsExtension.AAA_KEYWORD_ATTRIBUTE_KEY;
 
 /**
- * Alias for the combination of the {@link WithName} and {@link WithKeyword} annotations. The keyword is "Then".
+ * Alias for the combination of the {@link WithName} and {@link WithKeyword} annotations. The keyword is "Assert".
  */
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@StepAttributeAnnotation(GHERKIN_KEYWORD_ATTRIBUTE_KEY)
-public @interface Then {
+@StepAttributeAnnotation(AAA_KEYWORD_ATTRIBUTE_KEY)
+public @interface Assert {
 
   /**
    * Returns name attribute value. Non empty value overrides {@link WithName#value()} and {@link Step#value()}.

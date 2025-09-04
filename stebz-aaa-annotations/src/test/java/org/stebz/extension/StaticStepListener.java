@@ -21,29 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.stebz.annotation;
+package org.stebz.extension;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.stebz.listener.StepListener;
+import org.stebz.step.StepObj;
+import org.stebz.util.container.NullableOptional;
 
-import static org.stebz.extension.AAAAnnotationsExtension.AAA_KEYWORD_ATTRIBUTE_KEY;
+public final class StaticStepListener implements StepListener {
+  static StepObj<?> lastStep = null;
 
-/**
- * Alias for the combination of the {@link WithName} and {@link WithKeyword} annotations. The keyword is "And".
- */
-@Documented
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
-@Retention(RetentionPolicy.RUNTIME)
-@StepAttributeAnnotation(AAA_KEYWORD_ATTRIBUTE_KEY)
-public @interface And {
+  public StaticStepListener() {
+  }
 
-  /**
-   * Returns name attribute value. Non empty value overrides {@link WithName#value()} and {@link Step#value()}.
-   *
-   * @return name attribute value
-   */
-  String value() default "";
+  public static void clear() {
+    lastStep = null;
+  }
+
+  @Override
+  public void onStepStart(final StepObj<?> step,
+                          final NullableOptional<Object> context) {
+    lastStep = step;
+  }
+
+  @Override
+  public void onStepSuccess(final StepObj<?> step,
+                            final NullableOptional<Object> context,
+                            final NullableOptional<Object> result) {
+  }
+
+  @Override
+  public void onStepFailure(final StepObj<?> step,
+                            final NullableOptional<Object> context,
+                            final Throwable exception) {
+  }
 }
