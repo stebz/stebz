@@ -36,7 +36,7 @@
   <artifactId>stebz-aaa-annotations</artifactId>
   <packaging>jar</packaging>
 
-  <name>Stebz AAA Annotations</name>
+  <name>Stebz Arrange-Act-Assert Annotations</name>
   <description>Module "stebz-aaa-annotations" of Stebz</description>
 
   <properties>

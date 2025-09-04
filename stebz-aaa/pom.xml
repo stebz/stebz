@@ -36,7 +36,7 @@
   <artifactId>stebz-aaa</artifactId>
   <packaging>jar</packaging>
 
-  <name>Stebz AAA</name>
+  <name>Stebz Arrange-Act-Assert</name>
   <description>Module "stebz-aaa" of Stebz</description>
 
   <properties>

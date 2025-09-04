@@ -36,7 +36,7 @@
   <artifactId>stebz-aaa-methods</artifactId>
   <packaging>jar</packaging>
 
-  <name>Stebz AAA Methods</name>
+  <name>Stebz Arrange-Act-Assert Methods</name>
   <description>Module "stebz-aaa-methods" of Stebz</description>
 
   <properties>
