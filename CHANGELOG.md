@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6 (04.09.2025)
+
+* #65 add Arrange-Act-Assert keywords modules by @evpl in PR #66
+* #67 add keywordToUppercase option to all listeners by @evpl in PR #68
+* #69 disable contextParam option by default to all listeners by @evpl in PR #70
+
 ## 1.5 (31.08.2025)
 
 * #53 add expected result output to SystemOutStepListener by @evpl in PR #54

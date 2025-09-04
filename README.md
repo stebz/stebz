@@ -27,8 +27,14 @@ Multi-approach and flexible Java framework for test steps managing.
   * [Attributes](#attributes)
   * [Annotations](#annotations)
   * [Annotation attributes](#annotation-attributes)
+  * [Arrange-Act-Assert style](#arrange-act-assert-style)
   * [Gherkin style](#gherkin-style)
+  * [TDD / BDD](#tdd--bdd)
   * [Listeners](#listeners)
+    * [Allure listener](#stebz-allure-listener)
+    * [Qase listener](#stebz-qase-listener)
+    * [ReportPortal listener](#stebz-reportportal-listener)
+    * [Test IT listener](#stebz-testit-listener)
   * [Extensions](#extensions)
     * [Clean stack trace extension](#stebz-clean-stack-trace-extension)
     * [Readable reflective name extension](#stebz-readable-reflective-name-extension)
@@ -67,7 +73,7 @@ void aroundContext() {
 ```
 <!-- @formatter:on -->
 
-And in the Gherkin style too:
+And in the Gherkin style:
 
 <!-- @formatter:off -->
 ```java
@@ -93,7 +99,33 @@ void aroundContext() {
 ```
 <!-- @formatter:on -->
 
-And the steps in the methods way might look like:
+And in the Arrange-Act-Assert style:
+
+<!-- @formatter:off -->
+```java
+@Test
+void separateMethods() {
+  Act(user_is_authorized_as("user1", "123456")
+    .withName("user authorized as simple user"));
+  Assert(user_sees_balance(10000)
+    .withComment("user1 balance is always 10000"));
+  Assert(user_sees_logout_button());
+}
+
+@Test
+void aroundContext() {
+  around(
+    Act(I_send_get_user_request(123)
+      .withBefore(() -> AuthUtils.checkAuth()))).
+    Assert(response_status_code_should_be(200)).
+    Assert(response_json_path_value_should_be("user.balance", 10000)
+      .withName("response user balance should be {value}")
+      .withOnFailure(response -> Logger.warn("Incorrect body: " + response.body())));
+}
+```
+<!-- @formatter:on -->
+
+Steps in the methods way might look like:
 
 <!-- @formatter:off -->
 ```java
@@ -106,7 +138,7 @@ public static RunnableStep user_is_authorized_as(String username,
 ```
 <!-- @formatter:on -->
 
-Or using annotations:
+Or like this using annotations:
 
 <!-- @formatter:off -->
 ```java
@@ -119,6 +151,38 @@ public static RunnableStep user_is_authorized_as(String username,
 ```
 <!-- @formatter:on -->
 
+And also allows you to follow the TDD / BDD right in your code:
+
+<!-- @formatter:off -->
+```java
+import static org.stebz.step.executable.RunnableStep.notImplemented;
+
+class ExampleTest {
+  
+  @Test
+  @Disabled // not implemented
+  void manuallyDisabledTest() {
+    Given("Step 1", "Expected result 1");
+    When("Step 2", "Expected result 2");
+    Then("Step 3", "Expected result 3");
+  }
+
+  @Test
+  void throwingErrorTest() {
+    Given(notImplemented()
+      .withName("Step 1")
+      .withExpectedResult("Expected result 1"));
+    When(notImplemented()
+      .withName("Step 2")
+      .withExpectedResult("Expected result 2"));
+    Then(notImplemented()
+      .withName("Step 3")
+      .withExpectedResult("Expected result 3"));
+  }
+}
+```
+<!-- @formatter:on -->
+
 See details in [Documentation](#documentation).
 
 ## How to use
@@ -128,14 +192,15 @@ Requires Java 8+ version.
 In most cases it is enough to add one of the bundle dependencies:
 
 - `stebz`
-- `stebz-gherkin`
+- `stebz-aaa` (`stebz` with keywords in Arrange-Act-Assert style)
+- `stebz-gherkin` (`stebz` with keywords in Gherkin style)
 
-One of integration dependencies:
+One of integration dependencies (don't forget to add and configure the dependency of the reporting system):
 
-- `stebz-allure`
-- `stebz-qase`
-- `stebz-reportportal`
-- `stebz-testit`
+- `stebz-allure` (uses `io.qameta.allure:allure-java-commons`)
+- `stebz-qase` (uses `io.qase:qase-java-commons`)
+- `stebz-reportportal` (uses `com.epam.reportportal:client-java`)
+- `stebz-testit` (uses `ru.testit:testit-java-commons`)
 
 And maybe some extensions:
 
@@ -150,7 +215,7 @@ Maven:
   <dependency>
     <groupId>org.stebz</groupId>
     <artifactId>{module name}</artifactId>
-    <version>1.5</version>
+    <version>1.6</version>
   </dependency>
 </dependencies>
 ```
@@ -161,7 +226,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation 'org.stebz:{module name}:1.5'
+  implementation 'org.stebz:{module name}:1.6'
 }
 ```
 <!-- @formatter:on -->
@@ -171,7 +236,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation("org.stebz:{module name}:1.5")
+  implementation("org.stebz:{module name}:1.6")
 }
 ```
 <!-- @formatter:on -->
@@ -191,7 +256,7 @@ Maven:
     <dependency>
       <groupId>org.stebz</groupId>
       <artifactId>stebz-bom</artifactId>
-      <version>1.5</version>
+      <version>1.6</version>
       <scope>import</scope>
       <type>pom</type>
     </dependency>
@@ -205,7 +270,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation platform('org.stebz:stebz-bom:1.5')
+  implementation platform('org.stebz:stebz-bom:1.6')
 }
 ```
 <!-- @formatter:on -->
@@ -215,7 +280,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation(platform("org.stebz:stebz-bom:1.5"))
+  implementation(platform("org.stebz:stebz-bom:1.6"))
 }
 ```
 <!-- @formatter:on -->
@@ -316,21 +381,25 @@ tasks.test {
 
 #### Extension:
 
-| module                           | include / depends on                                                                | description                                                         |
-|----------------------------------|-------------------------------------------------------------------------------------|---------------------------------------------------------------------|
-| `stebz-gherkin-keywords`         | `stebz-utils`<br/>`stebz-core`                                                      | Gherkin keywords                                                    |
-| `stebz-gherkin-methods`          | `stebz-utils`<br/>`stebz-core`<br/>`stebz-gherkin-keywords`                         | Methods for executing step objects and quick steps in Gherkin style |
-| `stebz-gherkin-annotations`      | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations`<br/>`stebz-gherkin-keywords` | Annotations in Gherkin style                                        |
-| `stebz-clean-stack-trace`        | `stebz-utils`<br/>`stebz-core`                                                      | Extension that cleans step exception stack trace from garbage lines |
-| `stebz-readable-reflective-name` | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations`                              | Extension that converts a reflective step name into a readable form |
-| `stebz-repeat-and-retry`         | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations` (optional)                   | Extension that allows to repeat and retry step bodies               |
+| module                           | include / depends on                                                                | description                                                                    |
+|----------------------------------|-------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| `stebz-aaa-keywords`             | `stebz-utils`<br/>`stebz-core`                                                      | Arrange-Act-Assert style keywords                                              |
+| `stebz-aaa-methods`              | `stebz-utils`<br/>`stebz-core`<br/>`stebz-aaa-keywords`                             | Methods for executing step objects and quick steps in Arrange-Act-Assert style |
+| `stebz-aaa-annotations`          | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations`<br/>`stebz-aaa-keywords`     | Annotations in Arrange-Act-Assert style                                        |
+| `stebz-gherkin-keywords`         | `stebz-utils`<br/>`stebz-core`                                                      | Gherkin style keywords                                                         |
+| `stebz-gherkin-methods`          | `stebz-utils`<br/>`stebz-core`<br/>`stebz-gherkin-keywords`                         | Methods for executing step objects and quick steps in Gherkin style            |
+| `stebz-gherkin-annotations`      | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations`<br/>`stebz-gherkin-keywords` | Annotations in Gherkin style                                                   |
+| `stebz-clean-stack-trace`        | `stebz-utils`<br/>`stebz-core`                                                      | Extension that cleans step exception stack trace from garbage lines            |
+| `stebz-readable-reflective-name` | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations`                              | Extension that converts a reflective step name into a readable form            |
+| `stebz-repeat-and-retry`         | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations` (optional)                   | Extension that allows to repeat and retry step bodies                          |
 
 #### Bundle:
 
-| module          | include / depends on                                                                                                                                                                              | description                              |
-|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------|
-| `stebz`         | `stebz-utils`<br/>`stebz-core`<br/>`stebz-methods`<br/>`stebz-annotations`<br/>`stebz-clean-stack-trace`                                                                                          | Bundle of Stebz modules                  |
-| `stebz-gherkin` | `stebz-utils`<br/>`stebz-core`<br/>`stebz-methods`<br/>`stebz-annotations`<br/>`stebz-gherkin-keywords`<br/>`stebz-gherkin-methods`<br/>`stebz-gherkin-annotations`<br/>`stebz-clean-stack-trace` | Bundle of Stebz modules in Gherkin style |
+| module          | include / depends on                                                                                                                                                                              | description                                         |
+|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------|
+| `stebz`         | `stebz-utils`<br/>`stebz-core`<br/>`stebz-methods`<br/>`stebz-annotations`<br/>`stebz-clean-stack-trace`                                                                                          | Bundle of Stebz modules                             |
+| `stebz-aaa`     | `stebz-utils`<br/>`stebz-core`<br/>`stebz-methods`<br/>`stebz-annotations`<br/>`stebz-aaa-keywords`<br/>`stebz-aaa-methods`<br/>`stebz-aaa-annotations`<br/>`stebz-clean-stack-trace`             | Bundle of Stebz modules in Arrange-Act-Assert style |
+| `stebz-gherkin` | `stebz-utils`<br/>`stebz-core`<br/>`stebz-methods`<br/>`stebz-annotations`<br/>`stebz-gherkin-keywords`<br/>`stebz-gherkin-methods`<br/>`stebz-gherkin-annotations`<br/>`stebz-clean-stack-trace` | Bundle of Stebz modules in Gherkin style            |
 
 #### Integration:
 
@@ -428,30 +497,6 @@ step(runnableStep
   .withBefore(() -> Logger.info("..."))
   .withOnSuccess(() -> Logger.info("..."))
   .withOnFailure(() -> Logger.warn("...")));
-```
-<!-- @formatter:on -->
-
-It is possible to make test blanks. When running the test, a `StepNotImplementedError` will be thrown.
-
-<!-- @formatter:off -->
-```java
-import static org.stebz.step.executable.RunnableStep.notImplemented;
-
-class ExampleTest {
-
-  @Test
-  void test() {
-    step(notImplemented()
-      .withName("Step 1")
-      .withExpectedResult("Expected result 1"));
-    step(notImplemented()
-      .withName("Step 2")
-      .withExpectedResult("Expected result 2"));
-    step(notImplemented()
-      .withName("Step 3")
-      .withExpectedResult("Expected result 3"));
-  }
-}
 ```
 <!-- @formatter:on -->
 
@@ -633,6 +678,44 @@ CustomAttribute value = step.get(attribute);
 ```
 <!-- @formatter:on -->
 
+### Arrange-Act-Assert style
+
+To use Stebz in Arrange-Act-Assert style you need to use `stebz-aaa` dependency.
+
+Methods way:
+
+<!-- @formatter:off -->
+```java
+Arrange(runnableStep);
+Act(consumerStep, 123);
+Assert("quick step", () -> {
+  // step body
+});
+Assert("quick step", () -> {
+  // step body
+});
+```
+<!-- @formatter:on -->
+
+Annotations way:
+
+<!-- @formatter:off -->
+```java
+@Arrange("step name")
+@WithExpectedResult("step expected result")
+@WithComment("step comment")
+public static RunnableStep methodStep(String parameter) { return RunnableStep.of(() -> {
+  // step body
+}); }
+
+@Act("step name")
+@WithParams
+public static void quickStep(String parameter) {
+  // step body
+}
+```
+<!-- @formatter:on -->
+
 ### Gherkin style
 
 To use Stebz in Gherkin style you need to use `stebz-gherkin` dependency.
@@ -641,19 +724,13 @@ Methods way:
 
 <!-- @formatter:off -->
 ```java
-String supplierStepResult = Given(supplierStep);
-
+Given(runnableStep);
 When(consumerStep, 123);
-
-String functionStepResult = Then(functionStep, 123);
-
-And("quick runnable step", () -> {
+Then("quick step", () -> {
   // step body
 });
-
-String result = But("quick supplier step", () -> {
+And("quick step", () -> {
   // step body
-  return "result";
 });
 ```
 <!-- @formatter:on -->
@@ -671,13 +748,56 @@ public static RunnableStep methodStep(String parameter) { return RunnableStep.of
 
 @When("step name")
 @WithParams
-public static void method(String parameter) {
+public static void quickStep(String parameter) {
   // step body
 }
 ```
 <!-- @formatter:on -->
 
-It is also convenient to make test blanks in the Gherkin style.
+### TDD / BDD
+
+You can write tests before implementing their steps.
+
+<!-- @formatter:off -->
+```java
+@Test
+@Disabled
+void simpleSteps() {
+  step("user authorized as user1");
+  step("user sees balance 10000");
+  step("user sees logout button");
+}
+
+@Test
+@Disabled
+void aaaSteps() {
+  Act("user authorized as user1");
+  Assert("user sees balance 10000");
+  Assert("user sees logout button");
+}
+
+@Test
+@Disabled
+void gherkinSteps() {
+  When("user authorized as user1");
+  Then("user sees balance 10000");
+  And("user sees logout button");
+}
+```
+<!-- @formatter:on -->
+
+You can specify additional attributes, such as parameters and expected result.
+
+<!-- @formatter:off -->
+```java
+step("user authorized as simple user",
+  params("username", "user1", "password", "12345"),
+  "the authorization form is hidden, the user sees the header");
+```
+<!-- @formatter:on -->
+
+For greater reliability, you can write tests in a different style. If the step is started, a `StepNotImplementedError`
+will be thrown.
 
 <!-- @formatter:off -->
 ```java
@@ -700,6 +820,8 @@ class ExampleTest {
 }
 ```
 <!-- @formatter:on -->
+
+Later these steps can be implemented and can be used in other tests.
 
 ### Listeners
 
@@ -729,6 +851,30 @@ public interface StepListener {
 
 To create a custom listener you need to implement the `org.stebz.listener.StepListener` interface
 and [specify it via SPI mechanism or via properties](#stebz-core-module).
+
+#### `stebz-allure` listener
+
+Specify and configure main Allure dependency `io.qameta.allure:allure-java-commons`.
+
+Then specify Stebz dependencies (`org.stebz:stebz` or `org.stebz:stebz-gherkin`) and `org.stebz:stebz-allure`.
+
+#### `stebz-qase` listener
+
+Specify and configure main Qase dependency `io.qase:qase-java-commons`.
+
+Then specify Stebz dependencies (`org.stebz:stebz` or `org.stebz:stebz-gherkin`) and `org.stebz:stebz-allure`.
+
+#### `stebz-reportportal` listener
+
+Specify and configure main ReportPortal dependency `com.epam.reportportal:client-java`.
+
+Then specify Stebz dependencies (`org.stebz:stebz` or `org.stebz:stebz-gherkin`) and `org.stebz:stebz-allure`.
+
+#### `stebz-testit` listener
+
+Specify and configure main Test IT dependency `ru.testit:testit-java-commons`.
+
+Then specify Stebz dependencies (`org.stebz:stebz` or `org.stebz:stebz-gherkin`) and `org.stebz:stebz-allure`.
 
 ### Extensions
 
@@ -868,7 +1014,7 @@ It is also possible to specify the separator symbols manually.
 @Step
 @NameWordSeparator("__")
 public static RunnableStep user__is__authorized(String username,
-                                               String password) { return RunnableStep.of(() -> {
+                                                String password) { return RunnableStep.of(() -> {
   // step body
 }); }
 ```
@@ -924,6 +1070,16 @@ System properties have first priority, file properties have second priority.
 | `stebz.listeners.list`           | `String` list, delimiter is `,` | empty list         | listeners list          |
 | `stebz.listeners.autodetection`  | `Boolean`                       | `true`             | enable SPI listeners    |
 
+#### `stebz-aaa-keywords`, `stebz-aaa-methods`, `stebz-aaa-annotations` modules
+
+| property                     | type                     | default value | description              |
+|------------------------------|--------------------------|---------------|--------------------------|
+| `stebz.aaa.keywords.arrange` | `String`                 | `Arrange`     | value of Arrange keyword |
+| `stebz.aaa.keywords.act`     | `String`                 | `Act`         | value of Act keyword     |
+| `stebz.aaa.keywords.assert`  | `String`                 | `Assert`      | value of Assert keyword  |
+| `stebz.aaa.keywords.and`     | `String`                 | `And`         | value of And keyword     |
+| `stebz.aaa.keywords.but`     | `String`                 | `But`         | value of But keyword     |
+
 #### `stebz-gherkin-keywords`, `stebz-gherkin-methods`, `stebz-gherkin-annotations` modules
 
 | property                            | type                     | default value | description                 |
@@ -967,21 +1123,23 @@ System properties have first priority, file properties have second priority.
 | `stebz.listeners.allure.enabled`                  | `Boolean`             | `true`        | enable listener                             |
 | `stebz.listeners.allure.order`                    | `Integer`             | `10000`       | listener order                              |
 | `stebz.listeners.allure.keywordPosition`          | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name   |
+| `stebz.listeners.allure.keywordToUppercase`       | `Boolean`             | `false`       | converts keyword value to upper case        |
 | `stebz.listeners.allure.processName`              | `Boolean`             | `true`        | process step name with parameters           |
-| `stebz.listeners.allure.contextParam`             | `Boolean`             | `true`        | step context as parameter                   |
+| `stebz.listeners.allure.contextParam`             | `Boolean`             | `false`       | step context as parameter                   |
 | `stebz.listeners.allure.expectedResultAttachment` | `Boolean`             | `true`        | attach the expected result as an attachment |
 | `stebz.listeners.allure.commentAttachment`        | `Boolean`             | `true`        | attach the comment as an attachment         |
 
 #### `stebz-qase` module
 
-| property                                 | type                  | default value | description                               |
-|------------------------------------------|-----------------------|---------------|-------------------------------------------|
-| `stebz.listeners.qase.enabled`           | `Boolean`             | `true`        | enable listener                           |
-| `stebz.listeners.qase.order`             | `Integer`             | `10000`       | listener order                            |
-| `stebz.listeners.qase.keywordPosition`   | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name |
-| `stebz.listeners.qase.processName`       | `Boolean`             | `true`        | process step name with parameters         |
-| `stebz.listeners.qase.contextParam`      | `Boolean`             | `true`        | step context as parameter                 |
-| `stebz.listeners.qase.commentAttachment` | `Boolean`             | `true`        | attach the comment as an attachment       |
+| property                                  | type                  | default value | description                               |
+|-------------------------------------------|-----------------------|---------------|-------------------------------------------|
+| `stebz.listeners.qase.enabled`            | `Boolean`             | `true`        | enable listener                           |
+| `stebz.listeners.qase.order`              | `Integer`             | `10000`       | listener order                            |
+| `stebz.listeners.qase.keywordPosition`    | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name |
+| `stebz.listeners.qase.keywordToUppercase` | `Boolean`             | `false`       | converts keyword value to upper case      |
+| `stebz.listeners.qase.processName`        | `Boolean`             | `true`        | process step name with parameters         |
+| `stebz.listeners.qase.contextParam`       | `Boolean`             | `false`       | step context as parameter                 |
+| `stebz.listeners.qase.commentAttachment`  | `Boolean`             | `true`        | attach the comment as an attachment       |
 
 #### `stebz-reportportal` module
 
@@ -990,18 +1148,20 @@ System properties have first priority, file properties have second priority.
 | `stebz.listeners.reportportal.enabled`            | `Boolean`             | `true`        | enable listener                           |
 | `stebz.listeners.reportportal.order`              | `Integer`             | `10000`       | listener order                            |
 | `stebz.listeners.reportportal.keywordPosition`    | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name |
+| `stebz.listeners.reportportal.keywordToUppercase` | `Boolean`             | `false`       | converts keyword value to upper case      |
 | `stebz.listeners.reportportal.processName`        | `Boolean`             | `true`        | process step name with parameters         |
-| `stebz.listeners.reportportal.contextParam`       | `Boolean`             | `true`        | step context as parameter                 |
+| `stebz.listeners.reportportal.contextParam`       | `Boolean`             | `false`       | step context as parameter                 |
 
 #### `stebz-testit` module
 
-| property                                 | type                  | default value | description                               |
-|------------------------------------------|-----------------------|---------------|-------------------------------------------|
-| `stebz.listeners.testit.enabled`         | `Boolean`             | `true`        | enable listener                           |
-| `stebz.listeners.testit.order`           | `Integer`             | `10000`       | listener order                            |
-| `stebz.listeners.testit.keywordPosition` | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name |
-| `stebz.listeners.testit.processName`     | `Boolean`             | `true`        | process step name with parameters         |
-| `stebz.listeners.testit.contextParam`    | `Boolean`             | `true`        | step context as parameter                 |
+| property                                    | type                  | default value | description                               |
+|---------------------------------------------|-----------------------|---------------|-------------------------------------------|
+| `stebz.listeners.testit.enabled`            | `Boolean`             | `true`        | enable listener                           |
+| `stebz.listeners.testit.order`              | `Integer`             | `10000`       | listener order                            |
+| `stebz.listeners.testit.keywordPosition`    | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name |
+| `stebz.listeners.testit.keywordToUppercase` | `Boolean`             | `false`       | converts keyword value to upper case      |
+| `stebz.listeners.testit.processName`        | `Boolean`             | `true`        | process step name with parameters         |
+| `stebz.listeners.testit.contextParam`       | `Boolean`             | `false`       | step context as parameter                 |
 
 #### `stebz-system-out` module
 
