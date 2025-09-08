@@ -45,6 +45,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.lang.Boolean.TRUE;
+
 /**
  * ReportPortal {@code StepListener} implementation.
  */
@@ -53,6 +55,7 @@ public class ReportPortalStepListener implements StepListener {
   private static final String CONTEXT_PARAM_NAME = "context";
   private static final String EXPECTED_RESULT_DESC_LINE_PREFIX = "Expected result: ";
   private static final String COMMENT_DESC_LINE_PREFIX = "Comment: ";
+  private static final ThreadLocal<Boolean> THREAD_LOCAL_DISABLED = new ThreadLocal<>();
   private final boolean enabled;
   private final int order;
   private final KeywordPosition keywordPosition;
@@ -84,6 +87,14 @@ public class ReportPortalStepListener implements StepListener {
     this.isStebzAnnotationsUsed = isStebzAnnotationsUsed();
   }
 
+  static void threadLocalDisable() {
+    THREAD_LOCAL_DISABLED.set(true);
+  }
+
+  static void threadLocalEnable() {
+    THREAD_LOCAL_DISABLED.remove();
+  }
+
   private static boolean isStebzAnnotationsUsed() {
     try {
       Class.forName("org.stebz.aspect.StepAspects");
@@ -101,7 +112,7 @@ public class ReportPortalStepListener implements StepListener {
   @Override
   public void onStepStart(final StepObj<?> step,
                           final NullableOptional<Object> context) {
-    if (!this.enabled || step.getHidden()) {
+    if (!this.enabled || THREAD_LOCAL_DISABLED.get() == TRUE || step.getHidden()) {
       return;
     }
     final Launch launch = Launch.currentLaunch();
@@ -136,7 +147,7 @@ public class ReportPortalStepListener implements StepListener {
   public void onStepSuccess(final StepObj<?> step,
                             final NullableOptional<Object> context,
                             final NullableOptional<Object> result) {
-    if (!this.enabled || step.getHidden()) {
+    if (!this.enabled || THREAD_LOCAL_DISABLED.get() == TRUE || step.getHidden()) {
       return;
     }
     final Launch launch = Launch.currentLaunch();
@@ -150,7 +161,7 @@ public class ReportPortalStepListener implements StepListener {
   public void onStepFailure(final StepObj<?> step,
                             final NullableOptional<Object> context,
                             final Throwable exception) {
-    if (!this.enabled || step.getHidden()) {
+    if (!this.enabled || THREAD_LOCAL_DISABLED.get() == TRUE || step.getHidden()) {
       return;
     }
     final Launch launch = Launch.currentLaunch();
