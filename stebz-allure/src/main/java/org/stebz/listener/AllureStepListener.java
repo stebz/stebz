@@ -46,6 +46,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.lang.Boolean.TRUE;
+
 /**
  * Allure {@code StepListener} implementation.
  */
@@ -53,6 +55,7 @@ public class AllureStepListener implements StepListener {
   private static final String CONTEXT_PARAM_NAME = "context";
   private static final String COMMENT_ATTACHMENT_NAME = "Comment";
   private static final String EXPECTED_RESULT_ATTACHMENT_NAME = "Expected result";
+  private static final ThreadLocal<Boolean> THREAD_LOCAL_DISABLED = new ThreadLocal<>();
   private final boolean enabled;
   private final int order;
   private final KeywordPosition keywordPosition;
@@ -88,6 +91,14 @@ public class AllureStepListener implements StepListener {
     this.isStebzAnnotationsUsed = isStebzAnnotationsUsed();
   }
 
+  static void threadLocalDisable() {
+    THREAD_LOCAL_DISABLED.set(true);
+  }
+
+  static void threadLocalEnable() {
+    THREAD_LOCAL_DISABLED.remove();
+  }
+
   private static boolean isStebzAnnotationsUsed() {
     try {
       Class.forName("org.stebz.aspect.StepAspects");
@@ -105,7 +116,7 @@ public class AllureStepListener implements StepListener {
   @Override
   public void onStepStart(final StepObj<?> step,
                           final NullableOptional<Object> context) {
-    if (!this.enabled || step.getHidden()) {
+    if (!this.enabled || THREAD_LOCAL_DISABLED.get() == TRUE || step.getHidden()) {
       return;
     }
     final StepResult stepResult = new StepResult();
@@ -143,7 +154,7 @@ public class AllureStepListener implements StepListener {
   public void onStepSuccess(final StepObj<?> step,
                             final NullableOptional<Object> context,
                             final NullableOptional<Object> result) {
-    if (!this.enabled || step.getHidden()) {
+    if (!this.enabled || THREAD_LOCAL_DISABLED.get() == TRUE || step.getHidden()) {
       return;
     }
     final AllureLifecycle allureLifecycle = Allure.getLifecycle();
@@ -159,7 +170,7 @@ public class AllureStepListener implements StepListener {
   public void onStepFailure(final StepObj<?> step,
                             final NullableOptional<Object> context,
                             final Throwable exception) {
-    if (!this.enabled || step.getHidden()) {
+    if (!this.enabled || THREAD_LOCAL_DISABLED.get() == TRUE || step.getHidden()) {
       return;
     }
     final AllureLifecycle allureLifecycle = Allure.getLifecycle();
