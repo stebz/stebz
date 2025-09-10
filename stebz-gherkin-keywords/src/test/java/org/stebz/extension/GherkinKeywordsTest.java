@@ -33,39 +33,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 final class GherkinKeywordsTest {
 
   @Test
-  void featureKeywordDefaultValue() {
-    assertThat(GherkinKeywords.feature().value())
-      .isEqualTo("Feature");
-  }
-
-  @Test
-  void ruleKeywordDefaultValue() {
-    assertThat(GherkinKeywords.rule().value())
-      .isEqualTo("Rule");
-  }
-
-  @Test
-  void scenarioKeywordDefaultValue() {
-    assertThat(GherkinKeywords.scenario().value())
-      .isEqualTo("Scenario");
-  }
-
-  @Test
-  void scenarioOutlineKeywordDefaultValue() {
-    assertThat(GherkinKeywords.scenarioOutline().value())
-      .isEqualTo("Scenario Outline");
-  }
-
-  @Test
-  void examplesKeywordDefaultValue() {
-    assertThat(GherkinKeywords.examples().value())
-      .isEqualTo("Examples");
-  }
-
-  @Test
   void backgroundKeywordDefaultValue() {
     assertThat(GherkinKeywords.background().value())
       .isEqualTo("Background");
+  }
+
+  @Test
+  void conclusionKeywordDefaultValue() {
+    assertThat(GherkinKeywords.conclusion().value())
+      .isEqualTo("Conclusion");
   }
 
   @Test
@@ -96,11 +72,5 @@ final class GherkinKeywordsTest {
   void butKeywordDefaultValue() {
     assertThat(GherkinKeywords.but().value())
       .isEqualTo("But");
-  }
-
-  @Test
-  void asteriskKeywordDefaultValue() {
-    assertThat(GherkinKeywords.asterisk().value())
-      .isEqualTo("*");
   }
 }

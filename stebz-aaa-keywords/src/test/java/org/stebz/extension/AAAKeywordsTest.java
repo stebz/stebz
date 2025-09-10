@@ -33,15 +33,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 final class AAAKeywordsTest {
 
   @Test
-  void actKeywordDefaultValue() {
-    assertThat(AAAKeywords.act().value())
-      .isEqualTo("Act");
+  void setupKeywordDefaultValue() {
+    assertThat(AAAKeywords.setup().value())
+      .isEqualTo("Setup");
   }
 
   @Test
-  void andKeywordDefaultValue() {
-    assertThat(AAAKeywords.and().value())
-      .isEqualTo("And");
+  void teardownKeywordDefaultValue() {
+    assertThat(AAAKeywords.teardown().value())
+      .isEqualTo("Teardown");
   }
 
   @Test
@@ -51,20 +51,14 @@ final class AAAKeywordsTest {
   }
 
   @Test
+  void actKeywordDefaultValue() {
+    assertThat(AAAKeywords.act().value())
+      .isEqualTo("Act");
+  }
+
+  @Test
   void assertOutlineKeywordDefaultValue() {
     assertThat(AAAKeywords._assert().value())
       .isEqualTo("Assert");
-  }
-
-  @Test
-  void butKeywordDefaultValue() {
-    assertThat(AAAKeywords.but().value())
-      .isEqualTo("But");
-  }
-
-  @Test
-  void asteriskKeywordDefaultValue() {
-    assertThat(AAAKeywords.asterisk().value())
-      .isEqualTo("*");
   }
 }

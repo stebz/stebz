@@ -26,10 +26,10 @@ package org.stebz.extension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.stebz.annotation.aaa.Act;
-import org.stebz.annotation.aaa.And;
 import org.stebz.annotation.aaa.Arrange;
 import org.stebz.annotation.aaa.Assert;
-import org.stebz.annotation.aaa.But;
+import org.stebz.annotation.aaa.Setup;
+import org.stebz.annotation.aaa.Teardown;
 import org.stebz.executor.StepExecutor;
 import org.stebz.step.StepObj;
 import org.stebz.step.executable.RunnableStep;
@@ -115,8 +115,8 @@ final class AAAAnnotationsExtensionTest {
 
     final Annotation annotation = step.get(AAA_KEYWORD);
     assertThat(annotation)
-      .isInstanceOf(And.class);
-    assertThat(((And) annotation).value())
+      .isInstanceOf(Setup.class);
+    assertThat(((Setup) annotation).value())
       .isEqualTo("custom name");
 
     StepExecutor.get().execute(step);
@@ -124,7 +124,7 @@ final class AAAAnnotationsExtensionTest {
     assertThat(stepFromListener)
       .isNotNull();
     assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("And");
+      .isEqualTo("Setup");
     assertThat(stepFromListener.getName())
       .isEqualTo("custom name");
   }
@@ -135,8 +135,8 @@ final class AAAAnnotationsExtensionTest {
 
     final Annotation annotation = step.get(AAA_KEYWORD);
     assertThat(annotation)
-      .isInstanceOf(But.class);
-    assertThat(((But) annotation).value())
+      .isInstanceOf(Teardown.class);
+    assertThat(((Teardown) annotation).value())
       .isEqualTo("custom name");
 
     StepExecutor.get().execute(step);
@@ -144,7 +144,7 @@ final class AAAAnnotationsExtensionTest {
     assertThat(stepFromListener)
       .isNotNull();
     assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("But");
+      .isEqualTo("Teardown");
     assertThat(stepFromListener.getName())
       .isEqualTo("custom name");
   }

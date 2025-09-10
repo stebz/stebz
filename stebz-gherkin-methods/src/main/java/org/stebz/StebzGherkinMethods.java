@@ -41,6 +41,7 @@ import static org.stebz.attribute.StepAttribute.NAME;
 import static org.stebz.attribute.StepAttribute.PARAMS;
 import static org.stebz.extension.GherkinKeywords.and;
 import static org.stebz.extension.GherkinKeywords.but;
+import static org.stebz.extension.GherkinKeywords.conclusion;
 import static org.stebz.extension.GherkinKeywords.given;
 import static org.stebz.extension.GherkinKeywords.then;
 import static org.stebz.extension.GherkinKeywords.when;
@@ -76,6 +77,633 @@ public final class StebzGherkinMethods {
    */
   public static <T> GherkinAround<T> gherkinAround(final T value) {
     return around(value);
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#given()} keyword.
+   *
+   * @param step the step
+   */
+  public static void Background(final RunnableStep step) {
+    StepExecutor.get().execute(step.withKeyword(given()));
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name.
+   *
+   * @param name the name
+   * @param step the step
+   */
+  public static void Background(final String name,
+                                final RunnableStep step) {
+    StepExecutor.get().execute(step.with(KEYWORD, given(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#given()} keyword and returns step result.
+   *
+   * @param step the step
+   * @param <R>  the type of the result
+   * @return step result
+   */
+  public static <R> R Background(final SupplierStep<R> step) {
+    return StepExecutor.get().execute(step.with(KEYWORD, given()));
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name and returns step result.
+   *
+   * @param name the name
+   * @param step the step
+   * @param <R>  the type of the result
+   * @return step result
+   */
+  public static <R> R Background(final String name,
+                                 final SupplierStep<R> step) {
+    return StepExecutor.get().execute(step.with(KEYWORD, given(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#given()} keyword on given value.
+   *
+   * @param step  the step
+   * @param value the value
+   * @param <T>   the type of the value
+   */
+  public static <T> void Background(final ConsumerStep<? super T> step,
+                                    final T value) {
+    StepExecutor.get().execute(
+      step.with(KEYWORD, given()),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name on given value.
+   *
+   * @param name  the name
+   * @param step  the step
+   * @param value the value
+   * @param <T>   the type of the value
+   */
+  public static <T> void Background(final String name,
+                                    final ConsumerStep<? super T> step,
+                                    final T value) {
+    StepExecutor.get().execute(
+      step.with(KEYWORD, given(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#given()} keyword on given value and returns step result.
+   *
+   * @param step  the step
+   * @param value the value
+   * @param <T>   the type of the value
+   * @param <R>   the type of the step result
+   * @return step result
+   */
+  public static <T, R> R Background(final FunctionStep<? super T, ? extends R> step,
+                                    final T value) {
+    return StepExecutor.get().execute(
+      step.with(KEYWORD, given()),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name on given value and returns step result.
+   *
+   * @param name  the name
+   * @param step  the step
+   * @param value the value
+   * @param <T>   the type of the value
+   * @param <R>   the type of the step result
+   * @return step result
+   */
+  public static <T, R> R Background(final String name,
+                                    final FunctionStep<? super T, ? extends R> step,
+                                    final T value) {
+    return StepExecutor.get().execute(
+      step.with(KEYWORD, given(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
+   *
+   * @param name the step name
+   * @param body the step body
+   */
+  public static void Background(final String name,
+                                final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, given(), NAME, name),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
+   *
+   * @param name   the step name
+   * @param params the step params
+   * @param body   the step body
+   */
+  @SuppressWarnings("unchecked")
+  public static void Background(final String name,
+                                final Map<String, ?> params,
+                                final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  public static void Background(final String name,
+                                final String expectedResult,
+                                final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, given(), NAME, name, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  @SuppressWarnings("unchecked")
+  public static void Background(final String name,
+                                final Map<String, ?> params,
+                                final String expectedResult,
+                                final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(
+        KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes and returns step result.
+   *
+   * @param name the step name
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  public static <R> R Background(final String name,
+                                 final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, given(), NAME, name),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes and returns step result.
+   *
+   * @param name   the step name
+   * @param params the step params
+   * @param body   the step body
+   * @param <R>    the type of the step result
+   * @return step result
+   */
+  @SuppressWarnings("unchecked")
+  public static <R> R Background(final String name,
+                                 final Map<String, ?> params,
+                                 final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes and returns step result.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
+   */
+  public static <R> R Background(final String name,
+                                 final String expectedResult,
+                                 final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, given(), NAME, name, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes and returns step result.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
+   */
+  @SuppressWarnings("unchecked")
+  public static <R> R Background(final String name,
+                                 final Map<String, ?> params,
+                                 final String expectedResult,
+                                 final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(
+        KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
+   *
+   * @param name the step name
+   */
+  public static void Background(final String name) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, given(), NAME, name),
+      RunnableStep.emptyBody()
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
+   *
+   * @param name   the step name
+   * @param params the step params
+   */
+  @SuppressWarnings("unchecked")
+  public static void Background(final String name,
+                                final Map<String, ?> params) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params),
+      RunnableStep.emptyBody()
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   */
+  public static void Background(final String name,
+                                final String expectedResult) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, given(), NAME, name, EXPECTED_RESULT, expectedResult),
+      RunnableStep.emptyBody()
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   */
+  @SuppressWarnings("unchecked")
+  public static void Background(final String name,
+                                final Map<String, ?> params,
+                                final String expectedResult) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(
+        KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      RunnableStep.emptyBody()
+    ));
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#conclusion()} keyword.
+   *
+   * @param step the step
+   */
+  public static void Conclusion(final RunnableStep step) {
+    StepExecutor.get().execute(step.withKeyword(conclusion()));
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#conclusion()} keyword and name.
+   *
+   * @param name the name
+   * @param step the step
+   */
+  public static void Conclusion(final String name,
+                                final RunnableStep step) {
+    StepExecutor.get().execute(step.with(KEYWORD, conclusion(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#conclusion()} keyword and returns step result.
+   *
+   * @param step the step
+   * @param <R>  the type of the result
+   * @return step result
+   */
+  public static <R> R Conclusion(final SupplierStep<R> step) {
+    return StepExecutor.get().execute(step.with(KEYWORD, conclusion()));
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#conclusion()} keyword and name and returns step result.
+   *
+   * @param name the name
+   * @param step the step
+   * @param <R>  the type of the result
+   * @return step result
+   */
+  public static <R> R Conclusion(final String name,
+                                 final SupplierStep<R> step) {
+    return StepExecutor.get().execute(step.with(KEYWORD, conclusion(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#conclusion()} keyword on given value.
+   *
+   * @param step  the step
+   * @param value the value
+   * @param <T>   the type of the value
+   */
+  public static <T> void Conclusion(final ConsumerStep<? super T> step,
+                                    final T value) {
+    StepExecutor.get().execute(
+      step.with(KEYWORD, conclusion()),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#conclusion()} keyword and name on given value.
+   *
+   * @param name  the name
+   * @param step  the step
+   * @param value the value
+   * @param <T>   the type of the value
+   */
+  public static <T> void Conclusion(final String name,
+                                    final ConsumerStep<? super T> step,
+                                    final T value) {
+    StepExecutor.get().execute(
+      step.with(KEYWORD, conclusion(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#conclusion()} keyword on given value and returns step result.
+   *
+   * @param step  the step
+   * @param value the value
+   * @param <T>   the type of the value
+   * @param <R>   the type of the step result
+   * @return step result
+   */
+  public static <T, R> R Conclusion(final FunctionStep<? super T, ? extends R> step,
+                                    final T value) {
+    return StepExecutor.get().execute(
+      step.with(KEYWORD, conclusion()),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#conclusion()} keyword and name on given value and returns step
+   * result.
+   *
+   * @param name  the name
+   * @param step  the step
+   * @param value the value
+   * @param <T>   the type of the value
+   * @param <R>   the type of the step result
+   * @return step result
+   */
+  public static <T, R> R Conclusion(final String name,
+                                    final FunctionStep<? super T, ? extends R> step,
+                                    final T value) {
+    return StepExecutor.get().execute(
+      step.with(KEYWORD, conclusion(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#conclusion()} keyword and given attributes.
+   *
+   * @param name the step name
+   * @param body the step body
+   */
+  public static void Conclusion(final String name,
+                                final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, conclusion(), NAME, name),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#conclusion()} keyword and given attributes.
+   *
+   * @param name   the step name
+   * @param params the step params
+   * @param body   the step body
+   */
+  @SuppressWarnings("unchecked")
+  public static void Conclusion(final String name,
+                                final Map<String, ?> params,
+                                final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, conclusion(), NAME, name, PARAMS, (Map<String, Object>) params),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#conclusion()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  public static void Conclusion(final String name,
+                                final String expectedResult,
+                                final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, conclusion(), NAME, name, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#conclusion()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  @SuppressWarnings("unchecked")
+  public static void Conclusion(final String name,
+                                final Map<String, ?> params,
+                                final String expectedResult,
+                                final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(
+        KEYWORD, conclusion(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#conclusion()} keyword and given attributes and returns step result.
+   *
+   * @param name the step name
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  public static <R> R Conclusion(final String name,
+                                 final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, conclusion(), NAME, name),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#conclusion()} keyword and given attributes and returns step result.
+   *
+   * @param name   the step name
+   * @param params the step params
+   * @param body   the step body
+   * @param <R>    the type of the step result
+   * @return step result
+   */
+  @SuppressWarnings("unchecked")
+  public static <R> R Conclusion(final String name,
+                                 final Map<String, ?> params,
+                                 final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, conclusion(), NAME, name, PARAMS, (Map<String, Object>) params),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#conclusion()} keyword and given attributes and returns step result.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
+   */
+  public static <R> R Conclusion(final String name,
+                                 final String expectedResult,
+                                 final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, conclusion(), NAME, name, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#conclusion()} keyword and given attributes and returns step result.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
+   */
+  @SuppressWarnings("unchecked")
+  public static <R> R Conclusion(final String name,
+                                 final Map<String, ?> params,
+                                 final String expectedResult,
+                                 final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(
+        KEYWORD, conclusion(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#conclusion()} keyword and given attributes.
+   *
+   * @param name the step name
+   */
+  public static void Conclusion(final String name) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, conclusion(), NAME, name),
+      RunnableStep.emptyBody()
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#conclusion()} keyword and given attributes.
+   *
+   * @param name   the step name
+   * @param params the step params
+   */
+  @SuppressWarnings("unchecked")
+  public static void Conclusion(final String name,
+                                final Map<String, ?> params) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, conclusion(), NAME, name, PARAMS, (Map<String, Object>) params),
+      RunnableStep.emptyBody()
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#conclusion()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   */
+  public static void Conclusion(final String name,
+                                final String expectedResult) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, conclusion(), NAME, name, EXPECTED_RESULT, expectedResult),
+      RunnableStep.emptyBody()
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#conclusion()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   */
+  @SuppressWarnings("unchecked")
+  public static void Conclusion(final String name,
+                                final Map<String, ?> params,
+                                final String expectedResult) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(
+        KEYWORD, conclusion(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      RunnableStep.emptyBody()
+    ));
   }
 
   /**

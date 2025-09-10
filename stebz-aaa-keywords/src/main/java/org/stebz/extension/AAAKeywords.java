@@ -29,10 +29,15 @@ import org.stebz.executor.StepExecutor;
 import org.stebz.util.property.PropertiesReader;
 
 /**
- * Stebz AAA keywords extension.
+ * Stebz Arrange-Act-Assert keywords extension.
  */
 public final class AAAKeywords implements StebzExtension {
   private static final Object LOCK = new Object();
+  private static final String SETUP_KEYWORD_DEFAULT_VALUE = "Setup";
+  private static final String TEARDOWN_KEYWORD_DEFAULT_VALUE = "Teardown";
+  private static final String ARRANGE_KEYWORD_DEFAULT_VALUE = "Arrange";
+  private static final String ACT_KEYWORD_DEFAULT_VALUE = "Act";
+  private static final String ASSERT_KEYWORD_DEFAULT_VALUE = "Assert";
   private static volatile Keywords keywords = null;
 
   /**
@@ -49,31 +54,30 @@ public final class AAAKeywords implements StebzExtension {
    */
   private AAAKeywords(final PropertiesReader properties) {
     setKeywords(new Keywords(
-      new Keyword.Of(properties.getString("stebz.aaa.keywords.act", "Act")),
-      new Keyword.Of(properties.getString("stebz.aaa.keywords.and", "And")),
-      new Keyword.Of(properties.getString("stebz.aaa.keywords.arrange", "Arrange")),
-      new Keyword.Of(properties.getString("stebz.aaa.keywords.assert", "Assert")),
-      new Keyword.Of(properties.getString("stebz.aaa.keywords.but", "But")),
-      new Keyword.Of(properties.getString("stebz.aaa.keywords.asterisk", "*"))
+      new Keyword.Of(properties.getString("stebz.aaa.keywords.setup", SETUP_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.aaa.keywords.teardown", TEARDOWN_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.aaa.keywords.arrange", ARRANGE_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.aaa.keywords.act", ACT_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.aaa.keywords.assert", ASSERT_KEYWORD_DEFAULT_VALUE))
     ));
   }
 
   /**
-   * Returns "Act" keyword.
+   * Returns "Setup" keyword.
    *
-   * @return "Act" keyword
+   * @return "Setup" keyword
    */
-  public static Keyword act() {
-    return getKeywords().act;
+  public static Keyword setup() {
+    return getKeywords().setup;
   }
 
   /**
-   * Returns "And" keyword.
+   * Returns "Teardown" keyword.
    *
-   * @return "And" keyword
+   * @return "Teardown" keyword
    */
-  public static Keyword and() {
-    return getKeywords().and;
+  public static Keyword teardown() {
+    return getKeywords().teardown;
   }
 
   /**
@@ -86,30 +90,21 @@ public final class AAAKeywords implements StebzExtension {
   }
 
   /**
+   * Returns "Act" keyword.
+   *
+   * @return "Act" keyword
+   */
+  public static Keyword act() {
+    return getKeywords().act;
+  }
+
+  /**
    * Returns "Assert" keyword.
    *
    * @return "Assert" keyword
    */
   public static Keyword _assert() {
     return getKeywords()._assert;
-  }
-
-  /**
-   * Returns "But" keyword.
-   *
-   * @return "But" keyword
-   */
-  public static Keyword but() {
-    return getKeywords().but;
-  }
-
-  /**
-   * Returns "Asterisk" keyword.
-   *
-   * @return "Asterisk" keyword
-   */
-  public static Keyword asterisk() {
-    return getKeywords().asterisk;
   }
 
   private static void setKeywords(final Keywords keywordsToSet) {
@@ -140,31 +135,31 @@ public final class AAAKeywords implements StebzExtension {
 
   private static Keywords defaultKeywords() {
     return new Keywords(
-      new Keyword.Of("Act"), new Keyword.Of("And"), new Keyword.Of("Arrange"),
-      new Keyword.Of("Assert"), new Keyword.Of("But"), new Keyword.Of("*")
+      new Keyword.Of(SETUP_KEYWORD_DEFAULT_VALUE),
+      new Keyword.Of(TEARDOWN_KEYWORD_DEFAULT_VALUE),
+      new Keyword.Of(ARRANGE_KEYWORD_DEFAULT_VALUE),
+      new Keyword.Of(ACT_KEYWORD_DEFAULT_VALUE),
+      new Keyword.Of(ASSERT_KEYWORD_DEFAULT_VALUE)
     );
   }
 
   private static final class Keywords {
-    private final Keyword act;
-    private final Keyword and;
+    private final Keyword setup;
+    private final Keyword teardown;
     private final Keyword arrange;
+    private final Keyword act;
     private final Keyword _assert;
-    private final Keyword but;
-    private final Keyword asterisk;
 
-    private Keywords(final Keyword act,
-                     final Keyword and,
+    private Keywords(final Keyword setup,
+                     final Keyword teardown,
                      final Keyword arrange,
-                     final Keyword _assert,
-                     final Keyword but,
-                     final Keyword asterisk) {
-      this.act = act;
-      this.and = and;
+                     final Keyword act,
+                     final Keyword _assert) {
+      this.setup = setup;
+      this.teardown = teardown;
       this.arrange = arrange;
+      this.act = act;
       this._assert = _assert;
-      this.but = but;
-      this.asterisk = asterisk;
     }
   }
 }

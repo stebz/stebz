@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.stebz.annotation.aaa;
+package org.stebz.annotation.gherkin;
 
 import org.stebz.annotation.Step;
 import org.stebz.annotation.StepAttributeAnnotation;
 import org.stebz.annotation.WithKeyword;
 import org.stebz.annotation.WithName;
-import org.stebz.extension.AAAKeywords;
+import org.stebz.extension.GherkinKeywords;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -35,17 +35,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static org.stebz.extension.AAAAnnotationsExtension.AAA_KEYWORD_ATTRIBUTE_KEY;
+import static org.stebz.extension.GherkinAnnotationsExtension.GHERKIN_KEYWORD_ATTRIBUTE_KEY;
 
 /**
  * Alias for the combination of the {@link WithName} and {@link WithKeyword} annotations. The keyword is
- * {@link AAAKeywords#act()}.
+ * {@link GherkinKeywords#conclusion()}.
  */
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@StepAttributeAnnotation(AAA_KEYWORD_ATTRIBUTE_KEY)
-public @interface Act {
+@StepAttributeAnnotation(GHERKIN_KEYWORD_ATTRIBUTE_KEY)
+public @interface Conclusion {
 
   /**
    * Returns name attribute value. Non empty value overrides {@link WithName#value()} and {@link Step#value()}.
