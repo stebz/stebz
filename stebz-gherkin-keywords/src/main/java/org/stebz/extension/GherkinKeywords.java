@@ -33,6 +33,13 @@ import org.stebz.util.property.PropertiesReader;
  */
 public final class GherkinKeywords implements StebzExtension {
   private static final Object LOCK = new Object();
+  private static final String BACKGROUND_KEYWORD_DEFAULT_VALUE = "Background";
+  private static final String CONCLUSION_KEYWORD_DEFAULT_VALUE = "Conclusion";
+  private static final String GIVEN_KEYWORD_DEFAULT_VALUE = "Given";
+  private static final String WHEN_KEYWORD_DEFAULT_VALUE = "When";
+  private static final String THEN_KEYWORD_DEFAULT_VALUE = "Then";
+  private static final String AND_KEYWORD_DEFAULT_VALUE = "And";
+  private static final String BUT_KEYWORD_DEFAULT_VALUE = "But";
   private static volatile Keywords keywords = null;
 
   /**
@@ -49,64 +56,14 @@ public final class GherkinKeywords implements StebzExtension {
    */
   private GherkinKeywords(final PropertiesReader properties) {
     setKeywords(new Keywords(
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.feature", "Feature")),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.rule", "Rule")),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.scenario", "Scenario")),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.scenarioOutline", "Scenario Outline")),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.examples", "Examples")),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.background", "Background")),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.given", "Given")),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.when", "When")),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.then", "Then")),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.and", "And")),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.but", "But")),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.asterisk", "*"))
+      new Keyword.Of(properties.getString("stebz.gherkin.keywords.background", BACKGROUND_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.gherkin.keywords.conclusion", CONCLUSION_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.gherkin.keywords.given", GIVEN_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.gherkin.keywords.when", WHEN_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.gherkin.keywords.then", THEN_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.gherkin.keywords.and", AND_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.gherkin.keywords.but", BUT_KEYWORD_DEFAULT_VALUE))
     ));
-  }
-
-  /**
-   * Returns "Feature" keyword.
-   *
-   * @return "Feature" keyword
-   */
-  public static Keyword feature() {
-    return getKeywords().feature;
-  }
-
-  /**
-   * Returns "Rule" keyword.
-   *
-   * @return "Rule" keyword
-   */
-  public static Keyword rule() {
-    return getKeywords().rule;
-  }
-
-  /**
-   * Returns "Scenario" keyword.
-   *
-   * @return "Scenario" keyword
-   */
-  public static Keyword scenario() {
-    return getKeywords().scenario;
-  }
-
-  /**
-   * Returns "Scenario outline" keyword.
-   *
-   * @return "Scenario outline" keyword
-   */
-  public static Keyword scenarioOutline() {
-    return getKeywords().scenarioOutline;
-  }
-
-  /**
-   * Returns "Examples" keyword.
-   *
-   * @return "Examples" keyword
-   */
-  public static Keyword examples() {
-    return getKeywords().examples;
   }
 
   /**
@@ -116,6 +73,15 @@ public final class GherkinKeywords implements StebzExtension {
    */
   public static Keyword background() {
     return getKeywords().background;
+  }
+
+  /**
+   * Returns "Conclusion" keyword.
+   *
+   * @return "Conclusion" keyword
+   */
+  public static Keyword conclusion() {
+    return getKeywords().conclusion;
   }
 
   /**
@@ -163,15 +129,6 @@ public final class GherkinKeywords implements StebzExtension {
     return getKeywords().but;
   }
 
-  /**
-   * Returns "Asterisk" keyword.
-   *
-   * @return "Asterisk" keyword
-   */
-  public static Keyword asterisk() {
-    return getKeywords().asterisk;
-  }
-
   private static void setKeywords(final Keywords keywordsToSet) {
     if (keywords == null) {
       synchronized (LOCK) {
@@ -200,51 +157,39 @@ public final class GherkinKeywords implements StebzExtension {
 
   private static Keywords defaultKeywords() {
     return new Keywords(
-      new Keyword.Of("Feature"), new Keyword.Of("Rule"), new Keyword.Of("Scenario"),
-      new Keyword.Of("Scenario Outline"), new Keyword.Of("Examples"), new Keyword.Of("Background"),
-      new Keyword.Of("Given"), new Keyword.Of("When"), new Keyword.Of("Then"),
-      new Keyword.Of("And"), new Keyword.Of("But"), new Keyword.Of("*")
+      new Keyword.Of(BACKGROUND_KEYWORD_DEFAULT_VALUE),
+      new Keyword.Of(CONCLUSION_KEYWORD_DEFAULT_VALUE),
+      new Keyword.Of(GIVEN_KEYWORD_DEFAULT_VALUE),
+      new Keyword.Of(WHEN_KEYWORD_DEFAULT_VALUE),
+      new Keyword.Of(THEN_KEYWORD_DEFAULT_VALUE),
+      new Keyword.Of(AND_KEYWORD_DEFAULT_VALUE),
+      new Keyword.Of(BUT_KEYWORD_DEFAULT_VALUE)
     );
   }
 
   private static final class Keywords {
-    private final Keyword feature;
-    private final Keyword rule;
-    private final Keyword scenario;
-    private final Keyword scenarioOutline;
-    private final Keyword examples;
     private final Keyword background;
+    private final Keyword conclusion;
     private final Keyword given;
     private final Keyword when;
     private final Keyword then;
     private final Keyword and;
     private final Keyword but;
-    private final Keyword asterisk;
 
-    private Keywords(final Keyword feature,
-                     final Keyword rule,
-                     final Keyword scenario,
-                     final Keyword scenarioOutline,
-                     final Keyword examples,
-                     final Keyword background,
+    private Keywords(final Keyword background,
+                     final Keyword conclusion,
                      final Keyword given,
                      final Keyword when,
                      final Keyword then,
                      final Keyword and,
-                     final Keyword but,
-                     final Keyword asterisk) {
-      this.feature = feature;
-      this.rule = rule;
-      this.scenario = scenario;
-      this.scenarioOutline = scenarioOutline;
-      this.examples = examples;
+                     final Keyword but) {
       this.background = background;
+      this.conclusion = conclusion;
       this.given = given;
       this.when = when;
       this.then = then;
       this.and = and;
       this.but = but;
-      this.asterisk = asterisk;
     }
   }
 }

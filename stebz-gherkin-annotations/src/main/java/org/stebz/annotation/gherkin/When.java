@@ -27,6 +27,7 @@ import org.stebz.annotation.Step;
 import org.stebz.annotation.StepAttributeAnnotation;
 import org.stebz.annotation.WithKeyword;
 import org.stebz.annotation.WithName;
+import org.stebz.extension.GherkinKeywords;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -37,7 +38,8 @@ import java.lang.annotation.Target;
 import static org.stebz.extension.GherkinAnnotationsExtension.GHERKIN_KEYWORD_ATTRIBUTE_KEY;
 
 /**
- * Alias for the combination of the {@link WithName} and {@link WithKeyword} annotations. The keyword is "When".
+ * Alias for the combination of the {@link WithName} and {@link WithKeyword} annotations. The keyword is
+ * {@link GherkinKeywords#when()}.
  */
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})

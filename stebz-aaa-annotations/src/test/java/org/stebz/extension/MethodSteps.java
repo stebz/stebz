@@ -26,10 +26,10 @@ package org.stebz.extension;
 import org.stebz.annotation.Step;
 import org.stebz.annotation.WithName;
 import org.stebz.annotation.aaa.Act;
-import org.stebz.annotation.aaa.And;
 import org.stebz.annotation.aaa.Arrange;
 import org.stebz.annotation.aaa.Assert;
-import org.stebz.annotation.aaa.But;
+import org.stebz.annotation.aaa.Setup;
+import org.stebz.annotation.aaa.Teardown;
 import org.stebz.step.executable.RunnableStep;
 
 final class MethodSteps {
@@ -53,13 +53,13 @@ final class MethodSteps {
     return RunnableStep.empty();
   }
 
-  @And("custom name")
+  @Setup("custom name")
   @Step("step name")
   static RunnableStep aaaKeywordAnnotationWithNameAndStepAnnotation() {
     return RunnableStep.empty();
   }
 
-  @But("custom name")
+  @Teardown("custom name")
   @WithName("step name")
   static RunnableStep aaaKeywordAnnotationWithNameAndWithNameAnnotation() {
     return RunnableStep.empty();
