@@ -130,6 +130,14 @@ public interface AAAAround<T> {
               FunctionStep<? super T, ? extends R> step);
 
   /**
+   * Executes step with {@link AAAKeywords#setup()} keyword on the context value.
+   *
+   * @param body the step body
+   * @return {@code Around} object
+   */
+  AAAAround<T> Setup(ThrowingConsumer<? super T, ?> body);
+
+  /**
    * Executes step with {@link AAAKeywords#setup()} keyword and given attributes on the context value.
    *
    * @param name the step name
@@ -176,6 +184,15 @@ public interface AAAAround<T> {
                      Map<String, ?> params,
                      String expectedResult,
                      ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with {@link AAAKeywords#setup()} keyword on the context value and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  <R> R Setup(ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
    * Executes step with {@link AAAKeywords#setup()} keyword and given attributes on the context value and returns step
@@ -351,6 +368,14 @@ public interface AAAAround<T> {
                  FunctionStep<? super T, ? extends R> step);
 
   /**
+   * Executes step with {@link AAAKeywords#teardown()} keyword on the context value.
+   *
+   * @param body the step body
+   * @return {@code Around} object
+   */
+  AAAAround<T> Teardown(ThrowingConsumer<? super T, ?> body);
+
+  /**
    * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes on the context value.
    *
    * @param name the step name
@@ -397,6 +422,15 @@ public interface AAAAround<T> {
                         Map<String, ?> params,
                         String expectedResult,
                         ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with {@link AAAKeywords#teardown()} keyword on the context value and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  <R> R Teardown(ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
    * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes on the context value and returns
@@ -572,6 +606,14 @@ public interface AAAAround<T> {
                 FunctionStep<? super T, ? extends R> step);
 
   /**
+   * Executes step with {@link AAAKeywords#arrange()} keyword on the context value.
+   *
+   * @param body the step body
+   * @return {@code Around} object
+   */
+  AAAAround<T> Arrange(ThrowingConsumer<? super T, ?> body);
+
+  /**
    * Executes step with {@link AAAKeywords#arrange()} keyword and given attributes on the context value.
    *
    * @param name the step name
@@ -618,6 +660,15 @@ public interface AAAAround<T> {
                        Map<String, ?> params,
                        String expectedResult,
                        ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with {@link AAAKeywords#arrange()} keyword on the context value and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  <R> R Arrange(ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
    * Executes step with {@link AAAKeywords#arrange()} keyword and given attributes on the context value and returns step
@@ -792,6 +843,14 @@ public interface AAAAround<T> {
             FunctionStep<? super T, ? extends R> step);
 
   /**
+   * Executes step with {@link AAAKeywords#act()} keyword on the context value.
+   *
+   * @param body the step body
+   * @return {@code Around} object
+   */
+  AAAAround<T> Act(ThrowingConsumer<? super T, ?> body);
+
+  /**
    * Executes step with {@link AAAKeywords#act()} keyword and given attributes on the context value.
    *
    * @param name the step name
@@ -838,6 +897,15 @@ public interface AAAAround<T> {
                    Map<String, ?> params,
                    String expectedResult,
                    ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with {@link AAAKeywords#act()} keyword on the context value and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  <R> R Act(ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
    * Executes step with {@link AAAKeywords#act()} keyword and given attributes on the context value and returns step
@@ -1013,6 +1081,14 @@ public interface AAAAround<T> {
                FunctionStep<? super T, ? extends R> step);
 
   /**
+   * Executes step with {@link AAAKeywords#_assert()} keyword on the context value.
+   *
+   * @param body the step body
+   * @return {@code Around} object
+   */
+  AAAAround<T> Assert(ThrowingConsumer<? super T, ?> body);
+
+  /**
    * Executes step with {@link AAAKeywords#_assert()} keyword and given attributes on the context value.
    *
    * @param name the step name
@@ -1059,6 +1135,15 @@ public interface AAAAround<T> {
                       Map<String, ?> params,
                       String expectedResult,
                       ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with {@link AAAKeywords#_assert()} keyword on the context value and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  <R> R Assert(ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
    * Executes step with {@link AAAKeywords#_assert()} keyword and given attributes on the context value and returns step
@@ -1240,6 +1325,15 @@ public interface AAAAround<T> {
     }
 
     @Override
+    public AAAAround<T> Setup(final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, setup()),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public AAAAround<T> Setup(final String name,
                               final ThrowingConsumer<? super T, ?> body) {
       this.executor.execute(new ConsumerStep.Of<>(
@@ -1284,6 +1378,14 @@ public interface AAAAround<T> {
         body
       ), this.context);
       return this;
+    }
+
+    @Override
+    public <R> R Setup(final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(KEYWORD, setup()),
+        body
+      ), this.context);
     }
 
     @Override
@@ -1431,6 +1533,15 @@ public interface AAAAround<T> {
     }
 
     @Override
+    public AAAAround<T> Teardown(final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, teardown()),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public AAAAround<T> Teardown(final String name,
                                  final ThrowingConsumer<? super T, ?> body) {
       this.executor.execute(new ConsumerStep.Of<>(
@@ -1475,6 +1586,14 @@ public interface AAAAround<T> {
         body
       ), this.context);
       return this;
+    }
+
+    @Override
+    public <R> R Teardown(final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(KEYWORD, teardown()),
+        body
+      ), this.context);
     }
 
     @Override
@@ -1622,6 +1741,15 @@ public interface AAAAround<T> {
     }
 
     @Override
+    public AAAAround<T> Arrange(final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, arrange()),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public AAAAround<T> Arrange(final String name,
                                 final ThrowingConsumer<? super T, ?> body) {
       this.executor.execute(new ConsumerStep.Of<>(
@@ -1666,6 +1794,14 @@ public interface AAAAround<T> {
         body
       ), this.context);
       return this;
+    }
+
+    @Override
+    public <R> R Arrange(final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(KEYWORD, arrange()),
+        body
+      ), this.context);
     }
 
     @Override
@@ -1813,6 +1949,15 @@ public interface AAAAround<T> {
     }
 
     @Override
+    public AAAAround<T> Act(final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, act()),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public AAAAround<T> Act(final String name,
                             final ThrowingConsumer<? super T, ?> body) {
       this.executor.execute(new ConsumerStep.Of<>(
@@ -1857,6 +2002,14 @@ public interface AAAAround<T> {
         body
       ), this.context);
       return this;
+    }
+
+    @Override
+    public <R> R Act(final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(KEYWORD, act()),
+        body
+      ), this.context);
     }
 
     @Override
@@ -2004,6 +2157,15 @@ public interface AAAAround<T> {
     }
 
     @Override
+    public AAAAround<T> Assert(final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, _assert()),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public AAAAround<T> Assert(final String name,
                                final ThrowingConsumer<? super T, ?> body) {
       this.executor.execute(new ConsumerStep.Of<>(
@@ -2048,6 +2210,14 @@ public interface AAAAround<T> {
         body
       ), this.context);
       return this;
+    }
+
+    @Override
+    public <R> R Assert(final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(KEYWORD, _assert()),
+        body
+      ), this.context);
     }
 
     @Override
