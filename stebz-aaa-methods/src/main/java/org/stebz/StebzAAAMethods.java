@@ -191,6 +191,18 @@ public final class StebzAAAMethods {
   }
 
   /**
+   * Executes step with {@link AAAKeywords#setup()} keyword.
+   *
+   * @param body the step body
+   */
+  public static void Setup(final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, setup()),
+      body
+    ));
+  }
+
+  /**
    * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
    *
    * @param name the step name
@@ -253,6 +265,20 @@ public final class StebzAAAMethods {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
         KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#setup()} keyword and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  public static <R> R Setup(final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, setup()),
       body
     ));
   }
@@ -504,6 +530,18 @@ public final class StebzAAAMethods {
   }
 
   /**
+   * Executes step with {@link AAAKeywords#teardown()} keyword.
+   *
+   * @param body the step body
+   */
+  public static void Teardown(final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, teardown()),
+      body
+    ));
+  }
+
+  /**
    * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes.
    *
    * @param name the step name
@@ -566,6 +604,20 @@ public final class StebzAAAMethods {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
         KEYWORD, teardown(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#teardown()} keyword and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  public static <R> R Teardown(final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, teardown()),
       body
     ));
   }
@@ -817,6 +869,18 @@ public final class StebzAAAMethods {
   }
 
   /**
+   * Executes step with {@link AAAKeywords#arrange()} keyword.
+   *
+   * @param body the step body
+   */
+  public static void Arrange(final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, arrange()),
+      body
+    ));
+  }
+
+  /**
    * Executes step with {@link AAAKeywords#arrange()} keyword and given attributes.
    *
    * @param name the step name
@@ -879,6 +943,20 @@ public final class StebzAAAMethods {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
         KEYWORD, arrange(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#arrange()} keyword and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  public static <R> R Arrange(final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, arrange()),
       body
     ));
   }
@@ -1130,6 +1208,18 @@ public final class StebzAAAMethods {
   }
 
   /**
+   * Executes step with {@link AAAKeywords#act()} keyword.
+   *
+   * @param body the step body
+   */
+  public static void Act(final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, act()),
+      body
+    ));
+  }
+
+  /**
    * Executes step with {@link AAAKeywords#act()} keyword and given attributes.
    *
    * @param name the step name
@@ -1192,6 +1282,20 @@ public final class StebzAAAMethods {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
         KEYWORD, act(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#act()} keyword and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  public static <R> R Act(final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, act()),
       body
     ));
   }
@@ -1443,6 +1547,18 @@ public final class StebzAAAMethods {
   }
 
   /**
+   * Executes step with {@link AAAKeywords#_assert()} keyword.
+   *
+   * @param body the step body
+   */
+  public static void Assert(final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, _assert()),
+      body
+    ));
+  }
+
+  /**
    * Executes step with {@link AAAKeywords#_assert()} keyword and given attributes.
    *
    * @param name the step name
@@ -1505,6 +1621,20 @@ public final class StebzAAAMethods {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
         KEYWORD, _assert(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#_assert()} keyword and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  public static <R> R Assert(final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, _assert()),
       body
     ));
   }

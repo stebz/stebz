@@ -40,6 +40,7 @@ import static org.stebz.attribute.StepAttribute.KEYWORD;
 import static org.stebz.attribute.StepAttribute.NAME;
 import static org.stebz.attribute.StepAttribute.PARAMS;
 import static org.stebz.extension.GherkinKeywords.and;
+import static org.stebz.extension.GherkinKeywords.background;
 import static org.stebz.extension.GherkinKeywords.but;
 import static org.stebz.extension.GherkinKeywords.conclusion;
 import static org.stebz.extension.GherkinKeywords.given;
@@ -80,38 +81,38 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#given()} keyword.
+   * Executes given step with {@link GherkinKeywords#background()} keyword.
    *
    * @param step the step
    */
   public static void Background(final RunnableStep step) {
-    StepExecutor.get().execute(step.withKeyword(given()));
+    StepExecutor.get().execute(step.withKeyword(background()));
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#given()} keyword and name.
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name.
    *
    * @param name the name
    * @param step the step
    */
   public static void Background(final String name,
                                 final RunnableStep step) {
-    StepExecutor.get().execute(step.with(KEYWORD, given(), NAME, name));
+    StepExecutor.get().execute(step.with(KEYWORD, background(), NAME, name));
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#given()} keyword and returns step result.
+   * Executes given step with {@link GherkinKeywords#background()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
   public static <R> R Background(final SupplierStep<R> step) {
-    return StepExecutor.get().execute(step.with(KEYWORD, given()));
+    return StepExecutor.get().execute(step.with(KEYWORD, background()));
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#given()} keyword and name and returns step result.
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name and returns step result.
    *
    * @param name the name
    * @param step the step
@@ -120,11 +121,11 @@ public final class StebzGherkinMethods {
    */
   public static <R> R Background(final String name,
                                  final SupplierStep<R> step) {
-    return StepExecutor.get().execute(step.with(KEYWORD, given(), NAME, name));
+    return StepExecutor.get().execute(step.with(KEYWORD, background(), NAME, name));
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#given()} keyword on given value.
+   * Executes given step with {@link GherkinKeywords#background()} keyword on given value.
    *
    * @param step  the step
    * @param value the value
@@ -133,13 +134,13 @@ public final class StebzGherkinMethods {
   public static <T> void Background(final ConsumerStep<? super T> step,
                                     final T value) {
     StepExecutor.get().execute(
-      step.with(KEYWORD, given()),
+      step.with(KEYWORD, background()),
       value
     );
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#given()} keyword and name on given value.
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name on given value.
    *
    * @param name  the name
    * @param step  the step
@@ -150,13 +151,13 @@ public final class StebzGherkinMethods {
                                     final ConsumerStep<? super T> step,
                                     final T value) {
     StepExecutor.get().execute(
-      step.with(KEYWORD, given(), NAME, name),
+      step.with(KEYWORD, background(), NAME, name),
       value
     );
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#given()} keyword on given value and returns step result.
+   * Executes given step with {@link GherkinKeywords#background()} keyword on given value and returns step result.
    *
    * @param step  the step
    * @param value the value
@@ -167,13 +168,14 @@ public final class StebzGherkinMethods {
   public static <T, R> R Background(final FunctionStep<? super T, ? extends R> step,
                                     final T value) {
     return StepExecutor.get().execute(
-      step.with(KEYWORD, given()),
+      step.with(KEYWORD, background()),
       value
     );
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#given()} keyword and name on given value and returns step result.
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name on given value and returns step
+   * result.
    *
    * @param name  the name
    * @param step  the step
@@ -186,13 +188,25 @@ public final class StebzGherkinMethods {
                                     final FunctionStep<? super T, ? extends R> step,
                                     final T value) {
     return StepExecutor.get().execute(
-      step.with(KEYWORD, given(), NAME, name),
+      step.with(KEYWORD, background(), NAME, name),
       value
     );
   }
 
   /**
-   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
+   * Executes step with {@link GherkinKeywords#background()} keyword.
+   *
+   * @param body the step body
+   */
+  public static void Background(final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, background()),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#background()} keyword and given attributes.
    *
    * @param name the step name
    * @param body the step body
@@ -200,13 +214,13 @@ public final class StebzGherkinMethods {
   public static void Background(final String name,
                                 final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, given(), NAME, name),
+      new StepAttributes.Of(KEYWORD, background(), NAME, name),
       body
     ));
   }
 
   /**
-   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
+   * Executes step with {@link GherkinKeywords#background()} keyword and given attributes.
    *
    * @param name   the step name
    * @param params the step params
@@ -217,13 +231,13 @@ public final class StebzGherkinMethods {
                                 final Map<String, ?> params,
                                 final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params),
+      new StepAttributes.Of(KEYWORD, background(), NAME, name, PARAMS, (Map<String, Object>) params),
       body
     ));
   }
 
   /**
-   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
+   * Executes step with {@link GherkinKeywords#background()} keyword and given attributes.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
@@ -233,13 +247,13 @@ public final class StebzGherkinMethods {
                                 final String expectedResult,
                                 final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, given(), NAME, name, EXPECTED_RESULT, expectedResult),
+      new StepAttributes.Of(KEYWORD, background(), NAME, name, EXPECTED_RESULT, expectedResult),
       body
     ));
   }
 
   /**
-   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
+   * Executes step with {@link GherkinKeywords#background()} keyword and given attributes.
    *
    * @param name           the step name
    * @param params         the step params
@@ -253,13 +267,27 @@ public final class StebzGherkinMethods {
                                 final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
-        KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        KEYWORD, background(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
       body
     ));
   }
 
   /**
-   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes and returns step result.
+   * Executes step with {@link GherkinKeywords#background()} keyword and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  public static <R> R Background(final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, background()),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#background()} keyword and given attributes and returns step result.
    *
    * @param name the step name
    * @param body the step body
@@ -269,13 +297,13 @@ public final class StebzGherkinMethods {
   public static <R> R Background(final String name,
                                  final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
-      new StepAttributes.Of(KEYWORD, given(), NAME, name),
+      new StepAttributes.Of(KEYWORD, background(), NAME, name),
       body
     ));
   }
 
   /**
-   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes and returns step result.
+   * Executes step with {@link GherkinKeywords#background()} keyword and given attributes and returns step result.
    *
    * @param name   the step name
    * @param params the step params
@@ -288,13 +316,13 @@ public final class StebzGherkinMethods {
                                  final Map<String, ?> params,
                                  final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
-      new StepAttributes.Of(KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params),
+      new StepAttributes.Of(KEYWORD, background(), NAME, name, PARAMS, (Map<String, Object>) params),
       body
     ));
   }
 
   /**
-   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes and returns step result.
+   * Executes step with {@link GherkinKeywords#background()} keyword and given attributes and returns step result.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
@@ -306,13 +334,13 @@ public final class StebzGherkinMethods {
                                  final String expectedResult,
                                  final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
-      new StepAttributes.Of(KEYWORD, given(), NAME, name, EXPECTED_RESULT, expectedResult),
+      new StepAttributes.Of(KEYWORD, background(), NAME, name, EXPECTED_RESULT, expectedResult),
       body
     ));
   }
 
   /**
-   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes and returns step result.
+   * Executes step with {@link GherkinKeywords#background()} keyword and given attributes and returns step result.
    *
    * @param name           the step name
    * @param params         the step params
@@ -328,25 +356,25 @@ public final class StebzGherkinMethods {
                                  final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
       new StepAttributes.Of(
-        KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        KEYWORD, background(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
       body
     ));
   }
 
   /**
-   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
+   * Executes step with {@link GherkinKeywords#background()} keyword and given attributes.
    *
    * @param name the step name
    */
   public static void Background(final String name) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, given(), NAME, name),
+      new StepAttributes.Of(KEYWORD, background(), NAME, name),
       RunnableStep.emptyBody()
     ));
   }
 
   /**
-   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
+   * Executes step with {@link GherkinKeywords#background()} keyword and given attributes.
    *
    * @param name   the step name
    * @param params the step params
@@ -355,13 +383,13 @@ public final class StebzGherkinMethods {
   public static void Background(final String name,
                                 final Map<String, ?> params) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params),
+      new StepAttributes.Of(KEYWORD, background(), NAME, name, PARAMS, (Map<String, Object>) params),
       RunnableStep.emptyBody()
     ));
   }
 
   /**
-   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
+   * Executes step with {@link GherkinKeywords#background()} keyword and given attributes.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
@@ -369,13 +397,13 @@ public final class StebzGherkinMethods {
   public static void Background(final String name,
                                 final String expectedResult) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, given(), NAME, name, EXPECTED_RESULT, expectedResult),
+      new StepAttributes.Of(KEYWORD, background(), NAME, name, EXPECTED_RESULT, expectedResult),
       RunnableStep.emptyBody()
     ));
   }
 
   /**
-   * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
+   * Executes step with {@link GherkinKeywords#background()} keyword and given attributes.
    *
    * @param name           the step name
    * @param params         the step params
@@ -387,7 +415,7 @@ public final class StebzGherkinMethods {
                                 final String expectedResult) {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
-        KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        KEYWORD, background(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
       RunnableStep.emptyBody()
     ));
   }
@@ -506,6 +534,18 @@ public final class StebzGherkinMethods {
   }
 
   /**
+   * Executes step with {@link GherkinKeywords#conclusion()} keyword.
+   *
+   * @param body the step body
+   */
+  public static void Conclusion(final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, conclusion()),
+      body
+    ));
+  }
+
+  /**
    * Executes step with {@link GherkinKeywords#conclusion()} keyword and given attributes.
    *
    * @param name the step name
@@ -568,6 +608,20 @@ public final class StebzGherkinMethods {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
         KEYWORD, conclusion(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#conclusion()} keyword and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  public static <R> R Conclusion(final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, conclusion()),
       body
     ));
   }
@@ -819,6 +873,18 @@ public final class StebzGherkinMethods {
   }
 
   /**
+   * Executes step with {@link GherkinKeywords#given()} keyword.
+   *
+   * @param body the step body
+   */
+  public static void Given(final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, given()),
+      body
+    ));
+  }
+
+  /**
    * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
    *
    * @param name the step name
@@ -881,6 +947,20 @@ public final class StebzGherkinMethods {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
         KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#given()} keyword and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  public static <R> R Given(final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, given()),
       body
     ));
   }
@@ -1132,6 +1212,18 @@ public final class StebzGherkinMethods {
   }
 
   /**
+   * Executes step with {@link GherkinKeywords#when()} keyword.
+   *
+   * @param body the step body
+   */
+  public static void When(final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, when()),
+      body
+    ));
+  }
+
+  /**
    * Executes step with {@link GherkinKeywords#when()} keyword and given attributes.
    *
    * @param name the step name
@@ -1194,6 +1286,20 @@ public final class StebzGherkinMethods {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
         KEYWORD, when(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#when()} keyword and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  public static <R> R When(final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, when()),
       body
     ));
   }
@@ -1445,6 +1551,18 @@ public final class StebzGherkinMethods {
   }
 
   /**
+   * Executes step with {@link GherkinKeywords#then()} keyword.
+   *
+   * @param body the step body
+   */
+  public static void Then(final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, then()),
+      body
+    ));
+  }
+
+  /**
    * Executes step with {@link GherkinKeywords#then()} keyword and given attributes.
    *
    * @param name the step name
@@ -1507,6 +1625,20 @@ public final class StebzGherkinMethods {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
         KEYWORD, then(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#when()} keyword and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  public static <R> R Then(final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, then()),
       body
     ));
   }
@@ -1758,6 +1890,18 @@ public final class StebzGherkinMethods {
   }
 
   /**
+   * Executes step with {@link GherkinKeywords#and()} keyword.
+   *
+   * @param body the step body
+   */
+  public static void And(final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, and()),
+      body
+    ));
+  }
+
+  /**
    * Executes step with {@link GherkinKeywords#and()} keyword and given attributes.
    *
    * @param name the step name
@@ -1820,6 +1964,20 @@ public final class StebzGherkinMethods {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
         KEYWORD, and(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#and()} keyword and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  public static <R> R And(final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, and()),
       body
     ));
   }
@@ -2071,6 +2229,18 @@ public final class StebzGherkinMethods {
   }
 
   /**
+   * Executes step with {@link GherkinKeywords#but()} keyword.
+   *
+   * @param body the step body
+   */
+  public static void But(final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, but()),
+      body
+    ));
+  }
+
+  /**
    * Executes step with {@link GherkinKeywords#but()} keyword and given attributes.
    *
    * @param name the step name
@@ -2133,6 +2303,20 @@ public final class StebzGherkinMethods {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
         KEYWORD, but(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link GherkinKeywords#but()} keyword and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  public static <R> R But(final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, but()),
       body
     ));
   }
