@@ -195,17 +195,12 @@ In most cases it is enough to add one of the bundle dependencies:
 - `stebz-aaa` (`stebz` with keywords in Arrange-Act-Assert style)
 - `stebz-gherkin` (`stebz` with keywords in Gherkin style)
 
-One of integration dependencies (don't forget to add and configure the dependency of the reporting system):
+And one of integration dependencies (don't forget to add and configure the dependency of the reporting system):
 
 - `stebz-allure` (uses `io.qameta.allure:allure-java-commons`)
 - `stebz-qase` (uses `io.qase:qase-java-commons`)
 - `stebz-reportportal` (uses `com.epam.reportportal:client-java`)
 - `stebz-testit` (uses `ru.testit:testit-java-commons`)
-
-And maybe some extensions:
-
-- `stebz-readable-reflective-name`
-- `stebz-repeat-and-retry`
 
 Maven:
 
@@ -215,7 +210,7 @@ Maven:
   <dependency>
     <groupId>org.stebz</groupId>
     <artifactId>{module name}</artifactId>
-    <version>1.6</version>
+    <version>1.7</version>
   </dependency>
 </dependencies>
 ```
@@ -226,7 +221,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation 'org.stebz:{module name}:1.6'
+  implementation 'org.stebz:{module name}:1.7'
 }
 ```
 <!-- @formatter:on -->
@@ -236,7 +231,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation("org.stebz:{module name}:1.6")
+  implementation("org.stebz:{module name}:1.7")
 }
 ```
 <!-- @formatter:on -->
@@ -256,7 +251,7 @@ Maven:
     <dependency>
       <groupId>org.stebz</groupId>
       <artifactId>stebz-bom</artifactId>
-      <version>1.6</version>
+      <version>1.7</version>
       <scope>import</scope>
       <type>pom</type>
     </dependency>
@@ -270,7 +265,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation platform('org.stebz:stebz-bom:1.6')
+  implementation platform('org.stebz:stebz-bom:1.7')
 }
 ```
 <!-- @formatter:on -->
@@ -280,7 +275,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation(platform("org.stebz:stebz-bom:1.6"))
+  implementation(platform("org.stebz:stebz-bom:1.7"))
 }
 ```
 <!-- @formatter:on -->
@@ -390,16 +385,17 @@ tasks.test {
 | `stebz-gherkin-methods`          | `stebz-utils`<br/>`stebz-core`<br/>`stebz-gherkin-keywords`                         | Methods for executing step objects and quick steps in Gherkin style            |
 | `stebz-gherkin-annotations`      | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations`<br/>`stebz-gherkin-keywords` | Annotations in Gherkin style                                                   |
 | `stebz-clean-stack-trace`        | `stebz-utils`<br/>`stebz-core`                                                      | Extension that cleans step exception stack trace from garbage lines            |
+| `stebz-hidden-steps`             | `stebz-utils`<br/>`stebz-core`                                                      | Extension that allows to hide several steps                                    |
 | `stebz-readable-reflective-name` | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations`                              | Extension that converts a reflective step name into a readable form            |
 | `stebz-repeat-and-retry`         | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations` (optional)                   | Extension that allows to repeat and retry step bodies                          |
 
 #### Bundle:
 
-| module          | include / depends on                                                                                                                                                                              | description                                         |
-|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------|
-| `stebz`         | `stebz-utils`<br/>`stebz-core`<br/>`stebz-methods`<br/>`stebz-annotations`<br/>`stebz-clean-stack-trace`                                                                                          | Bundle of Stebz modules                             |
-| `stebz-aaa`     | `stebz-utils`<br/>`stebz-core`<br/>`stebz-methods`<br/>`stebz-annotations`<br/>`stebz-aaa-keywords`<br/>`stebz-aaa-methods`<br/>`stebz-aaa-annotations`<br/>`stebz-clean-stack-trace`             | Bundle of Stebz modules in Arrange-Act-Assert style |
-| `stebz-gherkin` | `stebz-utils`<br/>`stebz-core`<br/>`stebz-methods`<br/>`stebz-annotations`<br/>`stebz-gherkin-keywords`<br/>`stebz-gherkin-methods`<br/>`stebz-gherkin-annotations`<br/>`stebz-clean-stack-trace` | Bundle of Stebz modules in Gherkin style            |
+| module          | include / depends on                                                                                                                                                                                                                                                                         | description                                         |
+|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------|
+| `stebz`         | `stebz-utils`<br/>`stebz-core`<br/>`stebz-methods`<br/>`stebz-annotations`<br/>`stebz-clean-stack-trace`<br/>`stebz-hidden-steps`<br/>`stebz-readable-reflective-name`<br/>`stebz-repeat-and-retry`                                                                                          | Bundle of Stebz modules                             |
+| `stebz-aaa`     | `stebz-utils`<br/>`stebz-core`<br/>`stebz-methods`<br/>`stebz-annotations`<br/>`stebz-aaa-keywords`<br/>`stebz-aaa-methods`<br/>`stebz-aaa-annotations`<br/>`stebz-clean-stack-trace`<br/>`stebz-hidden-steps`<br/>`stebz-readable-reflective-name`<br/>`stebz-repeat-and-retry`             | Bundle of Stebz modules in Arrange-Act-Assert style |
+| `stebz-gherkin` | `stebz-utils`<br/>`stebz-core`<br/>`stebz-methods`<br/>`stebz-annotations`<br/>`stebz-gherkin-keywords`<br/>`stebz-gherkin-methods`<br/>`stebz-gherkin-annotations`<br/>`stebz-clean-stack-trace`<br/>`stebz-hidden-steps`<br/>`stebz-readable-reflective-name`<br/>`stebz-repeat-and-retry` | Bundle of Stebz modules in Gherkin style            |
 
 #### Integration:
 
@@ -1003,6 +999,22 @@ java.lang.AssertionError
 ```
 <!-- @formatter:on -->
 
+#### `stebz-hidden-steps` extension
+
+Extension that allows to hide several steps.
+
+<!-- @formatter:off -->
+```java
+hiddenSteps(() -> {
+  step("Step 1");
+  step("Step 2");
+  step("Step 3");
+});
+```
+<!-- @formatter:on -->
+
+There is also an alias method `hiddenArea`.
+
 #### `stebz-readable-reflective-name` extension
 
 Replaces underscores in a step name with spaces.
@@ -1084,18 +1096,20 @@ System properties have first priority, file properties have second priority.
 
 #### `stebz-aaa-keywords`, `stebz-aaa-methods`, `stebz-aaa-annotations` modules
 
-| property                     | type                     | default value | description              |
-|------------------------------|--------------------------|---------------|--------------------------|
-| `stebz.aaa.keywords.arrange` | `String`                 | `Arrange`     | value of Arrange keyword |
-| `stebz.aaa.keywords.act`     | `String`                 | `Act`         | value of Act keyword     |
-| `stebz.aaa.keywords.assert`  | `String`                 | `Assert`      | value of Assert keyword  |
-| `stebz.aaa.keywords.and`     | `String`                 | `And`         | value of And keyword     |
-| `stebz.aaa.keywords.but`     | `String`                 | `But`         | value of But keyword     |
+| property                      | type      | default value | description               |
+|-------------------------------|-----------|---------------|---------------------------|
+| `stebz.aaa.keywords.setup`    | `String`  | `Setup:`      | value of Setup keyword    |
+| `stebz.aaa.keywords.teardown` | `String`  | `Teardown:`   | value of Teardown keyword |
+| `stebz.aaa.keywords.arrange`  | `String`  | `Arrange:`    | value of Arrange keyword  |
+| `stebz.aaa.keywords.act`      | `String`  | `Act:`        | value of Act keyword      |
+| `stebz.aaa.keywords.assert`   | `String`  | `Assert:`     | value of Assert keyword   |
 
 #### `stebz-gherkin-keywords`, `stebz-gherkin-methods`, `stebz-gherkin-annotations` modules
 
 | property                            | type                     | default value | description                 |
 |-------------------------------------|--------------------------|---------------|-----------------------------|
+| `stebz.gherkin.keywords.background` | `String`                 | `Background:` | value of Background keyword |
+| `stebz.gherkin.keywords.conclusion` | `String`                 | `Conclusion:` | value of Conclusion keyword |
 | `stebz.gherkin.keywords.given`      | `String`                 | `Given`       | value of Given keyword      |
 | `stebz.gherkin.keywords.when`       | `String`                 | `When`        | value of When keyword       |
 | `stebz.gherkin.keywords.then`       | `String`                 | `Then`        | value of Then keyword       |
@@ -1134,6 +1148,7 @@ System properties have first priority, file properties have second priority.
 |---------------------------------------------------|-----------------------|---------------|---------------------------------------------|
 | `stebz.listeners.allure.enabled`                  | `Boolean`             | `true`        | enable listener                             |
 | `stebz.listeners.allure.order`                    | `Integer`             | `10000`       | listener order                              |
+| `stebz.listeners.allure.onlyKeywordSteps`         | `Boolean`             | `false`       | hide steps without keywords                 |
 | `stebz.listeners.allure.keywordPosition`          | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name   |
 | `stebz.listeners.allure.keywordToUppercase`       | `Boolean`             | `false`       | converts keyword value to upper case        |
 | `stebz.listeners.allure.processName`              | `Boolean`             | `true`        | process step name with parameters           |
@@ -1147,6 +1162,7 @@ System properties have first priority, file properties have second priority.
 |-------------------------------------------|-----------------------|---------------|-------------------------------------------|
 | `stebz.listeners.qase.enabled`            | `Boolean`             | `true`        | enable listener                           |
 | `stebz.listeners.qase.order`              | `Integer`             | `10000`       | listener order                            |
+| `stebz.listeners.qase.onlyKeywordSteps`   | `Boolean`             | `false`       | hide steps without keywords               |
 | `stebz.listeners.qase.keywordPosition`    | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name |
 | `stebz.listeners.qase.keywordToUppercase` | `Boolean`             | `false`       | converts keyword value to upper case      |
 | `stebz.listeners.qase.processName`        | `Boolean`             | `true`        | process step name with parameters         |
@@ -1159,6 +1175,7 @@ System properties have first priority, file properties have second priority.
 |---------------------------------------------------|-----------------------|---------------|-------------------------------------------|
 | `stebz.listeners.reportportal.enabled`            | `Boolean`             | `true`        | enable listener                           |
 | `stebz.listeners.reportportal.order`              | `Integer`             | `10000`       | listener order                            |
+| `stebz.listeners.reportportal.onlyKeywordSteps`   | `Boolean`             | `false`       | hide steps without keywords               |
 | `stebz.listeners.reportportal.keywordPosition`    | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name |
 | `stebz.listeners.reportportal.keywordToUppercase` | `Boolean`             | `false`       | converts keyword value to upper case      |
 | `stebz.listeners.reportportal.processName`        | `Boolean`             | `true`        | process step name with parameters         |
@@ -1170,6 +1187,7 @@ System properties have first priority, file properties have second priority.
 |---------------------------------------------|-----------------------|---------------|-------------------------------------------|
 | `stebz.listeners.testit.enabled`            | `Boolean`             | `true`        | enable listener                           |
 | `stebz.listeners.testit.order`              | `Integer`             | `10000`       | listener order                            |
+| `stebz.listeners.testit.onlyKeywordSteps`   | `Boolean`             | `false`       | hide steps without keywords               |
 | `stebz.listeners.testit.keywordPosition`    | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name |
 | `stebz.listeners.testit.keywordToUppercase` | `Boolean`             | `false`       | converts keyword value to upper case      |
 | `stebz.listeners.testit.processName`        | `Boolean`             | `true`        | process step name with parameters         |
@@ -1177,14 +1195,15 @@ System properties have first priority, file properties have second priority.
 
 #### `stebz-system-out` module
 
-| property                                    | type                  | default value | description                               |
-|---------------------------------------------|-----------------------|---------------|-------------------------------------------|
-| `stebz.listeners.systemout.enabled`         | `Boolean`             | `true`        | enable listener                           |
-| `stebz.listeners.systemout.order`           | `Integer`             | `10000`       | listener order                            |
-| `stebz.listeners.systemout.indent`          | `Integer`             | `2`           | number of spaces in indentation           |
-| `stebz.listeners.systemout.keywordPosition` | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name |
-| `stebz.listeners.systemout.params`          | `Boolean`             | `true`        | show step params                          |
-| `stebz.listeners.systemout.comment`         | `Boolean`             | `true`        | show step comment                         |
+| property                                     | type                  | default value | description                               |
+|----------------------------------------------|-----------------------|---------------|-------------------------------------------|
+| `stebz.listeners.systemout.enabled`          | `Boolean`             | `true`        | enable listener                           |
+| `stebz.listeners.systemout.order`            | `Integer`             | `10000`       | listener order                            |
+| `stebz.listeners.systemout.indent`           | `Integer`             | `2`           | number of spaces in indentation           |
+| `stebz.listeners.systemout.onlyKeywordSteps` | `Boolean`             | `false`       | hide steps without keywords               |
+| `stebz.listeners.systemout.keywordPosition`  | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name |
+| `stebz.listeners.systemout.params`           | `Boolean`             | `true`        | show step params                          |
+| `stebz.listeners.systemout.comment`          | `Boolean`             | `true`        | show step comment                         |
 
 ## Contributing
 

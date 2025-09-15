@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.7 (15.09.2025)
+
+* #71 add stebz-hidden-steps module by @evpl in PR #77
+* #73 add Arrange-Act-Assert and Gherkin keywords for precondition and postcondition by @evpl in PR #74
+* #75 add keyword methods with body only by @evpl in PR #76
+* #78 add common extensions to bundle modules by @evpl in PR #79
+* #80 add noResult static methods to StebzMethods class by @evpl in PR #81
+* #82 add onlyKeywordSteps option for all step listeners by @evpl in PR #83
+* #84 add a colon at the end of some  keywords by @evpl in PR #85
+
 ## 1.6 (04.09.2025)
 
 * #65 add Arrange-Act-Assert keywords modules by @evpl in PR #66
