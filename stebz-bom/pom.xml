@@ -129,6 +129,11 @@
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
+        <artifactId>stebz-hidden-steps</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.stebz</groupId>
         <artifactId>stebz-clean-stack-trace</artifactId>
         <version>${project.version}</version>
       </dependency>

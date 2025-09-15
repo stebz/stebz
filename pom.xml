@@ -46,6 +46,7 @@
     <module>stebz-gherkin-methods</module>
     <module>stebz-gherkin-annotations</module>
     <module>stebz-clean-stack-trace</module>
+    <module>stebz-hidden-steps</module>
     <module>stebz-readable-reflective-name</module>
     <module>stebz-repeat-and-retry</module>
     <module>stebz</module>

@@ -29,6 +29,7 @@ import org.stebz.step.StepObj;
 import org.stebz.step.executable.RunnableStep;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.stebz.StebzMethods.hidden;
 
 /**
  * Tests for {@link StebzMethods}.
@@ -41,12 +42,21 @@ final class StebzMethodsTest {
   }
 
   @Test
+  void hiddenMethodShouldAddHiddenAttribute() {
+    final RunnableStep originStep = RunnableStep.empty();
+
+    final RunnableStep resultStep = hidden(originStep);
+    assertThat(resultStep.getHidden())
+      .isTrue();
+  }
+
+  @Test
   void stepMethodWithRunnableStep() {
     final RunnableStep originStep = RunnableStep.empty();
 
     StebzMethods.step(originStep);
-    final StepObj<?> stepFromListener = StaticStepListener.lastStep;
-    assertThat(stepFromListener)
+    final StepObj<?> resultStep = StaticStepListener.lastStep;
+    assertThat(resultStep)
       .isSameAs(originStep);
   }
 }
