@@ -76,6 +76,26 @@ public final class StebzMethods {
   }
 
   /**
+   * Returns given {@code SupplierStep} as {@code RunnableStep}.
+   *
+   * @param step the origin step
+   * @return {@code SupplierStep} as {@code RunnableStep}
+   */
+  public static RunnableStep noResult(final SupplierStep<?> step) {
+    return step.noResult();
+  }
+
+  /**
+   * Returns given {@code FunctionStep} as {@code ConsumerStep}.
+   *
+   * @param step the origin step
+   * @return {@code FunctionStep} as {@code ConsumerStep}
+   */
+  public static <T> ConsumerStep<T> noResult(final FunctionStep<T, ?> step) {
+    return step.noResult();
+  }
+
+  /**
    * Executes given step.
    *
    * @param step the step
