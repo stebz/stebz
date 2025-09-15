@@ -41,12 +41,12 @@ final class StebzAAAMethodsTest {
   }
 
   @Test
-  void givenMethodWithRunnableStep() {
+  void arrangeMethodWithRunnableStep() {
     final RunnableStep originStep = RunnableStep.empty();
 
     StebzAAAMethods.Arrange(originStep);
     final StepObj<?> stepFromListener = StaticStepListener.lastStep;
     assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("Arrange");
+      .isEqualTo("Arrange:");
   }
 }

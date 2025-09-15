@@ -35,30 +35,30 @@ final class AAAKeywordsTest {
   @Test
   void setupKeywordDefaultValue() {
     assertThat(AAAKeywords.setup().value())
-      .isEqualTo("Setup");
+      .isEqualTo("Setup:");
   }
 
   @Test
   void teardownKeywordDefaultValue() {
     assertThat(AAAKeywords.teardown().value())
-      .isEqualTo("Teardown");
+      .isEqualTo("Teardown:");
   }
 
   @Test
   void arrangeKeywordDefaultValue() {
     assertThat(AAAKeywords.arrange().value())
-      .isEqualTo("Arrange");
+      .isEqualTo("Arrange:");
   }
 
   @Test
   void actKeywordDefaultValue() {
     assertThat(AAAKeywords.act().value())
-      .isEqualTo("Act");
+      .isEqualTo("Act:");
   }
 
   @Test
-  void assertOutlineKeywordDefaultValue() {
+  void assertKeywordDefaultValue() {
     assertThat(AAAKeywords._assert().value())
-      .isEqualTo("Assert");
+      .isEqualTo("Assert:");
   }
 }
