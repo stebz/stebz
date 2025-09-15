@@ -64,7 +64,7 @@ final class AAAAnnotationsExtensionTest {
     assertThat(stepFromListener)
       .isNotNull();
     assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("Arrange");
+      .isEqualTo("Arrange:");
     assertThat(stepFromListener.getName())
       .isEqualTo("aaaKeywordAnnotationWithoutName");
   }
@@ -84,7 +84,7 @@ final class AAAAnnotationsExtensionTest {
     assertThat(stepFromListener)
       .isNotNull();
     assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("Act");
+      .isEqualTo("Act:");
     assertThat(stepFromListener.getName())
       .isEqualTo("step name");
   }
@@ -104,7 +104,7 @@ final class AAAAnnotationsExtensionTest {
     assertThat(stepFromListener)
       .isNotNull();
     assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("Assert");
+      .isEqualTo("Assert:");
     assertThat(stepFromListener.getName())
       .isEqualTo("custom name");
   }
@@ -124,7 +124,7 @@ final class AAAAnnotationsExtensionTest {
     assertThat(stepFromListener)
       .isNotNull();
     assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("Setup");
+      .isEqualTo("Setup:");
     assertThat(stepFromListener.getName())
       .isEqualTo("custom name");
   }
@@ -144,7 +144,7 @@ final class AAAAnnotationsExtensionTest {
     assertThat(stepFromListener)
       .isNotNull();
     assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("Teardown");
+      .isEqualTo("Teardown:");
     assertThat(stepFromListener.getName())
       .isEqualTo("custom name");
   }

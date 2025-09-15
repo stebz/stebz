@@ -35,13 +35,13 @@ final class GherkinKeywordsTest {
   @Test
   void backgroundKeywordDefaultValue() {
     assertThat(GherkinKeywords.background().value())
-      .isEqualTo("Background");
+      .isEqualTo("Background:");
   }
 
   @Test
   void conclusionKeywordDefaultValue() {
     assertThat(GherkinKeywords.conclusion().value())
-      .isEqualTo("Conclusion");
+      .isEqualTo("Conclusion:");
   }
 
   @Test

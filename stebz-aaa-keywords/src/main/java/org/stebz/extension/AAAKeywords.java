@@ -33,11 +33,11 @@ import org.stebz.util.property.PropertiesReader;
  */
 public final class AAAKeywords implements StebzExtension {
   private static final Object LOCK = new Object();
-  private static final String SETUP_KEYWORD_DEFAULT_VALUE = "Setup";
-  private static final String TEARDOWN_KEYWORD_DEFAULT_VALUE = "Teardown";
-  private static final String ARRANGE_KEYWORD_DEFAULT_VALUE = "Arrange";
-  private static final String ACT_KEYWORD_DEFAULT_VALUE = "Act";
-  private static final String ASSERT_KEYWORD_DEFAULT_VALUE = "Assert";
+  private static final String SETUP_KEYWORD_DEFAULT_VALUE = "Setup:";
+  private static final String TEARDOWN_KEYWORD_DEFAULT_VALUE = "Teardown:";
+  private static final String ARRANGE_KEYWORD_DEFAULT_VALUE = "Arrange:";
+  private static final String ACT_KEYWORD_DEFAULT_VALUE = "Act:";
+  private static final String ASSERT_KEYWORD_DEFAULT_VALUE = "Assert:";
   private static volatile Keywords keywords = null;
 
   /**

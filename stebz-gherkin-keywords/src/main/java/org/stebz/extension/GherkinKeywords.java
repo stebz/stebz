@@ -33,8 +33,8 @@ import org.stebz.util.property.PropertiesReader;
  */
 public final class GherkinKeywords implements StebzExtension {
   private static final Object LOCK = new Object();
-  private static final String BACKGROUND_KEYWORD_DEFAULT_VALUE = "Background";
-  private static final String CONCLUSION_KEYWORD_DEFAULT_VALUE = "Conclusion";
+  private static final String BACKGROUND_KEYWORD_DEFAULT_VALUE = "Background:";
+  private static final String CONCLUSION_KEYWORD_DEFAULT_VALUE = "Conclusion:";
   private static final String GIVEN_KEYWORD_DEFAULT_VALUE = "Given";
   private static final String WHEN_KEYWORD_DEFAULT_VALUE = "When";
   private static final String THEN_KEYWORD_DEFAULT_VALUE = "Then";
