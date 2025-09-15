@@ -37,6 +37,7 @@ Multi-approach and flexible Java framework for test steps managing.
     * [Test IT listener](#stebz-testit-listener)
   * [Extensions](#extensions)
     * [Clean stack trace extension](#stebz-clean-stack-trace-extension)
+    * [Hidden steps extension](#stebz-hidden-steps-extension)
     * [Readable reflective name extension](#stebz-readable-reflective-name-extension)
     * [Repeat and retry extension](#stebz-repeat-and-retry-extension)
   * [Configuration](#configuration)
