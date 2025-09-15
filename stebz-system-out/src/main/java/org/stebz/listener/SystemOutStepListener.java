@@ -43,6 +43,7 @@ public class SystemOutStepListener implements StepListener {
   private final PrintStream printStream;
   private final boolean enabled;
   private final int order;
+  private final boolean onlyKeywordSteps;
   private final KeywordPosition keywordPosition;
   private final boolean keywordToUppercase;
   private final String indent;
@@ -78,6 +79,7 @@ public class SystemOutStepListener implements StepListener {
     this.printStream = printStream;
     this.enabled = properties.getBoolean("stebz.listeners.systemout.enabled", true);
     this.order = properties.getInteger("stebz.listeners.systemout.order", DEFAULT_ORDER);
+    this.onlyKeywordSteps = properties.getBoolean("stebz.listeners.systemout.onlyKeywordSteps", false);
     this.keywordPosition = properties.getEnum("stebz.listeners.systemout.keywordPosition",
       KeywordPosition.class, KeywordPosition.AT_START);
     this.keywordToUppercase = properties.getBoolean("stebz.listeners.systemout.keywordToUppercase", false);
@@ -96,6 +98,10 @@ public class SystemOutStepListener implements StepListener {
   public void onStepStart(final StepObj<?> step,
                           final NullableOptional<Object> context) {
     if (!this.enabled || step.getHidden()) {
+      return;
+    }
+    final Keyword keyword = step.getKeyword();
+    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
       return;
     }
     final int currentDepth = this.depth.get().getAndIncrement();
@@ -146,6 +152,10 @@ public class SystemOutStepListener implements StepListener {
     if (!this.enabled || step.getHidden()) {
       return;
     }
+    final Keyword keyword = step.getKeyword();
+    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
+      return;
+    }
     final int currentDepth = this.depth.get().decrementAndGet();
     if (currentDepth == 0) {
       this.depth.remove();
@@ -157,6 +167,10 @@ public class SystemOutStepListener implements StepListener {
                             final NullableOptional<Object> context,
                             final Throwable exception) {
     if (!this.enabled || step.getHidden()) {
+      return;
+    }
+    final Keyword keyword = step.getKeyword();
+    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
       return;
     }
     final int currentDepth = this.depth.get().decrementAndGet();

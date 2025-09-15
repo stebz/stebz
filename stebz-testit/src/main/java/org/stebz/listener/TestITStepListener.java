@@ -52,6 +52,7 @@ public class TestITStepListener implements StepListener {
   private static final String COMMENT_DESC_LINE_PREFIX = "Comment: ";
   private final boolean enabled;
   private final int order;
+  private final boolean onlyKeywordSteps;
   private final KeywordPosition keywordPosition;
   private final boolean keywordToUppercase;
   private final boolean processName;
@@ -73,6 +74,7 @@ public class TestITStepListener implements StepListener {
   public TestITStepListener(final PropertiesReader properties) {
     this.enabled = properties.getBoolean("stebz.listeners.testit.enabled", true);
     this.order = properties.getInteger("stebz.listeners.testit.order", DEFAULT_ORDER);
+    this.onlyKeywordSteps = properties.getBoolean("stebz.listeners.testit.onlyKeywordSteps", false);
     this.keywordPosition = properties.getEnum("stebz.listeners.testit.keywordPosition",
       KeywordPosition.class, KeywordPosition.AT_START);
     this.keywordToUppercase = properties.getBoolean("stebz.listeners.testit.keywordToUppercase", false);
@@ -101,6 +103,10 @@ public class TestITStepListener implements StepListener {
     if (!this.enabled || step.getHidden()) {
       return;
     }
+    final Keyword keyword = step.getKeyword();
+    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
+      return;
+    }
     final StepResult stepResult = new StepResult();
     final Map<String, Object> params = step.getParams();
     if (this.contextParam && context.isPresent()) {
@@ -117,7 +123,7 @@ public class TestITStepListener implements StepListener {
       ));
     }
     stepResult.setName(this.keywordPosition.concat(
-      this.keywordValue(step.getKeyword()),
+      this.keywordValue(keyword),
       this.processStepName(step, step.getName(), stringParams)
     ));
     stepResult.setDescription(this.processStepDescription(step.getExpectedResult(), step.getComment()));
@@ -131,6 +137,10 @@ public class TestITStepListener implements StepListener {
                             final NullableOptional<Object> context,
                             final NullableOptional<Object> result) {
     if (!this.enabled || step.getHidden()) {
+      return;
+    }
+    final Keyword keyword = step.getKeyword();
+    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
       return;
     }
     final AdapterManager adapterManager = Adapter.getAdapterManager();
@@ -147,6 +157,10 @@ public class TestITStepListener implements StepListener {
                             final NullableOptional<Object> context,
                             final Throwable exception) {
     if (!this.enabled || step.getHidden()) {
+      return;
+    }
+    final Keyword keyword = step.getKeyword();
+    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
       return;
     }
     final AdapterManager adapterManager = Adapter.getAdapterManager();
