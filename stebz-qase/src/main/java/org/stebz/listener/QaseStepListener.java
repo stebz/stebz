@@ -50,6 +50,7 @@ public class QaseStepListener implements StepListener {
   private static final String COMMENT_ATTACHMENT_NAME = "Comment";
   private final boolean enabled;
   private final int order;
+  private final boolean onlyKeywordSteps;
   private final KeywordPosition keywordPosition;
   private final boolean keywordToUppercase;
   private final boolean processName;
@@ -72,6 +73,7 @@ public class QaseStepListener implements StepListener {
   public QaseStepListener(final PropertiesReader properties) {
     this.enabled = properties.getBoolean("stebz.listeners.qase.enabled", true);
     this.order = properties.getInteger("stebz.listeners.qase.order", DEFAULT_ORDER);
+    this.onlyKeywordSteps = properties.getBoolean("stebz.listeners.qase.onlyKeywordSteps", false);
     this.keywordPosition =
       properties.getEnum("stebz.listeners.qase.keywordPosition", KeywordPosition.class, KeywordPosition.AT_START);
     this.keywordToUppercase = properties.getBoolean("stebz.listeners.qase.keywordToUppercase", false);
@@ -101,6 +103,10 @@ public class QaseStepListener implements StepListener {
     if (!this.enabled || step.getHidden()) {
       return;
     }
+    final Keyword keyword = step.getKeyword();
+    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
+      return;
+    }
     final Map<String, Object> params = step.getParams();
     if (this.contextParam && context.isPresent()) {
       params.putIfAbsent(CONTEXT_PARAM_NAME, context.get());
@@ -108,7 +114,7 @@ public class QaseStepListener implements StepListener {
     StepStorage.startStep();
     final StepResult stepResult = StepStorage.getCurrentStep();
     stepResult.data.action = this.keywordPosition.concat(
-      this.keywordValue(step.getKeyword()),
+      this.keywordValue(keyword),
       this.processStepName(step, step.getName(), params)
     );
 
@@ -135,6 +141,10 @@ public class QaseStepListener implements StepListener {
     if (!this.enabled || step.getHidden()) {
       return;
     }
+    final Keyword keyword = step.getKeyword();
+    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
+      return;
+    }
     final StepResult stepResult = StepStorage.getCurrentStep();
     if (stepResult.execution.status == StepResultStatus.UNTESTED) {
       stepResult.execution.status = StepResultStatus.PASSED;
@@ -147,6 +157,10 @@ public class QaseStepListener implements StepListener {
                             final NullableOptional<Object> context,
                             final Throwable exception) {
     if (!this.enabled || step.getHidden()) {
+      return;
+    }
+    final Keyword keyword = step.getKeyword();
+    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
       return;
     }
     final StepResult stepResult = StepStorage.getCurrentStep();

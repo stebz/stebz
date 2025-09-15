@@ -55,6 +55,7 @@ public class AllureStepListener implements StepListener {
   private static final String EXPECTED_RESULT_ATTACHMENT_NAME = "Expected result";
   private final boolean enabled;
   private final int order;
+  private final boolean onlyKeywordSteps;
   private final KeywordPosition keywordPosition;
   private final boolean keywordToUppercase;
   private final boolean processName;
@@ -78,6 +79,7 @@ public class AllureStepListener implements StepListener {
   public AllureStepListener(final PropertiesReader properties) {
     this.enabled = properties.getBoolean("stebz.listeners.allure.enabled", true);
     this.order = properties.getInteger("stebz.listeners.allure.order", DEFAULT_ORDER);
+    this.onlyKeywordSteps = properties.getBoolean("stebz.listeners.allure.onlyKeywordSteps", false);
     this.keywordPosition = properties.getEnum("stebz.listeners.allure.keywordPosition",
       KeywordPosition.class, KeywordPosition.AT_START);
     this.keywordToUppercase = properties.getBoolean("stebz.listeners.allure.keywordToUppercase", false);
@@ -108,6 +110,10 @@ public class AllureStepListener implements StepListener {
     if (!this.enabled || step.getHidden()) {
       return;
     }
+    final Keyword keyword = step.getKeyword();
+    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
+      return;
+    }
     final StepResult stepResult = new StepResult();
     final Map<String, Object> params = step.getParams();
     if (this.contextParam && context.isPresent()) {
@@ -120,7 +126,7 @@ public class AllureStepListener implements StepListener {
       ));
     }
     stepResult.setName(this.keywordPosition.concat(
-      this.keywordValue(step.getKeyword()),
+      this.keywordValue(keyword),
       this.processStepName(step, step.getName(), params)
     ));
 
@@ -146,6 +152,10 @@ public class AllureStepListener implements StepListener {
     if (!this.enabled || step.getHidden()) {
       return;
     }
+    final Keyword keyword = step.getKeyword();
+    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
+      return;
+    }
     final AllureLifecycle allureLifecycle = Allure.getLifecycle();
     allureLifecycle.updateStep(stepResult -> {
       if (stepResult.getStatus() == null) {
@@ -160,6 +170,10 @@ public class AllureStepListener implements StepListener {
                             final NullableOptional<Object> context,
                             final Throwable exception) {
     if (!this.enabled || step.getHidden()) {
+      return;
+    }
+    final Keyword keyword = step.getKeyword();
+    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
       return;
     }
     final AllureLifecycle allureLifecycle = Allure.getLifecycle();

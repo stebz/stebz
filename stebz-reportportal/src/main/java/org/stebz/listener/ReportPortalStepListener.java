@@ -55,6 +55,7 @@ public class ReportPortalStepListener implements StepListener {
   private static final String COMMENT_DESC_LINE_PREFIX = "Comment: ";
   private final boolean enabled;
   private final int order;
+  private final boolean onlyKeywordSteps;
   private final KeywordPosition keywordPosition;
   private final boolean keywordToUppercase;
   private final boolean processName;
@@ -76,6 +77,7 @@ public class ReportPortalStepListener implements StepListener {
   public ReportPortalStepListener(final PropertiesReader properties) {
     this.enabled = properties.getBoolean("stebz.listeners.reportportal.enabled", true);
     this.order = properties.getInteger("stebz.listeners.reportportal.order", DEFAULT_ORDER);
+    this.onlyKeywordSteps = properties.getBoolean("stebz.listeners.reportportal.onlyKeywordSteps", false);
     this.keywordPosition = properties.getEnum("stebz.listeners.reportportal.keywordPosition",
       KeywordPosition.class, KeywordPosition.AT_START);
     this.keywordToUppercase = properties.getBoolean("stebz.listeners.reportportal.keywordToUppercase", false);
@@ -104,6 +106,10 @@ public class ReportPortalStepListener implements StepListener {
     if (!this.enabled || step.getHidden()) {
       return;
     }
+    final Keyword keyword = step.getKeyword();
+    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
+      return;
+    }
     final Launch launch = Launch.currentLaunch();
     if (launch == null) {
       return;
@@ -114,7 +120,7 @@ public class ReportPortalStepListener implements StepListener {
     }
     final StartTestItemRQ startTestItemRQ = StepRequestUtils.buildStartStepRequest(
       this.keywordPosition.concat(
-        this.keywordValue(step.getKeyword()),
+        this.keywordValue(keyword),
         this.processStepName(step, step.getName(), params)
       ),
       this.processStepDescription(step.getExpectedResult(), step.getComment())
@@ -139,6 +145,10 @@ public class ReportPortalStepListener implements StepListener {
     if (!this.enabled || step.getHidden()) {
       return;
     }
+    final Keyword keyword = step.getKeyword();
+    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
+      return;
+    }
     final Launch launch = Launch.currentLaunch();
     if (launch == null) {
       return;
@@ -151,6 +161,10 @@ public class ReportPortalStepListener implements StepListener {
                             final NullableOptional<Object> context,
                             final Throwable exception) {
     if (!this.enabled || step.getHidden()) {
+      return;
+    }
+    final Keyword keyword = step.getKeyword();
+    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
       return;
     }
     final Launch launch = Launch.currentLaunch();
