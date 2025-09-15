@@ -33,14 +33,14 @@
     <relativePath>../stebz-parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>stebz-gherkin</artifactId>
+  <artifactId>stebz-hidden-steps</artifactId>
   <packaging>jar</packaging>
 
-  <name>Stebz Gherkin</name>
-  <description>Module "stebz-gherkin" of Stebz</description>
+  <name>Stebz Hidden Steps</name>
+  <description>Module "stebz-hidden-steps" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.gherkin</automatic.module.name>
+    <automatic.module.name>org.stebz.hidden.steps</automatic.module.name>
   </properties>
 
   <dependencies>
@@ -52,41 +52,6 @@
     <dependency>
       <groupId>org.stebz</groupId>
       <artifactId>stebz-core</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.stebz</groupId>
-      <artifactId>stebz-methods</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.stebz</groupId>
-      <artifactId>stebz-annotations</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.stebz</groupId>
-      <artifactId>stebz-gherkin-keywords</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.stebz</groupId>
-      <artifactId>stebz-gherkin-methods</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.stebz</groupId>
-      <artifactId>stebz-gherkin-annotations</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.stebz</groupId>
-      <artifactId>stebz-clean-stack-trace</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.stebz</groupId>
-      <artifactId>stebz-hidden-steps</artifactId>
       <scope>compile</scope>
     </dependency>
     <dependency>

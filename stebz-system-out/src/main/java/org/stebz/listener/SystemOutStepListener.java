@@ -35,13 +35,10 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static java.lang.Boolean.TRUE;
-
 /**
  * System.out {@code StepListener} implementation.
  */
 public class SystemOutStepListener implements StepListener {
-  private static final ThreadLocal<Boolean> THREAD_LOCAL_DISABLED = new ThreadLocal<>();
   private final ThreadLocal<AtomicInteger> depth;
   private final PrintStream printStream;
   private final boolean enabled;
@@ -90,14 +87,6 @@ public class SystemOutStepListener implements StepListener {
     this.logComment = properties.getBoolean("stebz.listeners.systemout.comment", true);
   }
 
-  static void threadLocalDisable() {
-    THREAD_LOCAL_DISABLED.set(true);
-  }
-
-  static void threadLocalEnable() {
-    THREAD_LOCAL_DISABLED.remove();
-  }
-
   @Override
   public int order() {
     return this.order;
@@ -106,7 +95,7 @@ public class SystemOutStepListener implements StepListener {
   @Override
   public void onStepStart(final StepObj<?> step,
                           final NullableOptional<Object> context) {
-    if (!this.enabled || THREAD_LOCAL_DISABLED.get() == TRUE || step.getHidden()) {
+    if (!this.enabled || step.getHidden()) {
       return;
     }
     final int currentDepth = this.depth.get().getAndIncrement();
@@ -154,7 +143,7 @@ public class SystemOutStepListener implements StepListener {
   public void onStepSuccess(final StepObj<?> step,
                             final NullableOptional<Object> context,
                             final NullableOptional<Object> result) {
-    if (!this.enabled || THREAD_LOCAL_DISABLED.get() == TRUE || step.getHidden()) {
+    if (!this.enabled || step.getHidden()) {
       return;
     }
     final int currentDepth = this.depth.get().decrementAndGet();
@@ -167,7 +156,7 @@ public class SystemOutStepListener implements StepListener {
   public void onStepFailure(final StepObj<?> step,
                             final NullableOptional<Object> context,
                             final Throwable exception) {
-    if (!this.enabled || THREAD_LOCAL_DISABLED.get() == TRUE || step.getHidden()) {
+    if (!this.enabled || step.getHidden()) {
       return;
     }
     final int currentDepth = this.depth.get().decrementAndGet();

@@ -26,6 +26,7 @@ package org.stebz;
 import org.stebz.attribute.Keyword;
 import org.stebz.attribute.StepAttributes;
 import org.stebz.executor.StepExecutor;
+import org.stebz.step.StepObj;
 import org.stebz.step.executable.ConsumerStep;
 import org.stebz.step.executable.FunctionStep;
 import org.stebz.step.executable.RunnableStep;
@@ -36,6 +37,7 @@ import org.stebz.util.function.ThrowingSupplier;
 import java.util.Map;
 
 import static org.stebz.attribute.StepAttribute.EXPECTED_RESULT;
+import static org.stebz.attribute.StepAttribute.HIDDEN;
 import static org.stebz.attribute.StepAttribute.KEYWORD;
 import static org.stebz.attribute.StepAttribute.NAME;
 import static org.stebz.attribute.StepAttribute.PARAMS;
@@ -60,6 +62,17 @@ public final class StebzMethods {
    */
   public static <T> Around<T> around(final T value) {
     return new Around.Of<>(StepExecutor.get(), value);
+  }
+
+  /**
+   * Returns given step with hidden attribute.
+   *
+   * @param step the origin step
+   * @param <S>  the type of the step
+   * @return step with hidden attribute
+   */
+  public static <S extends StepObj<S>> S hidden(final S step) {
+    return step.with(HIDDEN, true);
   }
 
   /**
