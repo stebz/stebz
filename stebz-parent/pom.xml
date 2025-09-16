@@ -69,7 +69,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <aspectj.version>1.9.24</aspectj.version>
-    <allure.version>2.29.1</allure.version>
+    <allure.version>2.30.0</allure.version>
     <qase.version>4.1.17</qase.version>
     <reportportal.version>5.3.14</reportportal.version>
     <testit.version>2.7.8</testit.version>
