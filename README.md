@@ -41,6 +41,20 @@ Multi-approach and flexible Java framework for test steps managing.
     * [Readable reflective name extension](#stebz-readable-reflective-name-extension)
     * [Repeat and retry extension](#stebz-repeat-and-retry-extension)
   * [Configuration](#configuration)
+    * [`stebz-core` module](#stebz-core-module)
+    * [`stebz-aaa-keywords`, `stebz-aaa-methods`,
+      `stebz-aaa-annotations` modules](#stebz-aaa-keywords-stebz-aaa-methods-stebz-aaa-annotations-modules)
+    * [`stebz-gherkin-keywords`, `stebz-gherkin-methods`,
+      `stebz-gherkin-annotations` modules](#stebz-gherkin-keywords-stebz-gherkin-methods-stebz-gherkin-annotations-modules)
+    * [`stebz-clean-stack-trace` module](#stebz-clean-stack-trace-module)
+    * [`stebz-hidden-steps` module](#stebz-hidden-steps-module)
+    * [`stebz-readable-reflective-name` module](#stebz-readable-reflective-name-module)
+    * [`stebz-repeat-and-retry` module](#stebz-repeat-and-retry-module)
+    * [`stebz-allure` module](#stebz-allure-module)
+    * [`stebz-qase` module](#stebz-qase-module)
+    * [`stebz-reportportal` module](#stebz-reportportal-module)
+    * [`stebz-testit` module](#stebz-testit-module)
+    * [`stebz-system-out` module](#stebz-system-out-module)
 * [Contributing](#contributing)
   * [How to contribute](#how-to-contribute)
   * [Contributors](#contributors)
@@ -1125,6 +1139,13 @@ System properties have first priority, file properties have second priority.
 | `stebz.extensions.cleanStackTrace.order`        | `Integer` | `10000`                                         | extension order                   |
 | `stebz.extensions.cleanStackTrace.stebzLines`   | `Boolean` | `true` if `stebz-annotations` module is present | removes Stebz stack trace lines   |
 | `stebz.extensions.cleanStackTrace.aspectjLines` | `Boolean` | `true` if `stebz-annotations` module is present | removes AspectJ stack trace lines |
+
+#### `stebz-hidden-steps` module
+
+| property                               | type      | default value | description      |
+|----------------------------------------|-----------|---------------|------------------|
+| `stebz.extensions.hiddenSteps.enabled` | `Boolean` | `true`        | enable extension |
+| `stebz.extensions.hiddenSteps.order`   | `Integer` | `10000`       | extension order  |
 
 #### `stebz-readable-reflective-name` module
 
