@@ -198,6 +198,8 @@ class ExampleTest {
 ```
 <!-- @formatter:on -->
 
+See [examples](https://github.com/stebz/stebz-maven-junit5-allure-example).
+
 See details in [Documentation](#documentation).
 
 ## How to use
@@ -252,6 +254,8 @@ dependencies {
 <!-- @formatter:on -->
 
 Or you can choose only [modules](#modules) those you need.
+
+See [examples](https://github.com/stebz/stebz-maven-junit5-allure-example).
 
 ### BOM
 
