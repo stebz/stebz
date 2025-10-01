@@ -74,7 +74,7 @@
     <reportportal.version>5.3.14</reportportal.version>
     <testit.version>2.8.0</testit.version>
     <junit.version>5.13.4</junit.version>
-    <junitPlatformLauncher.version>1.13.4</junitPlatformLauncher.version>
+    <junitPlatformLauncher.version>6.0.0</junitPlatformLauncher.version>
     <assertj.version>3.27.6</assertj.version>
     <mockito.version>4.11.0</mockito.version>
   </properties>
