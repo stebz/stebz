@@ -39,7 +39,9 @@ import org.stebz.step.StepObj;
 import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -123,7 +125,8 @@ public class ReportPortalStepListener implements StepListener {
         this.keywordValue(keyword),
         this.processStepName(step, step.getName(), params)
       ),
-      this.processStepDescription(step.getExpectedResult(), step.getComment())
+      this.processStepDescription(step.getExpectedResult(), step.getComment()),
+      launch.useMicroseconds() ? Instant.now() : Calendar.getInstance().getTime()
     );
     if (!params.isEmpty()) {
       final List<ParameterResource> rpParams = new ArrayList<>();
