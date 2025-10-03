@@ -89,6 +89,7 @@ public final class StebzMethods {
    * Returns given {@code FunctionStep} as {@code ConsumerStep}.
    *
    * @param step the origin step
+   * @param <T>  the type of the value
    * @return {@code FunctionStep} as {@code ConsumerStep}
    */
   public static <T> ConsumerStep<T> noResult(final FunctionStep<T, ?> step) {

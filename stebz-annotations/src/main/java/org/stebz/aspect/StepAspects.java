@@ -98,6 +98,12 @@ public class StepAspects {
   private static final ThreadLocal<ProceedingJoinPoint> CAPTURED_JOINT_POINT = new ThreadLocal<>();
 
   /**
+   * Ctor.
+   */
+  public StepAspects() {
+  }
+
+  /**
    * Executes step field getter, creates {@code StepObj} and adds step attributes to step.
    *
    * @param joinPoint the joint point
@@ -175,6 +181,7 @@ public class StepAspects {
    *
    * @param joinPoint the joint point
    * @return method result
+   * @throws Throwable if the method throws an exception
    */
   @Around("execution(@(@org.stebz.annotation.StepAttributeAnnotation *) !org.stebz.step.StepObj+ *(..))")
   public Object quickMethodStep(final ProceedingJoinPoint joinPoint) throws Throwable {
@@ -216,6 +223,7 @@ public class StepAspects {
    *
    * @param joinPoint the joint point
    * @return constructor result
+   * @throws Throwable if the constructor throws an exception
    */
   @Around("execution(@(@org.stebz.annotation.StepAttributeAnnotation *) !org.stebz.step.StepObj+.new(..))")
   public Object quickCtorStep(final ProceedingJoinPoint joinPoint) throws Throwable {
