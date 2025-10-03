@@ -41,6 +41,8 @@
 
   <properties>
     <automatic.module.name>org.stebz.reportportal</automatic.module.name>
+    <java.version>11</java.version>
+    <javadoc.version>1.8</javadoc.version>
   </properties>
 
   <dependencies>
