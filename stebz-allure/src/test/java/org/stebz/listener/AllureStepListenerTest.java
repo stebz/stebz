@@ -36,8 +36,10 @@ import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -138,5 +140,131 @@ final class AllureStepListenerTest {
     Allure.getLifecycle().updateStep(stepResultRef::set);
     assertThat(stepResultRef.get())
       .isNull();
+  }
+
+  @Test
+  void stepParameter4ArgsMethod() {
+    final String argName = "arg name";
+    final String argValue = "arg value";
+    final StepResult stepResult = new StepResult();
+    Allure.getLifecycle().startStep(UUID.randomUUID().toString(), stepResult);
+    try {
+      AllureStepListener.stepParameter(argName, argValue);
+
+      final List<Parameter> parameters = stepResult.getParameters();
+      assertThat(parameters)
+        .hasSize(1);
+      final Parameter parameter = parameters.get(0);
+      assertThat(parameter.getName())
+        .isEqualTo(argName);
+      assertThat(parameter.getValue())
+        .isEqualTo(argValue);
+    } finally {
+      Allure.getLifecycle().stopStep();
+    }
+  }
+
+  @Test
+  void stepParameterConsumerMethod() {
+    final StepResult stepResult = new StepResult();
+    Allure.getLifecycle().startStep(UUID.randomUUID().toString(), stepResult);
+    try {
+      final AtomicReference<Parameter> parameterRef = new AtomicReference<>();
+      AllureStepListener.stepParameter(parameterRef::set);
+
+      assertThat(parameterRef)
+        .isNotNull();
+      final List<Parameter> parameters = stepResult.getParameters();
+      assertThat(parameters)
+        .hasSize(1);
+      assertThat(parameters.get(0))
+        .isSameAs(parameterRef.get());
+    } finally {
+      Allure.getLifecycle().stopStep();
+    }
+  }
+
+  @Test
+  void stepNameStringMethod() {
+    final String newName = "new name";
+    final StepResult stepResult = new StepResult();
+    Allure.getLifecycle().startStep(UUID.randomUUID().toString(), stepResult);
+    try {
+      AllureStepListener.stepName(newName);
+
+      assertThat(stepResult.getName())
+        .isEqualTo(newName);
+    } finally {
+      Allure.getLifecycle().stopStep();
+    }
+  }
+
+  @Test
+  void stepNameFunctionMethod() {
+    final String originName = "origin name";
+    final String newName = "new name";
+    final StepResult stepResult = new StepResult().setName(originName);
+    Allure.getLifecycle().startStep(UUID.randomUUID().toString(), stepResult);
+    try {
+      final AtomicReference<String> originNameArgRef = new AtomicReference<>();
+      AllureStepListener.stepName(arg -> {
+        originNameArgRef.set(arg);
+        return newName;
+      });
+
+      assertThat(originNameArgRef.get())
+        .isEqualTo(originName);
+      assertThat(stepResult.getName())
+        .isEqualTo(newName);
+    } finally {
+      Allure.getLifecycle().stopStep();
+    }
+  }
+
+  @Test
+  void stepStatusMethod() {
+    final StepResult stepResult = new StepResult();
+    Allure.getLifecycle().startStep(UUID.randomUUID().toString(), stepResult);
+    try {
+      AllureStepListener.stepStatus(Status.SKIPPED);
+
+      assertThat(stepResult.getStatus())
+        .isSameAs(Status.SKIPPED);
+    } finally {
+      Allure.getLifecycle().stopStep();
+    }
+  }
+
+  @Test
+  void stepStatusThrowableArgMethod() {
+    final String exceptionMessage = "exception message";
+    final Throwable exception = new Throwable(exceptionMessage);
+    final StepResult stepResult = new StepResult();
+    Allure.getLifecycle().startStep(UUID.randomUUID().toString(), stepResult);
+    try {
+      AllureStepListener.stepStatus(exception);
+
+      assertThat(stepResult.getStatus())
+        .isSameAs(Status.BROKEN);
+      assertThat(stepResult.getStatusDetails().getMessage())
+        .isEqualTo(exceptionMessage);
+    } finally {
+      Allure.getLifecycle().stopStep();
+    }
+  }
+
+  @Test
+  void updateStepMethod() {
+    final StepResult stepResult = new StepResult();
+    Allure.getLifecycle().startStep(UUID.randomUUID().toString(), stepResult);
+    try {
+      final AtomicReference<StepResult> stepResultRef = new AtomicReference<>();
+      AllureStepListener.updateStep(stepResultRef::set);
+
+      assertThat(stepResultRef.get())
+        .isSameAs(stepResult);
+    } finally {
+      Allure.getLifecycle().stopStep();
+    }
   }
 }

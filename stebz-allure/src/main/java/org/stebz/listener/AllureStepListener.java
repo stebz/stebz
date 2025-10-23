@@ -29,7 +29,6 @@ import io.qameta.allure.model.Parameter;
 import io.qameta.allure.model.Status;
 import io.qameta.allure.model.StepResult;
 import io.qameta.allure.util.NamingUtils;
-import io.qameta.allure.util.ObjectUtils;
 import io.qameta.allure.util.ResultsUtils;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -38,6 +37,8 @@ import org.stebz.attribute.ReflectiveStepAttributes;
 import org.stebz.executor.StartupPropertiesReader;
 import org.stebz.step.StepObj;
 import org.stebz.util.container.NullableOptional;
+import org.stebz.util.function.ThrowingConsumer;
+import org.stebz.util.function.ThrowingFunction;
 import org.stebz.util.property.PropertiesReader;
 
 import java.util.HashMap;
@@ -90,13 +91,142 @@ public class AllureStepListener implements StepListener {
     this.isStebzAnnotationsUsed = isStebzAnnotationsUsed();
   }
 
-  private static boolean isStebzAnnotationsUsed() {
-    try {
-      Class.forName("org.stebz.aspect.StepAspects");
-      return true;
-    } catch (final ClassNotFoundException ex) {
-      return false;
-    }
+  /**
+   * Adds parameter to current step if any. Takes no effect if no step run at the moment.
+   *
+   * @param name  the step parameter name
+   * @param value the step parameter value
+   * @param <T>   the type of the step parameter value
+   * @return step parameter value
+   */
+  public static <T> T stepParameter(final String name,
+                                    final T value) {
+    return stepParameter(name, value, null, null);
+  }
+
+  /**
+   * Adds parameter to current step if any. Takes no effect if no step run at the moment.
+   *
+   * @param name     the step parameter name
+   * @param value    the step parameter value
+   * @param excluded the step parameter excluded flag
+   * @param <T>      the type of the step parameter value
+   * @return step parameter value
+   */
+  public static <T> T stepParameter(final String name,
+                                    final T value,
+                                    final Boolean excluded) {
+    return stepParameter(name, value, excluded, null);
+  }
+
+  /**
+   * Adds parameter to current step if any. Takes no effect if no step run at the moment.
+   *
+   * @param name  the step parameter name
+   * @param value the step parameter value
+   * @param mode  the step parameter mode
+   * @param <T>   the type of the step parameter value
+   * @return step parameter value
+   */
+  public static <T> T stepParameter(final String name,
+                                    final T value,
+                                    final Parameter.Mode mode) {
+    return stepParameter(name, value, null, mode);
+  }
+
+  /**
+   * Adds parameter to current step if any. Takes no effect if no step run at the moment.
+   *
+   * @param name     the step parameter name
+   * @param value    the step parameter value
+   * @param excluded the step parameter excluded flag
+   * @param mode     the step parameter mode
+   * @param <T>      the type of the step parameter value
+   * @return step parameter value
+   */
+  public static <T> T stepParameter(final String name,
+                                    final T value,
+                                    final Boolean excluded,
+                                    final Parameter.Mode mode) {
+    Allure.getLifecycle().updateStep(stepResult ->
+      stepResult.getParameters().add(ResultsUtils.createParameter(name, value, excluded, mode))
+    );
+    return value;
+  }
+
+  /**
+   * Adds parameter to current step if any. Takes no effect if no step run at the moment.
+   *
+   * @param update the step parameter update function
+   * @throws NullPointerException if {@code update} arg is null
+   */
+  public static void stepParameter(final ThrowingConsumer<? super Parameter, ?> update) {
+    if (update == null) { throw new NullPointerException("update arg is null"); }
+    Allure.getLifecycle().updateStep(stepResult -> {
+      final Parameter parameter = new Parameter();
+      ThrowingConsumer.unchecked(update).accept(parameter);
+      stepResult.getParameters().add(parameter);
+    });
+  }
+
+  /**
+   * Sets current step name if any. Takes no effect if no step run at the moment.
+   *
+   * @param name the step name
+   */
+  public static void stepName(final String name) {
+    Allure.getLifecycle().updateStep(stepResult ->
+      stepResult.setName(name)
+    );
+  }
+
+  /**
+   * Sets current step name if any. Takes no effect if no step run at the moment.
+   *
+   * @param update the step name update function
+   * @throws NullPointerException if {@code update} arg is null
+   */
+  public static void stepName(final ThrowingFunction<? super String, String, ?> update) {
+    if (update == null) { throw new NullPointerException("update arg is null"); }
+    Allure.getLifecycle().updateStep(stepResult ->
+      stepResult.setName(ThrowingFunction.unchecked(update).apply(stepResult.getName()))
+    );
+  }
+
+  /**
+   * Sets current step status if any. Takes no effect if no step run at the moment.
+   *
+   * @param status the step status
+   */
+  public static void stepStatus(final Status status) {
+    Allure.getLifecycle().updateStep(stepResult ->
+      stepResult.setStatus(status)
+    );
+  }
+
+  /**
+   * Sets current step status if any. Takes no effect if no step run at the moment.
+   *
+   * @param exception the step exception
+   * @throws NullPointerException if {@code exception} arg is null
+   */
+  public static void stepStatus(final Throwable exception) {
+    if (exception == null) { throw new NullPointerException("exception arg is null"); }
+    Allure.getLifecycle().updateStep(stepResult ->
+      stepResult.setStatus(ResultsUtils.getStatus(exception).orElse(Status.BROKEN))
+        .setStatusDetails(ResultsUtils.getStatusDetails(exception).orElse(null))
+    );
+  }
+
+  /**
+   * Updates current step if any. Takes no effect if no step run at the moment.
+   *
+   * @param update the step update function
+   * @throws NullPointerException if {@code update} arg is null
+   */
+  public static void updateStep(final ThrowingConsumer<? super StepResult, ?> update) {
+    if (update == null) { throw new NullPointerException("update arg is null"); }
+    Allure.getLifecycle().updateStep(ThrowingConsumer.unchecked(update)::accept);
   }
 
   @Override
@@ -114,6 +244,7 @@ public class AllureStepListener implements StepListener {
     if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
       return;
     }
+
     final StepResult stepResult = new StepResult();
     final Map<String, Object> params = step.getParams();
     if (this.contextParam && context.isPresent()) {
@@ -121,9 +252,7 @@ public class AllureStepListener implements StepListener {
     }
     if (!params.isEmpty()) {
       final List<Parameter> allureParams = stepResult.getParameters();
-      params.forEach((paramName, paramValue) -> allureParams.add(
-        new Parameter().setName(paramName).setValue(ObjectUtils.toString(paramValue))
-      ));
+      params.forEach((paramName, paramValue) -> allureParams.add(ResultsUtils.createParameter(paramName, paramValue)));
     }
     stepResult.setName(this.keywordPosition.concat(
       this.keywordValue(keyword),
@@ -156,6 +285,7 @@ public class AllureStepListener implements StepListener {
     if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
       return;
     }
+
     final AllureLifecycle allureLifecycle = Allure.getLifecycle();
     allureLifecycle.updateStep(stepResult -> {
       if (stepResult.getStatus() == null) {
@@ -176,12 +306,22 @@ public class AllureStepListener implements StepListener {
     if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
       return;
     }
+
     final AllureLifecycle allureLifecycle = Allure.getLifecycle();
     allureLifecycle.updateStep(stepResult ->
       stepResult.setStatus(ResultsUtils.getStatus(exception).orElse(Status.BROKEN))
         .setStatusDetails(ResultsUtils.getStatusDetails(exception).orElse(null))
     );
     allureLifecycle.stopStep();
+  }
+
+  private static boolean isStebzAnnotationsUsed() {
+    try {
+      Class.forName("org.stebz.aspect.StepAspects");
+      return true;
+    } catch (final ClassNotFoundException ex) {
+      return false;
+    }
   }
 
   private String processStepName(final StepObj<?> step,

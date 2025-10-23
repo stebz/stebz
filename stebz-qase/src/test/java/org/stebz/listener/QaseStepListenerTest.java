@@ -34,6 +34,7 @@ import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
 
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.stebz.attribute.StepAttribute.KEYWORD;
@@ -100,5 +101,89 @@ final class QaseStepListenerTest {
       .isSameAs(StepResultStatus.FAILED);
     assertThat(stepResult.throwable)
       .isSameAs(exception);
+  }
+
+  @Test
+  void stepNameStringMethod() {
+    final String newName = "new name";
+    StepStorage.startStep();
+    final StepResult stepResult = StepStorage.getCurrentStep();
+    try {
+      QaseStepListener.stepName(newName);
+
+      assertThat(stepResult.data.action)
+        .isEqualTo(newName);
+    } finally {
+      StepStorage.stopStep();
+    }
+  }
+
+  @Test
+  void stepNameFunctionMethod() {
+    final String originName = "origin name";
+    final String newName = "new name";
+    StepStorage.startStep();
+    final StepResult stepResult = StepStorage.getCurrentStep();
+    stepResult.data.action = originName;
+    try {
+      final AtomicReference<String> originNameArgRef = new AtomicReference<>();
+      QaseStepListener.stepName(arg -> {
+        originNameArgRef.set(arg);
+        return newName;
+      });
+
+      assertThat(originNameArgRef.get())
+        .isEqualTo(originName);
+      assertThat(stepResult.data.action)
+        .isEqualTo(newName);
+    } finally {
+      StepStorage.stopStep();
+    }
+  }
+
+  @Test
+  void stepStatusMethod() {
+    StepStorage.startStep();
+    final StepResult stepResult = StepStorage.getCurrentStep();
+    try {
+      QaseStepListener.stepStatus(StepResultStatus.SKIPPED);
+
+      assertThat(stepResult.execution.status)
+        .isSameAs(StepResultStatus.SKIPPED);
+    } finally {
+      StepStorage.stopStep();
+    }
+  }
+
+  @Test
+  void stepStatusThrowableArgMethod() {
+    final Throwable exception = new Throwable();
+    StepStorage.startStep();
+    final StepResult stepResult = StepStorage.getCurrentStep();
+    try {
+      QaseStepListener.stepStatus(exception);
+
+      assertThat(stepResult.execution.status)
+        .isSameAs(StepResultStatus.FAILED);
+      assertThat(stepResult.throwable)
+        .isSameAs(exception);
+    } finally {
+      StepStorage.stopStep();
+    }
+  }
+
+  @Test
+  void updateStepMethod() {
+    StepStorage.startStep();
+    final StepResult stepResult = StepStorage.getCurrentStep();
+    try {
+      final AtomicReference<StepResult> stepResultRef = new AtomicReference<>();
+      QaseStepListener.updateStep(stepResultRef::set);
+
+      assertThat(stepResultRef.get())
+        .isSameAs(stepResult);
+    } finally {
+      StepStorage.stopStep();
+    }
   }
 }

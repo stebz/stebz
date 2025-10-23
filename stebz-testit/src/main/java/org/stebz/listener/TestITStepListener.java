@@ -29,8 +29,9 @@ import org.stebz.attribute.Keyword;
 import org.stebz.attribute.ReflectiveStepAttributes;
 import org.stebz.executor.StartupPropertiesReader;
 import org.stebz.step.StepObj;
-import org.stebz.util.Cast;
 import org.stebz.util.container.NullableOptional;
+import org.stebz.util.function.ThrowingConsumer;
+import org.stebz.util.function.ThrowingFunction;
 import org.stebz.util.property.PropertiesReader;
 import ru.testit.models.ItemStatus;
 import ru.testit.models.StepResult;
@@ -83,13 +84,84 @@ public class TestITStepListener implements StepListener {
     this.isStebzAnnotationsUsed = isStebzAnnotationsUsed();
   }
 
-  private static boolean isStebzAnnotationsUsed() {
-    try {
-      Class.forName("org.stebz.aspect.StepAspects");
-      return true;
-    } catch (final ClassNotFoundException ex) {
-      return false;
-    }
+  /**
+   * Adds parameter to current step if any. Takes no effect if no step run at the moment.
+   *
+   * @param name  the step parameter name
+   * @param value the step parameter value
+   * @param <T>   the type of the step parameter value
+   * @return step parameter value
+   */
+  public static <T> T stepParameter(final String name,
+                                    final T value) {
+    Adapter.getAdapterManager().updateStep(stepResult -> {
+      Map<String, String> parameters = stepResult.getParameters();
+      if (parameters == null) {
+        parameters = new HashMap<>();
+        stepResult.setParameters(parameters);
+      }
+      parameters.put(name, value == null ? "" : value.toString());
+    });
+    return value;
+  }
+
+  /**
+   * Sets current step name if any. Takes no effect if no step run at the moment.
+   *
+   * @param name the step name
+   */
+  public static void stepName(final String name) {
+    Adapter.getAdapterManager().updateStep(stepResult ->
+      stepResult.setName(name)
+    );
+  }
+
+  /**
+   * Sets current step name if any. Takes no effect if no step run at the moment.
+   *
+   * @param update the step name update function
+   * @throws NullPointerException if {@code update} arg is null
+   */
+  public static void stepName(final ThrowingFunction<? super String, String, ?> update) {
+    if (update == null) { throw new NullPointerException("update arg is null"); }
+    Adapter.getAdapterManager().updateStep(stepResult ->
+      stepResult.setName(ThrowingFunction.unchecked(update).apply(stepResult.getName()))
+    );
+  }
+
+  /**
+   * Sets current step status if any. Takes no effect if no step run at the moment.
+   *
+   * @param status the step status
+   */
+  public static void stepStatus(final ItemStatus status) {
+    Adapter.getAdapterManager().updateStep(stepResult ->
+      stepResult.setItemStatus(status)
+    );
+  }
+
+  /**
+   * Sets current step status if any. Takes no effect if no step run at the moment.
+   *
+   * @param exception the step exception
+   * @throws NullPointerException if {@code exception} arg is null
+   */
+  public static void stepStatus(final Throwable exception) {
+    if (exception == null) { throw new NullPointerException("exception arg is null"); }
+    Adapter.getAdapterManager().updateStep(stepResult ->
+      stepResult.setItemStatus(ItemStatus.FAILED).setThrowable(exception)
+    );
+  }
+
+  /**
+   * Updates current step if any. Takes no effect if no step run at the moment.
+   *
+   * @param update the step update function
+   * @throws NullPointerException if {@code update} arg is null
+   */
+  public static void updateStep(final ThrowingConsumer<? super StepResult, ?> update) {
+    if (update == null) { throw new NullPointerException("update arg is null"); }
+    Adapter.getAdapterManager().updateStep(ThrowingConsumer.unchecked(update)::accept);
   }
 
   @Override
@@ -107,27 +179,24 @@ public class TestITStepListener implements StepListener {
     if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
       return;
     }
+
     final StepResult stepResult = new StepResult();
-    final Map<String, Object> params = step.getParams();
+    final Map<String, Object> originParams = step.getParams();
+    final Map<String, String> stringParams = new HashMap<>();
+    originParams.forEach((paramName, paramValue) -> stringParams.put(
+      paramName,
+      paramValue == null ? "" : paramValue.toString()
+    ));
     if (this.contextParam && context.isPresent()) {
-      params.putIfAbsent(CONTEXT_PARAM_NAME, context.get());
+      final Object contextValue = context.get();
+      stringParams.putIfAbsent(CONTEXT_PARAM_NAME, contextValue == null ? "" : contextValue.toString());
     }
-    final Map<String, String> stringParams;
-    if (params.isEmpty()) {
-      stringParams = Cast.unsafe(params);
-    } else {
-      stringParams = new HashMap<>();
-      params.forEach((paramName, paramValue) -> stringParams.put(
-        paramName,
-        paramValue == null ? "" : paramValue.toString()
-      ));
-    }
+    stepResult.setParameters(stringParams);
     stepResult.setName(this.keywordPosition.concat(
       this.keywordValue(keyword),
       this.processStepName(step, step.getName(), stringParams)
     ));
     stepResult.setDescription(this.processStepDescription(step.getExpectedResult(), step.getComment()));
-    stepResult.setParameters(stringParams);
 
     Adapter.getAdapterManager().startStep(UUID.randomUUID().toString(), stepResult);
   }
@@ -143,6 +212,7 @@ public class TestITStepListener implements StepListener {
     if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
       return;
     }
+
     final AdapterManager adapterManager = Adapter.getAdapterManager();
     adapterManager.updateStep(stepResult -> {
       if (stepResult.getItemStatus() == null) {
@@ -163,12 +233,22 @@ public class TestITStepListener implements StepListener {
     if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
       return;
     }
+
     final AdapterManager adapterManager = Adapter.getAdapterManager();
     adapterManager.updateStep(stepResult ->
       stepResult.setItemStatus(ItemStatus.FAILED)
         .setThrowable(exception)
     );
     adapterManager.stopStep();
+  }
+
+  private static boolean isStebzAnnotationsUsed() {
+    try {
+      Class.forName("org.stebz.aspect.StepAspects");
+      return true;
+    } catch (final ClassNotFoundException ex) {
+      return false;
+    }
   }
 
   private String processStepName(final StepObj<?> step,

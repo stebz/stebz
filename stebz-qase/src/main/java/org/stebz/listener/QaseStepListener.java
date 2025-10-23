@@ -34,6 +34,8 @@ import org.stebz.attribute.ReflectiveStepAttributes;
 import org.stebz.executor.StartupPropertiesReader;
 import org.stebz.step.StepObj;
 import org.stebz.util.container.NullableOptional;
+import org.stebz.util.function.ThrowingConsumer;
+import org.stebz.util.function.ThrowingFunction;
 import org.stebz.util.property.PropertiesReader;
 
 import java.util.Arrays;
@@ -83,12 +85,70 @@ public class QaseStepListener implements StepListener {
     this.isStebzAnnotationsUsed = isStebzAnnotationsUsed();
   }
 
-  private static boolean isStebzAnnotationsUsed() {
-    try {
-      Class.forName("org.stebz.aspect.StepAspects");
-      return true;
-    } catch (final ClassNotFoundException ex) {
-      return false;
+  /**
+   * Sets current step name if any. Takes no effect if no step run at the moment.
+   *
+   * @param name the step name
+   */
+  public static void stepName(final String name) {
+    final StepResult stepResult = StepStorage.getCurrentStep();
+    if (stepResult != null) {
+      stepResult.data.action = name;
+    }
+  }
+
+  /**
+   * Sets current step name if any. Takes no effect if no step run at the moment.
+   *
+   * @param update the step name update function
+   * @throws NullPointerException if {@code update} arg is null
+   */
+  public static void stepName(final ThrowingFunction<? super String, String, ?> update) {
+    if (update == null) { throw new NullPointerException("update arg is null"); }
+    final StepResult stepResult = StepStorage.getCurrentStep();
+    if (stepResult != null) {
+      stepResult.data.action = ThrowingFunction.unchecked(update).apply(stepResult.data.action);
+    }
+  }
+
+  /**
+   * Sets current step status if any. Takes no effect if no step run at the moment.
+   *
+   * @param status the step status
+   */
+  public static void stepStatus(final StepResultStatus status) {
+    final StepResult stepResult = StepStorage.getCurrentStep();
+    if (stepResult != null) {
+      stepResult.execution.status = status;
+    }
+  }
+
+  /**
+   * Sets current step status if any. Takes no effect if no step run at the moment.
+   *
+   * @param exception the step exception
+   * @throws NullPointerException if {@code exception} arg is null
+   */
+  public static void stepStatus(final Throwable exception) {
+    if (exception == null) { throw new NullPointerException("exception arg is null"); }
+    final StepResult stepResult = StepStorage.getCurrentStep();
+    if (stepResult != null) {
+      stepResult.execution.status = StepResultStatus.FAILED;
+      stepResult.throwable = exception;
+    }
+  }
+
+  /**
+   * Updates current step if any. Takes no effect if no step run at the moment.
+   *
+   * @param update the step update function
+   * @throws NullPointerException if {@code update} arg is null
+   */
+  public static void updateStep(final ThrowingConsumer<? super StepResult, ?> update) {
+    if (update == null) { throw new NullPointerException("update arg is null"); }
+    final StepResult stepResult = StepStorage.getCurrentStep();
+    if (stepResult != null) {
+      ThrowingConsumer.unchecked(update).accept(stepResult);
     }
   }
 
@@ -107,17 +167,17 @@ public class QaseStepListener implements StepListener {
     if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
       return;
     }
+
+    StepStorage.startStep();
+    final StepResult stepResult = StepStorage.getCurrentStep();
     final Map<String, Object> params = step.getParams();
     if (this.contextParam && context.isPresent()) {
       params.putIfAbsent(CONTEXT_PARAM_NAME, context.get());
     }
-    StepStorage.startStep();
-    final StepResult stepResult = StepStorage.getCurrentStep();
     stepResult.data.action = this.keywordPosition.concat(
       this.keywordValue(keyword),
       this.processStepName(step, step.getName(), params)
     );
-
     final String expectedResult = step.getExpectedResult();
     if (!expectedResult.isEmpty()) {
       stepResult.data.expectedResult = expectedResult;
@@ -145,6 +205,7 @@ public class QaseStepListener implements StepListener {
     if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
       return;
     }
+
     final StepResult stepResult = StepStorage.getCurrentStep();
     if (stepResult.execution.status == StepResultStatus.UNTESTED) {
       stepResult.execution.status = StepResultStatus.PASSED;
@@ -163,10 +224,20 @@ public class QaseStepListener implements StepListener {
     if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
       return;
     }
+
     final StepResult stepResult = StepStorage.getCurrentStep();
     stepResult.execution.status = StepResultStatus.FAILED;
     stepResult.throwable = exception;
     StepStorage.stopStep();
+  }
+
+  private static boolean isStebzAnnotationsUsed() {
+    try {
+      Class.forName("org.stebz.aspect.StepAspects");
+      return true;
+    } catch (final ClassNotFoundException ex) {
+      return false;
+    }
   }
 
   private String processStepName(final StepObj<?> step,
