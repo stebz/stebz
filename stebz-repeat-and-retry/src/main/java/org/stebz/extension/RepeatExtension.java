@@ -44,15 +44,24 @@ import java.time.Duration;
  * Repeat {@link StebzExtension}.
  *
  * @see #REPEAT
+ * @see #repeat
  * @see WithRepeat
  */
 public class RepeatExtension implements InterceptStep {
+
   /**
    * Repeat step attribute.
    *
    * @see WithRepeat
    */
   public static final StepAttribute<RepeatOptions> REPEAT = StepAttribute.nullable("extension:repeat");
+
+  /**
+   * Repeat step attribute. Alias for {@link #REPEAT}.
+   *
+   * @see WithRepeat
+   */
+  public static final StepAttribute<RepeatOptions> repeat = REPEAT;
   private static final StepAttribute<WithRepeat> REPEAT_ANNOT = StepAttribute.nullable(WithRepeat.KEY);
   private final boolean enabled;
   private final int order;

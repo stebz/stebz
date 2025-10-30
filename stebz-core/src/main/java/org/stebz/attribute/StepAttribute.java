@@ -39,30 +39,68 @@ import static java.util.Collections.emptyMap;
  * @param <V> the type of attribute value
  */
 public interface StepAttribute<V> {
+
   /**
    * Keyword step attribute (default).
+   *
+   * @see #keyword
    */
   StepAttribute<Keyword> KEYWORD = nonNull("default:keyword", Keyword.empty());
+
+  /**
+   * Keyword step attribute (default). Alias for {@link #KEYWORD}.
+   */
+  StepAttribute<Keyword> keyword = KEYWORD;
+
   /**
    * Name step attribute (default).
    */
   StepAttribute<String> NAME = nonNull("default:name", "");
+
+  /**
+   * Name step attribute (default). Alias for {@link #NAME}.
+   */
+  StepAttribute<String> name = NAME;
+
   /**
    * Params step attribute (default).
    */
   StepAttribute<Map<String, Object>> PARAMS = nonNull("default:params", emptyMap(), LinkedHashMap::new);
+
+  /**
+   * Params step attribute (default). Alias for {@link #PARAMS}.
+   */
+  StepAttribute<Map<String, Object>> params = PARAMS;
+
   /**
    * Expected result step attribute (default).
    */
   StepAttribute<String> EXPECTED_RESULT = nonNull("default:expected_result", "");
+
+  /**
+   * Expected result step attribute (default). Alias for {@link #EXPECTED_RESULT}.
+   */
+  StepAttribute<String> expectedResult = EXPECTED_RESULT;
+
   /**
    * Comment step attribute (default).
    */
   StepAttribute<String> COMMENT = nonNull("default:comment", "");
+
+  /**
+   * Comment step attribute (default). Alias for {@link #COMMENT}.
+   */
+  StepAttribute<String> comment = COMMENT;
+
   /**
    * Hidden step attribute (default).
    */
   StepAttribute<Boolean> HIDDEN = nonNull("default:hidden", false);
+
+  /**
+   * Hidden step attribute (default). Alias for {@link #HIDDEN}.
+   */
+  StepAttribute<Boolean> hidden = HIDDEN;
 
   /**
    * Returns attribute key.

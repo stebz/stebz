@@ -44,15 +44,24 @@ import java.time.Duration;
  * Retry {@link StebzExtension}.
  *
  * @see #RETRY
+ * @see #retry
  * @see WithRetry
  */
 public class RetryExtension implements InterceptStep {
+
   /**
    * Retry step attribute.
    *
    * @see WithRetry
    */
   public static final StepAttribute<RetryOptions> RETRY = StepAttribute.nullable("extension:retry");
+
+  /**
+   * Retry step attribute. Alias for {@link #RETRY}.
+   *
+   * @see WithRetry
+   */
+  public static final StepAttribute<RetryOptions> retry = RETRY;
   private static final StepAttribute<WithRetry> RETRY_ANNOT = StepAttribute.nullable(WithRetry.KEY);
   private final boolean enabled;
   private final int order;
