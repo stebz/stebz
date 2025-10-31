@@ -44,6 +44,7 @@ import static org.stebz.extension.GherkinKeywords.background;
 import static org.stebz.extension.GherkinKeywords.but;
 import static org.stebz.extension.GherkinKeywords.conclusion;
 import static org.stebz.extension.GherkinKeywords.given;
+import static org.stebz.extension.GherkinKeywords.rule;
 import static org.stebz.extension.GherkinKeywords.then;
 import static org.stebz.extension.GherkinKeywords.when;
 
@@ -531,6 +532,244 @@ public interface GherkinAround<T> {
   GherkinAround<T> Conclusion(String name,
                               Map<String, ?> params,
                               String expectedResult);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#rule()} keyword.
+   *
+   * @param step the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Rule(RunnableStep step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name.
+   *
+   * @param name the name
+   * @param step the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Rule(String name,
+                        RunnableStep step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and returns step result.
+   *
+   * @param step the step
+   * @param <R>  the type of the result
+   * @return step result
+   */
+  <R> R Rule(SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name and returns step result.
+   *
+   * @param name the name
+   * @param step the step
+   * @param <R>  the type of the result
+   * @return step result
+   */
+  <R> R Rule(String name,
+             SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#rule()} keyword on the context value.
+   *
+   * @param step the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Rule(ConsumerStep<? super T> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name on the context value.
+   *
+   * @param name the name
+   * @param step the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Rule(String name,
+                        ConsumerStep<? super T> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#rule()} keyword on the context value and returns step result.
+   *
+   * @param step the step
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  <R> R Rule(FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name on the context value and returns step
+   * result.
+   *
+   * @param name the name
+   * @param step the step
+   * @param <R>  the type of the result
+   * @return step result
+   */
+  <R> R Rule(String name,
+             FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes step with {@link GherkinKeywords#rule()} keyword on the context value.
+   *
+   * @param body the step body
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Rule(ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#rule()} keyword and given attributes on the context value.
+   *
+   * @param name the step name
+   * @param body the step body
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Rule(String name,
+                        ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#rule()} keyword and given attributes on the context value.
+   *
+   * @param name   the step name
+   * @param params the step params
+   * @param body   the step body
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Rule(String name,
+                        Map<String, ?> params,
+                        ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#rule()} keyword and given attributes on the context value.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Rule(String name,
+                        String expectedResult,
+                        ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#rule()} keyword and given attributes on the context value.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Rule(String name,
+                        Map<String, ?> params,
+                        String expectedResult,
+                        ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#rule()} keyword on the context value and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  <R> R Rule(ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#rule()} keyword and given attributes on the context value and returns
+   * step result.
+   *
+   * @param name the step name
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  <R> R Rule(String name,
+             ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#rule()} keyword and given attributes on the context value and returns
+   * step result.
+   *
+   * @param name   the step name
+   * @param params the step params
+   * @param body   the step body
+   * @param <R>    the type of the step result
+   * @return step result
+   */
+  <R> R Rule(String name,
+             Map<String, ?> params,
+             ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#rule()} keyword and given attributes on the context value and returns
+   * step result
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
+   */
+  <R> R Rule(String name,
+             String expectedResult,
+             ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#rule()} keyword and given attributes on the context value and returns
+   * step result
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
+   */
+  <R> R Rule(String name,
+             Map<String, ?> params,
+             String expectedResult,
+             ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
+   * Executes step with {@link GherkinKeywords#rule()} keyword and given attributes.
+   *
+   * @param name the step name
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Rule(String name);
+
+  /**
+   * Executes step with {@link GherkinKeywords#rule()} keyword and given attributes.
+   *
+   * @param name   the step name
+   * @param params the step params
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Rule(String name,
+                        Map<String, ?> params);
+
+  /**
+   * Executes step with {@link GherkinKeywords#rule()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Rule(String name,
+                        String expectedResult);
+
+  /**
+   * Executes step with {@link GherkinKeywords#rule()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Rule(String name,
+                        Map<String, ?> params,
+                        String expectedResult);
 
   /**
    * Executes given step with {@link GherkinKeywords#given()} keyword.
@@ -2156,6 +2395,214 @@ public interface GherkinAround<T> {
       this.executor.execute(new RunnableStep.Of(
         new StepAttributes.Of(
           KEYWORD, conclusion(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        RunnableStep.emptyBody()
+      ));
+      return this;
+    }
+
+    @Override
+    public GherkinAround<T> Rule(final RunnableStep step) {
+      this.executor.execute(step.with(KEYWORD, rule()));
+      return this;
+    }
+
+    @Override
+    public GherkinAround<T> Rule(final String name,
+                                 final RunnableStep step) {
+      this.executor.execute(step.with(KEYWORD, rule(), NAME, name));
+      return this;
+    }
+
+    @Override
+    public <R> R Rule(final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(KEYWORD, rule()));
+    }
+
+    @Override
+    public <R> R Rule(final String name,
+                      final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(KEYWORD, rule(), NAME, name));
+    }
+
+    @Override
+    public GherkinAround<T> Rule(final ConsumerStep<? super T> step) {
+      this.executor.execute(
+        step.with(KEYWORD, rule()),
+        this.context
+      );
+      return this;
+    }
+
+    @Override
+    public GherkinAround<T> Rule(final String name,
+                                 final ConsumerStep<? super T> step) {
+      this.executor.execute(
+        step.with(KEYWORD, rule(), NAME, name),
+        this.context
+      );
+      return this;
+    }
+
+    @Override
+    public <R> R Rule(final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(
+        step.with(KEYWORD, rule()),
+        this.context
+      );
+    }
+
+    @Override
+    public <R> R Rule(final String name,
+                      final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(
+        step.with(KEYWORD, rule(), NAME, name),
+        this.context
+      );
+    }
+
+    @Override
+    public GherkinAround<T> Rule(final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, rule()),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    public GherkinAround<T> Rule(final String name,
+                                 final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, rule(), NAME, name),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public GherkinAround<T> Rule(final String name,
+                                 final Map<String, ?> params,
+                                 final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, rule(), NAME, name, PARAMS, (Map<String, Object>) params),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    public GherkinAround<T> Rule(final String name,
+                                 final String expectedResult,
+                                 final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, rule(), NAME, name, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public GherkinAround<T> Rule(final String name,
+                                 final Map<String, ?> params,
+                                 final String expectedResult,
+                                 final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(
+          KEYWORD, rule(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    public <R> R Rule(final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(KEYWORD, rule()),
+        body
+      ), this.context);
+    }
+
+    @Override
+    public <R> R Rule(final String name,
+                      final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(KEYWORD, rule(), NAME, name),
+        body
+      ), this.context);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <R> R Rule(final String name,
+                      final Map<String, ?> params,
+                      final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(KEYWORD, rule(), NAME, name, PARAMS, (Map<String, Object>) params),
+        body
+      ), this.context);
+    }
+
+    @Override
+    public <R> R Rule(final String name,
+                      final String expectedResult,
+                      final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(KEYWORD, rule(), NAME, name, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <R> R Rule(final String name,
+                      final Map<String, ?> params,
+                      final String expectedResult,
+                      final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(
+          KEYWORD, rule(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+    }
+
+    @Override
+    public GherkinAround<T> Rule(final String name) {
+      this.executor.execute(new RunnableStep.Of(
+        new StepAttributes.Of(KEYWORD, rule(), NAME, name),
+        RunnableStep.emptyBody()
+      ));
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public GherkinAround<T> Rule(final String name,
+                                 final Map<String, ?> params) {
+      this.executor.execute(new RunnableStep.Of(
+        new StepAttributes.Of(KEYWORD, rule(), NAME, name, PARAMS, (Map<String, Object>) params),
+        RunnableStep.emptyBody()
+      ));
+      return this;
+    }
+
+    @Override
+    public GherkinAround<T> Rule(final String name,
+                                 final String expectedResult) {
+      this.executor.execute(new RunnableStep.Of(
+        new StepAttributes.Of(KEYWORD, rule(), NAME, name, EXPECTED_RESULT, expectedResult),
+        RunnableStep.emptyBody()
+      ));
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public GherkinAround<T> Rule(final String name, final Map<String, ?> params, final String expectedResult) {
+      this.executor.execute(new RunnableStep.Of(
+        new StepAttributes.Of(
+          KEYWORD, rule(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
         RunnableStep.emptyBody()
       ));
       return this;
