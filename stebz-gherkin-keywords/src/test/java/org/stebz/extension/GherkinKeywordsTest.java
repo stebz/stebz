@@ -45,6 +45,12 @@ final class GherkinKeywordsTest {
   }
 
   @Test
+  void ruleKeywordDefaultValue() {
+    assertThat(GherkinKeywords.rule().value())
+      .isEqualTo("Rule:");
+  }
+
+  @Test
   void givenKeywordDefaultValue() {
     assertThat(GherkinKeywords.given().value())
       .isEqualTo("Given");
