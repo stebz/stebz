@@ -52,7 +52,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @return {@code FunctionStep} with given block before body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default FunctionStep<T, R> withBefore(final ThrowingConsumer<? super T, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
@@ -70,7 +70,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @return {@code FunctionStep} with given block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default FunctionStep<T, R> withAfter(final ThrowingConsumer2<? super T, ? super R, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
@@ -89,7 +89,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @return {@code FunctionStep} with given block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default FunctionStep<T, R> withAfter(final ThrowingFunction2<? super T, ? super R, ? extends R, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
@@ -107,7 +107,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @return {@code FunctionStep} with given block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default FunctionStep<T, R> withOnSuccess(final ThrowingConsumer2<? super T, ? super R, ?> block) {
     return this.withAfter(block);
@@ -121,7 +121,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @return {@code FunctionStep} with given block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default FunctionStep<T, R> withOnSuccess(final ThrowingFunction2<? super T, ? super R, ? extends R, ?> block) {
     return this.withAfter(block);
@@ -134,7 +134,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @return {@code FunctionStep} with given block that be executed after step body in case of step failure
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default FunctionStep<T, R> withOnFailure(final ThrowingConsumer<? super T, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
@@ -161,7 +161,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @return {@code FunctionStep} with given finally block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default FunctionStep<T, R> withFinally(final ThrowingConsumer<? super T, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }

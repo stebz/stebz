@@ -49,7 +49,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @return {@code ConsumerStep} with given block before body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default ConsumerStep<T> withBefore(final ThrowingConsumer<? super T, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
@@ -67,7 +67,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @return {@code ConsumerStep} with given block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default ConsumerStep<T> withAfter(final ThrowingConsumer<? super T, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
@@ -86,7 +86,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @return {@code ConsumerStep} with given block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default ConsumerStep<T> withOnSuccess(final ThrowingConsumer<? super T, ?> block) {
     return this.withAfter(block);
@@ -99,7 +99,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @return {@code ConsumerStep} with given block that be executed after step body in case of step failure
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default ConsumerStep<T> withOnFailure(final ThrowingConsumer<? super T, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
@@ -126,7 +126,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @return {@code ConsumerStep} with given finally block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default ConsumerStep<T> withFinally(final ThrowingConsumer<? super T, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }

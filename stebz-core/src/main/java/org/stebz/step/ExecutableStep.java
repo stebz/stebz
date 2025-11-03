@@ -47,7 +47,7 @@ public interface ExecutableStep<B, S extends ExecutableStep<B, S>> extends StepO
    * @return {@code ExecutableStep} with given attribute value
    * @throws NullPointerException if {@code body} arg is null
    */
-  S withBody(final B body);
+  S withBody(B body);
 
   /**
    * Returns {@code ExecutableStep} with given body created by {@code generator}.
@@ -56,7 +56,7 @@ public interface ExecutableStep<B, S extends ExecutableStep<B, S>> extends StepO
    * @return {@code ExecutableStep} with given body
    * @throws NullPointerException if {@code generator} arg is null
    */
-  default S withNewBody(final ThrowingFunction<? super B, ? extends B, ?> generator) {
+  default S withBodyOf(final ThrowingFunction<? super B, ? extends B, ?> generator) {
     return this.withBody(ThrowingFunction.unchecked(generator).apply(this.body()));
   }
 }
