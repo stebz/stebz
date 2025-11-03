@@ -84,6 +84,19 @@ public final class StepCaptor {
   }
 
   /**
+   * Returns {@code RunnableStep} specified in the reference. Alias for {@link #captured(ThrowingRunnable)} method.
+   *
+   * @param reference the step reference
+   * @return {@code RunnableStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static RunnableStep ref(final ThrowingRunnable<?> reference) {
+    return captured(reference);
+  }
+
+  /**
    * Returns {@code RunnableStep} specified in the reference.
    *
    * @param reference the step reference
@@ -104,6 +117,23 @@ public final class StepCaptor {
     } finally {
       disableCaptureMode();
     }
+  }
+
+  /**
+   * Returns {@code RunnableStep} specified in the reference. Alias for {@link #captured(ThrowingConsumer, Object)}
+   * method.
+   *
+   * @param reference the step reference
+   * @param value     the reference value
+   * @param <T>       the type of the reference value
+   * @return {@code RunnableStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T> RunnableStep ref(final ThrowingConsumer<? super T, ?> reference,
+                                     final T value) {
+    return captured(reference, value);
   }
 
   /**
@@ -130,6 +160,26 @@ public final class StepCaptor {
     } finally {
       disableCaptureMode();
     }
+  }
+
+  /**
+   * Returns {@code RunnableStep} specified in the reference. Alias for
+   * {@link #captured(ThrowingConsumer2, Object, Object)} method.
+   *
+   * @param reference the step reference
+   * @param value1    the first reference value
+   * @param value2    the second reference value
+   * @param <T1>      the type of the first reference value
+   * @param <T2>      the type of the second reference value
+   * @return {@code RunnableStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T1, T2> RunnableStep ref(final ThrowingConsumer2<? super T1, ? super T2, ?> reference,
+                                          final T1 value1,
+                                          final T2 value2) {
+    return captured(reference, value1, value2);
   }
 
   /**
@@ -161,6 +211,31 @@ public final class StepCaptor {
     } finally {
       disableCaptureMode();
     }
+  }
+
+  /**
+   * Returns {@code RunnableStep} specified in the reference. Alias for
+   * {@link #captured(ThrowingConsumer3, Object, Object, Object)} method.
+   *
+   * @param reference the step reference
+   * @param value1    the first reference value
+   * @param value2    the second reference value
+   * @param value3    the third reference value
+   * @param <T1>      the type of the first reference value
+   * @param <T2>      the type of the second reference value
+   * @param <T3>      the type of the third reference value
+   * @return {@code RunnableStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T1, T2, T3> RunnableStep ref(
+    final ThrowingConsumer3<? super T1, ? super T2, ? super T3, ?> reference,
+    final T1 value1,
+    final T2 value2,
+    final T3 value3
+  ) {
+    return captured(reference, value1, value2, value3);
   }
 
   /**
@@ -198,6 +273,34 @@ public final class StepCaptor {
   }
 
   /**
+   * Returns {@code RunnableStep} specified in the reference. Alias for
+   * {@link #captured(ThrowingConsumer4, Object, Object, Object, Object)} method.
+   *
+   * @param reference the step reference
+   * @param value1    the first reference value
+   * @param value2    the second reference value
+   * @param value3    the third reference value
+   * @param value4    the fourth reference value
+   * @param <T1>      the type of the first reference value
+   * @param <T2>      the type of the second reference value
+   * @param <T3>      the type of the third reference value
+   * @param <T4>      the type of the fourth reference value
+   * @return {@code RunnableStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T1, T2, T3, T4> RunnableStep ref(
+    final ThrowingConsumer4<? super T1, ? super T2, ? super T3, ? super T4, ?> reference,
+    final T1 value1,
+    final T2 value2,
+    final T3 value3,
+    final T4 value4
+  ) {
+    return captured(reference, value1, value2, value3, value4);
+  }
+
+  /**
    * Returns {@code RunnableStep} specified in the reference.
    *
    * @param reference the step reference
@@ -232,6 +335,37 @@ public final class StepCaptor {
     } finally {
       disableCaptureMode();
     }
+  }
+
+  /**
+   * Returns {@code RunnableStep} specified in the reference. Alias for
+   * {@link #captured(ThrowingConsumer5, Object, Object, Object, Object, Object)} method.
+   *
+   * @param reference the step reference
+   * @param value1    the first reference value
+   * @param value2    the second reference value
+   * @param value3    the third reference value
+   * @param value4    the fourth reference value
+   * @param value5    the fifth reference value
+   * @param <T1>      the type of the first reference value
+   * @param <T2>      the type of the second reference value
+   * @param <T3>      the type of the third reference value
+   * @param <T4>      the type of the fourth reference value
+   * @param <T5>      the type of the fifth reference value
+   * @return {@code RunnableStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T1, T2, T3, T4, T5> RunnableStep ref(
+    final ThrowingConsumer5<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ?> reference,
+    final T1 value1,
+    final T2 value2,
+    final T3 value3,
+    final T4 value4,
+    final T5 value5
+  ) {
+    return captured(reference, value1, value2, value3, value4, value5);
   }
 
   /**
@@ -275,6 +409,40 @@ public final class StepCaptor {
   }
 
   /**
+   * Returns {@code RunnableStep} specified in the reference. Alias for
+   * {@link #captured(ThrowingConsumer6, Object, Object, Object, Object, Object, Object)} method.
+   *
+   * @param reference the step reference
+   * @param value1    the first reference value
+   * @param value2    the second reference value
+   * @param value3    the third reference value
+   * @param value4    the fourth reference value
+   * @param value5    the fifth reference value
+   * @param value6    the sixth reference value
+   * @param <T1>      the type of the first reference value
+   * @param <T2>      the type of the second reference value
+   * @param <T3>      the type of the third reference value
+   * @param <T4>      the type of the fourth reference value
+   * @param <T5>      the type of the fifth reference value
+   * @param <T6>      the type of the sixth reference value
+   * @return {@code RunnableStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T1, T2, T3, T4, T5, T6> RunnableStep ref(
+    final ThrowingConsumer6<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? super T6, ?> reference,
+    final T1 value1,
+    final T2 value2,
+    final T3 value3,
+    final T4 value4,
+    final T5 value5,
+    final T6 value6
+  ) {
+    return captured(reference, value1, value2, value3, value4, value5, value6);
+  }
+
+  /**
    * Returns {@code SupplierStep} specified in the reference.
    *
    * @param reference the step reference
@@ -293,6 +461,21 @@ public final class StepCaptor {
       disableCaptureMode();
     }
   }
+
+  /**
+   * Returns {@code SupplierStep} specified in the reference. Alias for {@link #captured(ThrowingSupplier)} method.
+   *
+   * @param reference the step reference
+   * @param <R>       the type of the step result
+   * @return {@code SupplierStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <R> SupplierStep<R> ref(final ThrowingSupplier<? extends R, ?> reference) {
+    return captured(reference);
+  }
+
 
   /**
    * Returns {@code SupplierStep} specified in the reference.
@@ -315,6 +498,24 @@ public final class StepCaptor {
     } finally {
       disableCaptureMode();
     }
+  }
+
+  /**
+   * Returns {@code SupplierStep} specified in the reference. Alias for {@link #captured(ThrowingFunction, Object)}
+   * method.
+   *
+   * @param reference the step reference
+   * @param value     the reference value
+   * @param <T>       the type of the reference value
+   * @param <R>       the type of the step result
+   * @return {@code SupplierStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T, R> SupplierStep<R> ref(final ThrowingFunction<? super T, ? extends R, ?> reference,
+                                           final T value) {
+    return captured(reference, value);
   }
 
   /**
@@ -343,6 +544,29 @@ public final class StepCaptor {
     } finally {
       disableCaptureMode();
     }
+  }
+
+  /**
+   * Returns {@code SupplierStep} specified in the reference. Alias for
+   * {@link #captured(ThrowingFunction2, Object, Object)} method.
+   *
+   * @param reference the step reference
+   * @param value1    the first reference value
+   * @param value2    the second reference value
+   * @param <T1>      the type of the first reference value
+   * @param <T2>      the type of the second reference value
+   * @param <R>       the type of the step result
+   * @return {@code SupplierStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T1, T2, R> SupplierStep<R> ref(
+    final ThrowingFunction2<? super T1, ? super T2, ? extends R, ?> reference,
+    final T1 value1,
+    final T2 value2
+  ) {
+    return captured(reference, value1, value2);
   }
 
   /**
@@ -377,6 +601,32 @@ public final class StepCaptor {
   }
 
   /**
+   * Returns {@code SupplierStep} specified in the reference. Alias for
+   * {@link #captured(ThrowingFunction3, Object, Object, Object)} method.
+   *
+   * @param reference the step reference
+   * @param value1    the first reference value
+   * @param value2    the second reference value
+   * @param value3    the third reference value
+   * @param <T1>      the type of the first reference value
+   * @param <T2>      the type of the second reference value
+   * @param <T3>      the type of the third reference value
+   * @param <R>       the type of the step result
+   * @return {@code SupplierStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T1, T2, T3, R> SupplierStep<R> ref(
+    final ThrowingFunction3<? super T1, ? super T2, ? super T3, ? extends R, ?> reference,
+    final T1 value1,
+    final T2 value2,
+    final T3 value3
+  ) {
+    return captured(reference, value1, value2, value3);
+  }
+
+  /**
    * Returns {@code SupplierStep} specified in the reference.
    *
    * @param reference the step reference
@@ -408,6 +658,35 @@ public final class StepCaptor {
     } finally {
       disableCaptureMode();
     }
+  }
+
+  /**
+   * Returns {@code SupplierStep} specified in the reference. Alias for
+   * {@link #captured(ThrowingFunction4, Object, Object, Object, Object)} method.
+   *
+   * @param reference the step reference
+   * @param value1    the first reference value
+   * @param value2    the second reference value
+   * @param value3    the third reference value
+   * @param value4    the fourth reference value
+   * @param <T1>      the type of the first reference value
+   * @param <T2>      the type of the second reference value
+   * @param <T3>      the type of the third reference value
+   * @param <T4>      the type of the fourth reference value
+   * @param <R>       the type of the step result
+   * @return {@code SupplierStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T1, T2, T3, T4, R> SupplierStep<R> ref(
+    final ThrowingFunction4<? super T1, ? super T2, ? super T3, ? super T4, ? extends R, ?> reference,
+    final T1 value1,
+    final T2 value2,
+    final T3 value3,
+    final T4 value4
+  ) {
+    return captured(reference, value1, value2, value3, value4);
   }
 
   /**
@@ -448,6 +727,38 @@ public final class StepCaptor {
   }
 
   /**
+   * Returns {@code SupplierStep} specified in the reference. Alias for
+   * {@link #captured(ThrowingFunction5, Object, Object, Object, Object, Object)} method.
+   *
+   * @param reference the step reference
+   * @param value1    the first reference value
+   * @param value2    the second reference value
+   * @param value3    the third reference value
+   * @param value4    the fourth reference value
+   * @param value5    the fifth reference value
+   * @param <T1>      the type of the first reference value
+   * @param <T2>      the type of the second reference value
+   * @param <T3>      the type of the third reference value
+   * @param <T4>      the type of the fourth reference value
+   * @param <T5>      the type of the fifth reference value
+   * @param <R>       the type of the step result
+   * @return {@code SupplierStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T1, T2, T3, T4, T5, R> SupplierStep<R> ref(
+    final ThrowingFunction5<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? extends R, ?> reference,
+    final T1 value1,
+    final T2 value2,
+    final T3 value3,
+    final T4 value4,
+    final T5 value5
+  ) {
+    return captured(reference, value1, value2, value3, value4, value5);
+  }
+
+  /**
    * Returns {@code SupplierStep} specified in the reference.
    *
    * @param reference the step reference
@@ -485,6 +796,41 @@ public final class StepCaptor {
     } finally {
       disableCaptureMode();
     }
+  }
+
+  /**
+   * Returns {@code SupplierStep} specified in the reference. Alias for
+   * {@link #captured(ThrowingFunction6, Object, Object, Object, Object, Object, Object)} method.
+   *
+   * @param reference the step reference
+   * @param value1    the first reference value
+   * @param value2    the second reference value
+   * @param value3    the third reference value
+   * @param value4    the fourth reference value
+   * @param value5    the fifth reference value
+   * @param value6    the sixth reference value
+   * @param <T1>      the type of the first reference value
+   * @param <T2>      the type of the second reference value
+   * @param <T3>      the type of the third reference value
+   * @param <T4>      the type of the fourth reference value
+   * @param <T5>      the type of the fifth reference value
+   * @param <T6>      the type of the sixth reference value
+   * @param <R>       the type of the step result
+   * @return {@code SupplierStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T1, T2, T3, T4, T5, T6, R> SupplierStep<R> ref(
+    final ThrowingFunction6<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? super T6, ? extends R, ?> reference,
+    final T1 value1,
+    final T2 value2,
+    final T3 value3,
+    final T4 value4,
+    final T5 value5,
+    final T6 value6
+  ) {
+    return captured(reference, value1, value2, value3, value4, value5, value6);
   }
 
   private static RunnableStep runnableStep() {
