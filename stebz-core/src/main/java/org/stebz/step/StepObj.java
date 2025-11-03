@@ -219,17 +219,6 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns comment attribute value.
-   *
-   * @return comment attribute value
-   * @see #get(StepAttribute)
-   * @see StepAttribute#COMMENT
-   */
-  default String getComment() {
-    return this.get(COMMENT);
-  }
-
-  /**
    * Returns params attribute value.
    *
    * @return params attribute value
@@ -241,17 +230,6 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns hidden attribute value.
-   *
-   * @return hidden attribute value
-   * @see #get(StepAttribute)
-   * @see StepAttribute#HIDDEN
-   */
-  default boolean getHidden() {
-    return this.get(HIDDEN);
-  }
-
-  /**
    * Returns expected result attribute value.
    *
    * @return expected result attribute value
@@ -260,6 +238,28 @@ public interface StepObj<S extends StepObj<S>> {
    */
   default String getExpectedResult() {
     return this.get(EXPECTED_RESULT);
+  }
+
+  /**
+   * Returns comment attribute value.
+   *
+   * @return comment attribute value
+   * @see #get(StepAttribute)
+   * @see StepAttribute#COMMENT
+   */
+  default String getComment() {
+    return this.get(COMMENT);
+  }
+
+  /**
+   * Returns hidden attribute value.
+   *
+   * @return hidden attribute value
+   * @see #get(StepAttribute)
+   * @see StepAttribute#HIDDEN
+   */
+  default boolean getHidden() {
+    return this.get(HIDDEN);
   }
 
   /**
@@ -284,7 +284,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @see #with(StepAttribute, Object)
    * @see StepAttribute#KEYWORD
    */
-  default S withNewKeyword(final ThrowingFunction<? super Keyword, Keyword, ?> generator) {
+  default S withKeyword(final ThrowingFunction<? super Keyword, Keyword, ?> generator) {
     return this.withNew(KEYWORD, generator);
   }
 
@@ -310,7 +310,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @see #with(StepAttribute, Object)
    * @see StepAttribute#NAME
    */
-  default S withNewName(final ThrowingFunction<? super String, String, ?> generator) {
+  default S withName(final ThrowingFunction<? super String, String, ?> generator) {
     return this.withNew(NAME, generator);
   }
 
@@ -336,25 +336,8 @@ public interface StepObj<S extends StepObj<S>> {
    * @see #withUpd(StepAttribute, ThrowingConsumer)
    * @see StepAttribute#PARAMS
    */
-  default S withUpdParams(final ThrowingConsumer<? super Map<String, Object>, ?> updater) {
+  default S withParams(final ThrowingConsumer<? super Map<String, Object>, ?> updater) {
     return this.withUpd(PARAMS, updater);
-  }
-
-  /**
-   * Returns {@code StepObj} with given params attribute value created by {@code generator}.
-   *
-   * @param generator the generator
-   * @return {@code StepObj} with given params attribute value
-   * @throws NullPointerException {@code generator} arg is null
-   * @see #withNew(StepAttribute, ThrowingFunction)
-   * @see StepAttribute#PARAMS
-   */
-  @SuppressWarnings("unchecked")
-  default S withNewParams(final ThrowingFunction<? super Map<String, Object>, ? extends Map<String, ?>, ?> generator) {
-    return this.withNew(
-      PARAMS,
-      (ThrowingFunction<Map<String, Object>, Map<String, Object>, ?>) generator
-    );
   }
 
   /**
@@ -364,12 +347,12 @@ public interface StepObj<S extends StepObj<S>> {
    * @param name  the param name
    * @param value the param value
    * @return {@code StepObj} with added param
-   * @see #withUpdParams(ThrowingConsumer)
+   * @see #withParams(ThrowingConsumer)
    * @see StepAttribute#PARAMS
    */
   default S withParam(final String name,
                       final Object value) {
-    return this.withAddedParam(name, value);
+    return this.withParams(p -> p.put(name, value));
   }
 
   /**
@@ -378,12 +361,12 @@ public interface StepObj<S extends StepObj<S>> {
    * @param name  the param name
    * @param value the param value
    * @return {@code StepObj} with added param
-   * @see #withUpdParams(ThrowingConsumer)
+   * @see #withParams(ThrowingConsumer)
    * @see StepAttribute#PARAMS
    */
   default S withAddedParam(final String name,
                            final Object value) {
-    return this.withUpdParams(p -> p.put(name, value));
+    return this.withParams(p -> p.put(name, value));
   }
 
   /**
@@ -392,11 +375,11 @@ public interface StepObj<S extends StepObj<S>> {
    * @param params the params
    * @return {@code StepObj} with added params
    * @throws NullPointerException if {@code params} arg is null
-   * @see #withUpdParams(ThrowingConsumer)
+   * @see #withParams(ThrowingConsumer)
    * @see StepAttribute#PARAMS
    */
   default S withAddedParams(final Map<String, Object> params) {
-    return this.withUpdParams(p -> p.putAll(params));
+    return this.withParams(p -> p.putAll(params));
   }
 
   /**
@@ -421,7 +404,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @see #with(StepAttribute, Object)
    * @see StepAttribute#EXPECTED_RESULT
    */
-  default S withNewExpectedResult(final ThrowingFunction<? super String, String, ?> generator) {
+  default S withExpectedResult(final ThrowingFunction<? super String, String, ?> generator) {
     return this.withNew(EXPECTED_RESULT, generator);
   }
 
@@ -447,7 +430,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @see #with(StepAttribute, Object)
    * @see StepAttribute#COMMENT
    */
-  default S withNewComment(final ThrowingFunction<? super String, String, ?> generator) {
+  default S withComment(final ThrowingFunction<? super String, String, ?> generator) {
     return this.withNew(COMMENT, generator);
   }
 
@@ -502,11 +485,11 @@ public interface StepObj<S extends StepObj<S>> {
    * @param paramNames the param names
    * @return {@code StepObj} without given params
    * @throws NullPointerException if {@code paramNames} arg is null
-   * @see #withUpdParams(ThrowingConsumer)
+   * @see #withParams(ThrowingConsumer)
    * @see StepAttribute#PARAMS
    */
   default S withoutParams(final String... paramNames) {
-    return this.withUpdParams(params -> {
+    return this.withParams(params -> {
       for (final String paramName : paramNames) {
         params.remove(paramName);
       }
@@ -518,11 +501,11 @@ public interface StepObj<S extends StepObj<S>> {
    *
    * @param paramName the param name
    * @return {@code StepObj} without given param
-   * @see #withUpdParams(ThrowingConsumer)
+   * @see #withParams(ThrowingConsumer)
    * @see StepAttribute#PARAMS
    */
   default S withoutParam(final String paramName) {
-    return this.withUpdParams(params -> params.remove(paramName));
+    return this.withParams(params -> params.remove(paramName));
   }
 
   /**
