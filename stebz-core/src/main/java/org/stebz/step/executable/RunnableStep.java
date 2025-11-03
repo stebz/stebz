@@ -47,7 +47,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    * @return {@code RunnableStep} with given block before step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default RunnableStep withBefore(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
@@ -65,7 +65,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    * @return {@code RunnableStep} with given block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default RunnableStep withAfter(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
@@ -84,7 +84,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    * @return {@code RunnableStep} with given block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default RunnableStep withOnSuccess(final ThrowingRunnable<?> block) {
     return this.withAfter(block);
@@ -97,7 +97,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    * @return {@code RunnableStep} with given block that be executed after step body in case of step failure
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default RunnableStep withOnFailure(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
@@ -124,7 +124,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    * @return {@code RunnableStep} with given finally block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default RunnableStep withFinally(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }

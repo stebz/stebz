@@ -51,7 +51,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @return {@code SupplierStep} with given block before step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default SupplierStep<R> withBefore(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
@@ -69,7 +69,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @return {@code SupplierStep} with given block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default SupplierStep<R> withAfter(final ThrowingConsumer<? super R, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
@@ -88,7 +88,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @return {@code SupplierStep} with given block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default SupplierStep<R> withAfter(final ThrowingFunction<? super R, ? extends R, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
@@ -106,7 +106,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @return {@code SupplierStep} with given block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default SupplierStep<R> withOnSuccess(final ThrowingConsumer<? super R, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
@@ -126,7 +126,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @return {@code SupplierStep} with given block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default SupplierStep<R> withOnSuccess(final ThrowingFunction<? super R, ? extends R, ?> block) {
     return this.withAfter(block);
@@ -139,7 +139,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @return {@code SupplierStep} with given block that be executed after step body in case of step failure
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default SupplierStep<R> withOnFailure(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
@@ -166,7 +166,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @return {@code SupplierStep} with given finally block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
-   * @see #withNewBody(ThrowingFunction)
+   * @see #withBodyOf(ThrowingFunction)
    */
   default SupplierStep<R> withFinally(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
