@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.8 (03.11.2025)
+
+* #92 bump Java version to 11 for stebz-reportportal module in PR #96
+* #97 update `stebz-reportportal` listener for the new version in PR #98
+* #101 add listener utility methods to update attributes during step execution in PR #102
+* #103 add aliases for attributes in PR #104
+* #105 add Rule Gherkin keyword in PR #106
+* #107 rename StepObj `withNew...` methods to `with...` in PR #108
+* #109 rename StepObj `withNewBody` method to `withBodyOf` in PR #110
+* #111 add `ref` alias for the `captured` method in PR #112
+
 ## 1.7 (15.09.2025)
 
 * #71 add stebz-hidden-steps module by @evpl in PR #77
@@ -8,7 +19,7 @@
 * #78 add common extensions to bundle modules by @evpl in PR #79
 * #80 add noResult static methods to StebzMethods class by @evpl in PR #81
 * #82 add onlyKeywordSteps option for all step listeners by @evpl in PR #83
-* #84 add a colon at the end of some  keywords by @evpl in PR #85
+* #84 add a colon at the end of some keywords by @evpl in PR #85
 
 ## 1.6 (04.09.2025)
 

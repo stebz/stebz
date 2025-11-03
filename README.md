@@ -227,7 +227,7 @@ Maven:
   <dependency>
     <groupId>org.stebz</groupId>
     <artifactId>{module name}</artifactId>
-    <version>1.7</version>
+    <version>1.8</version>
   </dependency>
 </dependencies>
 ```
@@ -238,7 +238,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation 'org.stebz:{module name}:1.7'
+  implementation 'org.stebz:{module name}:1.8'
 }
 ```
 <!-- @formatter:on -->
@@ -248,7 +248,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation("org.stebz:{module name}:1.7")
+  implementation("org.stebz:{module name}:1.8")
 }
 ```
 <!-- @formatter:on -->
@@ -270,7 +270,7 @@ Maven:
     <dependency>
       <groupId>org.stebz</groupId>
       <artifactId>stebz-bom</artifactId>
-      <version>1.7</version>
+      <version>1.8</version>
       <scope>import</scope>
       <type>pom</type>
     </dependency>
@@ -284,7 +284,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation platform('org.stebz:stebz-bom:1.7')
+  implementation platform('org.stebz:stebz-bom:1.8')
 }
 ```
 <!-- @formatter:on -->
@@ -294,7 +294,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation(platform("org.stebz:stebz-bom:1.7"))
+  implementation(platform("org.stebz:stebz-bom:1.8"))
 }
 ```
 <!-- @formatter:on -->
@@ -467,8 +467,8 @@ Or more convenient methods can be used.
 <!-- @formatter:off -->
 ```java
 RunnableStep newStep = step
-  .withNewName(name -> "name prefix " + name)
-  .withNewBody(originBody -> () -> {
+  .withName(name -> "name prefix " + name)
+  .withBodyOf(originBody -> () -> {
     // new body
     originBody.run();
   });
@@ -1129,6 +1129,7 @@ System properties have first priority, file properties have second priority.
 |-------------------------------------|--------------------------|---------------|-----------------------------|
 | `stebz.gherkin.keywords.background` | `String`                 | `Background:` | value of Background keyword |
 | `stebz.gherkin.keywords.conclusion` | `String`                 | `Conclusion:` | value of Conclusion keyword |
+| `stebz.gherkin.keywords.rule`       | `String`                 | `Rule:`       | value of Rule keyword       |
 | `stebz.gherkin.keywords.given`      | `String`                 | `Given`       | value of Given keyword      |
 | `stebz.gherkin.keywords.when`       | `String`                 | `When`        | value of When keyword       |
 | `stebz.gherkin.keywords.then`       | `String`                 | `Then`        | value of Then keyword       |
