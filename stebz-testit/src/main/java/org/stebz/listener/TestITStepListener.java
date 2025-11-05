@@ -48,9 +48,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Test IT {@code StepListener} implementation.
  */
 public class TestITStepListener implements StepListener {
-  private static final String CONTEXT_PARAM_NAME = "context";
-  private static final String EXPECTED_RESULT_DESC_LINE_PREFIX = "Expected result: ";
-  private static final String COMMENT_DESC_LINE_PREFIX = "Comment: ";
   private final boolean enabled;
   private final int order;
   private final boolean onlyKeywordSteps;
@@ -58,6 +55,13 @@ public class TestITStepListener implements StepListener {
   private final boolean keywordToUppercase;
   private final boolean processName;
   private final boolean contextParam;
+  private final String contextParamName;
+  private final boolean contextDesc;
+  private final String contextDescName;
+  private final boolean expectedResultDesc;
+  private final String expectedResultDescName;
+  private final boolean commentDesc;
+  private final String commentDescName;
   private final boolean isStebzAnnotationsUsed;
 
   /**
@@ -80,7 +84,15 @@ public class TestITStepListener implements StepListener {
       KeywordPosition.class, KeywordPosition.AT_START);
     this.keywordToUppercase = properties.getBoolean("stebz.listeners.testit.keywordToUppercase", false);
     this.processName = properties.getBoolean("stebz.listeners.testit.processName", true);
-    this.contextParam = properties.getBoolean("stebz.listeners.testit.contextParam", false);
+    this.contextParam = properties.getBoolean("stebz.listeners.testit.contextParam", true);
+    this.contextParamName = properties.getString("stebz.listeners.testit.contextParamName", "Context");
+    this.contextDesc = properties.getBoolean("stebz.listeners.testit.contextDesc", false);
+    this.contextDescName = properties.getString("stebz.listeners.testit.contextDescName", "Context");
+    this.expectedResultDesc = properties.getBoolean("stebz.listeners.testit.expectedResultDesc", true);
+    this.expectedResultDescName =
+      properties.getString("stebz.listeners.testit.expectedResultDescName", "Expected result");
+    this.commentDesc = properties.getBoolean("stebz.listeners.testit.commentDesc", true);
+    this.commentDescName = properties.getString("stebz.listeners.testit.commentDescName", "Comment");
     this.isStebzAnnotationsUsed = isStebzAnnotationsUsed();
   }
 
@@ -181,22 +193,22 @@ public class TestITStepListener implements StepListener {
     }
 
     final StepResult stepResult = new StepResult();
-    final Map<String, Object> originParams = step.getParams();
+    final Map<String, Object> params = step.getParams();
     final Map<String, String> stringParams = new HashMap<>();
-    originParams.forEach((paramName, paramValue) -> stringParams.put(
+    params.forEach((paramName, paramValue) -> stringParams.put(
       paramName,
       paramValue == null ? "" : paramValue.toString()
     ));
     if (this.contextParam && context.isPresent()) {
       final Object contextValue = context.get();
-      stringParams.putIfAbsent(CONTEXT_PARAM_NAME, contextValue == null ? "" : contextValue.toString());
+      stringParams.putIfAbsent(this.contextParamName, contextValue == null ? "" : contextValue.toString());
     }
     stepResult.setParameters(stringParams);
     stepResult.setName(this.keywordPosition.concat(
       this.keywordValue(keyword),
       this.processStepName(step, step.getName(), stringParams)
     ));
-    stepResult.setDescription(this.processStepDescription(step.getExpectedResult(), step.getComment()));
+    stepResult.setDescription(this.processStepDescription(context, step.getExpectedResult(), step.getComment()));
 
     Adapter.getAdapterManager().startStep(UUID.randomUUID().toString(), stepResult);
   }
@@ -208,8 +220,7 @@ public class TestITStepListener implements StepListener {
     if (!this.enabled || step.getHidden()) {
       return;
     }
-    final Keyword keyword = step.getKeyword();
-    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
+    if (this.onlyKeywordSteps && step.getKeyword().value().isEmpty()) {
       return;
     }
 
@@ -229,8 +240,7 @@ public class TestITStepListener implements StepListener {
     if (!this.enabled || step.getHidden()) {
       return;
     }
-    final Keyword keyword = step.getKeyword();
-    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
+    if (this.onlyKeywordSteps && step.getKeyword().value().isEmpty()) {
       return;
     }
 
@@ -268,25 +278,28 @@ public class TestITStepListener implements StepListener {
       : Utils.setParameters(name, paramsToProcess);
   }
 
-  private String processStepDescription(final String expectedResult,
+  private String processStepDescription(final NullableOptional<Object> context,
+                                        final String expectedResult,
                                         final String comment) {
-    if (expectedResult.isEmpty()) {
-      return comment.isEmpty()
-        ? ""
-        : comment;
-    } else {
-      return comment.isEmpty()
-        ? expectedResult
-        : expectedResultDescLine(expectedResult) + System.lineSeparator() + commentDescLine(comment);
+    final StringBuilder sb = new StringBuilder();
+    if (this.contextDesc && context.isPresent()) {
+      sb.append(this.contextDescName).append(": ").append(context.get());
     }
-  }
-
-  private static String expectedResultDescLine(final String expectedResult) {
-    return EXPECTED_RESULT_DESC_LINE_PREFIX + expectedResult;
-  }
-
-  private static String commentDescLine(final String comment) {
-    return COMMENT_DESC_LINE_PREFIX + comment;
+    if (this.expectedResultDesc && !expectedResult.isEmpty()) {
+      if (sb.length() != 0) {
+        sb.append(". ");
+      }
+      sb.append(this.expectedResultDescName).append(": ").append(expectedResult);
+    }
+    if (this.commentDesc && !comment.isEmpty()) {
+      if (sb.length() != 0) {
+        sb.append(". ");
+      }
+      sb.append(this.commentDescName).append(": ").append(comment);
+    }
+    return sb.length() == 0
+      ? null
+      : sb.toString();
   }
 
   private static void addReflectionParams(final StepObj<?> step,

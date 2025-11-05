@@ -43,6 +43,8 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.stebz.attribute.StepAttribute.COMMENT;
+import static org.stebz.attribute.StepAttribute.EXPECTED_RESULT;
 import static org.stebz.attribute.StepAttribute.HIDDEN;
 import static org.stebz.attribute.StepAttribute.KEYWORD;
 import static org.stebz.attribute.StepAttribute.NAME;
@@ -65,20 +67,24 @@ final class AllureStepListenerTest {
     final Map<String, Object> params = new LinkedHashMap<>();
     params.put(paramName1, paramValue1);
     params.put(paramName2, paramValue2);
-    final String context = "context";
+    final String expectedResultValue = "expected result value";
+    final String commentValue = "comment value";
+    final String contextValue = "context";
     final RunnableStep step = RunnableStep.of(
       new StepAttributes.BuilderOf()
         .add(KEYWORD, keyword)
         .add(NAME, name)
         .add(HIDDEN, hidden)
         .add(PARAMS, params)
+        .add(EXPECTED_RESULT, expectedResultValue)
+        .add(COMMENT, commentValue)
         .build(),
       RunnableStep.emptyBody()
     );
     final AllureStepListener listener = new AllureStepListener(new PropertiesReader.Of(new Properties()));
     final AtomicReference<StepResult> stepResultRef = new AtomicReference<>();
 
-    listener.onStepStart(step, NullableOptional.of(context));
+    listener.onStepStart(step, NullableOptional.of(contextValue));
     Allure.getLifecycle().updateStep(stepResultRef::set);
     try {
       assertThat(stepResultRef.get())
@@ -91,7 +97,10 @@ final class AllureStepListenerTest {
         .isEqualTo(keyword.value() + " " + name);
       assertThat(stepResultRef.get().getParameters()).containsExactly(
         new Parameter().setName(paramName1).setValue(paramValue1),
-        new Parameter().setName(paramName2).setValue(paramValue2)
+        new Parameter().setName(paramName2).setValue(paramValue2),
+        new Parameter().setName("Context").setValue(contextValue),
+        new Parameter().setName("Expected result").setValue(expectedResultValue),
+        new Parameter().setName("Comment").setValue(commentValue)
       );
     } finally {
       Allure.getLifecycle().stopStep();
