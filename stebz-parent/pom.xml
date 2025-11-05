@@ -69,7 +69,7 @@
     <javadoc.version>1.8</javadoc.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <aspectj.version>1.9.24</aspectj.version>
+    <aspectj.version>1.9.25</aspectj.version>
     <allure.version>2.30.0</allure.version>
     <qase.version>4.1.17</qase.version>
     <reportportal.version>5.4.3</reportportal.version>
