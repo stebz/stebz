@@ -48,8 +48,6 @@ import java.util.stream.Collectors;
  * Qase {@code StepListener} implementation.
  */
 public class QaseStepListener implements StepListener {
-  private static final String CONTEXT_PARAM_NAME = "context";
-  private static final String COMMENT_ATTACHMENT_NAME = "Comment";
   private final boolean enabled;
   private final int order;
   private final boolean onlyKeywordSteps;
@@ -57,7 +55,9 @@ public class QaseStepListener implements StepListener {
   private final boolean keywordToUppercase;
   private final boolean processName;
   private final boolean contextParam;
+  private final String contextParamName;
   private final boolean commentAttachment;
+  private final String commentAttachmentName;
   private final boolean isStebzAnnotationsUsed;
 
   /**
@@ -80,8 +80,10 @@ public class QaseStepListener implements StepListener {
       properties.getEnum("stebz.listeners.qase.keywordPosition", KeywordPosition.class, KeywordPosition.AT_START);
     this.keywordToUppercase = properties.getBoolean("stebz.listeners.qase.keywordToUppercase", false);
     this.processName = properties.getBoolean("stebz.listeners.qase.processName", true);
-    this.contextParam = properties.getBoolean("stebz.listeners.qase.contextParam", false);
+    this.contextParam = properties.getBoolean("stebz.listeners.qase.contextParam", true);
+    this.contextParamName = properties.getString("stebz.listeners.qase.contextParamName", "Context");
     this.commentAttachment = properties.getBoolean("stebz.listeners.qase.commentAttachment", true);
+    this.commentAttachmentName = properties.getString("stebz.listeners.qase.commentAttachmentName", "Comment");
     this.isStebzAnnotationsUsed = isStebzAnnotationsUsed();
   }
 
@@ -172,7 +174,7 @@ public class QaseStepListener implements StepListener {
     final StepResult stepResult = StepStorage.getCurrentStep();
     final Map<String, Object> params = step.getParams();
     if (this.contextParam && context.isPresent()) {
-      params.putIfAbsent(CONTEXT_PARAM_NAME, context.get());
+      params.putIfAbsent(this.contextParamName, context.get());
     }
     stepResult.data.action = this.keywordPosition.concat(
       this.keywordValue(keyword),
@@ -186,7 +188,7 @@ public class QaseStepListener implements StepListener {
       final String comment = step.getComment();
       if (!comment.isEmpty()) {
         final Attachment attachment = new Attachment();
-        attachment.fileName = COMMENT_ATTACHMENT_NAME;
+        attachment.fileName = this.commentAttachmentName;
         attachment.content = comment;
         attachment.mimeType = "text/plain";
         stepResult.attachments.add(attachment);
@@ -201,8 +203,7 @@ public class QaseStepListener implements StepListener {
     if (!this.enabled || step.getHidden()) {
       return;
     }
-    final Keyword keyword = step.getKeyword();
-    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
+    if (this.onlyKeywordSteps && step.getKeyword().value().isEmpty()) {
       return;
     }
 
@@ -220,8 +221,7 @@ public class QaseStepListener implements StepListener {
     if (!this.enabled || step.getHidden()) {
       return;
     }
-    final Keyword keyword = step.getKeyword();
-    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
+    if (this.onlyKeywordSteps && step.getKeyword().value().isEmpty()) {
       return;
     }
 

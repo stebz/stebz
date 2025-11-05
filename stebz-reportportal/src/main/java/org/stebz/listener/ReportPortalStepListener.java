@@ -25,10 +25,8 @@ package org.stebz.listener;
 
 import com.epam.reportportal.service.Launch;
 import com.epam.reportportal.service.step.StepRequestUtils;
-import com.epam.reportportal.utils.ParameterUtils;
 import com.epam.reportportal.utils.formatting.templating.TemplateConfiguration;
 import com.epam.reportportal.utils.formatting.templating.TemplateProcessing;
-import com.epam.ta.reportportal.ws.model.ParameterResource;
 import com.epam.ta.reportportal.ws.model.StartTestItemRQ;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -40,10 +38,8 @@ import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -52,9 +48,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ReportPortalStepListener implements StepListener {
   private static final TemplateConfiguration TEMPLATE_CONFIG = new TemplateConfiguration();
-  private static final String CONTEXT_PARAM_NAME = "context";
-  private static final String EXPECTED_RESULT_DESC_LINE_PREFIX = "Expected result: ";
-  private static final String COMMENT_DESC_LINE_PREFIX = "Comment: ";
   private final boolean enabled;
   private final int order;
   private final boolean onlyKeywordSteps;
@@ -62,6 +55,13 @@ public class ReportPortalStepListener implements StepListener {
   private final boolean keywordToUppercase;
   private final boolean processName;
   private final boolean contextParam;
+  private final String contextParamName;
+  private final boolean contextDesc;
+  private final String contextDescName;
+  private final boolean expectedResultDesc;
+  private final String expectedResultDescName;
+  private final boolean commentDesc;
+  private final String commentDescName;
   private final boolean isStebzAnnotationsUsed;
 
   /**
@@ -84,17 +84,16 @@ public class ReportPortalStepListener implements StepListener {
       KeywordPosition.class, KeywordPosition.AT_START);
     this.keywordToUppercase = properties.getBoolean("stebz.listeners.reportportal.keywordToUppercase", false);
     this.processName = properties.getBoolean("stebz.listeners.reportportal.processName", true);
-    this.contextParam = properties.getBoolean("stebz.listeners.reportportal.contextParam", false);
+    this.contextParam = properties.getBoolean("stebz.listeners.reportportal.contextParam", true);
+    this.contextParamName = properties.getString("stebz.listeners.reportportal.contextParamName", "Context");
+    this.contextDesc = properties.getBoolean("stebz.listeners.reportportal.contextDesc", false);
+    this.contextDescName = properties.getString("stebz.listeners.reportportal.contextDescName", "Context");
+    this.expectedResultDesc = properties.getBoolean("stebz.listeners.reportportal.expectedResultDesc", true);
+    this.expectedResultDescName =
+      properties.getString("stebz.listeners.reportportal.expectedResultDescName", "Expected result");
+    this.commentDesc = properties.getBoolean("stebz.listeners.reportportal.commentDesc", true);
+    this.commentDescName = properties.getString("stebz.listeners.reportportal.commentDescName", "Comment");
     this.isStebzAnnotationsUsed = isStebzAnnotationsUsed();
-  }
-
-  private static boolean isStebzAnnotationsUsed() {
-    try {
-      Class.forName("org.stebz.aspect.StepAspects");
-      return true;
-    } catch (final ClassNotFoundException ex) {
-      return false;
-    }
   }
 
   @Override
@@ -116,28 +115,20 @@ public class ReportPortalStepListener implements StepListener {
     if (launch == null) {
       return;
     }
+
     final Map<String, Object> params = step.getParams();
     if (this.contextParam && context.isPresent()) {
-      params.putIfAbsent(CONTEXT_PARAM_NAME, context.get());
+      params.putIfAbsent(this.contextParamName, context.get());
     }
     final StartTestItemRQ startTestItemRQ = StepRequestUtils.buildStartStepRequest(
       this.keywordPosition.concat(
         this.keywordValue(keyword),
-        this.processStepName(step, step.getName(), params)
+        this.processStepName(step, step.getName(), step.getParams())
       ),
-      this.processStepDescription(step.getExpectedResult(), step.getComment()),
+      this.processStepDescription(context, step.getExpectedResult(), step.getComment()),
       launch.useMicroseconds() ? Instant.now() : Calendar.getInstance().getTime()
     );
-    if (!params.isEmpty()) {
-      final List<ParameterResource> rpParams = new ArrayList<>();
-      params.forEach((paramName, paramValue) -> {
-        final ParameterResource param = new ParameterResource();
-        param.setKey(paramName);
-        param.setValue(paramValue == null ? ParameterUtils.NULL_VALUE : String.valueOf(paramValue));
-        rpParams.add(param);
-      });
-      startTestItemRQ.setParameters(rpParams);
-    }
+
     launch.getStepReporter().startNestedStep(startTestItemRQ);
   }
 
@@ -148,14 +139,14 @@ public class ReportPortalStepListener implements StepListener {
     if (!this.enabled || step.getHidden()) {
       return;
     }
-    final Keyword keyword = step.getKeyword();
-    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
+    if (this.onlyKeywordSteps && step.getKeyword().value().isEmpty()) {
       return;
     }
     final Launch launch = Launch.currentLaunch();
     if (launch == null) {
       return;
     }
+
     launch.getStepReporter().finishNestedStep();
   }
 
@@ -166,15 +157,24 @@ public class ReportPortalStepListener implements StepListener {
     if (!this.enabled || step.getHidden()) {
       return;
     }
-    final Keyword keyword = step.getKeyword();
-    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
+    if (this.onlyKeywordSteps && step.getKeyword().value().isEmpty()) {
       return;
     }
     final Launch launch = Launch.currentLaunch();
     if (launch == null) {
       return;
     }
+
     launch.getStepReporter().finishNestedStep(exception);
+  }
+
+  private static boolean isStebzAnnotationsUsed() {
+    try {
+      Class.forName("org.stebz.aspect.StepAspects");
+      return true;
+    } catch (final ClassNotFoundException ex) {
+      return false;
+    }
   }
 
   private String processStepName(final StepObj<?> step,
@@ -194,25 +194,28 @@ public class ReportPortalStepListener implements StepListener {
       : TemplateProcessing.processTemplate(name, paramsToProcess, TEMPLATE_CONFIG);
   }
 
-  private String processStepDescription(final String expectedResult,
+  private String processStepDescription(final NullableOptional<Object> context,
+                                        final String expectedResult,
                                         final String comment) {
-    if (expectedResult.isEmpty()) {
-      return comment.isEmpty()
-        ? null
-        : commentDescLine(comment);
-    } else {
-      return comment.isEmpty()
-        ? expectedResultDescLine(expectedResult)
-        : expectedResultDescLine(expectedResult) + System.lineSeparator() + commentDescLine(comment);
+    final StringBuilder sb = new StringBuilder();
+    if (this.contextDesc && context.isPresent()) {
+      sb.append(this.contextDescName).append(": ").append(context.get());
     }
-  }
-
-  private static String expectedResultDescLine(final String expectedResult) {
-    return EXPECTED_RESULT_DESC_LINE_PREFIX + expectedResult;
-  }
-
-  private static String commentDescLine(final String comment) {
-    return COMMENT_DESC_LINE_PREFIX + comment;
+    if (this.expectedResultDesc && !expectedResult.isEmpty()) {
+      if (sb.length() != 0) {
+        sb.append(". ");
+      }
+      sb.append(this.expectedResultDescName).append(": ").append(expectedResult);
+    }
+    if (this.commentDesc && !comment.isEmpty()) {
+      if (sb.length() != 0) {
+        sb.append(". ");
+      }
+      sb.append(this.commentDescName).append(": ").append(comment);
+    }
+    return sb.length() == 0
+      ? null
+      : sb.toString();
   }
 
   private static void addReflectionParams(final StepObj<?> step,

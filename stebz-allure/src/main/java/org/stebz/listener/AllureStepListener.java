@@ -51,9 +51,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Allure {@code StepListener} implementation.
  */
 public class AllureStepListener implements StepListener {
-  private static final String CONTEXT_PARAM_NAME = "context";
-  private static final String COMMENT_ATTACHMENT_NAME = "Comment";
-  private static final String EXPECTED_RESULT_ATTACHMENT_NAME = "Expected result";
   private final boolean enabled;
   private final int order;
   private final boolean onlyKeywordSteps;
@@ -61,8 +58,11 @@ public class AllureStepListener implements StepListener {
   private final boolean keywordToUppercase;
   private final boolean processName;
   private final boolean contextParam;
-  private final boolean expectedResultAttachment;
-  private final boolean commentAttachment;
+  private final String contextParamName;
+  private final boolean expectedResultParam;
+  private final String expectedResultParamName;
+  private final boolean commentParam;
+  private final String commentParamName;
   private final boolean isStebzAnnotationsUsed;
 
   /**
@@ -85,9 +85,13 @@ public class AllureStepListener implements StepListener {
       KeywordPosition.class, KeywordPosition.AT_START);
     this.keywordToUppercase = properties.getBoolean("stebz.listeners.allure.keywordToUppercase", false);
     this.processName = properties.getBoolean("stebz.listeners.allure.processName", true);
-    this.contextParam = properties.getBoolean("stebz.listeners.allure.contextParam", false);
-    this.expectedResultAttachment = properties.getBoolean("stebz.listeners.allure.expectedResultAttachment", true);
-    this.commentAttachment = properties.getBoolean("stebz.listeners.allure.commentAttachment", true);
+    this.contextParam = properties.getBoolean("stebz.listeners.allure.contextParam", true);
+    this.contextParamName = properties.getString("stebz.listeners.allure.contextParamName", "Context");
+    this.expectedResultParam = properties.getBoolean("stebz.listeners.allure.expectedResultParam", true);
+    this.expectedResultParamName =
+      properties.getString("stebz.listeners.allure.expectedResultParamName", "Expected result");
+    this.commentParam = properties.getBoolean("stebz.listeners.allure.commentParam", true);
+    this.commentParamName = properties.getString("stebz.listeners.allure.commentParamName", "Comment");
     this.isStebzAnnotationsUsed = isStebzAnnotationsUsed();
   }
 
@@ -248,7 +252,19 @@ public class AllureStepListener implements StepListener {
     final StepResult stepResult = new StepResult();
     final Map<String, Object> params = step.getParams();
     if (this.contextParam && context.isPresent()) {
-      params.putIfAbsent(CONTEXT_PARAM_NAME, context.get());
+      params.putIfAbsent(this.contextParamName, context.get());
+    }
+    if (this.expectedResultParam) {
+      final String expectedResult = step.getExpectedResult();
+      if (!expectedResult.isEmpty()) {
+        params.putIfAbsent(this.expectedResultParamName, expectedResult);
+      }
+    }
+    if (this.commentParam) {
+      final String comment = step.getComment();
+      if (!comment.isEmpty()) {
+        params.putIfAbsent(this.commentParamName, comment);
+      }
     }
     if (!params.isEmpty()) {
       final List<Parameter> allureParams = stepResult.getParameters();
@@ -260,18 +276,6 @@ public class AllureStepListener implements StepListener {
     ));
 
     Allure.getLifecycle().startStep(UUID.randomUUID().toString(), stepResult);
-    if (this.expectedResultAttachment) {
-      final String expectedResult = step.getExpectedResult();
-      if (!expectedResult.isEmpty()) {
-        Allure.addAttachment(EXPECTED_RESULT_ATTACHMENT_NAME, expectedResult);
-      }
-    }
-    if (this.commentAttachment) {
-      final String comment = step.getComment();
-      if (!comment.isEmpty()) {
-        Allure.addAttachment(COMMENT_ATTACHMENT_NAME, comment);
-      }
-    }
   }
 
   @Override
@@ -281,8 +285,7 @@ public class AllureStepListener implements StepListener {
     if (!this.enabled || step.getHidden()) {
       return;
     }
-    final Keyword keyword = step.getKeyword();
-    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
+    if (this.onlyKeywordSteps && step.getKeyword().value().isEmpty()) {
       return;
     }
 
@@ -302,8 +305,7 @@ public class AllureStepListener implements StepListener {
     if (!this.enabled || step.getHidden()) {
       return;
     }
-    final Keyword keyword = step.getKeyword();
-    if (this.onlyKeywordSteps && keyword.value().isEmpty()) {
+    if (this.onlyKeywordSteps && step.getKeyword().value().isEmpty()) {
       return;
     }
 
