@@ -47,11 +47,11 @@ public @interface WithRetry {
   String KEY = "extension:with_retry";
 
   /**
-   * Retry count. How many times to retry.
+   * Maximum step executions count (including the first execution).
    *
-   * @return attempts count
+   * @return maximum step executions count
    */
-  int count() default 1;
+  int count() default 2;
 
   /**
    * Delay between retries, in time units.

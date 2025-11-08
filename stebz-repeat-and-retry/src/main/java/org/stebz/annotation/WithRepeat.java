@@ -46,11 +46,11 @@ public @interface WithRepeat {
   String KEY = "extension:with_repeat";
 
   /**
-   * Repeat count. How many times to repeat.
+   * Step executions count (including the first execution).
    *
-   * @return repeat count
+   * @return step executions count
    */
-  int count() default 1;
+  int count() default 2;
 
   /**
    * Delay between repeats, in time units.
