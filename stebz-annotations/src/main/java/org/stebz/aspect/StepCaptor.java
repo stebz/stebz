@@ -34,12 +34,16 @@ import org.stebz.util.function.ThrowingConsumer3;
 import org.stebz.util.function.ThrowingConsumer4;
 import org.stebz.util.function.ThrowingConsumer5;
 import org.stebz.util.function.ThrowingConsumer6;
+import org.stebz.util.function.ThrowingConsumer7;
+import org.stebz.util.function.ThrowingConsumer8;
 import org.stebz.util.function.ThrowingFunction;
 import org.stebz.util.function.ThrowingFunction2;
 import org.stebz.util.function.ThrowingFunction3;
 import org.stebz.util.function.ThrowingFunction4;
 import org.stebz.util.function.ThrowingFunction5;
 import org.stebz.util.function.ThrowingFunction6;
+import org.stebz.util.function.ThrowingFunction7;
+import org.stebz.util.function.ThrowingFunction8;
 import org.stebz.util.function.ThrowingRunnable;
 import org.stebz.util.function.ThrowingSupplier;
 
@@ -443,6 +447,172 @@ public final class StepCaptor {
   }
 
   /**
+   * Returns {@code RunnableStep} specified in the reference.
+   *
+   * @param reference the step reference
+   * @param value1    the first reference value
+   * @param value2    the second reference value
+   * @param value3    the third reference value
+   * @param value4    the fourth reference value
+   * @param value5    the fifth reference value
+   * @param value6    the sixth reference value
+   * @param value7    the seventh reference value
+   * @param <T1>      the type of the first reference value
+   * @param <T2>      the type of the second reference value
+   * @param <T3>      the type of the third reference value
+   * @param <T4>      the type of the fourth reference value
+   * @param <T5>      the type of the fifth reference value
+   * @param <T6>      the type of the sixth reference value
+   * @param <T7>      the type of the seventh reference value
+   * @return {@code RunnableStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T1, T2, T3, T4, T5, T6, T7> RunnableStep captured(
+    final ThrowingConsumer7<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? super T6, ? super T7, ?> reference,
+    final T1 value1,
+    final T2 value2,
+    final T3 value3,
+    final T4 value4,
+    final T5 value5,
+    final T6 value6,
+    final T7 value7
+  ) {
+    if (reference == null) { throw new NullPointerException("reference arg is null"); }
+    enableCaptureMode();
+    try {
+      ThrowingConsumer7.unchecked(reference).accept(value1, value2, value3, value4, value5, value6, value7);
+      return runnableStep();
+    } finally {
+      disableCaptureMode();
+    }
+  }
+
+  /**
+   * Returns {@code RunnableStep} specified in the reference. Alias for
+   * {@link #captured(ThrowingConsumer7, Object, Object, Object, Object, Object, Object, Object)} method.
+   *
+   * @param reference the step reference
+   * @param value1    the first reference value
+   * @param value2    the second reference value
+   * @param value3    the third reference value
+   * @param value4    the fourth reference value
+   * @param value5    the fifth reference value
+   * @param value6    the sixth reference value
+   * @param value7    the seventh reference value
+   * @param <T1>      the type of the first reference value
+   * @param <T2>      the type of the second reference value
+   * @param <T3>      the type of the third reference value
+   * @param <T4>      the type of the fourth reference value
+   * @param <T5>      the type of the fifth reference value
+   * @param <T6>      the type of the sixth reference value
+   * @param <T7>      the type of the seventh reference value
+   * @return {@code RunnableStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T1, T2, T3, T4, T5, T6, T7> RunnableStep ref(
+    final ThrowingConsumer7<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? super T6, ? super T7, ?> reference,
+    final T1 value1,
+    final T2 value2,
+    final T3 value3,
+    final T4 value4,
+    final T5 value5,
+    final T6 value6,
+    final T7 value7
+  ) {
+    return captured(reference, value1, value2, value3, value4, value5, value6, value7);
+  }
+
+  /**
+   * Returns {@code RunnableStep} specified in the reference.
+   *
+   * @param reference the step reference
+   * @param value1    the first reference value
+   * @param value2    the second reference value
+   * @param value3    the third reference value
+   * @param value4    the fourth reference value
+   * @param value5    the fifth reference value
+   * @param value6    the sixth reference value
+   * @param value7    the seventh reference value
+   * @param value8    the eighth reference value
+   * @param <T1>      the type of the first reference value
+   * @param <T2>      the type of the second reference value
+   * @param <T3>      the type of the third reference value
+   * @param <T4>      the type of the fourth reference value
+   * @param <T5>      the type of the fifth reference value
+   * @param <T6>      the type of the sixth reference value
+   * @param <T7>      the type of the seventh reference value
+   * @param <T8>      the type of the eighth reference value
+   * @return {@code RunnableStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T1, T2, T3, T4, T5, T6, T7, T8> RunnableStep captured(
+    final ThrowingConsumer8<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? super T6, ? super T7, ? super T8, ?> reference,
+    final T1 value1,
+    final T2 value2,
+    final T3 value3,
+    final T4 value4,
+    final T5 value5,
+    final T6 value6,
+    final T7 value7,
+    final T8 value8
+  ) {
+    if (reference == null) { throw new NullPointerException("reference arg is null"); }
+    enableCaptureMode();
+    try {
+      ThrowingConsumer8.unchecked(reference).accept(value1, value2, value3, value4, value5, value6, value7, value8);
+      return runnableStep();
+    } finally {
+      disableCaptureMode();
+    }
+  }
+
+  /**
+   * Returns {@code RunnableStep} specified in the reference. Alias for
+   * {@link #captured(ThrowingConsumer8, Object, Object, Object, Object, Object, Object, Object, Object)} method.
+   *
+   * @param reference the step reference
+   * @param value1    the first reference value
+   * @param value2    the second reference value
+   * @param value3    the third reference value
+   * @param value4    the fourth reference value
+   * @param value5    the fifth reference value
+   * @param value6    the sixth reference value
+   * @param value7    the seventh reference value
+   * @param value8    the eighth reference value
+   * @param <T1>      the type of the first reference value
+   * @param <T2>      the type of the second reference value
+   * @param <T3>      the type of the third reference value
+   * @param <T4>      the type of the fourth reference value
+   * @param <T5>      the type of the fifth reference value
+   * @param <T6>      the type of the sixth reference value
+   * @param <T7>      the type of the seventh reference value
+   * @param <T8>      the type of the eighth reference value
+   * @return {@code RunnableStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T1, T2, T3, T4, T5, T6, T7, T8> RunnableStep ref(
+    final ThrowingConsumer8<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? super T6, ? super T7, ? super T8, ?> reference,
+    final T1 value1,
+    final T2 value2,
+    final T3 value3,
+    final T4 value4,
+    final T5 value5,
+    final T6 value6,
+    final T7 value7,
+    final T8 value8
+  ) {
+    return captured(reference, value1, value2, value3, value4, value5, value6, value7, value8);
+  }
+
+  /**
    * Returns {@code SupplierStep} specified in the reference.
    *
    * @param reference the step reference
@@ -475,7 +645,6 @@ public final class StepCaptor {
   public static <R> SupplierStep<R> ref(final ThrowingSupplier<? extends R, ?> reference) {
     return captured(reference);
   }
-
 
   /**
    * Returns {@code SupplierStep} specified in the reference.
@@ -831,6 +1000,176 @@ public final class StepCaptor {
     final T6 value6
   ) {
     return captured(reference, value1, value2, value3, value4, value5, value6);
+  }
+
+  /**
+   * Returns {@code SupplierStep} specified in the reference.
+   *
+   * @param reference the step reference
+   * @param value1    the first reference value
+   * @param value2    the second reference value
+   * @param value3    the third reference value
+   * @param value4    the fourth reference value
+   * @param value5    the fifth reference value
+   * @param value6    the sixth reference value
+   * @param value7    the seventh reference value
+   * @param <T1>      the type of the first reference value
+   * @param <T2>      the type of the second reference value
+   * @param <T3>      the type of the third reference value
+   * @param <T4>      the type of the fourth reference value
+   * @param <T5>      the type of the fifth reference value
+   * @param <T6>      the type of the sixth reference value
+   * @param <T7>      the type of the seventh reference value
+   * @param <R>       the type of the step result
+   * @return {@code SupplierStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T1, T2, T3, T4, T5, T6, T7, R> SupplierStep<R> captured(
+    final ThrowingFunction7<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? super T6, ? super T7, ? extends R, ?> reference,
+    final T1 value1,
+    final T2 value2,
+    final T3 value3,
+    final T4 value4,
+    final T5 value5,
+    final T6 value6,
+    final T7 value7
+  ) {
+    if (reference == null) { throw new NullPointerException("reference arg is null"); }
+    enableCaptureMode();
+    try {
+      return supplierStep(ThrowingFunction7.unchecked(reference)
+        .apply(value1, value2, value3, value4, value5, value6, value7));
+    } finally {
+      disableCaptureMode();
+    }
+  }
+
+  /**
+   * Returns {@code SupplierStep} specified in the reference. Alias for
+   * {@link #captured(ThrowingFunction7, Object, Object, Object, Object, Object, Object, Object)} method.
+   *
+   * @param reference the step reference
+   * @param value1    the first reference value
+   * @param value2    the second reference value
+   * @param value3    the third reference value
+   * @param value4    the fourth reference value
+   * @param value5    the fifth reference value
+   * @param value6    the sixth reference value
+   * @param value7    the seventh reference value
+   * @param <T1>      the type of the first reference value
+   * @param <T2>      the type of the second reference value
+   * @param <T3>      the type of the third reference value
+   * @param <T4>      the type of the fourth reference value
+   * @param <T5>      the type of the fifth reference value
+   * @param <T6>      the type of the sixth reference value
+   * @param <T7>      the type of the seventh reference value
+   * @param <R>       the type of the step result
+   * @return {@code SupplierStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T1, T2, T3, T4, T5, T6, T7, R> SupplierStep<R> ref(
+    final ThrowingFunction7<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? super T6, ? super T7, ? extends R, ?> reference,
+    final T1 value1,
+    final T2 value2,
+    final T3 value3,
+    final T4 value4,
+    final T5 value5,
+    final T6 value6,
+    final T7 value7
+  ) {
+    return captured(reference, value1, value2, value3, value4, value5, value6, value7);
+  }
+
+  /**
+   * Returns {@code SupplierStep} specified in the reference.
+   *
+   * @param reference the step reference
+   * @param value1    the first reference value
+   * @param value2    the second reference value
+   * @param value3    the third reference value
+   * @param value4    the fourth reference value
+   * @param value5    the fifth reference value
+   * @param value6    the sixth reference value
+   * @param value7    the seventh reference value
+   * @param value8    the eighth reference value
+   * @param <T1>      the type of the first reference value
+   * @param <T2>      the type of the second reference value
+   * @param <T3>      the type of the third reference value
+   * @param <T4>      the type of the fourth reference value
+   * @param <T5>      the type of the fifth reference value
+   * @param <T6>      the type of the sixth reference value
+   * @param <T7>      the type of the seventh reference value
+   * @param <T8>      the type of the eighth reference value
+   * @param <R>       the type of the step result
+   * @return {@code SupplierStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T1, T2, T3, T4, T5, T6, T7, T8, R> SupplierStep<R> captured(
+    final ThrowingFunction8<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? super T6, ? super T7, ? super T8, ? extends R, ?> reference,
+    final T1 value1,
+    final T2 value2,
+    final T3 value3,
+    final T4 value4,
+    final T5 value5,
+    final T6 value6,
+    final T7 value7,
+    final T8 value8
+  ) {
+    if (reference == null) { throw new NullPointerException("reference arg is null"); }
+    enableCaptureMode();
+    try {
+      return supplierStep(ThrowingFunction8.unchecked(reference)
+        .apply(value1, value2, value3, value4, value5, value6, value7, value8));
+    } finally {
+      disableCaptureMode();
+    }
+  }
+
+  /**
+   * Returns {@code SupplierStep} specified in the reference. Alias for
+   * {@link #captured(ThrowingFunction8, Object, Object, Object, Object, Object, Object, Object, Object)} method.
+   *
+   * @param reference the step reference
+   * @param value1    the first reference value
+   * @param value2    the second reference value
+   * @param value3    the third reference value
+   * @param value4    the fourth reference value
+   * @param value5    the fifth reference value
+   * @param value6    the sixth reference value
+   * @param value7    the seventh reference value
+   * @param value8    the eighth reference value
+   * @param <T1>      the type of the first reference value
+   * @param <T2>      the type of the second reference value
+   * @param <T3>      the type of the third reference value
+   * @param <T4>      the type of the fourth reference value
+   * @param <T5>      the type of the fifth reference value
+   * @param <T6>      the type of the sixth reference value
+   * @param <T7>      the type of the seventh reference value
+   * @param <T8>      the type of the eighth reference value
+   * @param <R>       the type of the step result
+   * @return {@code SupplierStep} specified in the reference
+   * @throws NullPointerException     if {@code reference} arg is null
+   * @throws IllegalArgumentException if {@code reference} does not contain any steps or if {@code reference} contains
+   *                                  more than one step
+   */
+  public static <T1, T2, T3, T4, T5, T6, T7, T8, R> SupplierStep<R> ref(
+    final ThrowingFunction8<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? super T6, ? super T7, ? super T8, ? extends R, ?> reference,
+    final T1 value1,
+    final T2 value2,
+    final T3 value3,
+    final T4 value4,
+    final T5 value5,
+    final T6 value6,
+    final T7 value7,
+    final T8 value8
+  ) {
+    return captured(reference, value1, value2, value3, value4, value5, value6, value7, value8);
   }
 
   private static RunnableStep runnableStep() {
