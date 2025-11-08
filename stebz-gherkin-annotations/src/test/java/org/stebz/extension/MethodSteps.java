@@ -23,13 +23,13 @@
  */
 package org.stebz.extension;
 
+import org.stebz.annotation.Step;
+import org.stebz.annotation.WithName;
 import org.stebz.annotation.gherkin.And;
 import org.stebz.annotation.gherkin.But;
 import org.stebz.annotation.gherkin.Given;
-import org.stebz.annotation.Step;
 import org.stebz.annotation.gherkin.Then;
 import org.stebz.annotation.gherkin.When;
-import org.stebz.annotation.WithName;
 import org.stebz.step.executable.RunnableStep;
 
 final class MethodSteps {
