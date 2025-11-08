@@ -44,7 +44,7 @@ public final class Throw {
    *
    * @param exception the exception
    * @param <E>       the type of the exception
-   * @return fake RuntimeException syntax
+   * @return fake RuntimeException instance
    * @throws E given exception
    */
   @SuppressWarnings("unchecked")
