@@ -227,7 +227,7 @@ Maven:
   <dependency>
     <groupId>org.stebz</groupId>
     <artifactId>{module name}</artifactId>
-    <version>1.8</version>
+    <version>1.9</version>
   </dependency>
 </dependencies>
 ```
@@ -238,7 +238,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation 'org.stebz:{module name}:1.8'
+  implementation 'org.stebz:{module name}:1.9'
 }
 ```
 <!-- @formatter:on -->
@@ -248,7 +248,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation("org.stebz:{module name}:1.8")
+  implementation("org.stebz:{module name}:1.9")
 }
 ```
 <!-- @formatter:on -->
@@ -270,7 +270,7 @@ Maven:
     <dependency>
       <groupId>org.stebz</groupId>
       <artifactId>stebz-bom</artifactId>
-      <version>1.8</version>
+      <version>1.9</version>
       <scope>import</scope>
       <type>pom</type>
     </dependency>
@@ -284,7 +284,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation platform('org.stebz:stebz-bom:1.8')
+  implementation platform('org.stebz:stebz-bom:1.9')
 }
 ```
 <!-- @formatter:on -->
@@ -294,7 +294,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation(platform("org.stebz:stebz-bom:1.8"))
+  implementation(platform("org.stebz:stebz-bom:1.9"))
 }
 ```
 <!-- @formatter:on -->
@@ -1072,7 +1072,7 @@ Via annotations:
 <!-- @formatter:off -->
 ```java
 @Step
-@WithRetry(count = 2, on = TimeoutException.class)
+@WithRetry(count = 3, on = TimeoutException.class)
 public static RunnableStep send_unstable_request() { return RunnableStep.of(() -> {
   // step body
 }); }
@@ -1090,10 +1090,10 @@ Via step attributes:
 <!-- @formatter:off -->
 ```java
 step(send_request()
-  .with(RETRY, retryOptions().count(2).on(TimeoutException.class)));
+  .with(retry, retry().count(3).on(TimeoutException.class)));
 
 step(send_request()
-  .with(REPEAT, repeatOptions().count(3)));
+  .with(repeat, repeat().count(3)));
 ```
 <!-- @formatter:on -->
 
@@ -1171,54 +1171,73 @@ System properties have first priority, file properties have second priority.
 
 #### `stebz-allure` module
 
-| property                                          | type                  | default value | description                                 |
-|---------------------------------------------------|-----------------------|---------------|---------------------------------------------|
-| `stebz.listeners.allure.enabled`                  | `Boolean`             | `true`        | enable listener                             |
-| `stebz.listeners.allure.order`                    | `Integer`             | `10000`       | listener order                              |
-| `stebz.listeners.allure.onlyKeywordSteps`         | `Boolean`             | `false`       | hide steps without keywords                 |
-| `stebz.listeners.allure.keywordPosition`          | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name   |
-| `stebz.listeners.allure.keywordToUppercase`       | `Boolean`             | `false`       | converts keyword value to upper case        |
-| `stebz.listeners.allure.processName`              | `Boolean`             | `true`        | process step name with parameters           |
-| `stebz.listeners.allure.contextParam`             | `Boolean`             | `false`       | step context as parameter                   |
-| `stebz.listeners.allure.expectedResultAttachment` | `Boolean`             | `true`        | attach the expected result as an attachment |
-| `stebz.listeners.allure.commentAttachment`        | `Boolean`             | `true`        | attach the comment as an attachment         |
+| property                                         | type                  | default value     | description                               |
+|--------------------------------------------------|-----------------------|-------------------|-------------------------------------------|
+| `stebz.listeners.allure.enabled`                 | `Boolean`             | `true`            | enable listener                           |
+| `stebz.listeners.allure.order`                   | `Integer`             | `10000`           | listener order                            |
+| `stebz.listeners.allure.onlyKeywordSteps`        | `Boolean`             | `false`           | hide steps without keywords               |
+| `stebz.listeners.allure.keywordPosition`         | `AT_START` / `AT_END` | `AT_START`        | position of step keyword relative to name |
+| `stebz.listeners.allure.keywordToUppercase`      | `Boolean`             | `false`           | converts keyword value to upper case      |
+| `stebz.listeners.allure.processName`             | `Boolean`             | `true`            | process step name with parameters         |
+| `stebz.listeners.allure.contextParam`            | `Boolean`             | `true`            | step context as parameter                 |
+| `stebz.listeners.allure.contextParamName`        | `String`              | `Context`         | step context parameter name               |
+| `stebz.listeners.allure.expectedResultParam`     | `Boolean`             | `true`            | step expected result as parameter         |
+| `stebz.listeners.allure.expectedResultParamName` | `String`              | `Expected result` | step expected result parameter name       |
+| `stebz.listeners.allure.commentParam`            | `Boolean`             | `true`            | step comment as parameter                 |
+| `stebz.listeners.allure.commentParamName`        | `String`              | `Comment`         | step comment parameter name               |
 
 #### `stebz-qase` module
 
-| property                                  | type                  | default value | description                               |
-|-------------------------------------------|-----------------------|---------------|-------------------------------------------|
-| `stebz.listeners.qase.enabled`            | `Boolean`             | `true`        | enable listener                           |
-| `stebz.listeners.qase.order`              | `Integer`             | `10000`       | listener order                            |
-| `stebz.listeners.qase.onlyKeywordSteps`   | `Boolean`             | `false`       | hide steps without keywords               |
-| `stebz.listeners.qase.keywordPosition`    | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name |
-| `stebz.listeners.qase.keywordToUppercase` | `Boolean`             | `false`       | converts keyword value to upper case      |
-| `stebz.listeners.qase.processName`        | `Boolean`             | `true`        | process step name with parameters         |
-| `stebz.listeners.qase.contextParam`       | `Boolean`             | `false`       | step context as parameter                 |
-| `stebz.listeners.qase.commentAttachment`  | `Boolean`             | `true`        | attach the comment as an attachment       |
+| property                                     | type                  | default value | description                               |
+|----------------------------------------------|-----------------------|---------------|-------------------------------------------|
+| `stebz.listeners.qase.enabled`               | `Boolean`             | `true`        | enable listener                           |
+| `stebz.listeners.qase.order`                 | `Integer`             | `10000`       | listener order                            |
+| `stebz.listeners.qase.onlyKeywordSteps`      | `Boolean`             | `false`       | hide steps without keywords               |
+| `stebz.listeners.qase.keywordPosition`       | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name |
+| `stebz.listeners.qase.keywordToUppercase`    | `Boolean`             | `false`       | converts keyword value to upper case      |
+| `stebz.listeners.qase.processName`           | `Boolean`             | `true`        | process step name with parameters         |
+| `stebz.listeners.qase.contextParam`          | `Boolean`             | `true`        | step context as parameter                 |
+| `stebz.listeners.qase.contextParamName`      | `String`              | `Context`     | step context parameter name               |
+| `stebz.listeners.qase.commentAttachment`     | `Boolean`             | `true`        | step comment as attachment                |
+| `stebz.listeners.qase.commentAttachmentName` | `String`              | `Comment`     | step comment attachment name              |
 
 #### `stebz-reportportal` module
 
-| property                                          | type                  | default value | description                               |
-|---------------------------------------------------|-----------------------|---------------|-------------------------------------------|
-| `stebz.listeners.reportportal.enabled`            | `Boolean`             | `true`        | enable listener                           |
-| `stebz.listeners.reportportal.order`              | `Integer`             | `10000`       | listener order                            |
-| `stebz.listeners.reportportal.onlyKeywordSteps`   | `Boolean`             | `false`       | hide steps without keywords               |
-| `stebz.listeners.reportportal.keywordPosition`    | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name |
-| `stebz.listeners.reportportal.keywordToUppercase` | `Boolean`             | `false`       | converts keyword value to upper case      |
-| `stebz.listeners.reportportal.processName`        | `Boolean`             | `true`        | process step name with parameters         |
-| `stebz.listeners.reportportal.contextParam`       | `Boolean`             | `false`       | step context as parameter                 |
+| property                                              | type                  | default value     | description                                |
+|-------------------------------------------------------|-----------------------|-------------------|--------------------------------------------|
+| `stebz.listeners.reportportal.enabled`                | `Boolean`             | `true`            | enable listener                            |
+| `stebz.listeners.reportportal.order`                  | `Integer`             | `10000`           | listener order                             |
+| `stebz.listeners.reportportal.onlyKeywordSteps`       | `Boolean`             | `false`           | hide steps without keywords                |
+| `stebz.listeners.reportportal.keywordPosition`        | `AT_START` / `AT_END` | `AT_START`        | position of step keyword relative to name  |
+| `stebz.listeners.reportportal.keywordToUppercase`     | `Boolean`             | `false`           | converts keyword value to upper case       |
+| `stebz.listeners.reportportal.processName`            | `Boolean`             | `true`            | process step name with parameters          |
+| `stebz.listeners.reportportal.contextParam`           | `Boolean`             | `true`            | step context as parameter                  |
+| `stebz.listeners.reportportal.contextParamName`       | `String`              | `Context`         | context parameter name                     |
+| `stebz.listeners.reportportal.contextDesc`            | `Boolean`             | `false`           | step context as description part           |
+| `stebz.listeners.reportportal.contextDescName`        | `String`              | `Context`         | step context description part name         |
+| `stebz.listeners.reportportal.expectedResultDesc`     | `Boolean`             | `true`            | step expected result as description part   |
+| `stebz.listeners.reportportal.expectedResultDescName` | `String`              | `Expected result` | step expected result description part name |
+| `stebz.listeners.reportportal.commentDesc`            | `Boolean`             | `true`            | step comment as description part           |
+| `stebz.listeners.reportportal.commentDescName`        | `String`              | `Comment`         | step comment description part name         |
 
 #### `stebz-testit` module
 
-| property                                    | type                  | default value | description                               |
-|---------------------------------------------|-----------------------|---------------|-------------------------------------------|
-| `stebz.listeners.testit.enabled`            | `Boolean`             | `true`        | enable listener                           |
-| `stebz.listeners.testit.order`              | `Integer`             | `10000`       | listener order                            |
-| `stebz.listeners.testit.onlyKeywordSteps`   | `Boolean`             | `false`       | hide steps without keywords               |
-| `stebz.listeners.testit.keywordPosition`    | `AT_START` / `AT_END` | `AT_START`    | position of step keyword relative to name |
-| `stebz.listeners.testit.keywordToUppercase` | `Boolean`             | `false`       | converts keyword value to upper case      |
-| `stebz.listeners.testit.processName`        | `Boolean`             | `true`        | process step name with parameters         |
-| `stebz.listeners.testit.contextParam`       | `Boolean`             | `false`       | step context as parameter                 |
+| property                                        | type                  | default value     | description                                |
+|-------------------------------------------------|-----------------------|-------------------|--------------------------------------------|
+| `stebz.listeners.testit.enabled`                | `Boolean`             | `true`            | enable listener                            |
+| `stebz.listeners.testit.order`                  | `Integer`             | `10000`           | listener order                             |
+| `stebz.listeners.testit.onlyKeywordSteps`       | `Boolean`             | `false`           | hide steps without keywords                |
+| `stebz.listeners.testit.keywordPosition`        | `AT_START` / `AT_END` | `AT_START`        | position of step keyword relative to name  |
+| `stebz.listeners.testit.keywordToUppercase`     | `Boolean`             | `false`           | converts keyword value to upper case       |
+| `stebz.listeners.testit.processName`            | `Boolean`             | `true`            | process step name with parameters          |
+| `stebz.listeners.testit.contextParam`           | `Boolean`             | `true`            | step context as parameter                  |
+| `stebz.listeners.testit.contextParamName`       | `String`              | `Context`         | context parameter name                     |
+| `stebz.listeners.testit.contextDesc`            | `Boolean`             | `false`           | step context as description part           |
+| `stebz.listeners.testit.contextDescName`        | `String`              | `Context`         | step context description part name         |
+| `stebz.listeners.testit.expectedResultDesc`     | `Boolean`             | `true`            | step expected result as description part   |
+| `stebz.listeners.testit.expectedResultDescName` | `String`              | `Expected result` | step expected result description part name |
+| `stebz.listeners.testit.commentDesc`            | `Boolean`             | `true`            | step comment as description part           |
+| `stebz.listeners.testit.commentDescName`        | `String`              | `Comment`         | step comment description part name         |
 
 #### `stebz-system-out` module
 

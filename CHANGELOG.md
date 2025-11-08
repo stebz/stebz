@@ -1,15 +1,22 @@
 # Changelog
 
+## 1.9 (08.11.2025)
+
+* #114 step listeners attributes refactoring by @evpl in PR #115
+* #116 `stebz-repeat-and-retry` module refactoring by @evpl in PR #117
+* #118 add overloads of the `captured` method for 7 and 8 values by @evpl in PR #119
+* bump Aspectj version to 1.9.25 in PR #113
+
 ## 1.8 (03.11.2025)
 
-* #92 bump Java version to 11 for stebz-reportportal module in PR #96
-* #97 update `stebz-reportportal` listener for the new version in PR #98
-* #101 add listener utility methods to update attributes during step execution in PR #102
-* #103 add aliases for attributes in PR #104
-* #105 add Rule Gherkin keyword in PR #106
-* #107 rename StepObj `withNew...` methods to `with...` in PR #108
-* #109 rename StepObj `withNewBody` method to `withBodyOf` in PR #110
-* #111 add `ref` alias for the `captured` method in PR #112
+* #92 bump Java version to 11 for stebz-reportportal module by @evpl in PR #96
+* #97 update `stebz-reportportal` listener for the new version by @evpl in PR #98
+* #101 add listener utility methods to update attributes during step execution by @evpl in PR #102
+* #103 add aliases for attributes by @evpl in PR #104
+* #105 add Rule Gherkin keyword by @evpl in PR #106
+* #107 rename StepObj `withNew...` methods to `with...` by @evpl in PR #108
+* #109 rename StepObj `withNewBody` method to `withBodyOf` by @evpl in PR #110
+* #111 add `ref` alias for the `captured` method by @evpl in PR #112
 
 ## 1.7 (15.09.2025)
 
