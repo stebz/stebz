@@ -84,7 +84,17 @@ public class RepeatExtension implements InterceptStep {
   }
 
   /**
-   * Returns {@code RepeatOptions} with default values: count = 1, delay = ZERO, skip = {}, but = {}.
+   * Returns {@code RepeatOptions} with default values: count = 2, delay = ZERO, skip = {}, but = {}. Alias for
+   * {@link #repeatOptions()} method.
+   *
+   * @return {@code RepeatOptions}
+   */
+  public static RepeatOptions repeat() {
+    return repeatOptions();
+  }
+
+  /**
+   * Returns {@code RepeatOptions} with default values: count = 2, delay = ZERO, skip = {}, but = {}.
    *
    * @return {@code RepeatOptions}
    */
@@ -104,66 +114,66 @@ public class RepeatExtension implements InterceptStep {
       return step;
     }
 
-    final int commonCount;
-    final long delay;
+    final int count;
+    final long delayMillis;
     final Class<? extends Throwable>[] skip;
     final Class<? extends Throwable>[] but;
-    final WithRepeat repeatAnnot = step.get(REPEAT_ANNOT);
-    if (repeatAnnot != null) {
-      commonCount = repeatAnnot.count() + 1;
-      delay = repeatAnnot.unit().toMillis(repeatAnnot.delay());
-      skip = repeatAnnot.skip();
-      but = repeatAnnot.but();
+    final WithRepeat annot = step.get(REPEAT_ANNOT);
+    if (annot != null) {
+      count = annot.count();
+      delayMillis = annot.unit().toMillis(annot.delay());
+      skip = annot.skip();
+      but = annot.but();
     } else {
       final RepeatOptions options = step.get(REPEAT);
       if (options != null) {
-        commonCount = options.count + 1;
-        delay = options.delay.toMillis();
+        count = options.count;
+        delayMillis = options.delay.toMillis();
         skip = options.skip;
         but = options.but;
       } else {
         return step;
       }
     }
-    if (commonCount < 2) {
+    if (count < 2) {
       return step;
     }
 
     if (step instanceof RunnableStep) {
       final RunnableStep runnableStep = (RunnableStep) step;
       return runnableStep.withBody(repeatRunnable(
-        runnableStep.body(), commonCount, delay, skip, but
+        runnableStep.body(), count, delayMillis, skip, but
       ));
     } else if (step instanceof ConsumerStep) {
       @SuppressWarnings("unchecked")
       final ConsumerStep<Object> consumerStep = (ConsumerStep<Object>) step;
       return consumerStep.withBody(repeatConsumer(
-        consumerStep.body(), commonCount, delay, skip, but
+        consumerStep.body(), count, delayMillis, skip, but
       ));
     } else if (step instanceof SupplierStep) {
       @SuppressWarnings("unchecked")
       final SupplierStep<Object> supplierStep = (SupplierStep<Object>) step;
       return supplierStep.withBody(repeatSupplier(
-        supplierStep.body(), commonCount, delay, skip, but
+        supplierStep.body(), count, delayMillis, skip, but
       ));
     } else if (step instanceof FunctionStep) {
       @SuppressWarnings("unchecked")
       final FunctionStep<Object, Object> functionStep = (FunctionStep<Object, Object>) step;
       return functionStep.withBody(repeatFunction(
-        functionStep.body(), commonCount, delay, skip, but
+        functionStep.body(), count, delayMillis, skip, but
       ));
     }
     return step;
   }
 
   private static ThrowingRunnable<?> repeatRunnable(final ThrowingRunnable<?> origin,
-                                                    final int commonCount,
-                                                    final long delay,
+                                                    final int count,
+                                                    final long delayMillis,
                                                     final Class<? extends Throwable>[] skip,
                                                     final Class<? extends Throwable>[] but) {
     return () -> {
-      for (int attempt = 0; attempt < commonCount; attempt++) {
-        if (attempt == commonCount - 1) {
+      for (int attempt = 0; attempt < count; attempt++) {
+        if (attempt == count - 1) {
           origin.run();
         } else {
           try {
@@ -177,21 +187,21 @@ public class RepeatExtension implements InterceptStep {
             }
           }
         }
-        if (delay > 0L) {
-          Thread.sleep(delay);
+        if (delayMillis > 0L) {
+          Thread.sleep(delayMillis);
         }
       }
     };
   }
 
   private static ThrowingConsumer<Object, ?> repeatConsumer(final ThrowingConsumer<Object, ?> origin,
-                                                            final int commonCount,
-                                                            final long delay,
+                                                            final int count,
+                                                            final long delayMillis,
                                                             final Class<? extends Throwable>[] skip,
                                                             final Class<? extends Throwable>[] but) {
     return context -> {
-      for (int attempt = 0; attempt < commonCount; attempt++) {
-        if (attempt == commonCount - 1) {
+      for (int attempt = 0; attempt < count; attempt++) {
+        if (attempt == count - 1) {
           origin.accept(context);
         } else {
           try {
@@ -205,21 +215,21 @@ public class RepeatExtension implements InterceptStep {
             }
           }
         }
-        if (delay > 0L) {
-          Thread.sleep(delay);
+        if (delayMillis > 0L) {
+          Thread.sleep(delayMillis);
         }
       }
     };
   }
 
   private static ThrowingSupplier<Object, ?> repeatSupplier(final ThrowingSupplier<Object, ?> origin,
-                                                            final int commonCount,
-                                                            final long delay,
+                                                            final int count,
+                                                            final long delayMillis,
                                                             final Class<? extends Throwable>[] skip,
                                                             final Class<? extends Throwable>[] but) {
     return () -> {
-      for (int attempt = 0; attempt < commonCount; attempt++) {
-        if (attempt == commonCount - 1) {
+      for (int attempt = 0; attempt < count; attempt++) {
+        if (attempt == count - 1) {
           return origin.get();
         } else {
           try {
@@ -233,8 +243,8 @@ public class RepeatExtension implements InterceptStep {
             }
           }
         }
-        if (delay > 0L) {
-          Thread.sleep(delay);
+        if (delayMillis > 0L) {
+          Thread.sleep(delayMillis);
         }
       }
       return null; /* unreachable */
@@ -242,13 +252,13 @@ public class RepeatExtension implements InterceptStep {
   }
 
   private static ThrowingFunction<Object, Object, ?> repeatFunction(final ThrowingFunction<Object, Object, ?> origin,
-                                                                    final int commonCount,
-                                                                    final long delay,
+                                                                    final int count,
+                                                                    final long delayMillis,
                                                                     final Class<? extends Throwable>[] skip,
                                                                     final Class<? extends Throwable>[] but) {
     return context -> {
-      for (int attempt = 0; attempt < commonCount; attempt++) {
-        if (attempt == commonCount - 1) {
+      for (int attempt = 0; attempt < count; attempt++) {
+        if (attempt == count - 1) {
           return origin.apply(context);
         } else {
           try {
@@ -262,8 +272,8 @@ public class RepeatExtension implements InterceptStep {
             }
           }
         }
-        if (delay > 0L) {
-          Thread.sleep(delay);
+        if (delayMillis > 0L) {
+          Thread.sleep(delayMillis);
         }
       }
       return null; /* unreachable */
@@ -289,7 +299,7 @@ public class RepeatExtension implements InterceptStep {
    * @see #REPEAT
    */
   public static final class RepeatOptions {
-    private static final RepeatOptions DEFAULT = new RepeatOptions(1, Duration.ZERO);
+    private static final RepeatOptions DEFAULT = new RepeatOptions(2, Duration.ZERO);
     private final int count;
     private final Duration delay;
     private final Class<? extends Throwable>[] skip;
@@ -322,7 +332,7 @@ public class RepeatExtension implements InterceptStep {
     }
 
     /**
-     * Returns {@code RepeatOptions} with given repeat count. How many times to repeat.
+     * Returns {@code RepeatOptions} with given step executions count (including the first execution).
      *
      * @param count the repeat count
      * @return {@code RepeatOptions} with given repeat count

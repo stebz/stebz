@@ -84,7 +84,17 @@ public class RetryExtension implements InterceptStep {
   }
 
   /**
-   * Returns {@code RetryOptions} with default values: count = 1, delay = ZERO, on = {Throwable.class}, but = {}.
+   * Returns {@code RetryOptions} with default values: count = 2, delay = ZERO, on = {Throwable.class}, but = {}. Alias
+   * for {@link #retryOptions()} method.
+   *
+   * @return {@code RetryOptions}
+   */
+  public static RetryOptions retry() {
+    return retryOptions();
+  }
+
+  /**
+   * Returns {@code RetryOptions} with default values: count = 2, delay = ZERO, on = {Throwable.class}, but = {}.
    *
    * @return {@code RetryOptions}
    */
@@ -104,66 +114,66 @@ public class RetryExtension implements InterceptStep {
       return step;
     }
 
-    final int commonCount;
-    final long delay;
+    final int count;
+    final long delayMillis;
     final Class<? extends Throwable>[] on;
     final Class<? extends Throwable>[] but;
-    final WithRetry retryAnnot = step.get(RETRY_ANNOT);
-    if (retryAnnot != null) {
-      commonCount = retryAnnot.count() + 1;
-      delay = retryAnnot.unit().toMillis(retryAnnot.delay());
-      on = retryAnnot.on();
-      but = retryAnnot.but();
+    final WithRetry annot = step.get(RETRY_ANNOT);
+    if (annot != null) {
+      count = annot.count();
+      delayMillis = annot.unit().toMillis(annot.delay());
+      on = annot.on();
+      but = annot.but();
     } else {
       final RetryOptions options = step.get(RETRY);
       if (options != null) {
-        commonCount = options.count + 1;
-        delay = options.delay.toMillis();
+        count = options.count;
+        delayMillis = options.delay.toMillis();
         on = options.on;
         but = options.but;
       } else {
         return step;
       }
     }
-    if (commonCount < 2 || on.length == 0) {
+    if (count < 2 || on.length == 0) {
       return step;
     }
 
     if (step instanceof RunnableStep) {
       final RunnableStep runnableStep = (RunnableStep) step;
       return runnableStep.withBody(retryRunnable(
-        runnableStep.body(), commonCount, delay, on, but
+        runnableStep.body(), count, delayMillis, on, but
       ));
     } else if (step instanceof ConsumerStep) {
       @SuppressWarnings("unchecked")
       final ConsumerStep<Object> consumerStep = (ConsumerStep<Object>) step;
       return consumerStep.withBody(retryConsumer(
-        consumerStep.body(), commonCount, delay, on, but
+        consumerStep.body(), count, delayMillis, on, but
       ));
     } else if (step instanceof SupplierStep) {
       @SuppressWarnings("unchecked")
       final SupplierStep<Object> supplierStep = (SupplierStep<Object>) step;
       return supplierStep.withBody(retrySupplier(
-        supplierStep.body(), commonCount, delay, on, but
+        supplierStep.body(), count, delayMillis, on, but
       ));
     } else if (step instanceof FunctionStep) {
       @SuppressWarnings("unchecked")
       final FunctionStep<Object, Object> functionStep = (FunctionStep<Object, Object>) step;
       return functionStep.withBody(retryFunction(
-        functionStep.body(), commonCount, delay, on, but
+        functionStep.body(), count, delayMillis, on, but
       ));
     }
     return step;
   }
 
   private static ThrowingRunnable<?> retryRunnable(final ThrowingRunnable<?> origin,
-                                                   final int commonCount,
-                                                   final long delay,
+                                                   final int count,
+                                                   final long delayMillis,
                                                    final Class<? extends Throwable>[] on,
                                                    final Class<? extends Throwable>[] but) {
     return () -> {
-      for (int attempt = 0; attempt < commonCount; attempt++) {
-        if (attempt == commonCount - 1) {
+      for (int attempt = 0; attempt < count; attempt++) {
+        if (attempt == count - 1) {
           origin.run();
         } else {
           try {
@@ -178,21 +188,21 @@ public class RetryExtension implements InterceptStep {
             }
           }
         }
-        if (delay > 0L) {
-          Thread.sleep(delay);
+        if (delayMillis > 0L) {
+          Thread.sleep(delayMillis);
         }
       }
     };
   }
 
   private static ThrowingConsumer<Object, ?> retryConsumer(final ThrowingConsumer<Object, ?> origin,
-                                                           final int commonCount,
-                                                           final long delay,
+                                                           final int count,
+                                                           final long delayMillis,
                                                            final Class<? extends Throwable>[] on,
                                                            final Class<? extends Throwable>[] but) {
     return context -> {
-      for (int attempt = 0; attempt < commonCount; attempt++) {
-        if (attempt == commonCount - 1) {
+      for (int attempt = 0; attempt < count; attempt++) {
+        if (attempt == count - 1) {
           origin.accept(context);
         } else {
           try {
@@ -207,21 +217,21 @@ public class RetryExtension implements InterceptStep {
             }
           }
         }
-        if (delay > 0L) {
-          Thread.sleep(delay);
+        if (delayMillis > 0L) {
+          Thread.sleep(delayMillis);
         }
       }
     };
   }
 
   private static ThrowingSupplier<Object, ?> retrySupplier(final ThrowingSupplier<Object, ?> origin,
-                                                           final int commonCount,
-                                                           final long delay,
+                                                           final int count,
+                                                           final long delayMillis,
                                                            final Class<? extends Throwable>[] on,
                                                            final Class<? extends Throwable>[] but) {
     return () -> {
-      for (int attempt = 0; attempt < commonCount; attempt++) {
-        if (attempt == commonCount - 1) {
+      for (int attempt = 0; attempt < count; attempt++) {
+        if (attempt == count - 1) {
           return origin.get();
         } else {
           try {
@@ -235,8 +245,8 @@ public class RetryExtension implements InterceptStep {
             }
           }
         }
-        if (delay > 0L) {
-          Thread.sleep(delay);
+        if (delayMillis > 0L) {
+          Thread.sleep(delayMillis);
         }
       }
       return null; /* unreachable */
@@ -244,13 +254,13 @@ public class RetryExtension implements InterceptStep {
   }
 
   private static ThrowingFunction<Object, Object, ?> retryFunction(final ThrowingFunction<Object, Object, ?> origin,
-                                                                   final int commonCount,
-                                                                   final long delay,
+                                                                   final int count,
+                                                                   final long delayMillis,
                                                                    final Class<? extends Throwable>[] on,
                                                                    final Class<? extends Throwable>[] but) {
     return context -> {
-      for (int attempt = 0; attempt < commonCount; attempt++) {
-        if (attempt == commonCount - 1) {
+      for (int attempt = 0; attempt < count; attempt++) {
+        if (attempt == count - 1) {
           return origin.apply(context);
         } else {
           try {
@@ -264,8 +274,8 @@ public class RetryExtension implements InterceptStep {
             }
           }
         }
-        if (delay > 0L) {
-          Thread.sleep(delay);
+        if (delayMillis > 0L) {
+          Thread.sleep(delayMillis);
         }
       }
       return null; /* unreachable */
@@ -292,9 +302,8 @@ public class RetryExtension implements InterceptStep {
    */
   public static final class RetryOptions {
     @SuppressWarnings("unchecked")
-    private static final RetryOptions DEFAULT = new RetryOptions(
-      1, Duration.ZERO, new Class[]{Throwable.class}, new Class[0]
-    );
+    private static final RetryOptions DEFAULT =
+      new RetryOptions(2, Duration.ZERO, new Class[]{Throwable.class}, new Class[0]);
     private final int count;
     private final Duration delay;
     private final Class<? extends Throwable>[] on;
@@ -314,7 +323,7 @@ public class RetryExtension implements InterceptStep {
     }
 
     /**
-     * Returns {@code RetryOptions} with given retry count. How many times to retry.
+     * Returns {@code RetryOptions} with given maximum step executions count (including the first execution).
      *
      * @param count the retry count
      * @return {@code RetryOptions} with given retry count
