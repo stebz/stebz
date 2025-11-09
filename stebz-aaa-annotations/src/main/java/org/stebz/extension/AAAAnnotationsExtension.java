@@ -39,6 +39,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.stebz.attribute.ReflectiveStepAttributes.REFLECTIVE_NAME;
 import static org.stebz.attribute.StepAttribute.KEYWORD;
 import static org.stebz.attribute.StepAttribute.NAME;
 import static org.stebz.util.function.ThrowingSupplier.caching;
@@ -102,16 +103,19 @@ public class AAAAnnotationsExtension implements InterceptStep {
       return step;
     }
 
-    final ThrowingFunction<Annotation, String, Error> getValueFunction = VALUES.get().get(annotationType);
-    if (getValueFunction == null) {
+    final ThrowingFunction<Annotation, String, Error> getNameFunction = VALUES.get().get(annotationType);
+    if (getNameFunction == null) {
       return step;
     }
 
-    final String annotationValue = getValueFunction.apply(annotation);
-    if (annotationValue.isEmpty()) {
-      return step.with(KEYWORD, keyword);
-    } else {
-      return step.with(KEYWORD, keyword, NAME, annotationValue);
+    String name = getNameFunction.apply(annotation);
+    if (!name.isEmpty()) {
+      return step.with(KEYWORD, keyword, NAME, name);
     }
+    name = step.getName();
+    if (!name.isEmpty()) {
+      return step.with(KEYWORD, keyword);
+    }
+    return step.with(KEYWORD, keyword, NAME, step.get(REFLECTIVE_NAME));
   }
 }

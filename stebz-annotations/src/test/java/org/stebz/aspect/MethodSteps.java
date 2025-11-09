@@ -67,7 +67,6 @@ final class MethodSteps {
   }
 
   @WithName
-  @WithParams
   public FunctionStep<String, String> instanceMethodFunctionStep(final String param1,
                                                                  @Param(name = "param2") final String abcdef) {
     return FunctionStep.of(v -> v);

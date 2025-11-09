@@ -135,7 +135,8 @@ public class StepAspects {
    * @return step with attributes
    * @throws Throwable if the method throws an exception
    */
-  @Around("execution(@(@org.stebz.annotation.StepAttributeAnnotation *) org.stebz.step.StepObj+ *(..))")
+  @Around("execution(@(@org.stebz.annotation.StepAttributeAnnotation *) org.stebz.step.StepObj+ *(..))" +
+    " || execution(org.stebz.step.StepObj+ *(.., @org.stebz.annotation.Param (*), ..))")
   public Object methodStepObjWithAttribute(final ProceedingJoinPoint joinPoint) throws Throwable {
     final StepObj<?> step = (StepObj<?>) joinPoint.proceed();
     if (step == null) {
@@ -160,8 +161,8 @@ public class StepAspects {
    * @throws Throwable if the constructor throws an exception
    */
   @AfterReturning(
-    "execution(@(@org.stebz.annotation.StepAttributeAnnotation *) org.stebz.step.executable..*.Of+.new(..))"
-  )
+    "execution(@(@org.stebz.annotation.StepAttributeAnnotation *) org.stebz.step.executable..*.Of+.new(..))" +
+      " || execution(org.stebz.step.executable..*.Of+.new(.., @org.stebz.annotation.Param (*), ..))")
   public void ctorStepObjWithAttributes(final JoinPoint joinPoint) throws Throwable {
     final StepObj<?> step = (StepObj<?>) joinPoint.getThis();
     final ConstructorSignature signature = (ConstructorSignature) joinPoint.getSignature();
@@ -183,7 +184,8 @@ public class StepAspects {
    * @return method result
    * @throws Throwable if the method throws an exception
    */
-  @Around("execution(@(@org.stebz.annotation.StepAttributeAnnotation *) !org.stebz.step.StepObj+ *(..))")
+  @Around("execution(@(@org.stebz.annotation.StepAttributeAnnotation *) !org.stebz.step.StepObj+ *(..))" +
+    " || execution(!org.stebz.step.StepObj+ *(.., @org.stebz.annotation.Param (*), ..))")
   public Object quickMethodStep(final ProceedingJoinPoint joinPoint) throws Throwable {
     final QuickStepMode quickStepMode = QUICK_STEP_MODE.get();
     if (quickStepMode == QuickStepMode.IGNORE) {
@@ -225,7 +227,8 @@ public class StepAspects {
    * @return constructor result
    * @throws Throwable if the constructor throws an exception
    */
-  @Around("execution(@(@org.stebz.annotation.StepAttributeAnnotation *) !org.stebz.step.StepObj+.new(..))")
+  @Around("execution(@(@org.stebz.annotation.StepAttributeAnnotation *) !org.stebz.step.StepObj+.new(..))" +
+    " || execution(!org.stebz.step.StepObj+.new(.., @org.stebz.annotation.Param (*), ..))")
   public Object quickCtorStep(final ProceedingJoinPoint joinPoint) throws Throwable {
     final QuickStepMode quickStepMode = QUICK_STEP_MODE.get();
     if (quickStepMode == QuickStepMode.IGNORE) {
@@ -306,7 +309,7 @@ public class StepAspects {
     final Map<String, Annotation> attrAnnotations = extractAttrAnnotations(declaredAnnotations);
     final StepAttributes.Builder builder = originAttributes.asBuilder();
     addKeyword(builder, attrAnnotations);
-    addName(builder, attrAnnotations, originAttributes.get(NAME), reflectiveName);
+    addName(builder, attrAnnotations, reflectiveName);
     addComment(builder, attrAnnotations);
     addParams(builder, attrAnnotations, originAttributes.get(PARAMS), parameters, parameterNames, parameterValues);
     addHidden(builder, attrAnnotations);
@@ -363,10 +366,11 @@ public class StepAspects {
 
   private static void addName(final StepAttributes.Builder builder,
                               final Map<String, Annotation> annotations,
-                              final String currentName,
                               final String reflectiveName) {
+    boolean hasNameAnnotation = false;
     final Step stepAnnotation = (Step) annotations.get(Step.KEY);
     if (stepAnnotation != null) {
+      hasNameAnnotation = true;
       final String value = stepAnnotation.value();
       if (!value.isEmpty()) {
         builder.add(NAME, value);
@@ -375,13 +379,14 @@ public class StepAspects {
     }
     final WithName nameAnnotation = (WithName) annotations.get(WithName.KEY);
     if (nameAnnotation != null) {
+      hasNameAnnotation = true;
       final String value = nameAnnotation.value();
       if (!value.isEmpty()) {
         builder.add(NAME, value);
         return;
       }
     }
-    if (currentName.isEmpty()) {
+    if (hasNameAnnotation) {
       builder.add(NAME, reflectiveName);
     }
   }
@@ -422,13 +427,14 @@ public class StepAspects {
                                 final Parameter[] parameters,
                                 final String[] names,
                                 final Object[] values) {
-    if (values != null && values.length != 0
-      && (annotations.containsKey(WithParams.KEY) || annotations.containsKey(Step.KEY))
-    ) {
+    if (values != null && values.length != 0) {
+      final boolean addByDefault = annotations.containsKey(WithParams.KEY) || annotations.containsKey(Step.KEY);
       for (int idx = 0; idx < parameters.length; idx++) {
         final Param annot = parameters[idx].getAnnotation(Param.class);
         if (annot == null) {
-          paramsMap.put(names[idx], values[idx]);
+          if (addByDefault) {
+            paramsMap.put(names[idx], values[idx]);
+          }
         } else {
           if (annot.hide()) {
             continue;
