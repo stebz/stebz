@@ -138,7 +138,6 @@ final class StepAspectsTest {
       .isEqualTo("instanceMethodFunctionStep");
     assertThat(step.getParams())
       .containsExactly(
-        entry("param1", "value1"),
         entry("param2", "value2")
       );
     assertThat(StaticStepListener.lastStep)
@@ -171,7 +170,9 @@ final class StepAspectsTest {
     assertThat(step.getKeyword())
       .isEqualTo(new Keyword.Of("keyword value"));
     assertThat(step.getParams())
-      .isEmpty();
+      .containsExactly(
+        entry("param2", "value2")
+      );
     assertThat(StaticStepListener.lastStep)
       .isNull();
   }
