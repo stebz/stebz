@@ -79,7 +79,7 @@ public class AllureStepListener implements StepListener {
    */
   public AllureStepListener(final PropertiesReader properties) {
     this.enabled = properties.getBoolean("stebz.listeners.allure.enabled", true);
-    this.order = properties.getInteger("stebz.listeners.allure.order", DEFAULT_ORDER);
+    this.order = properties.getInteger("stebz.listeners.allure.order", MIDDLE_ORDER);
     this.onlyKeywordSteps = properties.getBoolean("stebz.listeners.allure.onlyKeywordSteps", false);
     this.keywordPosition = properties.getEnum("stebz.listeners.allure.keywordPosition",
       KeywordPosition.class, KeywordPosition.AT_START);

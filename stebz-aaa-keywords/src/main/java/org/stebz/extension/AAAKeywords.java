@@ -53,12 +53,12 @@ public final class AAAKeywords implements StebzExtension {
    * @param properties the properties reader
    */
   private AAAKeywords(final PropertiesReader properties) {
-    setKeywords(new Keywords(
-      new Keyword.Of(properties.getString("stebz.aaa.keywords.setup", SETUP_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.aaa.keywords.teardown", TEARDOWN_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.aaa.keywords.arrange", ARRANGE_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.aaa.keywords.act", ACT_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.aaa.keywords.assert", ASSERT_KEYWORD_DEFAULT_VALUE))
+    setKeywordsOnce(new Keywords(
+      new Keyword.Of(properties.getString("stebz.extensions.aaa.keywords.setup", SETUP_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.extensions.aaa.keywords.teardown", TEARDOWN_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.extensions.aaa.keywords.arrange", ARRANGE_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.extensions.aaa.keywords.act", ACT_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.extensions.aaa.keywords.assert", ASSERT_KEYWORD_DEFAULT_VALUE))
     ));
   }
 
@@ -107,7 +107,12 @@ public final class AAAKeywords implements StebzExtension {
     return getKeywords()._assert;
   }
 
-  private static void setKeywords(final Keywords keywordsToSet) {
+  @Override
+  public int order() {
+    return EARLY_ORDER;
+  }
+
+  private static void setKeywordsOnce(final Keywords keywordsToSet) {
     if (keywords == null) {
       synchronized (LOCK) {
         if (keywords == null) {

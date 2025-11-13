@@ -58,7 +58,7 @@ public class ReadableReflectiveNameExtension implements InterceptStep {
    */
   public ReadableReflectiveNameExtension(final PropertiesReader properties) {
     this.enabled = properties.getBoolean("stebz.extensions.readableReflectiveName.enabled", true);
-    this.order = properties.getInteger("stebz.extensions.readableReflectiveName.order", DEFAULT_ORDER);
+    this.order = properties.getInteger("stebz.extensions.readableReflectiveName.order", MIDDLE_ORDER);
     this.defaultWordSeparator = properties.getString("stebz.extensions.readableReflectiveName.wordSeparator", "_");
   }
 

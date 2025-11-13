@@ -78,7 +78,7 @@ public class TestITStepListener implements StepListener {
    */
   public TestITStepListener(final PropertiesReader properties) {
     this.enabled = properties.getBoolean("stebz.listeners.testit.enabled", true);
-    this.order = properties.getInteger("stebz.listeners.testit.order", DEFAULT_ORDER);
+    this.order = properties.getInteger("stebz.listeners.testit.order", MIDDLE_ORDER);
     this.onlyKeywordSteps = properties.getBoolean("stebz.listeners.testit.onlyKeywordSteps", false);
     this.keywordPosition = properties.getEnum("stebz.listeners.testit.keywordPosition",
       KeywordPosition.class, KeywordPosition.AT_START);

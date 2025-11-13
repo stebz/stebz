@@ -54,10 +54,31 @@ import org.stebz.util.property.PropertiesReader;
  * </ul>
  */
 public interface StebzExtension {
+
   /**
-   * Default extension order.
+   * Early extension order.
    */
-  int DEFAULT_ORDER = 10000;
+  int EARLY_ORDER = 0;
+
+  /**
+   * Mid-early extension order.
+   */
+  int MID_EARLY_ORDER = 5000;
+
+  /**
+   * Middle extension order.
+   */
+  int MIDDLE_ORDER = 10000;
+
+  /**
+   * Mid-late extension order.
+   */
+  int MID_LATE_ORDER = 15000;
+
+  /**
+   * Late extension order.
+   */
+  int LATE_ORDER = 20000;
 
   /**
    * Configures this extension using the given {@code PropertiesReader}. Called once during the Stebz startup.
@@ -73,6 +94,6 @@ public interface StebzExtension {
    * @return this extension order
    */
   default int order() {
-    return DEFAULT_ORDER;
+    return MIDDLE_ORDER;
   }
 }

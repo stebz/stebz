@@ -33,10 +33,12 @@ import org.stebz.annotation.gherkin.Then;
 import org.stebz.annotation.gherkin.When;
 import org.stebz.attribute.Keyword;
 import org.stebz.attribute.StepAttribute;
+import org.stebz.executor.StartupPropertiesReader;
 import org.stebz.step.StepObj;
 import org.stebz.util.container.NullableOptional;
 import org.stebz.util.function.ThrowingFunction;
 import org.stebz.util.function.ThrowingSupplier.Caching;
+import org.stebz.util.property.PropertiesReader;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -94,45 +96,63 @@ public class GherkinAnnotationsExtension implements InterceptStep {
       values.put(But.class, annot -> ((But) annot).value());
       return values;
     });
+  private final boolean enabled;
+  private final int order;
 
   /**
    * Ctor.
    */
   public GherkinAnnotationsExtension() {
+    this(StartupPropertiesReader.get());
+  }
+
+  /**
+   * Ctor.
+   *
+   * @param properties the properties reader
+   */
+  public GherkinAnnotationsExtension(final PropertiesReader properties) {
+    this.enabled = properties.getBoolean("stebz.extensions.gherkin.annotations.enabled", true);
+    this.order = properties.getInteger("stebz.extensions.gherkin.annotations.order", MID_EARLY_ORDER);
+  }
+
+  @Override
+  public int order() {
+    return this.order;
   }
 
   @Override
   public StepObj<?> interceptStep(final StepObj<?> step,
                                   final NullableOptional<Object> context) {
+    if (!this.enabled) {
+      return step;
+    }
     final Annotation annotation = step.get(GHERKIN_KEYWORD);
     if (annotation == null) {
       return step;
     }
-
     final Class<? extends Annotation> annotationType = annotation.annotationType();
     final Keyword keyword = KEYWORDS.get().get(annotationType);
     if (keyword == null) {
       return step;
     }
-
-    final ThrowingFunction<Annotation, String, Error> getValueFunction = VALUES.get().get(annotationType);
-    if (getValueFunction == null) {
+    final ThrowingFunction<Annotation, String, Error> getAnnotValueFunction = VALUES.get().get(annotationType);
+    if (getAnnotValueFunction == null) {
       return step;
     }
 
-    final ThrowingFunction<Annotation, String, Error> getNameFunction = VALUES.get().get(annotationType);
-    if (getNameFunction == null) {
-      return step;
-    }
-
-    String name = getNameFunction.apply(annotation);
+    String name = getAnnotValueFunction.apply(annotation);
     if (!name.isEmpty()) {
       return step.with(KEYWORD, keyword, NAME, name);
     }
-    name = step.getName();
+    name = step.get(NAME);
     if (!name.isEmpty()) {
       return step.with(KEYWORD, keyword);
     }
-    return step.with(KEYWORD, keyword, NAME, step.get(REFLECTIVE_NAME));
+    name = step.get(REFLECTIVE_NAME);
+    if (!name.isEmpty()) {
+      return step.with(KEYWORD, keyword, NAME, name);
+    }
+    return step.with(KEYWORD, keyword);
   }
 }

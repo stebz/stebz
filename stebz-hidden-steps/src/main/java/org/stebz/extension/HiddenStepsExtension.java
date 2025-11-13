@@ -52,7 +52,7 @@ public class HiddenStepsExtension implements InterceptStep {
    */
   public HiddenStepsExtension(final PropertiesReader properties) {
     this.enabled = properties.getBoolean("stebz.extensions.hiddenSteps.enabled", true);
-    this.order = properties.getInteger("stebz.extensions.hiddenSteps.order", DEFAULT_ORDER);
+    this.order = properties.getInteger("stebz.extensions.hiddenSteps.order", MIDDLE_ORDER);
   }
 
   /**

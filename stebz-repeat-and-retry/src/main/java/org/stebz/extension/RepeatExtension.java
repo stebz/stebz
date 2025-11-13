@@ -80,7 +80,7 @@ public class RepeatExtension implements InterceptStep {
    */
   public RepeatExtension(final PropertiesReader properties) {
     this.enabled = properties.getBoolean("stebz.extensions.repeat.enabled", true);
-    this.order = properties.getInteger("stebz.extensions.repeat.order", DEFAULT_ORDER);
+    this.order = properties.getInteger("stebz.extensions.repeat.order", MIDDLE_ORDER);
   }
 
   /**

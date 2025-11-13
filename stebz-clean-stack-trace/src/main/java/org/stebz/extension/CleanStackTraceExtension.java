@@ -57,7 +57,7 @@ public class CleanStackTraceExtension implements BeforeStepFailure {
    */
   public CleanStackTraceExtension(final PropertiesReader properties) {
     this.enabled = properties.getBoolean("stebz.extensions.cleanStackTrace.enabled", true);
-    this.order = properties.getInteger("stebz.extensions.cleanStackTrace.order", DEFAULT_ORDER);
+    this.order = properties.getInteger("stebz.extensions.cleanStackTrace.order", MIDDLE_ORDER);
     final boolean stebzLines = properties.getBoolean("stebz.extensions.cleanStackTrace.stebzLines", true);
     Boolean aspectjLines = properties.getBoolean("stebz.extensions.cleanStackTrace.aspectjLines", null);
     if (aspectjLines == null) {

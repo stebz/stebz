@@ -74,7 +74,7 @@ public class QaseStepListener implements StepListener {
    */
   public QaseStepListener(final PropertiesReader properties) {
     this.enabled = properties.getBoolean("stebz.listeners.qase.enabled", true);
-    this.order = properties.getInteger("stebz.listeners.qase.order", DEFAULT_ORDER);
+    this.order = properties.getInteger("stebz.listeners.qase.order", MIDDLE_ORDER);
     this.onlyKeywordSteps = properties.getBoolean("stebz.listeners.qase.onlyKeywordSteps", false);
     this.keywordPosition =
       properties.getEnum("stebz.listeners.qase.keywordPosition", KeywordPosition.class, KeywordPosition.AT_START);

@@ -78,7 +78,7 @@ public class SystemOutStepListener implements StepListener {
     this.depth = ThreadLocal.withInitial(AtomicInteger::new);
     this.printStream = printStream;
     this.enabled = properties.getBoolean("stebz.listeners.systemout.enabled", true);
-    this.order = properties.getInteger("stebz.listeners.systemout.order", DEFAULT_ORDER);
+    this.order = properties.getInteger("stebz.listeners.systemout.order", MIDDLE_ORDER);
     this.onlyKeywordSteps = properties.getBoolean("stebz.listeners.systemout.onlyKeywordSteps", false);
     this.keywordPosition = properties.getEnum("stebz.listeners.systemout.keywordPosition",
       KeywordPosition.class, KeywordPosition.AT_START);
