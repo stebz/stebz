@@ -33,10 +33,31 @@ import org.stebz.util.property.PropertiesReader;
  * @see org.stebz.extension.StebzExtension
  */
 public interface StepListener {
+
   /**
-   * Default listener order.
+   * Early listener order.
    */
-  int DEFAULT_ORDER = 10000;
+  int EARLY_ORDER = 0;
+
+  /**
+   * Mid-early listener order.
+   */
+  int MID_EARLY_ORDER = 5000;
+
+  /**
+   * Middle listener order.
+   */
+  int MIDDLE_ORDER = 10000;
+
+  /**
+   * Mid-late listener order.
+   */
+  int MID_LATE_ORDER = 15000;
+
+  /**
+   * Late listener order.
+   */
+  int LATE_ORDER = 20000;
 
   /**
    * Configures this listener using the given {@code PropertiesReader}. Called once during the Stebz startup.
@@ -52,7 +73,7 @@ public interface StepListener {
    * @return this listener order
    */
   default int order() {
-    return DEFAULT_ORDER;
+    return MIDDLE_ORDER;
   }
 
   /**

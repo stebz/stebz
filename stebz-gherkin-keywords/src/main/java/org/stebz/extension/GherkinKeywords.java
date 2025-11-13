@@ -56,15 +56,17 @@ public final class GherkinKeywords implements StebzExtension {
    * @param properties the properties reader
    */
   private GherkinKeywords(final PropertiesReader properties) {
-    setKeywords(new Keywords(
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.background", BACKGROUND_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.conclusion", CONCLUSION_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.rule", RULE_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.given", GIVEN_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.when", WHEN_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.then", THEN_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.and", AND_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.gherkin.keywords.but", BUT_KEYWORD_DEFAULT_VALUE))
+    setKeywordsOnce(new Keywords(
+      new Keyword.Of(properties.getString("stebz.extensions.gherkin.keywords.background",
+        BACKGROUND_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.extensions.gherkin.keywords.conclusion",
+        CONCLUSION_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.extensions.gherkin.keywords.rule", RULE_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.extensions.gherkin.keywords.given", GIVEN_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.extensions.gherkin.keywords.when", WHEN_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.extensions.gherkin.keywords.then", THEN_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.extensions.gherkin.keywords.and", AND_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.extensions.gherkin.keywords.but", BUT_KEYWORD_DEFAULT_VALUE))
     ));
   }
 
@@ -140,7 +142,12 @@ public final class GherkinKeywords implements StebzExtension {
     return getKeywords().but;
   }
 
-  private static void setKeywords(final Keywords keywordsToSet) {
+  @Override
+  public int order() {
+    return EARLY_ORDER;
+  }
+
+  private static void setKeywordsOnce(final Keywords keywordsToSet) {
     if (keywords == null) {
       synchronized (LOCK) {
         if (keywords == null) {
