@@ -23,7 +23,7 @@
  */
 package org.stebz.step;
 
-import org.stebz.util.function.ThrowingFunction;
+import dev.jlet.function.ThrowingFunction;
 
 /**
  * Executable step.

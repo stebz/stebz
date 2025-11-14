@@ -23,11 +23,11 @@
  */
 package org.stebz.util.container;
 
+import dev.jlet.function.ThrowingConsumer;
+import dev.jlet.function.ThrowingFunction;
+import dev.jlet.function.ThrowingRunnable;
+import dev.jlet.function.ThrowingSupplier;
 import org.stebz.util.Cast;
-import org.stebz.util.function.ThrowingConsumer;
-import org.stebz.util.function.ThrowingFunction;
-import org.stebz.util.function.ThrowingRunnable;
-import org.stebz.util.function.ThrowingSupplier;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;

@@ -23,13 +23,13 @@
  */
 package org.stebz.step.executable;
 
+import dev.jlet.function.ThrowingConsumer;
+import dev.jlet.function.ThrowingConsumer2;
+import dev.jlet.function.ThrowingFunction;
+import dev.jlet.function.ThrowingFunction2;
 import org.stebz.attribute.StepAttributes;
 import org.stebz.exception.StepNotImplementedError;
 import org.stebz.step.ExecutableStep;
-import org.stebz.util.function.ThrowingConsumer;
-import org.stebz.util.function.ThrowingConsumer2;
-import org.stebz.util.function.ThrowingFunction;
-import org.stebz.util.function.ThrowingFunction2;
 
 import java.util.Map;
 

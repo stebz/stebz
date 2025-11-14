@@ -51,7 +51,7 @@ import org.stebz.step.executable.ConsumerStep;
 import org.stebz.step.executable.FunctionStep;
 import org.stebz.step.executable.RunnableStep;
 import org.stebz.step.executable.SupplierStep;
-import org.stebz.util.function.ThrowingSupplier;
+import org.stebz.util.Cached;
 
 import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
@@ -83,16 +83,15 @@ import static org.stebz.attribute.StepAttribute.PARAMS;
 public class StepAspects {
   private static final Map<String, StepAttribute<?>> CACHED_CUSTOM_ATTRS = new ConcurrentHashMap<>();
   private static final Map<String, Keyword> CACHED_KEYWORDS = new ConcurrentHashMap<>();
-  private static final ThrowingSupplier.Caching<StepAttributesSetters> STEP_ATTRIBUTES_SETTERS =
-    new ThrowingSupplier.Caching<>(() -> {
-      final MethodHandles.Lookup lookup = MethodHandles.lookup();
-      return new StepAttributesSetters(
-        attributesFieldSetter(lookup, RunnableStep.Of.class),
-        attributesFieldSetter(lookup, ConsumerStep.Of.class),
-        attributesFieldSetter(lookup, SupplierStep.Of.class),
-        attributesFieldSetter(lookup, FunctionStep.Of.class)
-      );
-    });
+  private static final Cached<StepAttributesSetters> STEP_ATTRIBUTES_SETTERS = new Cached<>(() -> {
+    final MethodHandles.Lookup lookup = MethodHandles.lookup();
+    return new StepAttributesSetters(
+      attributesFieldSetter(lookup, RunnableStep.Of.class),
+      attributesFieldSetter(lookup, ConsumerStep.Of.class),
+      attributesFieldSetter(lookup, SupplierStep.Of.class),
+      attributesFieldSetter(lookup, FunctionStep.Of.class)
+    );
+  });
   private static final ThreadLocal<QuickStepMode> QUICK_STEP_MODE = new ThreadLocal<>();
   private static final ThreadLocal<StepAttributes> CAPTURED_ATTRIBUTES = new ThreadLocal<>();
   private static final ThreadLocal<ProceedingJoinPoint> CAPTURED_JOINT_POINT = new ThreadLocal<>();

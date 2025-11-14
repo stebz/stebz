@@ -23,8 +23,8 @@
  */
 package org.stebz.attribute;
 
+import dev.jlet.function.ThrowingFunction;
 import org.junit.jupiter.api.Test;
-import org.stebz.util.function.ThrowingFunction;
 
 import java.util.Map;
 

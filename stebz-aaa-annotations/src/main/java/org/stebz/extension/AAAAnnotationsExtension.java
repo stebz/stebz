@@ -23,6 +23,7 @@
  */
 package org.stebz.extension;
 
+import dev.jlet.function.ThrowingFunction;
 import org.stebz.annotation.aaa.Act;
 import org.stebz.annotation.aaa.Arrange;
 import org.stebz.annotation.aaa.Assert;
@@ -32,9 +33,8 @@ import org.stebz.attribute.Keyword;
 import org.stebz.attribute.StepAttribute;
 import org.stebz.executor.StartupPropertiesReader;
 import org.stebz.step.StepObj;
+import org.stebz.util.Cached;
 import org.stebz.util.container.NullableOptional;
-import org.stebz.util.function.ThrowingFunction;
-import org.stebz.util.function.ThrowingSupplier.Caching;
 import org.stebz.util.property.PropertiesReader;
 
 import java.lang.annotation.Annotation;
@@ -44,7 +44,6 @@ import java.util.Map;
 import static org.stebz.attribute.ReflectiveStepAttributes.REFLECTIVE_NAME;
 import static org.stebz.attribute.StepAttribute.KEYWORD;
 import static org.stebz.attribute.StepAttribute.NAME;
-import static org.stebz.util.function.ThrowingSupplier.caching;
 
 /**
  * Arrange-Act-Assert annotations {@link StebzExtension}.
@@ -64,18 +63,17 @@ public class AAAAnnotationsExtension implements InterceptStep {
    * @see Assert
    */
   public static final StepAttribute<Annotation> AAA_KEYWORD = StepAttribute.nullable(AAA_KEYWORD_ATTRIBUTE_KEY);
-  private static final Caching<Map<Class<? extends Annotation>, Keyword>> KEYWORDS =
-    caching(() -> {
-      final Map<Class<? extends Annotation>, Keyword> keywords = new HashMap<>();
-      keywords.put(Setup.class, AAAKeywords.setup());
-      keywords.put(Teardown.class, AAAKeywords.teardown());
-      keywords.put(Arrange.class, AAAKeywords.arrange());
-      keywords.put(Act.class, AAAKeywords.act());
-      keywords.put(Assert.class, AAAKeywords._assert());
-      return keywords;
-    });
-  private static final Caching<Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>>> VALUES =
-    caching(() -> {
+  private static final Cached<Map<Class<? extends Annotation>, Keyword>> KEYWORDS = new Cached<>(() -> {
+    final Map<Class<? extends Annotation>, Keyword> keywords = new HashMap<>();
+    keywords.put(Setup.class, AAAKeywords.setup());
+    keywords.put(Teardown.class, AAAKeywords.teardown());
+    keywords.put(Arrange.class, AAAKeywords.arrange());
+    keywords.put(Act.class, AAAKeywords.act());
+    keywords.put(Assert.class, AAAKeywords._assert());
+    return keywords;
+  });
+  private static final Cached<Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>>> VALUES =
+    new Cached<>(() -> {
       final Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>> values = new HashMap<>();
       values.put(Setup.class, annot -> ((Setup) annot).value());
       values.put(Teardown.class, annot -> ((Teardown) annot).value());

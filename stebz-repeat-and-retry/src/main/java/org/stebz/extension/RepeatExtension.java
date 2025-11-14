@@ -23,6 +23,10 @@
  */
 package org.stebz.extension;
 
+import dev.jlet.function.ThrowingConsumer;
+import dev.jlet.function.ThrowingFunction;
+import dev.jlet.function.ThrowingRunnable;
+import dev.jlet.function.ThrowingSupplier;
 import org.stebz.annotation.WithRepeat;
 import org.stebz.attribute.StepAttribute;
 import org.stebz.executor.StartupPropertiesReader;
@@ -32,10 +36,6 @@ import org.stebz.step.executable.FunctionStep;
 import org.stebz.step.executable.RunnableStep;
 import org.stebz.step.executable.SupplierStep;
 import org.stebz.util.container.NullableOptional;
-import org.stebz.util.function.ThrowingConsumer;
-import org.stebz.util.function.ThrowingFunction;
-import org.stebz.util.function.ThrowingRunnable;
-import org.stebz.util.function.ThrowingSupplier;
 import org.stebz.util.property.PropertiesReader;
 
 import java.time.Duration;

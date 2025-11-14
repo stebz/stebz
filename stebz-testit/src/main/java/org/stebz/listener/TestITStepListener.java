@@ -23,6 +23,8 @@
  */
 package org.stebz.listener;
 
+import dev.jlet.function.ThrowingConsumer;
+import dev.jlet.function.ThrowingFunction;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.stebz.attribute.Keyword;
@@ -30,8 +32,6 @@ import org.stebz.attribute.ReflectiveStepAttributes;
 import org.stebz.executor.StartupPropertiesReader;
 import org.stebz.step.StepObj;
 import org.stebz.util.container.NullableOptional;
-import org.stebz.util.function.ThrowingConsumer;
-import org.stebz.util.function.ThrowingFunction;
 import org.stebz.util.property.PropertiesReader;
 import ru.testit.models.ItemStatus;
 import ru.testit.models.StepResult;
