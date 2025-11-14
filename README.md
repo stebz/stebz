@@ -42,10 +42,10 @@ Multi-approach and flexible Java framework for test steps managing.
     * [Repeat and retry extension](#stebz-repeat-and-retry-extension)
   * [Configuration](#configuration)
     * [`stebz-core` module](#stebz-core-module)
-    * [`stebz-aaa-keywords`, `stebz-aaa-methods`,
-      `stebz-aaa-annotations` modules](#stebz-aaa-keywords-stebz-aaa-methods-stebz-aaa-annotations-modules)
-    * [`stebz-gherkin-keywords`, `stebz-gherkin-methods`,
-      `stebz-gherkin-annotations` modules](#stebz-gherkin-keywords-stebz-gherkin-methods-stebz-gherkin-annotations-modules)
+    * [`stebz-aaa-keywords` module](#stebz-aaa-keywords-module)
+    * [`stebz-aaa-annotations` module](#stebz-aaa-annotations-module)
+    * [`stebz-gherkin-keywords` module](#stebz-gherkin-keywords-module)
+    * [`stebz-gherkin-annotations` module](#stebz-gherkin-annotations-module)
     * [`stebz-clean-stack-trace` module](#stebz-clean-stack-trace-module)
     * [`stebz-hidden-steps` module](#stebz-hidden-steps-module)
     * [`stebz-readable-reflective-name` module](#stebz-readable-reflective-name-module)
@@ -227,7 +227,7 @@ Maven:
   <dependency>
     <groupId>org.stebz</groupId>
     <artifactId>{module name}</artifactId>
-    <version>1.9</version>
+    <version>1.10</version>
   </dependency>
 </dependencies>
 ```
@@ -238,7 +238,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation 'org.stebz:{module name}:1.9'
+  implementation 'org.stebz:{module name}:1.10'
 }
 ```
 <!-- @formatter:on -->
@@ -248,7 +248,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation("org.stebz:{module name}:1.9")
+  implementation("org.stebz:{module name}:1.10")
 }
 ```
 <!-- @formatter:on -->
@@ -270,7 +270,7 @@ Maven:
     <dependency>
       <groupId>org.stebz</groupId>
       <artifactId>stebz-bom</artifactId>
-      <version>1.9</version>
+      <version>1.10</version>
       <scope>import</scope>
       <type>pom</type>
     </dependency>
@@ -284,7 +284,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation platform('org.stebz:stebz-bom:1.9')
+  implementation platform('org.stebz:stebz-bom:1.10')
 }
 ```
 <!-- @formatter:on -->
@@ -294,7 +294,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation(platform("org.stebz:stebz-bom:1.9"))
+  implementation(platform("org.stebz:stebz-bom:1.10"))
 }
 ```
 <!-- @formatter:on -->
@@ -1113,28 +1113,42 @@ System properties have first priority, file properties have second priority.
 | `stebz.listeners.list`           | `String` list, delimiter is `,` | empty list         | listeners list          |
 | `stebz.listeners.autodetection`  | `Boolean`                       | `true`             | enable SPI listeners    |
 
-#### `stebz-aaa-keywords`, `stebz-aaa-methods`, `stebz-aaa-annotations` modules
+#### `stebz-aaa-keywords` module
 
-| property                      | type      | default value | description               |
-|-------------------------------|-----------|---------------|---------------------------|
-| `stebz.aaa.keywords.setup`    | `String`  | `Setup:`      | value of Setup keyword    |
-| `stebz.aaa.keywords.teardown` | `String`  | `Teardown:`   | value of Teardown keyword |
-| `stebz.aaa.keywords.arrange`  | `String`  | `Arrange:`    | value of Arrange keyword  |
-| `stebz.aaa.keywords.act`      | `String`  | `Act:`        | value of Act keyword      |
-| `stebz.aaa.keywords.assert`   | `String`  | `Assert:`     | value of Assert keyword   |
+| property                                 | type      | default value | description               |
+|------------------------------------------|-----------|---------------|---------------------------|
+| `stebz.extensions.aaa.keywords.setup`    | `String`  | `Setup:`      | value of Setup keyword    |
+| `stebz.extensions.aaa.keywords.teardown` | `String`  | `Teardown:`   | value of Teardown keyword |
+| `stebz.extensions.aaa.keywords.arrange`  | `String`  | `Arrange:`    | value of Arrange keyword  |
+| `stebz.extensions.aaa.keywords.act`      | `String`  | `Act:`        | value of Act keyword      |
+| `stebz.extensions.aaa.keywords.assert`   | `String`  | `Assert:`     | value of Assert keyword   |
 
-#### `stebz-gherkin-keywords`, `stebz-gherkin-methods`, `stebz-gherkin-annotations` modules
+#### `stebz-aaa-annotations` module
 
-| property                            | type                     | default value | description                 |
-|-------------------------------------|--------------------------|---------------|-----------------------------|
-| `stebz.gherkin.keywords.background` | `String`                 | `Background:` | value of Background keyword |
-| `stebz.gherkin.keywords.conclusion` | `String`                 | `Conclusion:` | value of Conclusion keyword |
-| `stebz.gherkin.keywords.rule`       | `String`                 | `Rule:`       | value of Rule keyword       |
-| `stebz.gherkin.keywords.given`      | `String`                 | `Given`       | value of Given keyword      |
-| `stebz.gherkin.keywords.when`       | `String`                 | `When`        | value of When keyword       |
-| `stebz.gherkin.keywords.then`       | `String`                 | `Then`        | value of Then keyword       |
-| `stebz.gherkin.keywords.and`        | `String`                 | `And`         | value of And keyword        |
-| `stebz.gherkin.keywords.but`        | `String`                 | `But`         | value of But keyword        |
+| property                                   | type      | default value | description      |
+|--------------------------------------------|-----------|---------------|------------------|
+| `stebz.extensions.aaa.annotations.enabled` | `Boolean` | `true`        | enable extension |
+| `stebz.extensions.aaa.annotations.order`   | `String`  | `5000`        | extension order  |
+
+#### `stebz-gherkin-keywords` module
+
+| property                                       | type                     | default value | description                 |
+|------------------------------------------------|--------------------------|---------------|-----------------------------|
+| `stebz.extensions.gherkin.keywords.background` | `String`                 | `Background:` | value of Background keyword |
+| `stebz.extensions.gherkin.keywords.conclusion` | `String`                 | `Conclusion:` | value of Conclusion keyword |
+| `stebz.extensions.gherkin.keywords.rule`       | `String`                 | `Rule:`       | value of Rule keyword       |
+| `stebz.extensions.gherkin.keywords.given`      | `String`                 | `Given`       | value of Given keyword      |
+| `stebz.extensions.gherkin.keywords.when`       | `String`                 | `When`        | value of When keyword       |
+| `stebz.extensions.gherkin.keywords.then`       | `String`                 | `Then`        | value of Then keyword       |
+| `stebz.extensions.gherkin.keywords.and`        | `String`                 | `And`         | value of And keyword        |
+| `stebz.extensions.gherkin.keywords.but`        | `String`                 | `But`         | value of But keyword        |
+
+#### `stebz-gherkin-annotations` module
+
+| property                                       | type      | default value | description      |
+|------------------------------------------------|-----------|---------------|------------------|
+| `stebz.extensions.gherkin.annotations.enabled` | `Boolean` | `true`        | enable extension |
+| `stebz.extensions.gherkin.annotations.order`   | `String`  | `5000`        | extension order  |
 
 #### `stebz-clean-stack-trace` module
 
