@@ -23,14 +23,14 @@
  */
 package org.stebz.extension;
 
+import dev.jlet.function.ThrowingRunnable;
+import dev.jlet.function.ThrowingSupplier;
 import org.junit.jupiter.api.Test;
 import org.stebz.attribute.StepAttributes;
 import org.stebz.step.StepObj;
 import org.stebz.step.executable.RunnableStep;
 import org.stebz.step.executable.SupplierStep;
 import org.stebz.util.container.NullableOptional;
-import org.stebz.util.function.ThrowingRunnable;
-import org.stebz.util.function.ThrowingSupplier;
 import org.stebz.util.property.PropertiesReader;
 
 import java.util.Properties;

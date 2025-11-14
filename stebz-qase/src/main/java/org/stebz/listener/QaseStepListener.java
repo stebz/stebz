@@ -23,6 +23,8 @@
  */
 package org.stebz.listener;
 
+import dev.jlet.function.ThrowingConsumer;
+import dev.jlet.function.ThrowingFunction;
 import io.qase.commons.StepStorage;
 import io.qase.commons.models.domain.Attachment;
 import io.qase.commons.models.domain.StepResult;
@@ -34,8 +36,6 @@ import org.stebz.attribute.ReflectiveStepAttributes;
 import org.stebz.executor.StartupPropertiesReader;
 import org.stebz.step.StepObj;
 import org.stebz.util.container.NullableOptional;
-import org.stebz.util.function.ThrowingConsumer;
-import org.stebz.util.function.ThrowingFunction;
 import org.stebz.util.property.PropertiesReader;
 
 import java.util.Arrays;

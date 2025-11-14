@@ -23,6 +23,7 @@
  */
 package org.stebz.extension;
 
+import dev.jlet.function.ThrowingFunction;
 import org.stebz.annotation.gherkin.And;
 import org.stebz.annotation.gherkin.Background;
 import org.stebz.annotation.gherkin.But;
@@ -35,9 +36,8 @@ import org.stebz.attribute.Keyword;
 import org.stebz.attribute.StepAttribute;
 import org.stebz.executor.StartupPropertiesReader;
 import org.stebz.step.StepObj;
+import org.stebz.util.Cached;
 import org.stebz.util.container.NullableOptional;
-import org.stebz.util.function.ThrowingFunction;
-import org.stebz.util.function.ThrowingSupplier.Caching;
 import org.stebz.util.property.PropertiesReader;
 
 import java.lang.annotation.Annotation;
@@ -47,7 +47,6 @@ import java.util.Map;
 import static org.stebz.attribute.ReflectiveStepAttributes.REFLECTIVE_NAME;
 import static org.stebz.attribute.StepAttribute.KEYWORD;
 import static org.stebz.attribute.StepAttribute.NAME;
-import static org.stebz.util.function.ThrowingSupplier.caching;
 
 /**
  * Gherkin annotations {@link StebzExtension}.
@@ -70,21 +69,20 @@ public class GherkinAnnotationsExtension implements InterceptStep {
    * @see But
    */
   public static final StepAttribute<Annotation> GHERKIN_KEYWORD = StepAttribute.nullable(GHERKIN_KEYWORD_ATTRIBUTE_KEY);
-  private static final Caching<Map<Class<? extends Annotation>, Keyword>> KEYWORDS =
-    caching(() -> {
-      final Map<Class<? extends Annotation>, Keyword> keywords = new HashMap<>();
-      keywords.put(Background.class, GherkinKeywords.background());
-      keywords.put(Conclusion.class, GherkinKeywords.conclusion());
-      keywords.put(Rule.class, GherkinKeywords.rule());
-      keywords.put(Given.class, GherkinKeywords.given());
-      keywords.put(When.class, GherkinKeywords.when());
-      keywords.put(Then.class, GherkinKeywords.then());
-      keywords.put(And.class, GherkinKeywords.and());
-      keywords.put(But.class, GherkinKeywords.but());
-      return keywords;
-    });
-  private static final Caching<Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>>> VALUES =
-    caching(() -> {
+  private static final Cached<Map<Class<? extends Annotation>, Keyword>> KEYWORDS = new Cached<>(() -> {
+    final Map<Class<? extends Annotation>, Keyword> keywords = new HashMap<>();
+    keywords.put(Background.class, GherkinKeywords.background());
+    keywords.put(Conclusion.class, GherkinKeywords.conclusion());
+    keywords.put(Rule.class, GherkinKeywords.rule());
+    keywords.put(Given.class, GherkinKeywords.given());
+    keywords.put(When.class, GherkinKeywords.when());
+    keywords.put(Then.class, GherkinKeywords.then());
+    keywords.put(And.class, GherkinKeywords.and());
+    keywords.put(But.class, GherkinKeywords.but());
+    return keywords;
+  });
+  private static final Cached<Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>>> VALUES =
+    new Cached<>(() -> {
       final Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>> values = new HashMap<>();
       values.put(Background.class, annot -> ((Background) annot).value());
       values.put(Conclusion.class, annot -> ((Conclusion) annot).value());

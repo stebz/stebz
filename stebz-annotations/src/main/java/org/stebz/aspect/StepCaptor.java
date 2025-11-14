@@ -23,29 +23,29 @@
  */
 package org.stebz.aspect;
 
+import dev.jlet.function.ThrowingConsumer;
+import dev.jlet.function.ThrowingConsumer2;
+import dev.jlet.function.ThrowingConsumer3;
+import dev.jlet.function.ThrowingConsumer4;
+import dev.jlet.function.ThrowingConsumer5;
+import dev.jlet.function.ThrowingConsumer6;
+import dev.jlet.function.ThrowingConsumer7;
+import dev.jlet.function.ThrowingConsumer8;
+import dev.jlet.function.ThrowingFunction;
+import dev.jlet.function.ThrowingFunction2;
+import dev.jlet.function.ThrowingFunction3;
+import dev.jlet.function.ThrowingFunction4;
+import dev.jlet.function.ThrowingFunction5;
+import dev.jlet.function.ThrowingFunction6;
+import dev.jlet.function.ThrowingFunction7;
+import dev.jlet.function.ThrowingFunction8;
+import dev.jlet.function.ThrowingRunnable;
+import dev.jlet.function.ThrowingSupplier;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.ConstructorSignature;
 import org.stebz.attribute.StepAttributes;
 import org.stebz.step.executable.RunnableStep;
 import org.stebz.step.executable.SupplierStep;
-import org.stebz.util.function.ThrowingConsumer;
-import org.stebz.util.function.ThrowingConsumer2;
-import org.stebz.util.function.ThrowingConsumer3;
-import org.stebz.util.function.ThrowingConsumer4;
-import org.stebz.util.function.ThrowingConsumer5;
-import org.stebz.util.function.ThrowingConsumer6;
-import org.stebz.util.function.ThrowingConsumer7;
-import org.stebz.util.function.ThrowingConsumer8;
-import org.stebz.util.function.ThrowingFunction;
-import org.stebz.util.function.ThrowingFunction2;
-import org.stebz.util.function.ThrowingFunction3;
-import org.stebz.util.function.ThrowingFunction4;
-import org.stebz.util.function.ThrowingFunction5;
-import org.stebz.util.function.ThrowingFunction6;
-import org.stebz.util.function.ThrowingFunction7;
-import org.stebz.util.function.ThrowingFunction8;
-import org.stebz.util.function.ThrowingRunnable;
-import org.stebz.util.function.ThrowingSupplier;
 
 import java.lang.reflect.Constructor;
 

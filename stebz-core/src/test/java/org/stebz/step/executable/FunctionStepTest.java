@@ -23,9 +23,9 @@
  */
 package org.stebz.step.executable;
 
+import dev.jlet.function.ThrowingFunction;
 import org.junit.jupiter.api.Test;
 import org.stebz.attribute.StepAttributes;
-import org.stebz.util.function.ThrowingFunction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

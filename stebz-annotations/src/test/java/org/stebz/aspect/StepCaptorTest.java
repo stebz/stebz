@@ -23,11 +23,11 @@
  */
 package org.stebz.aspect;
 
+import dev.jlet.function.ThrowingSupplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.stebz.step.executable.RunnableStep;
 import org.stebz.step.executable.SupplierStep;
-import org.stebz.util.function.ThrowingSupplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;

@@ -45,6 +45,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>dev.jlet</groupId>
+      <artifactId>jlet</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>

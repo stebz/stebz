@@ -23,8 +23,8 @@
  */
 package org.stebz.attribute;
 
-import org.stebz.util.function.ThrowingConsumer;
-import org.stebz.util.function.ThrowingFunction;
+import dev.jlet.function.ThrowingConsumer;
+import dev.jlet.function.ThrowingFunction;
 
 import java.util.HashMap;
 import java.util.Map;

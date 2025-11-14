@@ -23,6 +23,7 @@
  */
 package org.stebz.executor;
 
+import dev.jlet.function.ThrowingFunction2;
 import org.stebz.exception.StebzStartupException;
 import org.stebz.extension.AfterStepFailure;
 import org.stebz.extension.AfterStepStart;
@@ -41,9 +42,8 @@ import org.stebz.step.executable.ConsumerStep;
 import org.stebz.step.executable.FunctionStep;
 import org.stebz.step.executable.RunnableStep;
 import org.stebz.step.executable.SupplierStep;
+import org.stebz.util.Cached;
 import org.stebz.util.container.NullableOptional;
-import org.stebz.util.function.ThrowingFunction2;
-import org.stebz.util.function.ThrowingSupplier;
 import org.stebz.util.property.PropertiesReader;
 
 import java.util.ArrayList;
@@ -117,8 +117,7 @@ public interface StepExecutor {
    * Default {@code StepExecutor} implementation.
    */
   final class Of implements StepExecutor {
-    private static final ThrowingSupplier<StepExecutor, Error> INSTANCE =
-      new ThrowingSupplier.Caching<>(Of::createMainStepExecutor);
+    private static final Cached<StepExecutor> INSTANCE = new Cached<>(Of::createMainStepExecutor);
     private final StepListener[] listeners;
     private final InterceptStepContext[] interceptContextExts;
     private final InterceptStep[] interceptStepExts;

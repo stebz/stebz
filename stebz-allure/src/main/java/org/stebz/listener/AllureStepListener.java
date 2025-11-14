@@ -23,6 +23,8 @@
  */
 package org.stebz.listener;
 
+import dev.jlet.function.ThrowingConsumer;
+import dev.jlet.function.ThrowingFunction;
 import io.qameta.allure.Allure;
 import io.qameta.allure.AllureLifecycle;
 import io.qameta.allure.model.Parameter;
@@ -37,8 +39,6 @@ import org.stebz.attribute.ReflectiveStepAttributes;
 import org.stebz.executor.StartupPropertiesReader;
 import org.stebz.step.StepObj;
 import org.stebz.util.container.NullableOptional;
-import org.stebz.util.function.ThrowingConsumer;
-import org.stebz.util.function.ThrowingFunction;
 import org.stebz.util.property.PropertiesReader;
 
 import java.util.HashMap;

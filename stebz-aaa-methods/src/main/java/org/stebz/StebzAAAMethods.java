@@ -23,6 +23,8 @@
  */
 package org.stebz;
 
+import dev.jlet.function.ThrowingRunnable;
+import dev.jlet.function.ThrowingSupplier;
 import org.stebz.attribute.StepAttributes;
 import org.stebz.executor.StepExecutor;
 import org.stebz.extension.AAAKeywords;
@@ -30,8 +32,6 @@ import org.stebz.step.executable.ConsumerStep;
 import org.stebz.step.executable.FunctionStep;
 import org.stebz.step.executable.RunnableStep;
 import org.stebz.step.executable.SupplierStep;
-import org.stebz.util.function.ThrowingRunnable;
-import org.stebz.util.function.ThrowingSupplier;
 
 import java.util.Map;
 

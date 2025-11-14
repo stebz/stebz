@@ -23,7 +23,7 @@
  */
 package org.stebz.attribute;
 
-import org.stebz.util.function.ThrowingFunction;
+import dev.jlet.function.ThrowingFunction;
 
 import java.util.AbstractMap;
 import java.util.Collections;
