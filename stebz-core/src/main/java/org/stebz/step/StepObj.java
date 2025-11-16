@@ -25,9 +25,15 @@ package org.stebz.step;
 
 import dev.jlet.function.ThrowingConsumer;
 import dev.jlet.function.ThrowingFunction;
+import dev.jlet.function.ThrowingRunnable;
+import dev.jlet.function.ThrowingSupplier;
 import org.stebz.attribute.Keyword;
 import org.stebz.attribute.StepAttribute;
 import org.stebz.attribute.StepAttributes;
+import org.stebz.step.executable.ConsumerStep;
+import org.stebz.step.executable.FunctionStep;
+import org.stebz.step.executable.RunnableStep;
+import org.stebz.step.executable.SupplierStep;
 
 import java.util.Map;
 
@@ -539,5 +545,441 @@ public interface StepObj<S extends StepObj<S>> {
    */
   default S withoutHidden() {
     return this.without(HIDDEN);
+  }
+
+  /**
+   * Returns {@code RunnableStep} with given body. Alias for {@link RunnableStep#of(ThrowingRunnable)} method.
+   *
+   * @param body the step body
+   * @return {@code RunnableStep} with given body
+   * @throws NullPointerException if {@code body} arg is null
+   */
+  static RunnableStep stepOf(final ThrowingRunnable<?> body) {
+    return RunnableStep.of(body);
+  }
+
+  /**
+   * Returns {@code RunnableStep} with given attributes and body. Alias for
+   * {@link RunnableStep#of(String, ThrowingRunnable)} method.
+   *
+   * @param name the step name
+   * @param body the step body
+   * @return {@code RunnableStep} with given name and body
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
+   */
+  static RunnableStep stepOf(final String name,
+                             final ThrowingRunnable<?> body) {
+    return RunnableStep.of(name, body);
+  }
+
+  /**
+   * Returns {@code RunnableStep} with given attributes and body. Alias for
+   * {@link RunnableStep#of(String, String, ThrowingRunnable)} method.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @return {@code RunnableStep} with given name and body
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
+   */
+  static RunnableStep stepOf(final String name,
+                             final String expectedResult,
+                             final ThrowingRunnable<?> body) {
+    return RunnableStep.of(name, expectedResult, body);
+  }
+
+  /**
+   * Returns {@code RunnableStep} with given attributes and body. Alias for
+   * {@link RunnableStep#of(String, Map, ThrowingRunnable)} method.
+   *
+   * @param name   the step name
+   * @param params the step params
+   * @param body   the step body
+   * @return {@code RunnableStep} with given name, params and body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
+   */
+  static RunnableStep stepOf(final String name,
+                             final Map<String, ?> params,
+                             final ThrowingRunnable<?> body) {
+    return RunnableStep.of(name, params, body);
+  }
+
+  /**
+   * Returns {@code RunnableStep} with given attributes and body. Alias for
+   * {@link RunnableStep#of(String, Map, String, ThrowingRunnable)} method.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @return {@code RunnableStep} with given name, params and body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
+   */
+  static RunnableStep stepOf(final String name,
+                             final Map<String, ?> params,
+                             final String expectedResult,
+                             final ThrowingRunnable<?> body) {
+    return RunnableStep.of(name, params, expectedResult, body);
+  }
+
+  /**
+   * Returns {@code RunnableStep} of given step attributes and body. Alias for {@link RunnableStep#of(RunnableStep)}
+   * method.
+   *
+   * @param origin the origin step
+   * @return {@code RunnableStep} of given step attributes and body
+   * @throws NullPointerException if {@code origin} arg is null
+   */
+  static RunnableStep stepOf(final RunnableStep origin) {
+    return RunnableStep.of(origin);
+  }
+
+  /**
+   * Returns {@code RunnableStep} with given attributes and body. Alias for
+   * {@link RunnableStep#of(StepAttributes, ThrowingRunnable)} method.
+   *
+   * @param attributes the step attributes
+   * @param body       the step body
+   * @return {@code RunnableStep} with given attributes and body
+   * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
+   */
+  static RunnableStep stepOf(final StepAttributes attributes,
+                             final ThrowingRunnable<?> body) {
+    return RunnableStep.of(attributes, body);
+  }
+
+  /**
+   * Returns {@code ConsumerStep} with given body. Alias for {@link ConsumerStep#of(ThrowingConsumer)} method.
+   *
+   * @param body the step body
+   * @param <T>  the type of the step input value
+   * @return {@code ConsumerStep} with given body
+   * @throws NullPointerException if {@code body} arg is null
+   */
+  static <T> ConsumerStep<T> stepOf(final ThrowingConsumer<T, ?> body) {
+    return ConsumerStep.of(body);
+  }
+
+  /**
+   * Returns {@code ConsumerStep} with given attributes and body. Alias for
+   * {@link ConsumerStep#of(String, ThrowingConsumer)} method.
+   *
+   * @param name the step name
+   * @param body the step body
+   * @param <T>  the type of the step input value
+   * @return {@code ConsumerStep} with given name and body
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
+   */
+  static <T> ConsumerStep<T> stepOf(final String name,
+                                    final ThrowingConsumer<T, ?> body) {
+    return ConsumerStep.of(name, body);
+  }
+
+  /**
+   * Returns {@code ConsumerStep} with given attributes and body. Alias for
+   * {@link ConsumerStep#of(String, String, ThrowingConsumer)} method.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <T>            the type of the step input value
+   * @return {@code ConsumerStep} with given name and body
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
+   */
+  static <T> ConsumerStep<T> stepOf(final String name,
+                                    final String expectedResult,
+                                    final ThrowingConsumer<T, ?> body) {
+    return ConsumerStep.of(name, expectedResult, body);
+  }
+
+  /**
+   * Returns {@code ConsumerStep} with given attributes and body. Alias for
+   * {@link ConsumerStep#of(String, Map, ThrowingConsumer)} method.
+   *
+   * @param name   the step name
+   * @param params the step params
+   * @param body   the step body
+   * @param <T>    the type of the step input value
+   * @return {@code ConsumerStep} with given name, params and body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
+   */
+  static <T> ConsumerStep<T> stepOf(final String name,
+                                    final Map<String, ?> params,
+                                    final ThrowingConsumer<T, ?> body) {
+    return ConsumerStep.of(name, params, body);
+  }
+
+  /**
+   * Returns {@code ConsumerStep} with given attributes and body. Alias for
+   * {@link ConsumerStep#of(String, Map, String, ThrowingConsumer)} method.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <T>            the type of the step input value
+   * @return {@code ConsumerStep} with given name, params and body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
+   */
+  static <T> ConsumerStep<T> stepOf(final String name,
+                                    final Map<String, ?> params,
+                                    final String expectedResult,
+                                    final ThrowingConsumer<T, ?> body) {
+    return ConsumerStep.of(name, params, expectedResult, body);
+  }
+
+  /**
+   * Returns {@code ConsumerStep} of given step attributes and body. Alias for {@link ConsumerStep#of(ConsumerStep)}
+   * method.
+   *
+   * @param origin the origin step
+   * @param <T>    the type of the step input value
+   * @return {@code ConsumerStep} of given step attributes and body
+   * @throws NullPointerException if {@code origin} arg is null
+   */
+  static <T> ConsumerStep<T> stepOf(final ConsumerStep<T> origin) {
+    return ConsumerStep.of(origin);
+  }
+
+  /**
+   * Returns {@code ConsumerStep} with given attributes and body. Alias for
+   * {@link ConsumerStep#of(StepAttributes, ThrowingConsumer)} method.
+   *
+   * @param attributes the step attributes
+   * @param body       the step body
+   * @param <T>        the type of the step input value
+   * @return {@code ConsumerStep} with given attributes and body
+   * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
+   */
+  static <T> ConsumerStep<T> stepOf(final StepAttributes attributes,
+                                    final ThrowingConsumer<T, ?> body) {
+    return ConsumerStep.of(attributes, body);
+  }
+
+  /**
+   * Returns {@code SupplierStep} with given body. Alias for {@link SupplierStep#of(ThrowingSupplier)} method.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return {@code SupplierStep} with given body
+   * @throws NullPointerException if {@code body} arg is null
+   */
+  static <R> SupplierStep<R> stepOf(final ThrowingSupplier<R, ?> body) {
+    return SupplierStep.of(body);
+  }
+
+  /**
+   * Returns {@code SupplierStep} with given attributes and body. Alias for
+   * {@link SupplierStep#of(String, ThrowingSupplier)} method.
+   *
+   * @param name the step name
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return {@code SupplierStep} with given name and body
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
+   */
+  static <R> SupplierStep<R> stepOf(final String name,
+                                    final ThrowingSupplier<R, ?> body) {
+    return SupplierStep.of(name, body);
+  }
+
+  /**
+   * Returns {@code SupplierStep} with given attributes and body. Alias for
+   * {@link SupplierStep#of(String, String, ThrowingSupplier)} method.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return {@code SupplierStep} with given name and body
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
+   */
+  static <R> SupplierStep<R> stepOf(final String name,
+                                    final String expectedResult,
+                                    final ThrowingSupplier<R, ?> body) {
+    return SupplierStep.of(name, expectedResult, body);
+  }
+
+  /**
+   * Returns {@code SupplierStep} with given attributes and body. Alias for
+   * {@link SupplierStep#of(String, Map, String, ThrowingSupplier)} method.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return {@code SupplierStep} with given name, params and body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
+   */
+  static <R> SupplierStep<R> stepOf(final String name,
+                                    final Map<String, ?> params,
+                                    final String expectedResult,
+                                    final ThrowingSupplier<R, ?> body) {
+    return SupplierStep.of(name, params, expectedResult, body);
+  }
+
+  /**
+   * Returns {@code SupplierStep} with given attributes and body. Alias for
+   * {@link SupplierStep#of(String, Map, ThrowingSupplier)} method.
+   *
+   * @param name   the step name
+   * @param params the step params
+   * @param body   the step body
+   * @param <R>    the type of the step result
+   * @return {@code SupplierStep} with given name, params and body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
+   */
+  static <R> SupplierStep<R> stepOf(final String name,
+                                    final Map<String, ?> params,
+                                    final ThrowingSupplier<R, ?> body) {
+    return SupplierStep.of(name, params, body);
+  }
+
+  /**
+   * Returns {@code SupplierStep} of given step attributes and body. Alias for {@link SupplierStep#of(SupplierStep)}
+   * method.
+   *
+   * @param origin the origin step
+   * @param <R>    the type of the step result
+   * @return {@code SupplierStep} of given step attributes and body
+   * @throws NullPointerException if {@code origin} arg is null
+   */
+  static <R> SupplierStep<R> stepOf(final SupplierStep<R> origin) {
+    return SupplierStep.of(origin);
+  }
+
+  /**
+   * Returns {@code SupplierStep} with given attributes and body. Alias for
+   * {@link SupplierStep#of(StepAttributes, ThrowingSupplier)} method.
+   *
+   * @param attributes the step attributes
+   * @param body       the step body
+   * @param <R>        the type of the step result
+   * @return {@code SupplierStep} with given attributes and body
+   * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
+   */
+  static <R> SupplierStep<R> stepOf(final StepAttributes attributes,
+                                    final ThrowingSupplier<R, ?> body) {
+    return SupplierStep.of(attributes, body);
+  }
+
+  /**
+   * Returns {@code FunctionStep} with given body. Alias for {@link FunctionStep#of(ThrowingFunction)} method.
+   *
+   * @param body the step body
+   * @param <T>  the type of the step input value
+   * @param <R>  the type of the step result
+   * @return {@code FunctionStep} with given body
+   * @throws NullPointerException if {@code body} arg is null
+   */
+  static <T, R> FunctionStep<T, R> stepOf(final ThrowingFunction<T, R, ?> body) {
+    return FunctionStep.of(body);
+  }
+
+  /**
+   * Returns {@code FunctionStep} with given attributes and body. Alias for
+   * {@link FunctionStep#of(String, ThrowingFunction)} method.
+   *
+   * @param name the step name
+   * @param body the step body
+   * @param <T>  the type of the step input value
+   * @param <R>  the type of the step result
+   * @return {@code FunctionStep} with given attributes and body
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
+   */
+  static <T, R> FunctionStep<T, R> stepOf(final String name,
+                                          final ThrowingFunction<T, R, ?> body) {
+    return FunctionStep.of(name, body);
+  }
+
+  /**
+   * Returns {@code FunctionStep} with given attributes and body. Alias for
+   * {@link FunctionStep#of(String, String, ThrowingFunction)} method.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <T>            the type of the step input value
+   * @param <R>            the type of the step result
+   * @return {@code FunctionStep} with given attributes and body
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
+   */
+  static <T, R> FunctionStep<T, R> stepOf(final String name,
+                                          final String expectedResult,
+                                          final ThrowingFunction<T, R, ?> body) {
+    return FunctionStep.of(name, expectedResult, body);
+  }
+
+  /**
+   * Returns {@code FunctionStep} with given attributes and body. Alias for
+   * {@link FunctionStep#of(String, Map, ThrowingFunction)} method.
+   *
+   * @param name   the step name
+   * @param params the step params
+   * @param body   the step body
+   * @param <T>    the type of the step input value
+   * @param <R>    the type of the step result
+   * @return {@code FunctionStep} with given attributes and body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
+   */
+  static <T, R> FunctionStep<T, R> stepOf(final String name,
+                                          final Map<String, ?> params,
+                                          final ThrowingFunction<T, R, ?> body) {
+    return FunctionStep.of(name, params, body);
+  }
+
+  /**
+   * Returns {@code FunctionStep} with given attributes and body. Alias for
+   * {@link FunctionStep#of(String, Map, String, ThrowingFunction)} method.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <T>            the type of the step input value
+   * @param <R>            the type of the step result
+   * @return {@code FunctionStep} with given attributes and body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
+   */
+  static <T, R> FunctionStep<T, R> stepOf(final String name,
+                                          final Map<String, ?> params,
+                                          final String expectedResult,
+                                          final ThrowingFunction<T, R, ?> body) {
+    return FunctionStep.of(name, params, expectedResult, body);
+  }
+
+  /**
+   * Returns {@code FunctionStep} of given step attributes and body. Alias for {@link FunctionStep#of(FunctionStep)}
+   * method.
+   *
+   * @param origin the origin step
+   * @param <T>    the type of the step input value
+   * @param <R>    the type of the step result
+   * @return {@code FunctionStep} of given step attributes and body
+   * @throws NullPointerException if {@code origin} arg is null
+   */
+  static <T, R> FunctionStep<T, R> stepOf(final FunctionStep<T, R> origin) {
+    return FunctionStep.of(origin);
+  }
+
+  /**
+   * Returns {@code FunctionStep} with given attributes and body. Alias for
+   * {@link FunctionStep#of(StepAttributes, ThrowingFunction)} method.
+   *
+   * @param attributes the step attributes
+   * @param body       the step body
+   * @param <T>        the type of the step input value
+   * @param <R>        the type of the step result
+   * @return {@code FunctionStep} with given attributes and body
+   * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
+   */
+  static <T, R> FunctionStep<T, R> stepOf(final StepAttributes attributes,
+                                          final ThrowingFunction<T, R, ?> body) {
+    return FunctionStep.of(attributes, body);
   }
 }
