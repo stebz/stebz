@@ -145,7 +145,7 @@ Steps in the methods way might look like:
 <!-- @formatter:off -->
 ```java
 public static RunnableStep user_is_authorized_as(String username,
-                                                 String password) { return RunnableStep.of(
+                                                 String password) { return stepOf(
   "user is authorized as {username}", params("username", username, "password", password), () -> {
     // step body
   }
@@ -160,7 +160,7 @@ Or like this using annotations:
 @WithName("user is authorized as {username}")
 @WithParams
 public static RunnableStep user_is_authorized_as(String username,
-                                                 String password) { return RunnableStep.of(() -> {
+                                                 String password) { return stepOf(() -> {
   // step body
 }); }
 ```
@@ -227,7 +227,7 @@ Maven:
   <dependency>
     <groupId>org.stebz</groupId>
     <artifactId>{module name}</artifactId>
-    <version>1.10</version>
+    <version>1.11</version>
   </dependency>
 </dependencies>
 ```
@@ -238,7 +238,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation 'org.stebz:{module name}:1.10'
+  implementation 'org.stebz:{module name}:1.11'
 }
 ```
 <!-- @formatter:on -->
@@ -248,7 +248,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation("org.stebz:{module name}:1.10")
+  implementation("org.stebz:{module name}:1.11")
 }
 ```
 <!-- @formatter:on -->
@@ -270,7 +270,7 @@ Maven:
     <dependency>
       <groupId>org.stebz</groupId>
       <artifactId>stebz-bom</artifactId>
-      <version>1.10</version>
+      <version>1.11</version>
       <scope>import</scope>
       <type>pom</type>
     </dependency>
@@ -284,7 +284,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation platform('org.stebz:stebz-bom:1.10')
+  implementation platform('org.stebz:stebz-bom:1.11')
 }
 ```
 <!-- @formatter:on -->
@@ -294,7 +294,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation(platform("org.stebz:stebz-bom:1.10"))
+  implementation(platform("org.stebz:stebz-bom:1.11"))
 }
 ```
 <!-- @formatter:on -->
@@ -571,7 +571,7 @@ Step objects with added attributes:
 @WithName("step name")
 @WithComment("step comment")
 @WithParam(name = "custom param", value = "custom param value")
-public static final RunnableStep fieldStep = RunnableStep.of(() -> {
+public static final RunnableStep fieldStep = stepOf(() -> {
   // step body
 });
 
@@ -579,7 +579,7 @@ public static final RunnableStep fieldStep = RunnableStep.of(() -> {
 @WithComment("step comment")
 @WithParams
 @WithParam(name = "custom param", value = "custom param value")
-public static RunnableStep methodStep(String parameter) { return RunnableStep.of(() -> {
+public static RunnableStep methodStep(String parameter) { return stepOf(() -> {
   // step body
 }); }
 

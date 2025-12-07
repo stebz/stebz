@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.11 (2025/12/07)
+
+* #127 add `stepOf` alias methods to create steps by @evpl in PR #128
+
 ## 1.10 (2025/11/14)
 
 * #120 add a parameter annotated with @Param even if there are no @WithParams or @Step annotations by @evpl in PR #121
