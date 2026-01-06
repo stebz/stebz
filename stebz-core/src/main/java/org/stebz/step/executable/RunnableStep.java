@@ -41,6 +41,24 @@ import static org.stebz.attribute.StepAttribute.PARAMS;
 public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RunnableStep> {
 
   /**
+   * Returns {@code RunnableStep} with empty body.
+   *
+   * @return {@code RunnableStep} with empty body
+   */
+  default RunnableStep withEmptyBody() {
+    return this.withBody(emptyBody());
+  }
+
+  /**
+   * Returns {@code RunnableStep} with body that throws an {@code StepNotImplementedError}.
+   *
+   * @return {@code RunnableStep} with body that throws an {@code StepNotImplementedError}.
+   */
+  default RunnableStep withNotImplementedBody() {
+    return this.withBody(notImplementedBody());
+  }
+
+  /**
    * Returns {@code RunnableStep} with given block before step body.
    *
    * @param block the before block
@@ -151,6 +169,42 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
   }
 
   /**
+   * Returns {@code RunnableStep} with empty body.
+   *
+   * @return {@code RunnableStep} with empty body
+   */
+  static RunnableStep empty() {
+    return Of.EMPTY_STEP;
+  }
+
+  /**
+   * Returns {@code RunnableStep} with body that throws an {@code StepNotImplementedError}.
+   *
+   * @return {@code RunnableStep} with body that throws an {@code StepNotImplementedError}
+   */
+  static RunnableStep notImplemented() {
+    return Of.NOT_IMPLEMENTED_STEP;
+  }
+
+  /**
+   * Returns {@code ThrowingRunnable} that does nothing.
+   *
+   * @return {@code ThrowingRunnable} that does nothing
+   */
+  static ThrowingRunnable<Error> emptyBody() {
+    return Of.EMPTY_BODY;
+  }
+
+  /**
+   * Returns {@code ThrowingRunnable} that throws an {@code StepNotImplementedError}.
+   *
+   * @return {@code ThrowingRunnable} that throws an {@code StepNotImplementedError}
+   */
+  static ThrowingRunnable<Error> notImplementedBody() {
+    return Of.NOT_IMPLEMENTED_BODY;
+  }
+
+  /**
    * Returns {@code RunnableStep} with given body.
    *
    * @param body the step body
@@ -247,50 +301,14 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
   }
 
   /**
-   * Returns {@code ThrowingRunnable} that does nothing.
-   *
-   * @return {@code ThrowingRunnable} that does nothing
-   * @see #empty()
-   */
-  static ThrowingRunnable<Error> emptyBody() {
-    return Of.EMPTY_BODY;
-  }
-
-  /**
-   * Returns {@code ThrowingRunnable} that throws an {@code StepNotImplementedError}.
-   *
-   * @return {@code ThrowingRunnable} that throws an {@code StepNotImplementedError}
-   * @see #notImplemented()
-   */
-  static ThrowingRunnable<Error> notImplementedBody() {
-    return () -> { throw new StepNotImplementedError("RunnableStep not implemented"); };
-  }
-
-  /**
-   * Returns {@code RunnableStep} with empty body.
-   *
-   * @return {@code RunnableStep} with empty body
-   * @see #emptyBody()
-   */
-  static RunnableStep empty() {
-    return RunnableStep.of(emptyBody());
-  }
-
-  /**
-   * Returns {@code RunnableStep} with not implemented body.
-   *
-   * @return {@code RunnableStep} with not implemented body
-   * @see #notImplementedBody()
-   */
-  static RunnableStep notImplemented() {
-    return RunnableStep.of(notImplementedBody());
-  }
-
-  /**
    * Default {@code RunnableStep} implementation.
    */
   class Of implements RunnableStep {
     private static final ThrowingRunnable<Error> EMPTY_BODY = () -> { };
+    private static final ThrowingRunnable<Error> NOT_IMPLEMENTED_BODY =
+      () -> { throw new StepNotImplementedError("RunnableStep not implemented"); };
+    private static final RunnableStep EMPTY_STEP = new Of(EMPTY_BODY);
+    private static final RunnableStep NOT_IMPLEMENTED_STEP = new Of(NOT_IMPLEMENTED_BODY);
     private final StepAttributes attributes;
     private final ThrowingRunnable<?> body;
 

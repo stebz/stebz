@@ -45,6 +45,33 @@ import static org.stebz.attribute.StepAttribute.PARAMS;
 public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, SupplierStep<R>> {
 
   /**
+   * Returns {@code SupplierStep} with empty body that returns {@code null} result.
+   *
+   * @return {@code SupplierStep} with empty body that returns {@code null} result
+   */
+  default SupplierStep<R> withEmptyBody() {
+    return this.withBody(emptyBody());
+  }
+
+  /**
+   * Returns {@code SupplierStep} with empty body that returns given result.
+   *
+   * @return {@code SupplierStep} with empty body that returns given result
+   */
+  default SupplierStep<R> withEmptyBodyReturning(final R result) {
+    return this.withBody(emptyBodyReturning(result));
+  }
+
+  /**
+   * Returns {@code SupplierStep} with body that throws an {@code StepNotImplementedError}.
+   *
+   * @return {@code SupplierStep} with body that throws an {@code StepNotImplementedError}.
+   */
+  default SupplierStep<R> withNotImplementedBody() {
+    return this.withBody(notImplementedBody());
+  }
+
+  /**
    * Returns {@code SupplierStep} with given block before step body.
    *
    * @param block the before block
@@ -204,6 +231,70 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
+   * Returns {@code SupplierStep} with empty body that returns {@code null} result.
+   *
+   * @param <R> the type of the step result
+   * @return {@code SupplierStep} with empty body that returns {@code null} result
+   */
+  @SuppressWarnings("unchecked")
+  static <R> SupplierStep<R> empty() {
+    return (SupplierStep<R>) Of.EMPTY_STEP;
+  }
+
+  /**
+   * Returns {@code SupplierStep} with empty body that returns given result.
+   *
+   * @param <R> the type of the step result
+   * @return {@code SupplierStep} with empty body that returns given result
+   */
+  static <R> SupplierStep<R> emptyReturning(final R result) {
+    return SupplierStep.of(emptyBodyReturning(result));
+  }
+
+  /**
+   * Returns {@code SupplierStep} with body that throws an {@code StepNotImplementedError}.
+   *
+   * @param <R> the type of the step result
+   * @return {@code SupplierStep} with body that throws an {@code StepNotImplementedError}
+   */
+  @SuppressWarnings("unchecked")
+  static <R> SupplierStep<R> notImplemented() {
+    return (SupplierStep<R>) Of.NOT_IMPLEMENTED_STEP;
+  }
+
+  /**
+   * Returns {@code ThrowingSupplier} that returns {@code null} result.
+   *
+   * @param <R> the type of the result
+   * @return {@code ThrowingSupplier} that returns {@code null} result
+   */
+  @SuppressWarnings("unchecked")
+  static <R> ThrowingSupplier<R, Error> emptyBody() {
+    return (ThrowingSupplier<R, Error>) Of.EMPTY_BODY;
+  }
+
+  /**
+   * Returns {@code ThrowingSupplier} that returns given result.
+   *
+   * @param <R> the type of the result
+   * @return {@code ThrowingSupplier} that returns given result
+   */
+  static <R> ThrowingSupplier<R, Error> emptyBodyReturning(final R result) {
+    return () -> result;
+  }
+
+  /**
+   * Returns {@code ThrowingSupplier} that throws an {@code StepNotImplementedError}.
+   *
+   * @param <R> the type of the result
+   * @return {@code ThrowingSupplier} that throws an {@code StepNotImplementedError}
+   */
+  @SuppressWarnings("unchecked")
+  static <R> ThrowingSupplier<R, Error> notImplementedBody() {
+    return (ThrowingSupplier<R, Error>) Of.NOT_IMPLEMENTED_BODY;
+  }
+
+  /**
    * Returns {@code SupplierStep} with given body.
    *
    * @param body the step body
@@ -307,33 +398,16 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code ThrowingSupplier} that throws an {@code StepNotImplementedError}.
-   *
-   * @param <R> the type of the step result
-   * @return {@code ThrowingSupplier} that throws an {@code StepNotImplementedError}
-   * @see #notImplemented()
-   */
-  static <R> ThrowingSupplier<R, Error> notImplementedBody() {
-    return () -> { throw new StepNotImplementedError("SupplierStep not implemented"); };
-  }
-
-  /**
-   * Returns {@code SupplierStep} with not implemented body.
-   *
-   * @param <R> the type of the step result
-   * @return {@code SupplierStep} with not implemented body
-   * @see #notImplementedBody()
-   */
-  static <R> SupplierStep<R> notImplemented() {
-    return SupplierStep.of(notImplementedBody());
-  }
-
-  /**
    * Default {@code SupplierStep} implementation.
    *
    * @param <R> the type of the step result
    */
   class Of<R> implements SupplierStep<R> {
+    private static final ThrowingSupplier<?, Error> EMPTY_BODY = () -> null;
+    private static final ThrowingSupplier<?, Error> NOT_IMPLEMENTED_BODY =
+      () -> { throw new StepNotImplementedError("SupplierStep not implemented"); };
+    private static final SupplierStep<?> EMPTY_STEP = new SupplierStep.Of<>(EMPTY_BODY);
+    private static final SupplierStep<?> NOT_IMPLEMENTED_STEP = new SupplierStep.Of<>(NOT_IMPLEMENTED_BODY);
     private final StepAttributes attributes;
     private final ThrowingSupplier<R, ?> body;
 

@@ -46,6 +46,33 @@ import static org.stebz.attribute.StepAttribute.PARAMS;
 public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R, ?>, FunctionStep<T, R>> {
 
   /**
+   * Returns {@code FunctionStep} with empty body that returns {@code null} result.
+   *
+   * @return {@code FunctionStep} with empty body that returns {@code null} result
+   */
+  default FunctionStep<T, R> withEmptyBody() {
+    return this.withBody(emptyBody());
+  }
+
+  /**
+   * Returns {@code FunctionStep} with empty body that returns given result.
+   *
+   * @return {@code FunctionStep} with empty body that returns given result
+   */
+  default FunctionStep<T, R> withEmptyBodyReturning(final R result) {
+    return this.withBody(emptyBodyReturning(result));
+  }
+
+  /**
+   * Returns {@code FunctionStep} with body that throws an {@code StepNotImplementedError}.
+   *
+   * @return {@code FunctionStep} with body that throws an {@code StepNotImplementedError}.
+   */
+  default FunctionStep<T, R> withNotImplementedBody() {
+    return this.withBody(notImplementedBody());
+  }
+
+  /**
    * Returns {@code FunctionStep} with given block before body.
    *
    * @param block the before block
@@ -199,6 +226,76 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
+   * Returns {@code FunctionStep} with empty body that returns {@code null} result.
+   *
+   * @param <T> the type of the step input value
+   * @param <R> the type of the step result
+   * @return {@code FunctionStep} with empty body that returns {@code null} result
+   */
+  @SuppressWarnings("unchecked")
+  static <T, R> FunctionStep<T, R> empty() {
+    return (FunctionStep<T, R>) Of.EMPTY_STEP;
+  }
+
+  /**
+   * Returns {@code FunctionStep} with empty body that returns given result.
+   *
+   * @param <T> the type of the step input value
+   * @param <R> the type of the step result
+   * @return {@code FunctionStep} with empty body that returns given result
+   */
+  static <T, R> FunctionStep<T, R> emptyReturning(final R result) {
+    return FunctionStep.of(emptyBodyReturning(result));
+  }
+
+  /**
+   * Returns {@code FunctionStep} with body that throws an {@code StepNotImplementedError}.
+   *
+   * @param <T> the type of the step input value
+   * @param <R> the type of the step result
+   * @return {@code FunctionStep} with body that throws an {@code StepNotImplementedError}
+   */
+  @SuppressWarnings("unchecked")
+  static <T, R> FunctionStep<T, R> notImplemented() {
+    return (FunctionStep<T, R>) Of.NOT_IMPLEMENTED_STEP;
+  }
+
+  /**
+   * Returns {@code ThrowingFunction} that returns {@code null} result.
+   *
+   * @param <T> the type of the input value
+   * @param <R> the type of the result
+   * @return {@code ThrowingFunction} that returns {@code null} result
+   */
+  @SuppressWarnings("unchecked")
+  static <T, R> ThrowingFunction<T, R, Error> emptyBody() {
+    return (ThrowingFunction<T, R, Error>) Of.EMPTY_BODY;
+  }
+
+  /**
+   * Returns {@code ThrowingFunction} that returns given result.
+   *
+   * @param <T> the type of the input value
+   * @param <R> the type of the result
+   * @return {@code ThrowingFunction} that returns given result
+   */
+  static <T, R> ThrowingFunction<T, R, Error> emptyBodyReturning(final R result) {
+    return t -> result;
+  }
+
+  /**
+   * Returns {@code ThrowingFunction} that throws an {@code StepNotImplementedError}.
+   *
+   * @param <T> the type of the input value
+   * @param <R> the type of the result
+   * @return {@code ThrowingFunction} that throws an {@code StepNotImplementedError}
+   */
+  @SuppressWarnings("unchecked")
+  static <T, R> ThrowingFunction<T, R, Error> notImplementedBody() {
+    return (ThrowingFunction<T, R, Error>) Of.NOT_IMPLEMENTED_BODY;
+  }
+
+  /**
    * Returns {@code FunctionStep} with given body.
    *
    * @param body the step body
@@ -309,36 +406,17 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code ThrowingFunction} that throws an {@code StepNotImplementedError}.
-   *
-   * @param <T> the type of the step input value
-   * @param <R> the type of the step result
-   * @return {@code ThrowingFunction} that throws an {@code StepNotImplementedError}
-   * @see #notImplemented()
-   */
-  static <T, R> ThrowingFunction<T, R, Error> notImplementedBody() {
-    return v -> { throw new StepNotImplementedError("FunctionStep not implemented"); };
-  }
-
-  /**
-   * Returns {@code FunctionStep} with not implemented body.
-   *
-   * @param <T> the type of the step input value
-   * @param <R> the type of the step result
-   * @return {@code FunctionStep} with not implemented body
-   * @see #notImplementedBody()
-   */
-  static <T, R> FunctionStep<T, R> notImplemented() {
-    return FunctionStep.of(notImplementedBody());
-  }
-
-  /**
    * Default {@code FunctionStep} implementation.
    *
    * @param <T> the type of the step input value
    * @param <R> the type of the step result
    */
   class Of<T, R> implements FunctionStep<T, R> {
+    private static final ThrowingFunction<?, ?, ?> EMPTY_BODY = t -> null;
+    private static final ThrowingFunction<?, ?, ?> NOT_IMPLEMENTED_BODY =
+      t -> { throw new StepNotImplementedError("FunctionStep not implemented"); };
+    private static final FunctionStep<?, ?> EMPTY_STEP = new FunctionStep.Of<>(EMPTY_BODY);
+    private static final FunctionStep<?, ?> NOT_IMPLEMENTED_STEP = new FunctionStep.Of<>(NOT_IMPLEMENTED_BODY);
     private final StepAttributes attributes;
     private final ThrowingFunction<T, R, ?> body;
 

@@ -43,6 +43,24 @@ import static org.stebz.attribute.StepAttribute.PARAMS;
 public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, ConsumerStep<T>> {
 
   /**
+   * Returns {@code ConsumerStep} with empty body.
+   *
+   * @return {@code ConsumerStep} with empty body
+   */
+  default ConsumerStep<T> withEmptyBody() {
+    return this.withBody(emptyBody());
+  }
+
+  /**
+   * Returns {@code ConsumerStep} with body that throws an {@code StepNotImplementedError}.
+   *
+   * @return {@code ConsumerStep} with body that throws an {@code StepNotImplementedError}.
+   */
+  default ConsumerStep<T> withNotImplementedBody() {
+    return this.withBody(notImplementedBody());
+  }
+
+  /**
    * Returns {@code ConsumerStep} with given block before body.
    *
    * @param block the before block
@@ -153,6 +171,50 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
+   * Returns {@code ConsumerStep} with empty body.
+   *
+   * @param <T> the type of the step input value
+   * @return {@code ConsumerStep} with empty body
+   */
+  @SuppressWarnings("unchecked")
+  static <T> ConsumerStep<T> empty() {
+    return (ConsumerStep<T>) Of.EMPTY_STEP;
+  }
+
+  /**
+   * Returns {@code ConsumerStep} with body that throws an {@code StepNotImplementedError}.
+   *
+   * @param <T> the type of the step input value
+   * @return {@code ConsumerStep} with body that throws an {@code StepNotImplementedError}
+   */
+  @SuppressWarnings("unchecked")
+  static <T> ConsumerStep<T> notImplemented() {
+    return (ConsumerStep<T>) Of.NOT_IMPLEMENTED_STEP;
+  }
+
+  /**
+   * Returns {@code ThrowingConsumer} that does nothing.
+   *
+   * @param <T> the type of the input value
+   * @return {@code ThrowingConsumer} that does nothing
+   */
+  @SuppressWarnings("unchecked")
+  static <T> ThrowingConsumer<T, Error> emptyBody() {
+    return (ThrowingConsumer<T, Error>) Of.EMPTY_BODY;
+  }
+
+  /**
+   * Returns {@code ThrowingConsumer} that throws an {@code StepNotImplementedError}.
+   *
+   * @param <T> the type of the input value
+   * @return {@code ThrowingConsumer} that throws an {@code StepNotImplementedError}
+   */
+  @SuppressWarnings("unchecked")
+  static <T> ThrowingConsumer<T, Error> notImplementedBody() {
+    return (ThrowingConsumer<T, Error>) Of.NOT_IMPLEMENTED_BODY;
+  }
+
+  /**
    * Returns {@code ConsumerStep} with given body.
    *
    * @param body the step body
@@ -256,57 +318,16 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * Returns {@code ThrowingConsumer} that does nothing.
-   *
-   * @param <T> the type of the step input value
-   * @return {@code ThrowingConsumer} that does nothing
-   * @see #empty()
-   */
-  @SuppressWarnings("unchecked")
-  static <T> ThrowingConsumer<T, Error> emptyBody() {
-    return (ThrowingConsumer<T, Error>) Of.EMPTY_BODY;
-  }
-
-  /**
-   * Returns {@code ThrowingConsumer} that throws an {@code StepNotImplementedError}.
-   *
-   * @param <T> the type of the step input value
-   * @return {@code ThrowingConsumer} that throws an {@code StepNotImplementedError}
-   * @see #notImplemented()
-   */
-  static <T> ThrowingConsumer<T, Error> notImplementedBody() {
-    return v -> { throw new StepNotImplementedError("ConsumerStep not implemented"); };
-  }
-
-  /**
-   * Returns {@code ConsumerStep} with empty body.
-   *
-   * @param <T> the type of the step input value
-   * @return {@code ConsumerStep} with empty body
-   * @see #emptyBody()
-   */
-  static <T> ConsumerStep<T> empty() {
-    return ConsumerStep.of(emptyBody());
-  }
-
-  /**
-   * Returns {@code ConsumerStep} with not implemented body.
-   *
-   * @param <T> the type of the step input value
-   * @return {@code ConsumerStep} with not implemented body
-   * @see #notImplementedBody()
-   */
-  static <T> ConsumerStep<T> notImplemented() {
-    return ConsumerStep.of(notImplementedBody());
-  }
-
-  /**
    * Default {@code ConsumerStep} implementation.
    *
    * @param <T> the type of the step input value
    */
   class Of<T> implements ConsumerStep<T> {
     private static final ThrowingConsumer<?, Error> EMPTY_BODY = v -> { };
+    private static final ThrowingConsumer<?, Error> NOT_IMPLEMENTED_BODY =
+      v -> { throw new StepNotImplementedError("ConsumerStep not implemented"); };
+    private static final ConsumerStep<?> EMPTY_STEP = new Of<>(EMPTY_BODY);
+    private static final ConsumerStep<?> NOT_IMPLEMENTED_STEP = new Of<>(NOT_IMPLEMENTED_BODY);
     private final StepAttributes attributes;
     private final ThrowingConsumer<T, ?> body;
 
