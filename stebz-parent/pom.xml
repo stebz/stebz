@@ -77,7 +77,7 @@
     <testit.version>2.8.0</testit.version>
     <junit.version>5.14.0</junit.version>
     <junitPlatformLauncher.version>1.14.0</junitPlatformLauncher.version>
-    <assertj.version>3.27.6</assertj.version>
+    <assertj.version>3.27.7</assertj.version>
     <mockito.version>4.11.0</mockito.version>
   </properties>
 
