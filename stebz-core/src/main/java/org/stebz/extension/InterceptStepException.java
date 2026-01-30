@@ -41,7 +41,41 @@ public interface InterceptStepException extends StebzExtension {
    * @param exception the step exception
    * @return the new step exception value
    */
-  Throwable interceptStepException(StepObj<?> step,
-                                   NullableOptional<Object> context,
-                                   Throwable exception);
+  default Throwable interceptStepException(final StepObj<?> step,
+                                           final NullableOptional<Object> context,
+                                           final Throwable exception) {
+    return exception;
+  }
+
+  /**
+   * Returns a {@code boolean} value indicating whether this exception is hidden for listeners.
+   *
+   * @param step         the step
+   * @param context      the step context
+   * @param exception    the step exception
+   * @param currentState the current state
+   * @return {@code boolean} value indicating whether this exception is hidden for listeners
+   */
+  default boolean hiddenStepException(final StepObj<?> step,
+                                      final NullableOptional<Object> context,
+                                      final Throwable exception,
+                                      final boolean currentState) {
+    return currentState;
+  }
+
+  /**
+   * Returns a {@code boolean} value indicating whether this exception should be thrown.
+   *
+   * @param step         the step
+   * @param context      the step context
+   * @param exception    the step exception
+   * @param currentState the current state
+   * @return {@code boolean} value indicating whether this exception should be thrown
+   */
+  default boolean thrownStepException(final StepObj<?> step,
+                                      final NullableOptional<Object> context,
+                                      final Throwable exception,
+                                      final boolean currentState) {
+    return currentState;
+  }
 }

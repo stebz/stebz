@@ -71,6 +71,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <jlet.version>1.0</jlet.version>
     <aspectj.version>1.9.25.1</aspectj.version>
+    <opentest4j.version>1.3.0</opentest4j.version>
     <allure.version>2.32.0</allure.version>
     <qase.version>4.1.17</qase.version>
     <reportportal.version>5.4.3</reportportal.version>
@@ -106,6 +107,11 @@
         <groupId>org.aspectj</groupId>
         <artifactId>aspectjweaver</artifactId>
         <version>${aspectj.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.opentest4j</groupId>
+        <artifactId>opentest4j</artifactId>
+        <version>${opentest4j.version}</version>
       </dependency>
       <!-- integration -->
       <dependency>

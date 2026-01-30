@@ -218,15 +218,7 @@ public interface StepExecutor {
       for (final InterceptStep ext : this.interceptStepExts) {
         step = ext.interceptStep(step, optionalContext);
       }
-      for (final BeforeStepStart ext : this.beforeStartExts) {
-        ext.beforeStepStart(step, optionalContext);
-      }
-      for (final StepListener listener : this.listeners) {
-        listener.onStepStart(step, optionalContext);
-      }
-      for (final AfterStepStart ext : this.afterStartExts) {
-        ext.afterStepStart(step, optionalContext);
-      }
+      this.logStart(step, optionalContext);
 
       /* action */
       Object result = null;
@@ -249,32 +241,68 @@ public interface StepExecutor {
         } else {
           optionalResult = NullableOptional.empty();
         }
-        for (final BeforeStepSuccess ext : this.beforeSuccessExts) {
-          ext.beforeStepSuccess(step, optionalContext, optionalResult);
-        }
-        for (final StepListener listener : this.listeners) {
-          listener.onStepSuccess(step, optionalContext, optionalResult);
-        }
-        for (final AfterStepSuccess ext : this.afterSuccessExts) {
-          ext.afterStepSuccess(step, optionalContext, optionalResult);
-        }
+        this.logSuccess(step, optionalContext, optionalResult);
         return result;
       } else {
 
         /* failure */
+        boolean hiddenException = false;
+        boolean thrownException = true;
         for (final InterceptStepException ext : this.interceptExceptionExts) {
           exception = ext.interceptStepException(step, optionalContext, exception);
+          hiddenException = ext.hiddenStepException(step, optionalContext, exception, hiddenException);
+          thrownException = ext.thrownStepException(step, optionalContext, exception, thrownException);
         }
-        for (final BeforeStepFailure ext : this.beforeFailureExts) {
-          ext.beforeStepFailure(step, optionalContext, exception);
+        if (hiddenException) {
+          this.logSuccess(step, optionalContext, NullableOptional.empty());
+        } else {
+          this.logFailure(step, optionalContext, exception);
         }
-        for (final StepListener listener : this.listeners) {
-          listener.onStepFailure(step, optionalContext, exception);
+        if (thrownException) {
+          throw unchecked(exception);
         }
-        for (final AfterStepFailure ext : this.afterFailureExts) {
-          ext.afterStepFailure(step, optionalContext, exception);
-        }
-        throw unchecked(exception);
+        return null;
+      }
+    }
+
+    private void logStart(final StepObj<?> step,
+                          final NullableOptional<Object> optionalContext) {
+      for (final BeforeStepStart ext : this.beforeStartExts) {
+        ext.beforeStepStart(step, optionalContext);
+      }
+      for (final StepListener listener : this.listeners) {
+        listener.onStepStart(step, optionalContext);
+      }
+      for (final AfterStepStart ext : this.afterStartExts) {
+        ext.afterStepStart(step, optionalContext);
+      }
+    }
+
+    private void logFailure(final StepObj<?> step,
+                            final NullableOptional<Object> optionalContext,
+                            final Throwable exception) {
+      for (final BeforeStepFailure ext : this.beforeFailureExts) {
+        ext.beforeStepFailure(step, optionalContext, exception);
+      }
+      for (final StepListener listener : this.listeners) {
+        listener.onStepFailure(step, optionalContext, exception);
+      }
+      for (final AfterStepFailure ext : this.afterFailureExts) {
+        ext.afterStepFailure(step, optionalContext, exception);
+      }
+    }
+
+    private void logSuccess(final StepObj<?> step,
+                            final NullableOptional<Object> optionalContext,
+                            final NullableOptional<Object> optionalResult) {
+      for (final BeforeStepSuccess ext : this.beforeSuccessExts) {
+        ext.beforeStepSuccess(step, optionalContext, optionalResult);
+      }
+      for (final StepListener listener : this.listeners) {
+        listener.onStepSuccess(step, optionalContext, optionalResult);
+      }
+      for (final AfterStepSuccess ext : this.afterSuccessExts) {
+        ext.afterStepSuccess(step, optionalContext, optionalResult);
       }
     }
 

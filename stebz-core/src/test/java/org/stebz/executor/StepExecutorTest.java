@@ -53,11 +53,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.AdditionalAnswers.returnsLastArg;
+import static org.mockito.Answers.CALLS_REAL_METHODS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
@@ -65,6 +65,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.withSettings;
 
 /**
  * Tests for {@link StepExecutor}.
@@ -154,6 +155,8 @@ final class StepExecutorTest {
     inOrder.verify(listener, times(1)).onStepStart(same(step), same(NullableOptional.empty()));
     inOrder.verify(extension, times(1)).afterStepStart(same(step), same(NullableOptional.empty()));
     inOrder.verify(extension, times(1)).interceptStepException(same(step), same(NullableOptional.empty()), same(exception));
+    inOrder.verify(extension, times(1)).hiddenStepException(same(step), same(NullableOptional.empty()), same(exception), same(false));
+    inOrder.verify(extension, times(1)).thrownStepException(same(step), same(NullableOptional.empty()), same(exception), same(true));
     inOrder.verify(extension, times(1)).beforeStepFailure(same(step), same(NullableOptional.empty()), same(exception));
     inOrder.verify(listener, times(1)).onStepFailure(same(step), same(NullableOptional.empty()), same(exception));
     inOrder.verify(extension, times(1)).afterStepFailure(same(step), same(NullableOptional.empty()), same(exception));
@@ -229,6 +232,8 @@ final class StepExecutorTest {
     inOrder.verify(extension, times(1)).afterStepStart(same(step), eq(context));
 
     inOrder.verify(extension, times(1)).interceptStepException(same(step), eq(context), same(exception));
+    inOrder.verify(extension, times(1)).hiddenStepException(same(step), eq(context), same(exception), same(false));
+    inOrder.verify(extension, times(1)).thrownStepException(same(step), eq(context), same(exception), same(true));
     inOrder.verify(extension, times(1)).beforeStepFailure(same(step), eq(context), same(exception));
     inOrder.verify(listener, times(1)).onStepFailure(same(step), eq(context), same(exception));
     inOrder.verify(extension, times(1)).afterStepFailure(same(step), eq(context), same(exception));
@@ -302,6 +307,8 @@ final class StepExecutorTest {
     inOrder.verify(listener, times(1)).onStepStart(same(step), same(NullableOptional.empty()));
     inOrder.verify(extension, times(1)).afterStepStart(same(step), same(NullableOptional.empty()));
     inOrder.verify(extension, times(1)).interceptStepException(same(step), same(NullableOptional.empty()), same(exception));
+    inOrder.verify(extension, times(1)).hiddenStepException(same(step), same(NullableOptional.empty()), same(exception), same(false));
+    inOrder.verify(extension, times(1)).thrownStepException(same(step), same(NullableOptional.empty()), same(exception), same(true));
     inOrder.verify(extension, times(1)).beforeStepFailure(same(step), same(NullableOptional.empty()), same(exception));
     inOrder.verify(listener, times(1)).onStepFailure(same(step), same(NullableOptional.empty()), same(exception));
     inOrder.verify(extension, times(1)).afterStepFailure(same(step), same(NullableOptional.empty()), same(exception));
@@ -379,28 +386,28 @@ final class StepExecutorTest {
     inOrder.verify(listener, times(1)).onStepStart(same(step), eq(context));
     inOrder.verify(extension, times(1)).afterStepStart(same(step), eq(context));
     inOrder.verify(extension, times(1)).interceptStepException(same(step), eq(context), same(exception));
+    inOrder.verify(extension, times(1)).hiddenStepException(same(step), eq(context), same(exception), same(false));
+    inOrder.verify(extension, times(1)).thrownStepException(same(step), eq(context), same(exception), same(true));
     inOrder.verify(extension, times(1)).beforeStepFailure(same(step), eq(context), same(exception));
     inOrder.verify(listener, times(1)).onStepFailure(same(step), eq(context), same(exception));
     inOrder.verify(extension, times(1)).afterStepFailure(same(step), eq(context), same(exception));
   }
 
   private static ComplexExtension mockStebzExtension() {
-    final ComplexExtension extension = mock(ComplexExtension.class);
-    doCallRealMethod().when(extension).order();
+    final ComplexExtension extension = mockCallingRealMethods(ComplexExtension.class);
     doAnswer(returnsFirstArg()).when(extension).interceptStep(any(), any());
     doAnswer(returnsLastArg()).when(extension).interceptStepContext(any(), any());
     doAnswer(returnsLastArg()).when(extension).interceptStepResult(any(), any(), any());
-    doAnswer(returnsLastArg()).when(extension).interceptStepException(any(), any(), any());
     return extension;
   }
 
   private static StepListener mockStepListener() {
-    return mock(StepListener.class);
+    return mockCallingRealMethods(StepListener.class);
   }
 
   @SuppressWarnings("unchecked")
   private static NullableOptional<Object> mockEmptyOptionalValue() {
-    final NullableOptional<Object> nullableOptional = mock(NullableOptional.class);
+    final NullableOptional<Object> nullableOptional = mockCallingRealMethods(NullableOptional.class);
     doThrow(NoSuchElementException.class).when(nullableOptional).get();
     doReturn(false).when(nullableOptional).isPresent();
     doReturn(true).when(nullableOptional).isEmpty();
@@ -409,85 +416,90 @@ final class StepExecutorTest {
 
   @SuppressWarnings("unchecked")
   private static ThrowingRunnable<Error> mockRunnable() {
-    return mock(ThrowingRunnable.class);
+    return mockCallingRealMethods(ThrowingRunnable.class);
   }
 
   @SuppressWarnings("unchecked")
   private static ThrowingRunnable<Error> mockRunnableWithException(final Throwable exception) {
-    final ThrowingRunnable<Error> runnable = mock(ThrowingRunnable.class);
+    final ThrowingRunnable<Error> runnable = mockCallingRealMethods(ThrowingRunnable.class);
     doThrow(exception).when(runnable).run();
     return runnable;
   }
 
   private static RunnableStep mockRunnableStep(final ThrowingRunnable<?> body) {
-    final RunnableStep step = mock(RunnableStep.class);
+    final RunnableStep step = mockCallingRealMethods(RunnableStep.class);
     doReturn(body).when(step).body();
     return step;
   }
 
   @SuppressWarnings("unchecked")
   private static ThrowingConsumer<Object, Error> mockConsumer() {
-    return mock(ThrowingConsumer.class);
+    return mockCallingRealMethods(ThrowingConsumer.class);
   }
 
   @SuppressWarnings("unchecked")
   private static ThrowingConsumer<Object, Error> mockConsumerWithException(final Throwable exception) {
-    final ThrowingConsumer<Object, Error> consumer = mock(ThrowingConsumer.class);
+    final ThrowingConsumer<Object, Error> consumer = mockCallingRealMethods(ThrowingConsumer.class);
     doThrow(exception).when(consumer).accept(any());
     return consumer;
   }
 
   @SuppressWarnings("unchecked")
   private static ConsumerStep<Object> mockConsumerStep(final ThrowingConsumer<Object, Error> body) {
-    final ConsumerStep<Object> step = mock(ConsumerStep.class);
+    final ConsumerStep<Object> step = mockCallingRealMethods(ConsumerStep.class);
     doReturn(body).when(step).body();
     return step;
   }
 
   @SuppressWarnings("unchecked")
   private static ThrowingSupplier<Object, Error> mockSupplier(final Object result) {
-    final ThrowingSupplier<Object, Error> supplier = mock(ThrowingSupplier.class);
+    final ThrowingSupplier<Object, Error> supplier = mockCallingRealMethods(ThrowingSupplier.class);
     doReturn(result).when(supplier).get();
     return supplier;
   }
 
   @SuppressWarnings("unchecked")
   private static ThrowingSupplier<Object, Error> mockSupplierWithException(final Throwable exception) {
-    final ThrowingSupplier<Object, Error> consumer = mock(ThrowingSupplier.class);
+    final ThrowingSupplier<Object, Error> consumer = mockCallingRealMethods(ThrowingSupplier.class);
     doThrow(exception).when(consumer).get();
     return consumer;
   }
 
   @SuppressWarnings("unchecked")
   private static SupplierStep<Object> mockSupplierStep(final ThrowingSupplier<Object, Error> body) {
-    final SupplierStep<Object> step = mock(SupplierStep.class);
+    final SupplierStep<Object> step = mockCallingRealMethods(SupplierStep.class);
     doReturn(body).when(step).body();
     return step;
   }
 
   @SuppressWarnings("unchecked")
   private static ThrowingFunction<Object, Object, Error> mockFunction(final Object result) {
-    final ThrowingFunction<Object, Object, Error> function = mock(ThrowingFunction.class);
+    final ThrowingFunction<Object, Object, Error> function = mockCallingRealMethods(ThrowingFunction.class);
     doReturn(result).when(function).apply(any());
     return function;
   }
 
   @SuppressWarnings("unchecked")
   private static ThrowingFunction<Object, Object, Error> mockFunctionWithException(final Throwable exception) {
-    final ThrowingFunction<Object, Object, Error> function = mock(ThrowingFunction.class);
+    final ThrowingFunction<Object, Object, Error> function = mockCallingRealMethods(ThrowingFunction.class);
     doThrow(exception).when(function).apply(any());
     return function;
   }
 
   @SuppressWarnings("unchecked")
   private static FunctionStep<Object, Object> mockFunctionStep(final ThrowingFunction<Object, Object, Error> body) {
-    final FunctionStep<Object, Object> step = mock(FunctionStep.class);
+    final FunctionStep<Object, Object> step = mockCallingRealMethods(FunctionStep.class);
     doReturn(body).when(step).body();
     return step;
   }
 
-  private interface ComplexExtension extends AfterStepFailure, AfterStepStart, AfterStepSuccess, BeforeStepFailure,
-    BeforeStepStart, BeforeStepSuccess, InterceptStep, InterceptStepContext, InterceptStepException,
-    InterceptStepResult {
+  private static <T> T mockCallingRealMethods(final Class<T> classToMock) {
+    return mock(classToMock, withSettings().defaultAnswer(CALLS_REAL_METHODS));
+  }
+
+  private interface ComplexExtension extends
+    AfterStepFailure, AfterStepStart, AfterStepSuccess,
+    BeforeStepFailure, BeforeStepStart, BeforeStepSuccess,
+    InterceptStep, InterceptStepContext, InterceptStepException, InterceptStepResult {
   }
 }
