@@ -41,7 +41,7 @@ import java.util.Map;
 /**
  * Soft assertions {@link StebzExtension}.
  */
-public class SoftAssertionsExtension implements InterceptStepException {
+public class SoftAssertedStepsExtension implements InterceptStepException {
   private static final ThreadLocal<Integer> THREAD_LOCAL_DEPTH = new ThreadLocal<>();
   private static final ThreadLocal<Map<Integer, List<Throwable>>> THREAD_LOCAL_EXCEPTIONS = new ThreadLocal<>();
   private final boolean enabled;
@@ -50,7 +50,7 @@ public class SoftAssertionsExtension implements InterceptStepException {
   /**
    * Ctor.
    */
-  public SoftAssertionsExtension() {
+  public SoftAssertedStepsExtension() {
     this(StartupPropertiesReader.get());
   }
 
@@ -59,9 +59,9 @@ public class SoftAssertionsExtension implements InterceptStepException {
    *
    * @param properties the properties reader
    */
-  public SoftAssertionsExtension(final PropertiesReader properties) {
-    this.enabled = properties.getBoolean("stebz.extensions.softAssertions.enabled", true);
-    this.order = properties.getInteger("stebz.extensions.softAssertions.order", LATE_ORDER);
+  public SoftAssertedStepsExtension(final PropertiesReader properties) {
+    this.enabled = properties.getBoolean("stebz.extensions.softAssertedSteps.enabled", true);
+    this.order = properties.getInteger("stebz.extensions.softAssertedSteps.order", LATE_ORDER);
   }
 
   /**
@@ -70,7 +70,7 @@ public class SoftAssertionsExtension implements InterceptStepException {
    * @param steps the block of steps for soft assertions
    * @throws NullPointerException if {@code steps} arg is null
    */
-  public static void softStepAssertions(final ThrowingRunnable<?> steps) {
+  public static void softAssertedSteps(final ThrowingRunnable<?> steps) {
     if (steps == null) { throw new NullPointerException("steps arg is null"); }
     startSoftAssertions();
     Throwable blockException = null;
@@ -91,8 +91,8 @@ public class SoftAssertionsExtension implements InterceptStepException {
    * @param <V>   the type of the additional value
    * @throws NullPointerException if {@code steps} arg is null
    */
-  public static <V> void softStepAssertions(final V value,
-                                            final ThrowingConsumer<? super V, ?> steps) {
+  public static <V> void softAssertedSteps(final V value,
+                                           final ThrowingConsumer<? super V, ?> steps) {
     if (steps == null) { throw new NullPointerException("steps arg is null"); }
     startSoftAssertions();
     Throwable blockException = null;
@@ -113,7 +113,7 @@ public class SoftAssertionsExtension implements InterceptStepException {
    * @return execution result
    * @throws NullPointerException if {@code steps} arg is null
    */
-  public static <R> R softStepAssertions(final ThrowingSupplier<? extends R, ?> steps) {
+  public static <R> R softAssertedSteps(final ThrowingSupplier<? extends R, ?> steps) {
     if (steps == null) { throw new NullPointerException("steps arg is null"); }
     startSoftAssertions();
     Throwable blockException = null;
@@ -137,8 +137,8 @@ public class SoftAssertionsExtension implements InterceptStepException {
    * @return execution result
    * @throws NullPointerException if {@code steps} arg is null
    */
-  public static <V, R> R softStepAssertions(final V value,
-                                            final ThrowingFunction<? super V, ? extends R, ?> steps) {
+  public static <V, R> R softAssertedSteps(final V value,
+                                           final ThrowingFunction<? super V, ? extends R, ?> steps) {
     if (steps == null) { throw new NullPointerException("steps arg is null"); }
     startSoftAssertions();
     Throwable blockException = null;

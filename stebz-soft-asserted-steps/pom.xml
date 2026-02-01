@@ -33,14 +33,14 @@
     <relativePath>../stebz-parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>stebz-soft-assertions</artifactId>
+  <artifactId>stebz-soft-asserted-steps</artifactId>
   <packaging>jar</packaging>
 
-  <name>Stebz Soft Assertions</name>
-  <description>Module "stebz-soft-assertions" of Stebz</description>
+  <name>Stebz Soft Asserted Steps</name>
+  <description>Module "stebz-soft-asserted-steps" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.soft.assertions</automatic.module.name>
+    <automatic.module.name>org.stebz.soft.asserted.steps</automatic.module.name>
   </properties>
 
   <dependencies>
