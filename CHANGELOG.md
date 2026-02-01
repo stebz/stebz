@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.12 (2026/02/01)
+
+* #137 add step context tuples by @evpl in PR #141
+* #138 add clearRelated CleanStackTraceExtension option by @evpl in PR #140
+* #134 add stebz-soft-assertions extension by @evpl in PR #136 #139
+* #132 add withEmptyBody, withEmptyBodyReturning and withNotImplementedBody step methods by @evpl in PR #133
+
+## 1.11 (2025/12/07)
+
+* #127 add `stepOf` alias methods to create steps by @evpl in PR #128
+
 ## 1.11 (2025/12/07)
 
 * #127 add `stepOf` alias methods to create steps by @evpl in PR #128

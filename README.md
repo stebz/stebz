@@ -38,6 +38,7 @@ Multi-approach and flexible Java framework for test steps managing.
   * [Extensions](#extensions)
     * [Clean stack trace extension](#stebz-clean-stack-trace-extension)
     * [Hidden steps extension](#stebz-hidden-steps-extension)
+    * [Soft asserted steps extension](#stebz-soft-asserted-steps-extension)
     * [Readable reflective name extension](#stebz-readable-reflective-name-extension)
     * [Repeat and retry extension](#stebz-repeat-and-retry-extension)
   * [Configuration](#configuration)
@@ -48,6 +49,7 @@ Multi-approach and flexible Java framework for test steps managing.
     * [`stebz-gherkin-annotations` module](#stebz-gherkin-annotations-module)
     * [`stebz-clean-stack-trace` module](#stebz-clean-stack-trace-module)
     * [`stebz-hidden-steps` module](#stebz-hidden-steps-module)
+    * [`stebz-soft-asserted-steps` module](#stebz-soft-asserted-steps-module)
     * [`stebz-readable-reflective-name` module](#stebz-readable-reflective-name-module)
     * [`stebz-repeat-and-retry` module](#stebz-repeat-and-retry-module)
     * [`stebz-allure` module](#stebz-allure-module)
@@ -227,7 +229,7 @@ Maven:
   <dependency>
     <groupId>org.stebz</groupId>
     <artifactId>{module name}</artifactId>
-    <version>1.11</version>
+    <version>1.12</version>
   </dependency>
 </dependencies>
 ```
@@ -238,7 +240,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation 'org.stebz:{module name}:1.11'
+  implementation 'org.stebz:{module name}:1.12'
 }
 ```
 <!-- @formatter:on -->
@@ -248,7 +250,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation("org.stebz:{module name}:1.11")
+  implementation("org.stebz:{module name}:1.12")
 }
 ```
 <!-- @formatter:on -->
@@ -270,7 +272,7 @@ Maven:
     <dependency>
       <groupId>org.stebz</groupId>
       <artifactId>stebz-bom</artifactId>
-      <version>1.11</version>
+      <version>1.12</version>
       <scope>import</scope>
       <type>pom</type>
     </dependency>
@@ -284,7 +286,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation platform('org.stebz:stebz-bom:1.11')
+  implementation platform('org.stebz:stebz-bom:1.12')
 }
 ```
 <!-- @formatter:on -->
@@ -294,7 +296,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation(platform("org.stebz:stebz-bom:1.11"))
+  implementation(platform("org.stebz:stebz-bom:1.12"))
 }
 ```
 <!-- @formatter:on -->
@@ -433,17 +435,17 @@ Steps are immutable objects containing attributes and a body. There are 4 types 
 
 <!-- @formatter:off -->
 ```java
-RunnableStep runnableStep = RunnableStep.of("runnable step", () -> {
+RunnableStep runnableStep = stepOf("runnable step", () -> {
   // step body
 });
-SupplierStep<String> supplierStep = SupplierStep.of("supplier step", () -> {
+SupplierStep<String> supplierStep = stepOf("supplier step", () -> {
   // step body
   return "result";
 });
-ConsumerStep<Integer> consumerStep = ConsumerStep.of("consumer step", integer -> {
+ConsumerStep<Integer> consumerStep = stepOf("consumer step", integer -> {
   // step body
 });
-FunctionStep<Integer, String> functionStep = FunctionStep.of("function step", integer -> {
+FunctionStep<Integer, String> functionStep = stepOf("function step", integer -> {
   // step body
   return "result";
 });
@@ -512,6 +514,24 @@ step(runnableStep
   .withBefore(() -> Logger.info("..."))
   .withOnSuccess(() -> Logger.info("..."))
   .withOnFailure(() -> Logger.warn("...")));
+```
+<!-- @formatter:on -->
+
+You can use tuples if the step context contains several values.
+
+<!-- @formatter:off -->
+```java
+@Test
+void test() {
+  ConsumerStep<Of2<Integer, String>> my_step = stepOf("my step", stepOf(context((integer, string) -> {
+    // step body
+  })));
+  
+  step(my_step(), context(100, "string"));
+
+  around(context(100, "string"))
+    .step(my_step());
+}
 ```
 <!-- @formatter:on -->
 
@@ -719,7 +739,7 @@ Annotations way:
 @Arrange("step name")
 @WithExpectedResult("step expected result")
 @WithComment("step comment")
-public static RunnableStep methodStep(String parameter) { return RunnableStep.of(() -> {
+public static RunnableStep methodStep(String parameter) { return stepOf(() -> {
   // step body
 }); }
 
@@ -757,7 +777,7 @@ Annotations way:
 @Given("step name")
 @WithExpectedResult("step expected result")
 @WithComment("step comment")
-public static RunnableStep methodStep(String parameter) { return RunnableStep.of(() -> {
+public static RunnableStep methodStep(String parameter) { return stepOf(() -> {
   // step body
 }); }
 
@@ -1025,10 +1045,41 @@ Extension that allows to hide several steps.
 <!-- @formatter:off -->
 ```java
 hiddenSteps(() -> {
-  step("Step 1");
-  step("Step 2");
-  step("Step 3");
+  step("Step 1", () -> {
+    // step body
+  });
+  step("Step 1", () -> {
+    // step body
+  });
 });
+```
+<!-- @formatter:on -->
+
+There is also an alias method `hiddenArea`.
+
+#### `stebz-soft-asserted-steps` extension
+
+Extension that allows to assert softly several steps.
+
+<!-- @formatter:off -->
+```java
+softAssertedSteps(() -> {
+  step("Step 1", () -> {
+    // step body
+  });
+  step("Step 1", () -> {
+    // step body
+  });
+});
+
+softAssertedSteps(around(100), a -> a
+  .step("Step 1", context -> {
+    // step body
+  })
+  .step("Step 2", context -> {
+    // step body
+  })
+);
 ```
 <!-- @formatter:on -->
 
@@ -1042,7 +1093,7 @@ Replaces underscores in a step name with spaces.
 ```java
 @Step
 public static RunnableStep user_is_authorized(String username,
-                                              String password) { return RunnableStep.of(() -> {
+                                              String password) { return stepOf(() -> {
   // step body
 }); }
 ```
@@ -1057,7 +1108,7 @@ It is also possible to specify the separator symbols manually.
 @Step
 @NameWordSeparator("__")
 public static RunnableStep user__is__authorized(String username,
-                                                String password) { return RunnableStep.of(() -> {
+                                                String password) { return stepOf(() -> {
   // step body
 }); }
 ```
@@ -1073,13 +1124,13 @@ Via annotations:
 ```java
 @Step
 @WithRetry(count = 3, on = TimeoutException.class)
-public static RunnableStep send_unstable_request() { return RunnableStep.of(() -> {
+public static RunnableStep send_unstable_request() { return stepOf(() -> {
   // step body
 }); }
 
 @Step
 @WithRepeat(count = 3)
-public static RunnableStep send_request_multiple_times() { return RunnableStep.of(() -> {
+public static RunnableStep send_request_multiple_times() { return stepOf(() -> {
   // step body
 }); }
 ```
@@ -1152,12 +1203,13 @@ System properties have first priority, file properties have second priority.
 
 #### `stebz-clean-stack-trace` module
 
-| property                                        | type      | default value                                   | description                       |
-|-------------------------------------------------|-----------|-------------------------------------------------|-----------------------------------|
-| `stebz.extensions.cleanStackTrace.enabled`      | `Boolean` | `true`                                          | enable extension                  |
-| `stebz.extensions.cleanStackTrace.order`        | `Integer` | `10000`                                         | extension order                   |
-| `stebz.extensions.cleanStackTrace.stebzLines`   | `Boolean` | `true` if `stebz-annotations` module is present | removes Stebz stack trace lines   |
-| `stebz.extensions.cleanStackTrace.aspectjLines` | `Boolean` | `true` if `stebz-annotations` module is present | removes AspectJ stack trace lines |
+| property                                             | type      | default value                                   | description                       |
+|------------------------------------------------------|-----------|-------------------------------------------------|-----------------------------------|
+| `stebz.extensions.cleanStackTrace.enabled`           | `Boolean` | `true`                                          | enable extension                  |
+| `stebz.extensions.cleanStackTrace.order`             | `Integer` | `10000`                                         | extension order                   |
+| `stebz.extensions.cleanStackTrace.clearRelated`      | `Boolean` | `true`                                          | clear related exceptions          |
+| `stebz.extensions.cleanStackTrace.clearStebzLines`   | `Boolean` | `true`                                          | removes Stebz stack trace lines   |
+| `stebz.extensions.cleanStackTrace.clearAspectjLines` | `Boolean` | `true` if `stebz-annotations` module is present | removes AspectJ stack trace lines |
 
 #### `stebz-hidden-steps` module
 
@@ -1165,6 +1217,13 @@ System properties have first priority, file properties have second priority.
 |----------------------------------------|-----------|---------------|------------------|
 | `stebz.extensions.hiddenSteps.enabled` | `Boolean` | `true`        | enable extension |
 | `stebz.extensions.hiddenSteps.order`   | `Integer` | `10000`       | extension order  |
+
+#### `stebz-soft-asserted-steps` module
+
+| property                                     | type      | default value | description      |
+|----------------------------------------------|-----------|---------------|------------------|
+| `stebz.extensions.softAssertedSteps.enabled` | `Boolean` | `true`        | enable extension |
+| `stebz.extensions.softAssertedSteps.order`   | `Integer` | `20000`       | extension order  |
 
 #### `stebz-readable-reflective-name` module
 
