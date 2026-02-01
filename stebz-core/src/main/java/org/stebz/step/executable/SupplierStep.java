@@ -56,6 +56,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   /**
    * Returns {@code SupplierStep} with empty body that returns given result.
    *
+   * @param result the step result
    * @return {@code SupplierStep} with empty body that returns given result
    */
   default SupplierStep<R> withEmptyBodyReturning(final R result) {
@@ -244,7 +245,8 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   /**
    * Returns {@code SupplierStep} with empty body that returns given result.
    *
-   * @param <R> the type of the step result
+   * @param result the step result
+   * @param <R>    the type of the step result
    * @return {@code SupplierStep} with empty body that returns given result
    */
   static <R> SupplierStep<R> emptyReturning(final R result) {
@@ -276,7 +278,8 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   /**
    * Returns {@code ThrowingSupplier} that returns given result.
    *
-   * @param <R> the type of the result
+   * @param result the step result
+   * @param <R>    the type of the result
    * @return {@code ThrowingSupplier} that returns given result
    */
   static <R> ThrowingSupplier<R, Error> emptyBodyReturning(final R result) {

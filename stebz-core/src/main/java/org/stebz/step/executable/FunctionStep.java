@@ -57,6 +57,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   /**
    * Returns {@code FunctionStep} with empty body that returns given result.
    *
+   * @param result the step result
    * @return {@code FunctionStep} with empty body that returns given result
    */
   default FunctionStep<T, R> withEmptyBodyReturning(final R result) {
@@ -240,8 +241,9 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   /**
    * Returns {@code FunctionStep} with empty body that returns given result.
    *
-   * @param <T> the type of the step input value
-   * @param <R> the type of the step result
+   * @param result the step result
+   * @param <T>    the type of the step input value
+   * @param <R>    the type of the step result
    * @return {@code FunctionStep} with empty body that returns given result
    */
   static <T, R> FunctionStep<T, R> emptyReturning(final R result) {
@@ -275,8 +277,9 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   /**
    * Returns {@code ThrowingFunction} that returns given result.
    *
-   * @param <T> the type of the input value
-   * @param <R> the type of the result
+   * @param result the step result
+   * @param <T>    the type of the input value
+   * @param <R>    the type of the result
    * @return {@code ThrowingFunction} that returns given result
    */
   static <T, R> ThrowingFunction<T, R, Error> emptyBodyReturning(final R result) {
