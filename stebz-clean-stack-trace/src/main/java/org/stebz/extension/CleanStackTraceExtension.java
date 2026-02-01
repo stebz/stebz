@@ -29,6 +29,8 @@ import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -42,6 +44,7 @@ public class CleanStackTraceExtension implements BeforeStepFailure {
   private final Predicate<StackTraceElement> stackTraceElementFilter;
   private final boolean enabled;
   private final int order;
+  private final boolean clearRelated;
 
   /**
    * Ctor.
@@ -58,21 +61,22 @@ public class CleanStackTraceExtension implements BeforeStepFailure {
   public CleanStackTraceExtension(final PropertiesReader properties) {
     this.enabled = properties.getBoolean("stebz.extensions.cleanStackTrace.enabled", true);
     this.order = properties.getInteger("stebz.extensions.cleanStackTrace.order", MIDDLE_ORDER);
-    final boolean stebzLines = properties.getBoolean("stebz.extensions.cleanStackTrace.stebzLines", true);
-    Boolean aspectjLines = properties.getBoolean("stebz.extensions.cleanStackTrace.aspectjLines", null);
-    if (aspectjLines == null) {
-      aspectjLines = isStebzAnnotationsUsed();
+    this.clearRelated = properties.getBoolean("stebz.extensions.cleanStackTrace.clearRelated", true);
+    final boolean clearStebzLines = properties.getBoolean("stebz.extensions.cleanStackTrace.clearStebzLines", true);
+    Boolean clearAspectjLines = properties.getBoolean("stebz.extensions.cleanStackTrace.clearAspectjLines", null);
+    if (clearAspectjLines == null) {
+      clearAspectjLines = isStebzAnnotationsUsed();
     }
-    if (stebzLines && aspectjLines) {
+    if (clearStebzLines && clearAspectjLines) {
       this.stackTraceElementFilter = stElem ->
         !stElem.getClassName().startsWith(STEBZ_CLASS_NAME_PREFIX)
           && !stElem.getClassName().startsWith(ASPECTJ_CLASS_NAME_PREFIX)
           && !stElem.getClassName().contains(ASPECTJ_CLASS_NAME_PART)
           && !stElem.getMethodName().contains(ASPECTJ_METHOD_NAME_PART);
-    } else if (stebzLines) {
+    } else if (clearStebzLines) {
       this.stackTraceElementFilter = stElem ->
         !stElem.getClassName().startsWith(STEBZ_CLASS_NAME_PREFIX);
-    } else if (aspectjLines) {
+    } else if (clearAspectjLines) {
       this.stackTraceElementFilter = stElem ->
         !stElem.getClassName().startsWith(ASPECTJ_CLASS_NAME_PREFIX)
           && !stElem.getClassName().contains(ASPECTJ_CLASS_NAME_PART)
@@ -100,9 +104,16 @@ public class CleanStackTraceExtension implements BeforeStepFailure {
   public void beforeStepFailure(final StepObj<?> step,
                                 final NullableOptional<Object> context,
                                 final Throwable exception) {
-    if (!this.enabled) {
-      return;
+    if (this.enabled) {
+      if (this.clearRelated) {
+        relatedExceptions(new HashSet<>(), exception).forEach(this::clearException);
+      } else {
+        this.clearException(exception);
+      }
     }
+  }
+
+  private void clearException(final Throwable exception) {
     final StackTraceElement[] originST = exception.getStackTrace();
     if (originST.length != 0) {
       exception.setStackTrace(
@@ -111,5 +122,17 @@ public class CleanStackTraceExtension implements BeforeStepFailure {
           .toArray(StackTraceElement[]::new)
       );
     }
+  }
+
+  private static Set<Throwable> relatedExceptions(final Set<Throwable> exceptions,
+                                                  final Throwable mainEx) {
+    for (Throwable currentEx = mainEx; currentEx != null; currentEx = currentEx.getCause()) {
+      if (exceptions.add(currentEx)) {
+        for (final Throwable suppressedEx : currentEx.getSuppressed()) {
+          relatedExceptions(exceptions, suppressedEx);
+        }
+      }
+    }
+    return exceptions;
   }
 }
