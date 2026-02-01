@@ -101,7 +101,7 @@
     </dependency>
     <dependency>
       <groupId>org.stebz</groupId>
-      <artifactId>stebz-soft-assertions</artifactId>
+      <artifactId>stebz-soft-asserted-steps</artifactId>
       <scope>compile</scope>
     </dependency>
     <dependency>
