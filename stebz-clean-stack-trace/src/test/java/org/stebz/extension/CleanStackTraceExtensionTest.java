@@ -40,11 +40,22 @@ final class CleanStackTraceExtensionTest {
 
   @Test
   void extensionShouldRemoveStebzLines() {
-    final Throwable exception = new Throwable();
+    final Throwable causeEx = new Throwable();
+    final Throwable suppressedEx = new Throwable();
+    final Throwable causeSuppressedEx = new Throwable();
+    final Throwable mainException = new Throwable(causeEx);
+    causeEx.addSuppressed(causeSuppressedEx);
+    mainException.addSuppressed(suppressedEx);
     final CleanStackTraceExtension extension = new CleanStackTraceExtension(new PropertiesReader.Of(new Properties()));
 
-    extension.beforeStepFailure(mock(StepObj.class), NullableOptional.empty(), exception);
-    assertThat(exception.getStackTrace())
+    extension.beforeStepFailure(mock(StepObj.class), NullableOptional.empty(), mainException);
+    assertThat(mainException.getStackTrace())
+      .allMatch(stElem -> !stElem.getClassName().startsWith("org.stebz."));
+    assertThat(causeEx.getStackTrace())
+      .allMatch(stElem -> !stElem.getClassName().startsWith("org.stebz."));
+    assertThat(suppressedEx.getStackTrace())
+      .allMatch(stElem -> !stElem.getClassName().startsWith("org.stebz."));
+    assertThat(causeSuppressedEx.getStackTrace())
       .allMatch(stElem -> !stElem.getClassName().startsWith("org.stebz."));
   }
 }
