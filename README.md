@@ -229,7 +229,7 @@ Maven:
   <dependency>
     <groupId>org.stebz</groupId>
     <artifactId>{module name}</artifactId>
-    <version>1.12</version>
+    <version>1.12.1</version>
   </dependency>
 </dependencies>
 ```
@@ -240,7 +240,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation 'org.stebz:{module name}:1.12'
+  implementation 'org.stebz:{module name}:1.12.1'
 }
 ```
 <!-- @formatter:on -->
@@ -250,7 +250,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation("org.stebz:{module name}:1.12")
+  implementation("org.stebz:{module name}:1.12.1")
 }
 ```
 <!-- @formatter:on -->
@@ -272,7 +272,7 @@ Maven:
     <dependency>
       <groupId>org.stebz</groupId>
       <artifactId>stebz-bom</artifactId>
-      <version>1.12</version>
+      <version>1.12.1</version>
       <scope>import</scope>
       <type>pom</type>
     </dependency>
@@ -286,7 +286,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation platform('org.stebz:stebz-bom:1.12')
+  implementation platform('org.stebz:stebz-bom:1.12.1')
 }
 ```
 <!-- @formatter:on -->
@@ -296,7 +296,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation(platform("org.stebz:stebz-bom:1.12"))
+  implementation(platform("org.stebz:stebz-bom:1.12.1"))
 }
 ```
 <!-- @formatter:on -->
@@ -1052,6 +1052,15 @@ hiddenSteps(() -> {
     // step body
   });
 });
+
+hiddenSteps(around(100), a -> a
+  .step("Step 1", context -> {
+    // step body
+  })
+  .step("Step 2", context -> {
+    // step body
+  })
+);
 ```
 <!-- @formatter:on -->
 
@@ -1082,8 +1091,6 @@ softAssertedSteps(around(100), a -> a
 );
 ```
 <!-- @formatter:on -->
-
-There is also an alias method `hiddenArea`.
 
 #### `stebz-readable-reflective-name` extension
 
