@@ -113,7 +113,7 @@ public class SoftAssertedStepsExtension implements InterceptStepException {
    * @return execution result
    * @throws NullPointerException if {@code steps} arg is null
    */
-  public static <R> R softAssertedSteps(final ThrowingSupplier<? extends R, ?> steps) {
+  public static <R> R softAssertedStepsResult(final ThrowingSupplier<? extends R, ?> steps) {
     if (steps == null) { throw new NullPointerException("steps arg is null"); }
     startSoftAssertions();
     Throwable blockException = null;
@@ -137,8 +137,8 @@ public class SoftAssertedStepsExtension implements InterceptStepException {
    * @return execution result
    * @throws NullPointerException if {@code steps} arg is null
    */
-  public static <V, R> R softAssertedSteps(final V value,
-                                           final ThrowingFunction<? super V, ? extends R, ?> steps) {
+  public static <V, R> R softAssertedStepsResult(final V value,
+                                                 final ThrowingFunction<? super V, ? extends R, ?> steps) {
     if (steps == null) { throw new NullPointerException("steps arg is null"); }
     startSoftAssertions();
     Throwable blockException = null;
