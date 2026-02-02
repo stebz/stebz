@@ -23,6 +23,8 @@
  */
 package org.stebz.extension;
 
+import dev.jlet.function.ThrowingConsumer;
+import dev.jlet.function.ThrowingFunction;
 import dev.jlet.function.ThrowingRunnable;
 import dev.jlet.function.ThrowingSupplier;
 import org.stebz.executor.StartupPropertiesReader;
@@ -72,14 +74,33 @@ public class HiddenStepsExtension implements InterceptStep {
   }
 
   /**
+   * Executes given block of steps with hiding.
+   *
+   * @param value the additional value
+   * @param steps the block of steps for hiding
+   * @param <V>   the type of the additional value
+   * @throws NullPointerException if {@code steps} arg is null
+   */
+  public static <V> void hiddenSteps(final V value,
+                                     final ThrowingConsumer<? super V, ?> steps) {
+    if (steps == null) { throw new NullPointerException("steps arg is null"); }
+    startHiddenSteps();
+    try {
+      ThrowingConsumer.unchecked(steps).accept(value);
+    } finally {
+      finishHiddenSteps();
+    }
+  }
+
+  /**
    * Executes given block of steps with hiding and returns result.
    *
    * @param steps the block of steps for hiding
    * @param <R>   the type of the result
-   * @return result
+   * @return execution result
    * @throws NullPointerException if {@code steps} arg is null
    */
-  public static <R> R hiddenSteps(final ThrowingSupplier<? extends R, ?> steps) {
+  public static <R> R hiddenStepsResult(final ThrowingSupplier<? extends R, ?> steps) {
     if (steps == null) { throw new NullPointerException("steps arg is null"); }
     startHiddenSteps();
     try {
@@ -90,26 +111,23 @@ public class HiddenStepsExtension implements InterceptStep {
   }
 
   /**
-   * Executes given block of steps with hiding. Alias for {@link #hiddenSteps(ThrowingRunnable)} method.
+   * Executes given block of steps with hiding and returns execution result.
    *
    * @param steps the block of steps for hiding
-   * @throws NullPointerException if {@code steps} arg is null
-   */
-  public static void hiddenArea(final ThrowingRunnable<?> steps) {
-    hiddenSteps(steps);
-  }
-
-  /**
-   * Executes given block of steps with hiding and returns result. Alias for {@link #hiddenSteps(ThrowingSupplier)}
-   * method.
-   *
-   * @param steps the block of steps for hiding
+   * @param <V>   the type of the additional value
    * @param <R>   the type of the result
-   * @return result
+   * @return execution result
    * @throws NullPointerException if {@code steps} arg is null
    */
-  public static <R> R hiddenArea(final ThrowingSupplier<? extends R, ?> steps) {
-    return hiddenSteps(steps);
+  public static <V, R> R hiddenStepsResult(final V value,
+                                           final ThrowingFunction<? super V, ? extends R, ?> steps) {
+    if (steps == null) { throw new NullPointerException("steps arg is null"); }
+    startHiddenSteps();
+    try {
+      return ThrowingFunction.unchecked(steps).apply(value);
+    } finally {
+      finishHiddenSteps();
+    }
   }
 
   private static void startHiddenSteps() {
