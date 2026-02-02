@@ -29,11 +29,12 @@ import org.stebz.step.executable.RunnableStep;
 import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
 
+import java.lang.reflect.Field;
 import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.stebz.extension.HiddenStepsExtension.hiddenArea;
 import static org.stebz.extension.HiddenStepsExtension.hiddenSteps;
+import static org.stebz.extension.HiddenStepsExtension.hiddenStepsResult;
 
 /**
  * Tests for {@link HiddenStepsExtension}.
@@ -41,17 +42,18 @@ import static org.stebz.extension.HiddenStepsExtension.hiddenSteps;
 final class HiddenStepsExtensionTest {
 
   @Test
-  void extensionShouldNotSetTrueHiddenAttributeWithoutMethods() {
+  void interceptStepMethodShouldNotHideStepsWithoutMethod() throws Exception {
     final RunnableStep step = RunnableStep.empty();
     final HiddenStepsExtension extension = new HiddenStepsExtension(new PropertiesReader.Of(new Properties()));
 
-    final StepObj<?> result = extension.interceptStep(step, NullableOptional.empty());
-    assertThat(result.getHidden())
+    final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
+    assertThat(resultStep.getHidden())
       .isFalse();
+    assertThatTreadLocalsAreCleared();
   }
 
   @Test
-  void hiddenStepsRunnableMethodShouldHideSteps() {
+  void interceptStepMethodStepsMethodShouldHideStepsInsideMethod() throws Exception {
     final RunnableStep step = RunnableStep.empty();
     final HiddenStepsExtension extension = new HiddenStepsExtension(new PropertiesReader.Of(new Properties()));
 
@@ -60,54 +62,28 @@ final class HiddenStepsExtensionTest {
       assertThat(resultStep.getHidden())
         .isTrue();
     });
+    assertThatTreadLocalsAreCleared();
   }
 
   @Test
-  void hiddenStepsSupplierMethodShouldHideStepsAndReturnsResult() {
+  void hiddenStepsMethodWithResultShouldHideStepsInsideMethodAndReturnsResult() throws Exception {
     final RunnableStep step = RunnableStep.empty();
     final HiddenStepsExtension extension = new HiddenStepsExtension(new PropertiesReader.Of(new Properties()));
     final Object result = new Object();
 
     assertThat(
-      hiddenSteps(() -> {
+      hiddenStepsResult(() -> {
         final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
         assertThat(resultStep.getHidden())
           .isTrue();
         return result;
       })
     ).isSameAs(result);
+    assertThatTreadLocalsAreCleared();
   }
 
   @Test
-  void hiddenAreaRunnableMethodShouldHideSteps() {
-    final RunnableStep step = RunnableStep.empty();
-    final HiddenStepsExtension extension = new HiddenStepsExtension(new PropertiesReader.Of(new Properties()));
-
-    hiddenArea(() -> {
-      final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
-      assertThat(resultStep.getHidden())
-        .isTrue();
-    });
-  }
-
-  @Test
-  void hiddenAreaSupplierMethodShouldHideStepsAndReturnsResult() {
-    final RunnableStep step = RunnableStep.empty();
-    final HiddenStepsExtension extension = new HiddenStepsExtension(new PropertiesReader.Of(new Properties()));
-    final Object result = new Object();
-
-    assertThat(
-      hiddenArea(() -> {
-        final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
-        assertThat(resultStep.getHidden())
-          .isTrue();
-        return result;
-      })
-    ).isSameAs(result);
-  }
-
-  @Test
-  void hiddenStepsWithNestedHiddenSteps() {
+  void hiddenStepsMethodWithNestedMethodShouldHideSteps() throws Exception {
     final RunnableStep step = RunnableStep.empty();
     final HiddenStepsExtension extension = new HiddenStepsExtension(new PropertiesReader.Of(new Properties()));
 
@@ -121,5 +97,14 @@ final class HiddenStepsExtensionTest {
       assertThat(resultStep.getHidden())
         .isTrue();
     });
+    assertThatTreadLocalsAreCleared();
+  }
+
+  @SuppressWarnings("unchecked")
+  private static void assertThatTreadLocalsAreCleared() throws Exception {
+    final Field depthField = HiddenStepsExtension.class.getDeclaredField("THREAD_LOCAL_DEPTH");
+    depthField.setAccessible(true);
+    assertThat(((ThreadLocal<Integer>) depthField.get(null)).get())
+      .isNull();
   }
 }
