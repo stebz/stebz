@@ -39,6 +39,7 @@ import java.util.Properties;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.stebz.extension.SoftAssertedStepsExtension.softAssertedSteps;
+import static org.stebz.extension.SoftAssertedStepsExtension.softAssertedStepsResult;
 
 /**
  * Tests for {@link SoftAssertedStepsExtension}.
@@ -222,7 +223,7 @@ final class SoftAssertedStepsExtensionTest {
       new SoftAssertedStepsExtension(new PropertiesReader.Of(new Properties()));
 
     assertThat(
-      softAssertedSteps((ThrowingSupplier<Object, ?>) () -> {
+      softAssertedStepsResult((ThrowingSupplier<Object, ?>) () -> {
         assertThat(extension.interceptStepException(step, NullableOptional.empty(), exception1))
           .isSameAs(exception1);
         assertThat(extension.hiddenStepException(step, NullableOptional.empty(), exception2, false))
@@ -248,7 +249,7 @@ final class SoftAssertedStepsExtensionTest {
       new SoftAssertedStepsExtension(new PropertiesReader.Of(new Properties()));
 
     assertThatCode(() ->
-      softAssertedSteps((ThrowingSupplier<Object, ?>) () -> {
+      softAssertedStepsResult((ThrowingSupplier<Object, ?>) () -> {
         assertThat(extension.interceptStepException(step, NullableOptional.empty(), exception1))
           .isSameAs(exception1);
         assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception2, false))
@@ -280,12 +281,12 @@ final class SoftAssertedStepsExtensionTest {
 
     Throwable mainException = null;
     try {
-      softAssertedSteps((ThrowingSupplier<Object, ?>) () -> {
+      softAssertedStepsResult((ThrowingSupplier<Object, ?>) () -> {
         assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception1, false))
           .isFalse();
         assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception2, false))
           .isFalse();
-        return softAssertedSteps(() -> {
+        return softAssertedStepsResult(() -> {
           assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception3, false))
             .isFalse();
           assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception4, false))
@@ -318,7 +319,7 @@ final class SoftAssertedStepsExtensionTest {
     final SoftAssertedStepsExtension extension =
       new SoftAssertedStepsExtension(new PropertiesReader.Of(new Properties()));
     assertThatCode(() ->
-      softAssertedSteps((ThrowingSupplier<Object, ?>) () -> {
+      softAssertedStepsResult((ThrowingSupplier<Object, ?>) () -> {
         assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception1, false))
           .isFalse();
         throw exception2;
@@ -334,7 +335,7 @@ final class SoftAssertedStepsExtensionTest {
     final Throwable exception = new Throwable();
 
     assertThatCode(() ->
-      softAssertedSteps((ThrowingSupplier<Object, ?>) () -> {
+      softAssertedStepsResult((ThrowingSupplier<Object, ?>) () -> {
         throw exception;
       })
     ).isInstanceOf(MultipleFailuresError.class)
