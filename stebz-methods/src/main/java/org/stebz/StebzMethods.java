@@ -23,6 +23,8 @@
  */
 package org.stebz;
 
+import dev.jlet.function.ThrowingConsumer;
+import dev.jlet.function.ThrowingFunction;
 import dev.jlet.function.ThrowingRunnable;
 import dev.jlet.function.ThrowingSupplier;
 import org.stebz.attribute.Keyword;
@@ -62,6 +64,60 @@ public final class StebzMethods {
    */
   public static <T> Around<T> around(final T value) {
     return new Around.Of<>(StepExecutor.get(), value);
+  }
+
+  /**
+   * Executes given block of steps.
+   *
+   * @param steps the block of steps
+   * @throws NullPointerException if {@code steps} arg is null
+   */
+  public static void steps(final ThrowingRunnable<?> steps) {
+    if (steps == null) { throw new NullPointerException("steps arg is null"); }
+    ThrowingRunnable.unchecked(steps).run();
+  }
+
+  /**
+   * Executes given block of steps.
+   *
+   * @param value the additional value
+   * @param steps the block of steps
+   * @param <V>   the type of the additional value
+   * @throws NullPointerException if {@code steps} arg is null
+   */
+  public static <V> void steps(final V value,
+                               final ThrowingConsumer<? super V, ?> steps) {
+    if (steps == null) { throw new NullPointerException("steps arg is null"); }
+    ThrowingConsumer.unchecked(steps).accept(value);
+  }
+
+  /**
+   * Executes given block of steps and returns result.
+   *
+   * @param steps the block of steps
+   * @param <R>   the type of the result
+   * @return execution result
+   * @throws NullPointerException if {@code steps} arg is null
+   */
+  public static <R> R stepsResult(final ThrowingSupplier<? extends R, ?> steps) {
+    if (steps == null) { throw new NullPointerException("steps arg is null"); }
+    return ThrowingSupplier.unchecked(steps).get();
+  }
+
+  /**
+   * Executes given block of steps and returns result.
+   *
+   * @param value the additional value
+   * @param steps the block of steps
+   * @param <V>   the type of the additional value
+   * @param <R>   the type of the result
+   * @return execution result
+   * @throws NullPointerException if {@code steps} arg is null
+   */
+  public static <V, R> R stepsResult(final V value,
+                                     final ThrowingFunction<? super V, ? extends R, ?> steps) {
+    if (steps == null) { throw new NullPointerException("steps arg is null"); }
+    return ThrowingFunction.unchecked(steps).apply(value);
   }
 
   /**
