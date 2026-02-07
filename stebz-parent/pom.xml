@@ -75,7 +75,7 @@
     <allure.version>2.32.0</allure.version>
     <qase.version>4.1.17</qase.version>
     <reportportal.version>5.4.3</reportportal.version>
-    <testit.version>2.9.0</testit.version>
+    <testit.version>2.10.0</testit.version>
     <junit.version>5.14.0</junit.version>
     <junitPlatformLauncher.version>1.14.0</junitPlatformLauncher.version>
     <assertj.version>3.27.7</assertj.version>
