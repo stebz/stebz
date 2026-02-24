@@ -43,6 +43,7 @@ public class EmptyStepsExtension implements InterceptStep {
   private static final ThreadLocal<Integer> THREAD_LOCAL_DEPTH = new ThreadLocal<>();
   private final boolean enabled;
   private final int order;
+  private final boolean each;
 
   /**
    * Ctor.
@@ -59,6 +60,7 @@ public class EmptyStepsExtension implements InterceptStep {
   public EmptyStepsExtension(final PropertiesReader properties) {
     this.enabled = properties.getBoolean("stebz.extensions.emptySteps.enabled", true);
     this.order = properties.getInteger("stebz.extensions.emptySteps.order", LATE_ORDER);
+    this.each = properties.getBoolean("stebz.extensions.emptySteps.each", false);
   }
 
   /**
@@ -160,7 +162,7 @@ public class EmptyStepsExtension implements InterceptStep {
   @Override
   public StepObj<?> interceptStep(final StepObj<?> step,
                                   final NullableOptional<Object> context) {
-    if (this.enabled && THREAD_LOCAL_DEPTH.get() != null) {
+    if (this.enabled && (this.each || THREAD_LOCAL_DEPTH.get() != null)) {
       if (step instanceof RunnableStep) {
         return ((RunnableStep) step).withBody(RunnableStep.emptyBody());
       } else if (step instanceof ConsumerStep) {
