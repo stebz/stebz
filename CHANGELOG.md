@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.13 (2026/02/24)
+
+* #147 add steps and stepsResult methods by @evpl in PR #148
+* #150 add emptySteps and emptyStepsResult methods by @evpl in PR #151
+* #152 add each option for EmptyStepsExtension by @evpl in PR #153
+
 ## 1.12.1 (2026/02/02)
 
 * #142 rename `softAssertedSteps` method with result to `softAssertedStepsResult` by @evpl in PR #143

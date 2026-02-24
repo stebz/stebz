@@ -37,6 +37,7 @@ Multi-approach and flexible Java framework for test steps managing.
     * [Test IT listener](#stebz-testit-listener)
   * [Extensions](#extensions)
     * [Clean stack trace extension](#stebz-clean-stack-trace-extension)
+    * [Empty steps extension](#stebz-empty-steps-extension)
     * [Hidden steps extension](#stebz-hidden-steps-extension)
     * [Soft asserted steps extension](#stebz-soft-asserted-steps-extension)
     * [Readable reflective name extension](#stebz-readable-reflective-name-extension)
@@ -48,6 +49,7 @@ Multi-approach and flexible Java framework for test steps managing.
     * [`stebz-gherkin-keywords` module](#stebz-gherkin-keywords-module)
     * [`stebz-gherkin-annotations` module](#stebz-gherkin-annotations-module)
     * [`stebz-clean-stack-trace` module](#stebz-clean-stack-trace-module)
+    * [`stebz-empty-steps` module](#stebz-empty-steps-module)
     * [`stebz-hidden-steps` module](#stebz-hidden-steps-module)
     * [`stebz-soft-asserted-steps` module](#stebz-soft-asserted-steps-module)
     * [`stebz-readable-reflective-name` module](#stebz-readable-reflective-name-module)
@@ -229,7 +231,7 @@ Maven:
   <dependency>
     <groupId>org.stebz</groupId>
     <artifactId>{module name}</artifactId>
-    <version>1.12.1</version>
+    <version>1.13</version>
   </dependency>
 </dependencies>
 ```
@@ -240,7 +242,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation 'org.stebz:{module name}:1.12.1'
+  implementation 'org.stebz:{module name}:1.13'
 }
 ```
 <!-- @formatter:on -->
@@ -250,7 +252,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation("org.stebz:{module name}:1.12.1")
+  implementation("org.stebz:{module name}:1.13")
 }
 ```
 <!-- @formatter:on -->
@@ -272,7 +274,7 @@ Maven:
     <dependency>
       <groupId>org.stebz</groupId>
       <artifactId>stebz-bom</artifactId>
-      <version>1.12.1</version>
+      <version>1.13</version>
       <scope>import</scope>
       <type>pom</type>
     </dependency>
@@ -286,7 +288,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation platform('org.stebz:stebz-bom:1.12.1')
+  implementation platform('org.stebz:stebz-bom:1.13')
 }
 ```
 <!-- @formatter:on -->
@@ -296,7 +298,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation(platform("org.stebz:stebz-bom:1.12.1"))
+  implementation(platform("org.stebz:stebz-bom:1.13"))
 }
 ```
 <!-- @formatter:on -->
@@ -397,26 +399,28 @@ tasks.test {
 
 #### Extension:
 
-| module                           | include / depends on                                                                | description                                                                    |
-|----------------------------------|-------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
-| `stebz-aaa-keywords`             | `stebz-utils`<br/>`stebz-core`                                                      | Arrange-Act-Assert style keywords                                              |
-| `stebz-aaa-methods`              | `stebz-utils`<br/>`stebz-core`<br/>`stebz-aaa-keywords`                             | Methods for executing step objects and quick steps in Arrange-Act-Assert style |
-| `stebz-aaa-annotations`          | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations`<br/>`stebz-aaa-keywords`     | Annotations in Arrange-Act-Assert style                                        |
-| `stebz-gherkin-keywords`         | `stebz-utils`<br/>`stebz-core`                                                      | Gherkin style keywords                                                         |
-| `stebz-gherkin-methods`          | `stebz-utils`<br/>`stebz-core`<br/>`stebz-gherkin-keywords`                         | Methods for executing step objects and quick steps in Gherkin style            |
-| `stebz-gherkin-annotations`      | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations`<br/>`stebz-gherkin-keywords` | Annotations in Gherkin style                                                   |
-| `stebz-clean-stack-trace`        | `stebz-utils`<br/>`stebz-core`                                                      | Extension that cleans step exception stack trace from garbage lines            |
-| `stebz-hidden-steps`             | `stebz-utils`<br/>`stebz-core`                                                      | Extension that allows to hide several steps                                    |
-| `stebz-readable-reflective-name` | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations`                              | Extension that converts a reflective step name into a readable form            |
-| `stebz-repeat-and-retry`         | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations` (optional)                   | Extension that allows to repeat and retry step bodies                          |
+| module                           | include / depends on                                                                | description                                                                     |
+|----------------------------------|-------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
+| `stebz-aaa-keywords`             | `stebz-utils`<br/>`stebz-core`                                                      | Arrange-Act-Assert style keywords                                               |
+| `stebz-aaa-methods`              | `stebz-utils`<br/>`stebz-core`<br/>`stebz-aaa-keywords`                             | Methods for executing step objects and quick steps in Arrange-Act-Assert style  |
+| `stebz-aaa-annotations`          | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations`<br/>`stebz-aaa-keywords`     | Annotations in Arrange-Act-Assert style                                         |
+| `stebz-gherkin-keywords`         | `stebz-utils`<br/>`stebz-core`                                                      | Gherkin style keywords                                                          |
+| `stebz-gherkin-methods`          | `stebz-utils`<br/>`stebz-core`<br/>`stebz-gherkin-keywords`                         | Methods for executing step objects and quick steps in Gherkin style             |
+| `stebz-gherkin-annotations`      | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations`<br/>`stebz-gherkin-keywords` | Annotations in Gherkin style                                                    |
+| `stebz-clean-stack-trace`        | `stebz-utils`<br/>`stebz-core`                                                      | Extension that cleans step exception stack trace from garbage lines             |
+| `stebz-empty-steps`              | `stebz-utils`<br/>`stebz-core`                                                      | Extension that allows to execute steps with the body replaced with an empty one |
+| `stebz-hidden-steps`             | `stebz-utils`<br/>`stebz-core`                                                      | Extension that allows to hide several steps                                     |
+| `stebz-soft-asserted-steps`      | `stebz-utils`<br/>`stebz-core`                                                      | Extension that allows to assert softly several steps                            |
+| `stebz-readable-reflective-name` | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations`                              | Extension that converts a reflective step name into a readable form             |
+| `stebz-repeat-and-retry`         | `stebz-utils`<br/>`stebz-core`<br/>`stebz-annotations` (optional)                   | Extension that allows to repeat and retry step bodies                           |
 
 #### Bundle:
 
-| module          | include / depends on                                                                                                                                                                                                                                                                         | description                                         |
-|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------|
-| `stebz`         | `stebz-utils`<br/>`stebz-core`<br/>`stebz-methods`<br/>`stebz-annotations`<br/>`stebz-clean-stack-trace`<br/>`stebz-hidden-steps`<br/>`stebz-readable-reflective-name`<br/>`stebz-repeat-and-retry`                                                                                          | Bundle of Stebz modules                             |
-| `stebz-aaa`     | `stebz-utils`<br/>`stebz-core`<br/>`stebz-methods`<br/>`stebz-annotations`<br/>`stebz-aaa-keywords`<br/>`stebz-aaa-methods`<br/>`stebz-aaa-annotations`<br/>`stebz-clean-stack-trace`<br/>`stebz-hidden-steps`<br/>`stebz-readable-reflective-name`<br/>`stebz-repeat-and-retry`             | Bundle of Stebz modules in Arrange-Act-Assert style |
-| `stebz-gherkin` | `stebz-utils`<br/>`stebz-core`<br/>`stebz-methods`<br/>`stebz-annotations`<br/>`stebz-gherkin-keywords`<br/>`stebz-gherkin-methods`<br/>`stebz-gherkin-annotations`<br/>`stebz-clean-stack-trace`<br/>`stebz-hidden-steps`<br/>`stebz-readable-reflective-name`<br/>`stebz-repeat-and-retry` | Bundle of Stebz modules in Gherkin style            |
+| module          | include / depends on                                                                                                                                                                                                                                                                                                         | description                                         |
+|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------|
+| `stebz`         | `stebz-utils`<br/>`stebz-core`<br/>`stebz-methods`<br/>`stebz-annotations`<br/>`stebz-clean-stack-trace`<br/>`stebz-hidden-steps`<br/>`stebz-soft-asserted-steps`<br/>`stebz-readable-reflective-name`<br/>`stebz-repeat-and-retry`                                                                                          | Bundle of Stebz modules                             |
+| `stebz-aaa`     | `stebz-utils`<br/>`stebz-core`<br/>`stebz-methods`<br/>`stebz-annotations`<br/>`stebz-aaa-keywords`<br/>`stebz-aaa-methods`<br/>`stebz-aaa-annotations`<br/>`stebz-clean-stack-trace`<br/>`stebz-hidden-steps`<br/>`stebz-soft-asserted-steps`<br/>`stebz-readable-reflective-name`<br/>`stebz-repeat-and-retry `            | Bundle of Stebz modules in Arrange-Act-Assert style |
+| `stebz-gherkin` | `stebz-utils`<br/>`stebz-core`<br/>`stebz-methods`<br/>`stebz-annotations`<br/>`stebz-gherkin-keywords`<br/>`stebz-gherkin-methods`<br/>`stebz-gherkin-annotations`<br/>`stebz-clean-stack-trace`<br/>`stebz-hidden-steps`<br/>`stebz-soft-asserted-steps`<br/>`stebz-readable-reflective-name`<br/>`stebz-repeat-and-retry` | Bundle of Stebz modules in Gherkin style            |
 
 #### Integration:
 
@@ -1038,6 +1042,24 @@ java.lang.AssertionError
 ```
 <!-- @formatter:on -->
 
+#### `stebz-empty-steps` extension
+
+Extension that allows to execute steps with the body replaced with an empty one.
+
+<!-- @formatter:off -->
+```java
+emptySteps(() -> {
+  step(my_step1);
+  step(my_step2);
+});
+
+emptySteps(around(100), a -> a
+  .step(my_step1)
+  .step(my_step2)
+);
+```
+<!-- @formatter:on -->
+
 #### `stebz-hidden-steps` extension
 
 Extension that allows to hide several steps.
@@ -1063,8 +1085,6 @@ hiddenSteps(around(100), a -> a
 );
 ```
 <!-- @formatter:on -->
-
-There is also an alias method `hiddenArea`.
 
 #### `stebz-soft-asserted-steps` extension
 
@@ -1217,6 +1237,14 @@ System properties have first priority, file properties have second priority.
 | `stebz.extensions.cleanStackTrace.clearRelated`      | `Boolean` | `true`                                          | clear related exceptions          |
 | `stebz.extensions.cleanStackTrace.clearStebzLines`   | `Boolean` | `true`                                          | removes Stebz stack trace lines   |
 | `stebz.extensions.cleanStackTrace.clearAspectjLines` | `Boolean` | `true` if `stebz-annotations` module is present | removes AspectJ stack trace lines |
+
+#### `stebz-empty-steps` module
+
+| property                              | type      | default value | description       |
+|---------------------------------------|-----------|---------------|-------------------|
+| `stebz.extensions.emptySteps.enabled` | `Boolean` | `true`        | enable extension  |
+| `stebz.extensions.emptySteps.order`   | `Integer` | `10000`       | extension order   |
+| `stebz.extensions.emptySteps.each`    | `Boolean` | `10000`       | use for each step |
 
 #### `stebz-hidden-steps` module
 
