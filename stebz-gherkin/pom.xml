@@ -86,6 +86,11 @@
     </dependency>
     <dependency>
       <groupId>org.stebz</groupId>
+      <artifactId>stebz-empty-steps</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.stebz</groupId>
       <artifactId>stebz-hidden-steps</artifactId>
       <scope>compile</scope>
     </dependency>
