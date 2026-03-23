@@ -23,6 +23,7 @@
  */
 package org.stebz;
 
+import dev.jlet.function.ThrowingFunction;
 import dev.jlet.function.ThrowingRunnable;
 import dev.jlet.function.ThrowingSupplier;
 import org.stebz.attribute.StepAttributes;
@@ -102,13 +103,27 @@ public final class StebzGherkinMethods {
   }
 
   /**
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static void Background(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                final RunnableStep step) {
+    StepExecutor.get().execute(step.with(
+      KEYWORD, background(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
+  }
+
+  /**
    * Executes given step with {@link GherkinKeywords#background()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R Background(final SupplierStep<R> step) {
+  public static <R> R Background(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, background()));
   }
 
@@ -121,8 +136,25 @@ public final class StebzGherkinMethods {
    * @return step result
    */
   public static <R> R Background(final String name,
-                                 final SupplierStep<R> step) {
+                                 final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, background(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  public static <R> R Background(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                 final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(
+      KEYWORD, background(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
   }
 
   /**
@@ -153,6 +185,27 @@ public final class StebzGherkinMethods {
                                     final T value) {
     StepExecutor.get().execute(
       step.with(KEYWORD, background(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by {@code nameGenerator} on
+   * given value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   */
+  public static <T> void Background(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                    final ConsumerStep<? super T> step,
+                                    final T value) {
+    StepExecutor.get().execute(
+      step.with(
+        KEYWORD, background(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -190,6 +243,29 @@ public final class StebzGherkinMethods {
                                     final T value) {
     return StepExecutor.get().execute(
       step.with(KEYWORD, background(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by {@code nameGenerator} on
+   * given value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <T, R> R Background(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                    final FunctionStep<? super T, ? extends R> step,
+                                    final T value) {
+    return StepExecutor.get().execute(
+      step.with(
+        KEYWORD, background(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -442,13 +518,27 @@ public final class StebzGherkinMethods {
   }
 
   /**
+   * Executes given step with {@link GherkinKeywords#conclusion()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static void Conclusion(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                final RunnableStep step) {
+    StepExecutor.get().execute(step.with(
+      KEYWORD, conclusion(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
+  }
+
+  /**
    * Executes given step with {@link GherkinKeywords#conclusion()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R Conclusion(final SupplierStep<R> step) {
+  public static <R> R Conclusion(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, conclusion()));
   }
 
@@ -461,8 +551,25 @@ public final class StebzGherkinMethods {
    * @return step result
    */
   public static <R> R Conclusion(final String name,
-                                 final SupplierStep<R> step) {
+                                 final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, conclusion(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#conclusion()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  public static <R> R Conclusion(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                 final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(
+      KEYWORD, conclusion(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
   }
 
   /**
@@ -493,6 +600,27 @@ public final class StebzGherkinMethods {
                                     final T value) {
     StepExecutor.get().execute(
       step.with(KEYWORD, conclusion(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#conclusion()} keyword and name created by {@code nameGenerator} on
+   * given value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   */
+  public static <T> void Conclusion(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                    final ConsumerStep<? super T> step,
+                                    final T value) {
+    StepExecutor.get().execute(
+      step.with(
+        KEYWORD, conclusion(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -530,6 +658,29 @@ public final class StebzGherkinMethods {
                                     final T value) {
     return StepExecutor.get().execute(
       step.with(KEYWORD, conclusion(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#conclusion()} keyword and name created by {@code nameGenerator} on
+   * given value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <T, R> R Conclusion(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                    final FunctionStep<? super T, ? extends R> step,
+                                    final T value) {
+    return StepExecutor.get().execute(
+      step.with(
+        KEYWORD, conclusion(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -782,13 +933,27 @@ public final class StebzGherkinMethods {
   }
 
   /**
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static void Rule(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                          final RunnableStep step) {
+    StepExecutor.get().execute(step.with(
+      KEYWORD, rule(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
+  }
+
+  /**
    * Executes given step with {@link GherkinKeywords#rule()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R Rule(final SupplierStep<R> step) {
+  public static <R> R Rule(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, rule()));
   }
 
@@ -801,8 +966,25 @@ public final class StebzGherkinMethods {
    * @return step result
    */
   public static <R> R Rule(final String name,
-                           final SupplierStep<R> step) {
+                           final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, rule(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  public static <R> R Rule(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                           final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(
+      KEYWORD, rule(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
   }
 
   /**
@@ -833,6 +1015,27 @@ public final class StebzGherkinMethods {
                               final T value) {
     StepExecutor.get().execute(
       step.with(KEYWORD, rule(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by {@code nameGenerator} on given
+   * value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   */
+  public static <T> void Rule(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                              final ConsumerStep<? super T> step,
+                              final T value) {
+    StepExecutor.get().execute(
+      step.with(
+        KEYWORD, rule(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -869,6 +1072,29 @@ public final class StebzGherkinMethods {
                               final T value) {
     return StepExecutor.get().execute(
       step.with(KEYWORD, rule(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by {@code nameGenerator} on given
+   * value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <T, R> R Rule(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                              final FunctionStep<? super T, ? extends R> step,
+                              final T value) {
+    return StepExecutor.get().execute(
+      step.with(
+        KEYWORD, rule(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -1121,13 +1347,27 @@ public final class StebzGherkinMethods {
   }
 
   /**
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static void Given(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                           final RunnableStep step) {
+    StepExecutor.get().execute(step.with(
+      KEYWORD, given(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
+  }
+
+  /**
    * Executes given step with {@link GherkinKeywords#given()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R Given(final SupplierStep<R> step) {
+  public static <R> R Given(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, given()));
   }
 
@@ -1140,8 +1380,25 @@ public final class StebzGherkinMethods {
    * @return step result
    */
   public static <R> R Given(final String name,
-                            final SupplierStep<R> step) {
+                            final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, given(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <R> R Given(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                            final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(
+      KEYWORD, given(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
   }
 
   /**
@@ -1172,6 +1429,27 @@ public final class StebzGherkinMethods {
                                final T value) {
     StepExecutor.get().execute(
       step.with(KEYWORD, given(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by {@code nameGenerator} on given
+   * value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   */
+  public static <T> void Given(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                               final ConsumerStep<? super T> step,
+                               final T value) {
+    StepExecutor.get().execute(
+      step.with(
+        KEYWORD, given(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -1208,6 +1486,29 @@ public final class StebzGherkinMethods {
                                final T value) {
     return StepExecutor.get().execute(
       step.with(KEYWORD, given(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by {@code nameGenerator} on given
+   * value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <T, R> R Given(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                               final FunctionStep<? super T, ? extends R> step,
+                               final T value) {
+    return StepExecutor.get().execute(
+      step.with(
+        KEYWORD, given(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -1460,13 +1761,27 @@ public final class StebzGherkinMethods {
   }
 
   /**
+   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static void When(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                          final RunnableStep step) {
+    StepExecutor.get().execute(step.with(
+      KEYWORD, when(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
+  }
+
+  /**
    * Executes given step with {@link GherkinKeywords#when()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R When(final SupplierStep<R> step) {
+  public static <R> R When(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, when()));
   }
 
@@ -1479,8 +1794,25 @@ public final class StebzGherkinMethods {
    * @return step result
    */
   public static <R> R When(final String name,
-                           final SupplierStep<R> step) {
+                           final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, when(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <R> R When(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                           final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(
+      KEYWORD, when(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
   }
 
   /**
@@ -1511,6 +1843,27 @@ public final class StebzGherkinMethods {
                               final T value) {
     StepExecutor.get().execute(
       step.with(KEYWORD, when(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by {@code nameGenerator} on given
+   * value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   */
+  public static <T> void When(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                              final ConsumerStep<? super T> step,
+                              final T value) {
+    StepExecutor.get().execute(
+      step.with(
+        KEYWORD, when(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -1547,6 +1900,29 @@ public final class StebzGherkinMethods {
                               final T value) {
     return StepExecutor.get().execute(
       step.with(KEYWORD, when(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by {@code nameGenerator} on given
+   * value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <T, R> R When(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                              final FunctionStep<? super T, ? extends R> step,
+                              final T value) {
+    return StepExecutor.get().execute(
+      step.with(
+        KEYWORD, when(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -1799,13 +2175,27 @@ public final class StebzGherkinMethods {
   }
 
   /**
+   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static void Then(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                          final RunnableStep step) {
+    StepExecutor.get().execute(step.with(
+      KEYWORD, then(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
+  }
+
+  /**
    * Executes given step with {@link GherkinKeywords#then()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R Then(final SupplierStep<R> step) {
+  public static <R> R Then(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, then()));
   }
 
@@ -1818,8 +2208,25 @@ public final class StebzGherkinMethods {
    * @return step result
    */
   public static <R> R Then(final String name,
-                           final SupplierStep<R> step) {
+                           final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, then(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <R> R Then(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                           final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(
+      KEYWORD, then(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
   }
 
   /**
@@ -1850,6 +2257,27 @@ public final class StebzGherkinMethods {
                               final T value) {
     StepExecutor.get().execute(
       step.with(KEYWORD, then(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by {@code nameGenerator} on given
+   * value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   */
+  public static <T> void Then(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                              final ConsumerStep<? super T> step,
+                              final T value) {
+    StepExecutor.get().execute(
+      step.with(
+        KEYWORD, then(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -1886,6 +2314,29 @@ public final class StebzGherkinMethods {
                               final T value) {
     return StepExecutor.get().execute(
       step.with(KEYWORD, then(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by {@code nameGenerator} on given
+   * value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <T, R> R Then(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                              final FunctionStep<? super T, ? extends R> step,
+                              final T value) {
+    return StepExecutor.get().execute(
+      step.with(
+        KEYWORD, then(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -2138,13 +2589,27 @@ public final class StebzGherkinMethods {
   }
 
   /**
+   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static void And(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                         final RunnableStep step) {
+    StepExecutor.get().execute(step.with(
+      KEYWORD, and(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
+  }
+
+  /**
    * Executes given step with {@link GherkinKeywords#and()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R And(final SupplierStep<R> step) {
+  public static <R> R And(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, and()));
   }
 
@@ -2157,8 +2622,25 @@ public final class StebzGherkinMethods {
    * @return step result
    */
   public static <R> R And(final String name,
-                          final SupplierStep<R> step) {
+                          final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, and(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <R> R And(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                          final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(
+      KEYWORD, and(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
   }
 
   /**
@@ -2189,6 +2671,27 @@ public final class StebzGherkinMethods {
                              final T value) {
     StepExecutor.get().execute(
       step.with(KEYWORD, and(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by {@code nameGenerator} on given
+   * value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   */
+  public static <T> void And(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                             final ConsumerStep<? super T> step,
+                             final T value) {
+    StepExecutor.get().execute(
+      step.with(
+        KEYWORD, and(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -2225,6 +2728,29 @@ public final class StebzGherkinMethods {
                              final T value) {
     return StepExecutor.get().execute(
       step.with(KEYWORD, and(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by {@code nameGenerator} on given
+   * value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <T, R> R And(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                             final FunctionStep<? super T, ? extends R> step,
+                             final T value) {
+    return StepExecutor.get().execute(
+      step.with(
+        KEYWORD, and(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -2477,13 +3003,27 @@ public final class StebzGherkinMethods {
   }
 
   /**
+   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static void But(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                         final RunnableStep step) {
+    StepExecutor.get().execute(step.with(
+      KEYWORD, but(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
+  }
+
+  /**
    * Executes given step with {@link GherkinKeywords#but()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R But(final SupplierStep<R> step) {
+  public static <R> R But(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, but()));
   }
 
@@ -2496,8 +3036,25 @@ public final class StebzGherkinMethods {
    * @return step result
    */
   public static <R> R But(final String name,
-                          final SupplierStep<R> step) {
+                          final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, but(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <R> R But(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                          final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(
+      KEYWORD, but(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
   }
 
   /**
@@ -2528,6 +3085,27 @@ public final class StebzGherkinMethods {
                              final T value) {
     StepExecutor.get().execute(
       step.with(KEYWORD, but(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by {@code nameGenerator} on given
+   * value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   */
+  public static <T> void But(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                             final ConsumerStep<? super T> step,
+                             final T value) {
+    StepExecutor.get().execute(
+      step.with(
+        KEYWORD, but(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -2564,6 +3142,29 @@ public final class StebzGherkinMethods {
                              final T value) {
     return StepExecutor.get().execute(
       step.with(KEYWORD, but(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by {@code nameGenerator} on given
+   * value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <T, R> R But(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                             final FunctionStep<? super T, ? extends R> step,
+                             final T value) {
+    return StepExecutor.get().execute(
+      step.with(
+        KEYWORD, but(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }

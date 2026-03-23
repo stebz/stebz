@@ -148,8 +148,9 @@ public final class StebzMethods {
    * @param <T>  the type of the value
    * @return {@code FunctionStep} as {@code ConsumerStep}
    */
-  public static <T> ConsumerStep<T> noResult(final FunctionStep<T, ?> step) {
-    return step.noResult();
+  @SuppressWarnings("unchecked")
+  public static <T> ConsumerStep<T> noResult(final FunctionStep<? super T, ?> step) {
+    return (ConsumerStep<T>) step.noResult();
   }
 
   /**
@@ -184,6 +185,17 @@ public final class StebzMethods {
   }
 
   /**
+   * Executes given step with name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static void step(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                          final RunnableStep step) {
+    StepExecutor.get().execute(step.with(NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))));
+  }
+
+  /**
    * Executes given step with keyword and name.
    *
    * @param keyword the keyword
@@ -203,7 +215,7 @@ public final class StebzMethods {
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R step(final SupplierStep<R> step) {
+  public static <R> R step(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step);
   }
 
@@ -231,6 +243,19 @@ public final class StebzMethods {
   public static <R> R step(final String name,
                            final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(NAME, name));
+  }
+
+  /**
+   * Executes given step with name created by {@code nameGenerator} and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  public static <R> R step(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                           final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))));
   }
 
   /**
@@ -293,6 +318,23 @@ public final class StebzMethods {
                               final T value) {
     StepExecutor.get().execute(
       step.with(NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with name created by {@code nameGenerator} on given value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   */
+  public static <T> void step(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                              final ConsumerStep<? super T> step,
+                              final T value) {
+    StepExecutor.get().execute(
+      step.with(NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))),
       value
     );
   }
@@ -367,6 +409,24 @@ public final class StebzMethods {
                               final T value) {
     return StepExecutor.get().execute(
       step.with(NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with name created by {@code nameGenerator} on given value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <T>           the type of the value
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <T, R> R step(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                              final FunctionStep<? super T, ? extends R> step,
+                              final T value) {
+    return StepExecutor.get().execute(
+      step.with(NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))),
       value
     );
   }

@@ -76,6 +76,16 @@ public interface Around<T> {
                  RunnableStep step);
 
   /**
+   * Executes given step with name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  Around<T> step(ThrowingFunction<? super String, String, ?> nameGenerator,
+                 RunnableStep step);
+
+  /**
    * Executes given step with keyword and name.
    *
    * @param name    the name
@@ -116,6 +126,17 @@ public interface Around<T> {
    * @return step result
    */
   <R> R step(String name,
+             SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step with name created by {@code nameGenerator} and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R step(ThrowingFunction<? super String, String, ?> nameGenerator,
              SupplierStep<? extends R> step);
 
   /**
@@ -160,6 +181,16 @@ public interface Around<T> {
                  ConsumerStep<? super T> step);
 
   /**
+   * Executes given step with name created by {@code nameGenerator} on the context value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  Around<T> step(ThrowingFunction<? super String, String, ?> nameGenerator,
+                 ConsumerStep<? super T> step);
+
+  /**
    * Executes given step with keyword and name on the context value.
    *
    * @param keyword the keyword
@@ -200,6 +231,17 @@ public interface Around<T> {
    * @return step result
    */
   <R> R step(String name,
+             FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with name created by {@code nameGenerator} on the context value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R step(ThrowingFunction<? super String, String, ?> nameGenerator,
              FunctionStep<? super T, ? extends R> step);
 
   /**
@@ -563,6 +605,13 @@ public interface Around<T> {
     }
 
     @Override
+    public Around<T> step(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                          final RunnableStep step) {
+      this.executor.execute(step.with(NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))));
+      return this;
+    }
+
+    @Override
     public Around<T> step(final Keyword keyword,
                           final String name,
                           final RunnableStep step) {
@@ -585,6 +634,12 @@ public interface Around<T> {
     public <R> R step(final String name,
                       final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(NAME, name));
+    }
+
+    @Override
+    public <R> R step(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                      final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))));
     }
 
     @Override
@@ -624,6 +679,16 @@ public interface Around<T> {
     }
 
     @Override
+    public Around<T> step(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                          final ConsumerStep<? super T> step) {
+      this.executor.execute(
+        step.with(NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))),
+        this.context
+      );
+      return this;
+    }
+
+    @Override
     public Around<T> step(final Keyword keyword,
                           final String name,
                           final ConsumerStep<? super T> step) {
@@ -656,6 +721,15 @@ public interface Around<T> {
                       final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(
         step.with(NAME, name),
+        this.context
+      );
+    }
+
+    @Override
+    public <R> R step(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                      final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(
+        step.with(NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))),
         this.context
       );
     }

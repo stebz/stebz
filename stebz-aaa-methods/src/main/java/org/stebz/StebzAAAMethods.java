@@ -23,6 +23,7 @@
  */
 package org.stebz;
 
+import dev.jlet.function.ThrowingFunction;
 import dev.jlet.function.ThrowingRunnable;
 import dev.jlet.function.ThrowingSupplier;
 import org.stebz.attribute.StepAttributes;
@@ -99,13 +100,27 @@ public final class StebzAAAMethods {
   }
 
   /**
+   * Executes given step with {@link AAAKeywords#setup()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static void Setup(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                           final RunnableStep step) {
+    StepExecutor.get().execute(step.with(
+      KEYWORD, setup(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
+  }
+
+  /**
    * Executes given step with {@link AAAKeywords#setup()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R Setup(final SupplierStep<R> step) {
+  public static <R> R Setup(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, setup()));
   }
 
@@ -118,8 +133,23 @@ public final class StebzAAAMethods {
    * @return step result
    */
   public static <R> R Setup(final String name,
-                            final SupplierStep<R> step) {
+                            final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, setup(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#setup()} keyword and name created by {@code nameGenerator} and returns
+   * step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static <R> R Setup(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                            final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(
+      KEYWORD, setup(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
   }
 
   /**
@@ -150,6 +180,27 @@ public final class StebzAAAMethods {
                                final T value) {
     StepExecutor.get().execute(
       step.with(KEYWORD, setup(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#setup()} keyword and name created by {@code nameGenerator} on given
+   * value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   */
+  public static <T> void Setup(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                               final ConsumerStep<? super T> step,
+                               final T value) {
+    StepExecutor.get().execute(
+      step.with(
+        KEYWORD, setup(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -186,6 +237,29 @@ public final class StebzAAAMethods {
                                final T value) {
     return StepExecutor.get().execute(
       step.with(KEYWORD, setup(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#setup()} keyword and name created by {@code nameGenerator} on given
+   * value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <T, R> R Setup(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                               final FunctionStep<? super T, ? extends R> step,
+                               final T value) {
+    return StepExecutor.get().execute(
+      step.with(
+        KEYWORD, setup(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -438,13 +512,27 @@ public final class StebzAAAMethods {
   }
 
   /**
+   * Executes given step with {@link AAAKeywords#teardown()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static void Teardown(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                              final RunnableStep step) {
+    StepExecutor.get().execute(step.with(
+      KEYWORD, teardown(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
+  }
+
+  /**
    * Executes given step with {@link AAAKeywords#teardown()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R Teardown(final SupplierStep<R> step) {
+  public static <R> R Teardown(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, teardown()));
   }
 
@@ -457,8 +545,23 @@ public final class StebzAAAMethods {
    * @return step result
    */
   public static <R> R Teardown(final String name,
-                               final SupplierStep<R> step) {
+                               final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, teardown(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#teardown()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static <R> R Teardown(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                               final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(
+      KEYWORD, teardown(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
   }
 
   /**
@@ -489,6 +592,27 @@ public final class StebzAAAMethods {
                                   final T value) {
     StepExecutor.get().execute(
       step.with(KEYWORD, teardown(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#teardown()} keyword and name created by {@code nameGenerator} on given
+   * value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   */
+  public static <T> void Teardown(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                  final ConsumerStep<? super T> step,
+                                  final T value) {
+    StepExecutor.get().execute(
+      step.with(
+        KEYWORD, teardown(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -525,6 +649,29 @@ public final class StebzAAAMethods {
                                   final T value) {
     return StepExecutor.get().execute(
       step.with(KEYWORD, teardown(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#teardown()} keyword and name created by {@code nameGenerator} on given
+   * value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <T, R> R Teardown(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                  final FunctionStep<? super T, ? extends R> step,
+                                  final T value) {
+    return StepExecutor.get().execute(
+      step.with(
+        KEYWORD, teardown(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -777,13 +924,27 @@ public final class StebzAAAMethods {
   }
 
   /**
+   * Executes given step with {@link AAAKeywords#arrange()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static void Arrange(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                             final RunnableStep step) {
+    StepExecutor.get().execute(step.with(
+      KEYWORD, arrange(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
+  }
+
+  /**
    * Executes given step with {@link AAAKeywords#arrange()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R Arrange(final SupplierStep<R> step) {
+  public static <R> R Arrange(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, arrange()));
   }
 
@@ -796,8 +957,23 @@ public final class StebzAAAMethods {
    * @return step result
    */
   public static <R> R Arrange(final String name,
-                              final SupplierStep<R> step) {
+                              final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, arrange(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#arrange()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static <R> R Arrange(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                              final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(
+      KEYWORD, arrange(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
   }
 
   /**
@@ -828,6 +1004,27 @@ public final class StebzAAAMethods {
                                  final T value) {
     StepExecutor.get().execute(
       step.with(KEYWORD, arrange(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#arrange()} keyword and name created by {@code nameGenerator} on given
+   * value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   */
+  public static <T> void Arrange(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                 final ConsumerStep<? super T> step,
+                                 final T value) {
+    StepExecutor.get().execute(
+      step.with(
+        KEYWORD, arrange(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -864,6 +1061,29 @@ public final class StebzAAAMethods {
                                  final T value) {
     return StepExecutor.get().execute(
       step.with(KEYWORD, arrange(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#arrange()} keyword and name created by {@code nameGenerator} on given
+   * value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <T, R> R Arrange(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                 final FunctionStep<? super T, ? extends R> step,
+                                 final T value) {
+    return StepExecutor.get().execute(
+      step.with(
+        KEYWORD, arrange(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -1116,13 +1336,27 @@ public final class StebzAAAMethods {
   }
 
   /**
+   * Executes given step with {@link AAAKeywords#act()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static void Act(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                         final RunnableStep step) {
+    StepExecutor.get().execute(step.with(
+      KEYWORD, act(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
+  }
+
+  /**
    * Executes given step with {@link AAAKeywords#act()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R Act(final SupplierStep<R> step) {
+  public static <R> R Act(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, act()));
   }
 
@@ -1135,8 +1369,23 @@ public final class StebzAAAMethods {
    * @return step result
    */
   public static <R> R Act(final String name,
-                          final SupplierStep<R> step) {
+                          final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, act(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#act()} keyword and name created by {@code nameGenerator} and returns
+   * step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static <R> R Act(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                          final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(
+      KEYWORD, act(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
   }
 
   /**
@@ -1167,6 +1416,27 @@ public final class StebzAAAMethods {
                              final T value) {
     StepExecutor.get().execute(
       step.with(KEYWORD, act(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#act()} keyword and name created by {@code nameGenerator} on given
+   * value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   */
+  public static <T> void Act(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                             final ConsumerStep<? super T> step,
+                             final T value) {
+    StepExecutor.get().execute(
+      step.with(
+        KEYWORD, act(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -1203,6 +1473,29 @@ public final class StebzAAAMethods {
                              final T value) {
     return StepExecutor.get().execute(
       step.with(KEYWORD, act(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#act()} keyword and name created by {@code nameGenerator} on given value
+   * and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <T, R> R Act(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                             final FunctionStep<? super T, ? extends R> step,
+                             final T value) {
+    return StepExecutor.get().execute(
+      step.with(
+        KEYWORD, act(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -1455,13 +1748,27 @@ public final class StebzAAAMethods {
   }
 
   /**
+   * Executes given step with {@link AAAKeywords#_assert()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static void Assert(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                            final RunnableStep step) {
+    StepExecutor.get().execute(step.with(
+      KEYWORD, _assert(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
+  }
+
+  /**
    * Executes given step with {@link AAAKeywords#_assert()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R Assert(final SupplierStep<R> step) {
+  public static <R> R Assert(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, _assert()));
   }
 
@@ -1474,8 +1781,23 @@ public final class StebzAAAMethods {
    * @return step result
    */
   public static <R> R Assert(final String name,
-                             final SupplierStep<R> step) {
+                             final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, _assert(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#_assert()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static <R> R Assert(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                             final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(
+      KEYWORD, _assert(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
   }
 
   /**
@@ -1506,6 +1828,27 @@ public final class StebzAAAMethods {
                                 final T value) {
     StepExecutor.get().execute(
       step.with(KEYWORD, _assert(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#_assert()} keyword and name created by {@code nameGenerator} on given
+   * value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   */
+  public static <T> void Assert(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                final ConsumerStep<? super T> step,
+                                final T value) {
+    StepExecutor.get().execute(
+      step.with(
+        KEYWORD, _assert(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }
@@ -1542,6 +1885,29 @@ public final class StebzAAAMethods {
                                 final T value) {
     return StepExecutor.get().execute(
       step.with(KEYWORD, _assert(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#_assert()} keyword and name created by {@code nameGenerator} on given
+   * value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <T, R> R Assert(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                final FunctionStep<? super T, ? extends R> step,
+                                final T value) {
+    return StepExecutor.get().execute(
+      step.with(
+        KEYWORD, _assert(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
       value
     );
   }

@@ -71,6 +71,16 @@ public interface AAAAround<T> {
                      RunnableStep step);
 
   /**
+   * Executes given step with {@link AAAKeywords#setup()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  AAAAround<T> Setup(ThrowingFunction<? super String, String, ?> nameGenerator,
+                     RunnableStep step);
+
+  /**
    * Executes given step with {@link AAAKeywords#setup()} keyword and returns step result.
    *
    * @param step the step
@@ -88,6 +98,18 @@ public interface AAAAround<T> {
    * @return step result
    */
   <R> R Setup(String name,
+              SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step with {@link AAAKeywords#setup()} keyword and name created by {@code nameGenerator} and returns
+   * step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Setup(ThrowingFunction<? super String, String, ?> nameGenerator,
               SupplierStep<? extends R> step);
 
   /**
@@ -109,6 +131,17 @@ public interface AAAAround<T> {
                      ConsumerStep<? super T> step);
 
   /**
+   * Executes given step with {@link AAAKeywords#setup()} keyword and name created by {@code nameGenerator} on the
+   * context value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  AAAAround<T> Setup(ThrowingFunction<? super String, String, ?> nameGenerator,
+                     ConsumerStep<? super T> step);
+
+  /**
    * Executes given step with {@link AAAKeywords#setup()} keyword on the context value and returns step result.
    *
    * @param step the step
@@ -127,6 +160,18 @@ public interface AAAAround<T> {
    * @return step result
    */
   <R> R Setup(String name,
+              FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with {@link AAAKeywords#setup()} keyword and name created by {@code nameGenerator} on the
+   * context value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Setup(ThrowingFunction<? super String, String, ?> nameGenerator,
               FunctionStep<? super T, ? extends R> step);
 
   /**
@@ -309,6 +354,16 @@ public interface AAAAround<T> {
                         RunnableStep step);
 
   /**
+   * Executes given step with {@link AAAKeywords#teardown()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  AAAAround<T> Teardown(ThrowingFunction<? super String, String, ?> nameGenerator,
+                        RunnableStep step);
+
+  /**
    * Executes given step with {@link AAAKeywords#teardown()} keyword and returns step result.
    *
    * @param step the step
@@ -326,6 +381,18 @@ public interface AAAAround<T> {
    * @return step result
    */
   <R> R Teardown(String name,
+                 SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step with {@link AAAKeywords#teardown()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Teardown(ThrowingFunction<? super String, String, ?> nameGenerator,
                  SupplierStep<? extends R> step);
 
   /**
@@ -347,6 +414,17 @@ public interface AAAAround<T> {
                         ConsumerStep<? super T> step);
 
   /**
+   * Executes given step with {@link AAAKeywords#teardown()} keyword and name created by {@code nameGenerator} on the
+   * context value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  AAAAround<T> Teardown(ThrowingFunction<? super String, String, ?> nameGenerator,
+                        ConsumerStep<? super T> step);
+
+  /**
    * Executes given step with {@link AAAKeywords#teardown()} keyword on the context value and returns step result.
    *
    * @param step the step
@@ -365,6 +443,18 @@ public interface AAAAround<T> {
    * @return step result
    */
   <R> R Teardown(String name,
+                 FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with {@link AAAKeywords#teardown()} keyword and name created by {@code nameGenerator} on the
+   * context value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Teardown(ThrowingFunction<? super String, String, ?> nameGenerator,
                  FunctionStep<? super T, ? extends R> step);
 
   /**
@@ -547,6 +637,16 @@ public interface AAAAround<T> {
                        RunnableStep step);
 
   /**
+   * Executes given step with {@link AAAKeywords#arrange()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  AAAAround<T> Arrange(ThrowingFunction<? super String, String, ?> nameGenerator,
+                       RunnableStep step);
+
+  /**
    * Executes given step with {@link AAAKeywords#arrange()} keyword and returns step result.
    *
    * @param step the step
@@ -564,6 +664,18 @@ public interface AAAAround<T> {
    * @return step result
    */
   <R> R Arrange(String name,
+                SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step with {@link AAAKeywords#arrange()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Arrange(ThrowingFunction<? super String, String, ?> nameGenerator,
                 SupplierStep<? extends R> step);
 
   /**
@@ -585,6 +697,17 @@ public interface AAAAround<T> {
                        ConsumerStep<? super T> step);
 
   /**
+   * Executes given step with {@link AAAKeywords#arrange()} keyword and name created by {@code nameGenerator} on the
+   * context value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  AAAAround<T> Arrange(ThrowingFunction<? super String, String, ?> nameGenerator,
+                       ConsumerStep<? super T> step);
+
+  /**
    * Executes given step with {@link AAAKeywords#arrange()} keyword on the context value and returns step result.
    *
    * @param step the step
@@ -603,6 +726,18 @@ public interface AAAAround<T> {
    * @return step result
    */
   <R> R Arrange(String name,
+                FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with {@link AAAKeywords#arrange()} keyword and name created by {@code nameGenerator} on the
+   * context value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Arrange(ThrowingFunction<? super String, String, ?> nameGenerator,
                 FunctionStep<? super T, ? extends R> step);
 
   /**
@@ -785,6 +920,16 @@ public interface AAAAround<T> {
                    RunnableStep step);
 
   /**
+   * Executes given step with {@link AAAKeywords#act()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  AAAAround<T> Act(ThrowingFunction<? super String, String, ?> nameGenerator,
+                   RunnableStep step);
+
+  /**
    * Executes given step with {@link AAAKeywords#act()} keyword and returns step result.
    *
    * @param step the step
@@ -802,6 +947,18 @@ public interface AAAAround<T> {
    * @return step result
    */
   <R> R Act(String name,
+            SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step with {@link AAAKeywords#act()} keyword and name created by {@code nameGenerator} and returns
+   * step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Act(ThrowingFunction<? super String, String, ?> nameGenerator,
             SupplierStep<? extends R> step);
 
   /**
@@ -823,6 +980,17 @@ public interface AAAAround<T> {
                    ConsumerStep<? super T> step);
 
   /**
+   * Executes given step with {@link AAAKeywords#act()} keyword and name created by {@code nameGenerator} on the context
+   * value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  AAAAround<T> Act(ThrowingFunction<? super String, String, ?> nameGenerator,
+                   ConsumerStep<? super T> step);
+
+  /**
    * Executes given step with {@link AAAKeywords#act()} keyword on the context value and returns step result.
    *
    * @param step the step
@@ -840,6 +1008,18 @@ public interface AAAAround<T> {
    * @return step result
    */
   <R> R Act(String name,
+            FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with {@link AAAKeywords#act()} keyword and name created by {@code nameGenerator} on the context
+   * value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Act(ThrowingFunction<? super String, String, ?> nameGenerator,
             FunctionStep<? super T, ? extends R> step);
 
   /**
@@ -1022,6 +1202,16 @@ public interface AAAAround<T> {
                       RunnableStep step);
 
   /**
+   * Executes given step with {@link AAAKeywords#_assert()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  AAAAround<T> Assert(ThrowingFunction<? super String, String, ?> nameGenerator,
+                      RunnableStep step);
+
+  /**
    * Executes given step with {@link AAAKeywords#_assert()} keyword and returns step result.
    *
    * @param step the step
@@ -1039,6 +1229,18 @@ public interface AAAAround<T> {
    * @return step result
    */
   <R> R Assert(String name,
+               SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step with {@link AAAKeywords#_assert()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Assert(ThrowingFunction<? super String, String, ?> nameGenerator,
                SupplierStep<? extends R> step);
 
   /**
@@ -1060,6 +1262,17 @@ public interface AAAAround<T> {
                       ConsumerStep<? super T> step);
 
   /**
+   * Executes given step with {@link AAAKeywords#_assert()} keyword and name created by {@code nameGenerator} on the
+   * context value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  AAAAround<T> Assert(ThrowingFunction<? super String, String, ?> nameGenerator,
+                      ConsumerStep<? super T> step);
+
+  /**
    * Executes given step with {@link AAAKeywords#_assert()} keyword on the context value and returns step result.
    *
    * @param step the step
@@ -1078,6 +1291,18 @@ public interface AAAAround<T> {
    * @return step result
    */
   <R> R Assert(String name,
+               FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with {@link AAAKeywords#_assert()} keyword and name created by {@code nameGenerator} on the
+   * context value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Assert(ThrowingFunction<? super String, String, ?> nameGenerator,
                FunctionStep<? super T, ? extends R> step);
 
   /**
@@ -1278,6 +1503,16 @@ public interface AAAAround<T> {
     }
 
     @Override
+    public AAAAround<T> Setup(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                              final RunnableStep step) {
+      this.executor.execute(step.with(
+        KEYWORD, setup(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
+      return this;
+    }
+
+    @Override
     public <R> R Setup(final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, setup()));
     }
@@ -1286,6 +1521,15 @@ public interface AAAAround<T> {
     public <R> R Setup(final String name,
                        final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, setup(), NAME, name));
+    }
+
+    @Override
+    public <R> R Setup(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                       final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, setup(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
     }
 
     @Override
@@ -1308,6 +1552,16 @@ public interface AAAAround<T> {
     }
 
     @Override
+    public AAAAround<T> Setup(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                              final ConsumerStep<? super T> step) {
+      this.executor.execute(step.with(
+        KEYWORD, setup(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public <R> R Setup(final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(
         step.with(KEYWORD, setup()),
@@ -1322,6 +1576,15 @@ public interface AAAAround<T> {
         step.with(KEYWORD, setup(), NAME, name),
         this.context
       );
+    }
+
+    @Override
+    public <R> R Setup(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                       final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, setup(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
     }
 
     @Override
@@ -1486,6 +1749,16 @@ public interface AAAAround<T> {
     }
 
     @Override
+    public AAAAround<T> Teardown(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                 final RunnableStep step) {
+      this.executor.execute(step.with(
+        KEYWORD, teardown(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
+      return this;
+    }
+
+    @Override
     public <R> R Teardown(final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, teardown()));
     }
@@ -1494,6 +1767,15 @@ public interface AAAAround<T> {
     public <R> R Teardown(final String name,
                           final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, teardown(), NAME, name));
+    }
+
+    @Override
+    public <R> R Teardown(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                          final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, teardown(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
     }
 
     @Override
@@ -1516,6 +1798,16 @@ public interface AAAAround<T> {
     }
 
     @Override
+    public AAAAround<T> Teardown(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                 final ConsumerStep<? super T> step) {
+      this.executor.execute(step.with(
+        KEYWORD, teardown(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public <R> R Teardown(final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(
         step.with(KEYWORD, teardown()),
@@ -1530,6 +1822,15 @@ public interface AAAAround<T> {
         step.with(KEYWORD, teardown(), NAME, name),
         this.context
       );
+    }
+
+    @Override
+    public <R> R Teardown(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                          final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, teardown(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
     }
 
     @Override
@@ -1694,6 +1995,16 @@ public interface AAAAround<T> {
     }
 
     @Override
+    public AAAAround<T> Arrange(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                final RunnableStep step) {
+      this.executor.execute(step.with(
+        KEYWORD, arrange(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
+      return this;
+    }
+
+    @Override
     public <R> R Arrange(final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, arrange()));
     }
@@ -1702,6 +2013,15 @@ public interface AAAAround<T> {
     public <R> R Arrange(final String name,
                          final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, arrange(), NAME, name));
+    }
+
+    @Override
+    public <R> R Arrange(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                         final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, arrange(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
     }
 
     @Override
@@ -1724,6 +2044,16 @@ public interface AAAAround<T> {
     }
 
     @Override
+    public AAAAround<T> Arrange(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                final ConsumerStep<? super T> step) {
+      this.executor.execute(step.with(
+        KEYWORD, arrange(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public <R> R Arrange(final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(
         step.with(KEYWORD, arrange()),
@@ -1738,6 +2068,15 @@ public interface AAAAround<T> {
         step.with(KEYWORD, arrange(), NAME, name),
         this.context
       );
+    }
+
+    @Override
+    public <R> R Arrange(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                         final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, arrange(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
     }
 
     @Override
@@ -1902,6 +2241,16 @@ public interface AAAAround<T> {
     }
 
     @Override
+    public AAAAround<T> Act(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                            final RunnableStep step) {
+      this.executor.execute(step.with(
+        KEYWORD, act(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
+      return this;
+    }
+
+    @Override
     public <R> R Act(final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, act()));
     }
@@ -1910,6 +2259,15 @@ public interface AAAAround<T> {
     public <R> R Act(final String name,
                      final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, act(), NAME, name));
+    }
+
+    @Override
+    public <R> R Act(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                     final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, act(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
     }
 
     @Override
@@ -1932,6 +2290,16 @@ public interface AAAAround<T> {
     }
 
     @Override
+    public AAAAround<T> Act(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                            final ConsumerStep<? super T> step) {
+      this.executor.execute(step.with(
+        KEYWORD, act(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public <R> R Act(final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(
         step.with(KEYWORD, act()),
@@ -1946,6 +2314,15 @@ public interface AAAAround<T> {
         step.with(KEYWORD, act(), NAME, name),
         this.context
       );
+    }
+
+    @Override
+    public <R> R Act(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                     final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, act(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
     }
 
     @Override
@@ -2110,6 +2487,16 @@ public interface AAAAround<T> {
     }
 
     @Override
+    public AAAAround<T> Assert(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                               final RunnableStep step) {
+      this.executor.execute(step.with(
+        KEYWORD, _assert(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
+      return this;
+    }
+
+    @Override
     public <R> R Assert(final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, _assert()));
     }
@@ -2118,6 +2505,15 @@ public interface AAAAround<T> {
     public <R> R Assert(final String name,
                         final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, _assert(), NAME, name));
+    }
+
+    @Override
+    public <R> R Assert(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                        final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, _assert(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
     }
 
     @Override
@@ -2140,6 +2536,16 @@ public interface AAAAround<T> {
     }
 
     @Override
+    public AAAAround<T> Assert(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                               final ConsumerStep<? super T> step) {
+      this.executor.execute(step.with(
+        KEYWORD, _assert(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public <R> R Assert(final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(
         step.with(KEYWORD, _assert()),
@@ -2154,6 +2560,15 @@ public interface AAAAround<T> {
         step.with(KEYWORD, _assert(), NAME, name),
         this.context
       );
+    }
+
+    @Override
+    public <R> R Assert(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                        final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, _assert(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
     }
 
     @Override
