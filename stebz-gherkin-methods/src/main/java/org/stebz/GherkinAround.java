@@ -74,6 +74,16 @@ public interface GherkinAround<T> {
                               RunnableStep step);
 
   /**
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Background(ThrowingFunction<? super String, String, ?> nameGenerator,
+                              RunnableStep step);
+
+  /**
    * Executes given step with {@link GherkinKeywords#background()} keyword and returns step result.
    *
    * @param step the step
@@ -94,6 +104,18 @@ public interface GherkinAround<T> {
                    SupplierStep<? extends R> step);
 
   /**
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Background(ThrowingFunction<? super String, String, ?> nameGenerator,
+                   SupplierStep<? extends R> step);
+
+  /**
    * Executes given step with {@link GherkinKeywords#background()} keyword on the context value.
    *
    * @param step the step
@@ -109,6 +131,17 @@ public interface GherkinAround<T> {
    * @return {@code Around} object
    */
   GherkinAround<T> Background(String name,
+                              ConsumerStep<? super T> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by {@code nameGenerator} on
+   * the context value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Background(ThrowingFunction<? super String, String, ?> nameGenerator,
                               ConsumerStep<? super T> step);
 
   /**
@@ -131,6 +164,18 @@ public interface GherkinAround<T> {
    * @return step result
    */
   <R> R Background(String name,
+                   FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by {@code nameGenerator} on
+   * the context value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Background(ThrowingFunction<? super String, String, ?> nameGenerator,
                    FunctionStep<? super T, ? extends R> step);
 
   /**
@@ -313,6 +358,16 @@ public interface GherkinAround<T> {
                               RunnableStep step);
 
   /**
+   * Executes given step with {@link GherkinKeywords#conclusion()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Conclusion(ThrowingFunction<? super String, String, ?> nameGenerator,
+                              RunnableStep step);
+
+  /**
    * Executes given step with {@link GherkinKeywords#conclusion()} keyword and returns step result.
    *
    * @param step the step
@@ -333,6 +388,18 @@ public interface GherkinAround<T> {
                    SupplierStep<? extends R> step);
 
   /**
+   * Executes given step with {@link GherkinKeywords#conclusion()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Conclusion(ThrowingFunction<? super String, String, ?> nameGenerator,
+                   SupplierStep<? extends R> step);
+
+  /**
    * Executes given step with {@link GherkinKeywords#conclusion()} keyword on the context value.
    *
    * @param step the step
@@ -348,6 +415,17 @@ public interface GherkinAround<T> {
    * @return {@code Around} object
    */
   GherkinAround<T> Conclusion(String name,
+                              ConsumerStep<? super T> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#conclusion()} keyword and name created by {@code nameGenerator} on
+   * the context value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Conclusion(ThrowingFunction<? super String, String, ?> nameGenerator,
                               ConsumerStep<? super T> step);
 
   /**
@@ -370,6 +448,18 @@ public interface GherkinAround<T> {
    * @return step result
    */
   <R> R Conclusion(String name,
+                   FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#conclusion()} keyword and name created by {@code nameGenerator} on
+   * the context value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Conclusion(ThrowingFunction<? super String, String, ?> nameGenerator,
                    FunctionStep<? super T, ? extends R> step);
 
   /**
@@ -552,6 +642,16 @@ public interface GherkinAround<T> {
                         RunnableStep step);
 
   /**
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Rule(ThrowingFunction<? super String, String, ?> nameGenerator,
+                        RunnableStep step);
+
+  /**
    * Executes given step with {@link GherkinKeywords#rule()} keyword and returns step result.
    *
    * @param step the step
@@ -569,6 +669,18 @@ public interface GherkinAround<T> {
    * @return step result
    */
   <R> R Rule(String name,
+             SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Rule(ThrowingFunction<? super String, String, ?> nameGenerator,
              SupplierStep<? extends R> step);
 
   /**
@@ -590,6 +702,17 @@ public interface GherkinAround<T> {
                         ConsumerStep<? super T> step);
 
   /**
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by {@code nameGenerator} on the
+   * context value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Rule(ThrowingFunction<? super String, String, ?> nameGenerator,
+                        ConsumerStep<? super T> step);
+
+  /**
    * Executes given step with {@link GherkinKeywords#rule()} keyword on the context value and returns step result.
    *
    * @param step the step
@@ -608,6 +731,18 @@ public interface GherkinAround<T> {
    * @return step result
    */
   <R> R Rule(String name,
+             FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by {@code nameGenerator} on the
+   * context value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Rule(ThrowingFunction<? super String, String, ?> nameGenerator,
              FunctionStep<? super T, ? extends R> step);
 
   /**
@@ -790,6 +925,16 @@ public interface GherkinAround<T> {
                          RunnableStep step);
 
   /**
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Given(ThrowingFunction<? super String, String, ?> nameGenerator,
+                         RunnableStep step);
+
+  /**
    * Executes given step with {@link GherkinKeywords#given()} keyword and returns step result.
    *
    * @param step the step
@@ -807,6 +952,18 @@ public interface GherkinAround<T> {
    * @return step result
    */
   <R> R Given(String name,
+              SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Given(ThrowingFunction<? super String, String, ?> nameGenerator,
               SupplierStep<? extends R> step);
 
   /**
@@ -828,6 +985,17 @@ public interface GherkinAround<T> {
                          ConsumerStep<? super T> step);
 
   /**
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by {@code nameGenerator} on the
+   * context value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Given(ThrowingFunction<? super String, String, ?> nameGenerator,
+                         ConsumerStep<? super T> step);
+
+  /**
    * Executes given step with {@link GherkinKeywords#given()} keyword on the context value and returns step result.
    *
    * @param step the step
@@ -846,6 +1014,18 @@ public interface GherkinAround<T> {
    * @return step result
    */
   <R> R Given(String name,
+              FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by {@code nameGenerator} on the
+   * context value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Given(ThrowingFunction<? super String, String, ?> nameGenerator,
               FunctionStep<? super T, ? extends R> step);
 
   /**
@@ -1028,6 +1208,16 @@ public interface GherkinAround<T> {
                         RunnableStep step);
 
   /**
+   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> When(ThrowingFunction<? super String, String, ?> nameGenerator,
+                        RunnableStep step);
+
+  /**
    * Executes given step with {@link GherkinKeywords#when()} keyword and returns step result.
    *
    * @param step the step
@@ -1045,6 +1235,18 @@ public interface GherkinAround<T> {
    * @return step result
    */
   <R> R When(String name,
+             SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R When(ThrowingFunction<? super String, String, ?> nameGenerator,
              SupplierStep<? extends R> step);
 
   /**
@@ -1066,6 +1268,17 @@ public interface GherkinAround<T> {
                         ConsumerStep<? super T> step);
 
   /**
+   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by {@code nameGenerator} on the
+   * context value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> When(ThrowingFunction<? super String, String, ?> nameGenerator,
+                        ConsumerStep<? super T> step);
+
+  /**
    * Executes given step with {@link GherkinKeywords#when()} keyword on the context value and returns step result.
    *
    * @param step the step
@@ -1084,6 +1297,18 @@ public interface GherkinAround<T> {
    * @return step result
    */
   <R> R When(String name,
+             FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by {@code nameGenerator} on the
+   * context value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R When(ThrowingFunction<? super String, String, ?> nameGenerator,
              FunctionStep<? super T, ? extends R> step);
 
   /**
@@ -1266,6 +1491,16 @@ public interface GherkinAround<T> {
                         RunnableStep step);
 
   /**
+   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Then(ThrowingFunction<? super String, String, ?> nameGenerator,
+                        RunnableStep step);
+
+  /**
    * Executes given step with {@link GherkinKeywords#then()} keyword and returns step result.
    *
    * @param step the step
@@ -1283,6 +1518,18 @@ public interface GherkinAround<T> {
    * @return step result
    */
   <R> R Then(String name,
+             SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Then(ThrowingFunction<? super String, String, ?> nameGenerator,
              SupplierStep<? extends R> step);
 
   /**
@@ -1304,6 +1551,17 @@ public interface GherkinAround<T> {
                         ConsumerStep<? super T> step);
 
   /**
+   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by {@code nameGenerator} on the
+   * context value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> Then(ThrowingFunction<? super String, String, ?> nameGenerator,
+                        ConsumerStep<? super T> step);
+
+  /**
    * Executes given step with {@link GherkinKeywords#then()} keyword on the context value and returns step result.
    *
    * @param step the step
@@ -1322,6 +1580,18 @@ public interface GherkinAround<T> {
    * @return step result
    */
   <R> R Then(String name,
+             FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by {@code nameGenerator} on the
+   * context value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Then(ThrowingFunction<? super String, String, ?> nameGenerator,
              FunctionStep<? super T, ? extends R> step);
 
   /**
@@ -1504,6 +1774,16 @@ public interface GherkinAround<T> {
                        RunnableStep step);
 
   /**
+   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> And(ThrowingFunction<? super String, String, ?> nameGenerator,
+                       RunnableStep step);
+
+  /**
    * Executes given step with {@link GherkinKeywords#and()} keyword and returns step result.
    *
    * @param step the step
@@ -1521,6 +1801,18 @@ public interface GherkinAround<T> {
    * @return step result
    */
   <R> R And(String name,
+            SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R And(ThrowingFunction<? super String, String, ?> nameGenerator,
             SupplierStep<? extends R> step);
 
   /**
@@ -1542,6 +1834,17 @@ public interface GherkinAround<T> {
                        ConsumerStep<? super T> step);
 
   /**
+   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by {@code nameGenerator} on the
+   * context value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> And(ThrowingFunction<? super String, String, ?> nameGenerator,
+                       ConsumerStep<? super T> step);
+
+  /**
    * Executes given step with {@link GherkinKeywords#and()} keyword on the context value and returns step result.
    *
    * @param step the step
@@ -1560,6 +1863,18 @@ public interface GherkinAround<T> {
    * @return step result
    */
   <R> R And(String name,
+            FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by {@code nameGenerator} on the
+   * context value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R And(ThrowingFunction<? super String, String, ?> nameGenerator,
             FunctionStep<? super T, ? extends R> step);
 
   /**
@@ -1742,6 +2057,16 @@ public interface GherkinAround<T> {
                        RunnableStep step);
 
   /**
+   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> But(ThrowingFunction<? super String, String, ?> nameGenerator,
+                       RunnableStep step);
+
+  /**
    * Executes given step with {@link GherkinKeywords#but()} keyword and returns step result.
    *
    * @param step the step
@@ -1759,6 +2084,18 @@ public interface GherkinAround<T> {
    * @return step result
    */
   <R> R But(String name,
+            SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R But(ThrowingFunction<? super String, String, ?> nameGenerator,
             SupplierStep<? extends R> step);
 
   /**
@@ -1780,6 +2117,17 @@ public interface GherkinAround<T> {
                        ConsumerStep<? super T> step);
 
   /**
+   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by {@code nameGenerator} on the
+   * context value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  GherkinAround<T> But(ThrowingFunction<? super String, String, ?> nameGenerator,
+                       ConsumerStep<? super T> step);
+
+  /**
    * Executes given step with {@link GherkinKeywords#but()} keyword on the context value and returns step result.
    *
    * @param step the step
@@ -1798,6 +2146,18 @@ public interface GherkinAround<T> {
    * @return step result
    */
   <R> R But(String name,
+            FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by {@code nameGenerator} on the
+   * context value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R But(ThrowingFunction<? super String, String, ?> nameGenerator,
             FunctionStep<? super T, ? extends R> step);
 
   /**
@@ -1998,6 +2358,16 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> Background(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                       final RunnableStep step) {
+      this.executor.execute(step.with(
+        KEYWORD, background(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
+      return this;
+    }
+
+    @Override
     public <R> R Background(final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, background()));
     }
@@ -2006,6 +2376,15 @@ public interface GherkinAround<T> {
     public <R> R Background(final String name,
                             final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, background(), NAME, name));
+    }
+
+    @Override
+    public <R> R Background(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                            final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, background(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
     }
 
     @Override
@@ -2028,6 +2407,16 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> Background(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                       final ConsumerStep<? super T> step) {
+      this.executor.execute(step.with(
+        KEYWORD, background(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public <R> R Background(final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(
         step.with(KEYWORD, background()),
@@ -2042,6 +2431,15 @@ public interface GherkinAround<T> {
         step.with(KEYWORD, background(), NAME, name),
         this.context
       );
+    }
+
+    @Override
+    public <R> R Background(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                            final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, background(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
     }
 
     @Override
@@ -2206,6 +2604,16 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> Conclusion(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                       final RunnableStep step) {
+      this.executor.execute(step.with(
+        KEYWORD, conclusion(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
+      return this;
+    }
+
+    @Override
     public <R> R Conclusion(final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, conclusion()));
     }
@@ -2214,6 +2622,15 @@ public interface GherkinAround<T> {
     public <R> R Conclusion(final String name,
                             final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, conclusion(), NAME, name));
+    }
+
+    @Override
+    public <R> R Conclusion(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                            final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, conclusion(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
     }
 
     @Override
@@ -2236,6 +2653,16 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> Conclusion(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                       final ConsumerStep<? super T> step) {
+      this.executor.execute(step.with(
+        KEYWORD, conclusion(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public <R> R Conclusion(final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(
         step.with(KEYWORD, conclusion()),
@@ -2250,6 +2677,15 @@ public interface GherkinAround<T> {
         step.with(KEYWORD, conclusion(), NAME, name),
         this.context
       );
+    }
+
+    @Override
+    public <R> R Conclusion(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                            final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, conclusion(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
     }
 
     @Override
@@ -2414,6 +2850,16 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> Rule(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                 final RunnableStep step) {
+      this.executor.execute(step.with(
+        KEYWORD, rule(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
+      return this;
+    }
+
+    @Override
     public <R> R Rule(final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, rule()));
     }
@@ -2422,6 +2868,15 @@ public interface GherkinAround<T> {
     public <R> R Rule(final String name,
                       final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, rule(), NAME, name));
+    }
+
+    @Override
+    public <R> R Rule(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                      final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, rule(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
     }
 
     @Override
@@ -2444,6 +2899,16 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> Rule(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                 final ConsumerStep<? super T> step) {
+      this.executor.execute(step.with(
+        KEYWORD, rule(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public <R> R Rule(final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(
         step.with(KEYWORD, rule()),
@@ -2458,6 +2923,15 @@ public interface GherkinAround<T> {
         step.with(KEYWORD, rule(), NAME, name),
         this.context
       );
+    }
+
+    @Override
+    public <R> R Rule(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                      final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, rule(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
     }
 
     @Override
@@ -2622,6 +3096,16 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> Given(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                  final RunnableStep step) {
+      this.executor.execute(step.with(
+        KEYWORD, given(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
+      return this;
+    }
+
+    @Override
     public <R> R Given(final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, given()));
     }
@@ -2630,6 +3114,15 @@ public interface GherkinAround<T> {
     public <R> R Given(final String name,
                        final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, given(), NAME, name));
+    }
+
+    @Override
+    public <R> R Given(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                       final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, given(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
     }
 
     @Override
@@ -2652,6 +3145,16 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> Given(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                  final ConsumerStep<? super T> step) {
+      this.executor.execute(step.with(
+        KEYWORD, given(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public <R> R Given(final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(
         step.with(KEYWORD, given()),
@@ -2666,6 +3169,15 @@ public interface GherkinAround<T> {
         step.with(KEYWORD, given(), NAME, name),
         this.context
       );
+    }
+
+    @Override
+    public <R> R Given(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                       final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, given(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
     }
 
     @Override
@@ -2830,6 +3342,16 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> When(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                 final RunnableStep step) {
+      this.executor.execute(step.with(
+        KEYWORD, when(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
+      return this;
+    }
+
+    @Override
     public <R> R When(final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, when()));
     }
@@ -2838,6 +3360,15 @@ public interface GherkinAround<T> {
     public <R> R When(final String name,
                       final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, when(), NAME, name));
+    }
+
+    @Override
+    public <R> R When(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                      final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, when(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
     }
 
     @Override
@@ -2860,6 +3391,16 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> When(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                 final ConsumerStep<? super T> step) {
+      this.executor.execute(step.with(
+        KEYWORD, when(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public <R> R When(final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(
         step.with(KEYWORD, when()),
@@ -2874,6 +3415,15 @@ public interface GherkinAround<T> {
         step.with(KEYWORD, when(), NAME, name),
         this.context
       );
+    }
+
+    @Override
+    public <R> R When(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                      final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, when(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
     }
 
     @Override
@@ -3038,6 +3588,16 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> Then(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                 final RunnableStep step) {
+      this.executor.execute(step.with(
+        KEYWORD, then(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
+      return this;
+    }
+
+    @Override
     public <R> R Then(final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, then()));
     }
@@ -3046,6 +3606,15 @@ public interface GherkinAround<T> {
     public <R> R Then(final String name,
                       final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, then(), NAME, name));
+    }
+
+    @Override
+    public <R> R Then(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                      final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, then(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
     }
 
     @Override
@@ -3068,6 +3637,16 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> Then(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                 final ConsumerStep<? super T> step) {
+      this.executor.execute(step.with(
+        KEYWORD, then(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public <R> R Then(final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(
         step.with(KEYWORD, then()),
@@ -3082,6 +3661,15 @@ public interface GherkinAround<T> {
         step.with(KEYWORD, then(), NAME, name),
         this.context
       );
+    }
+
+    @Override
+    public <R> R Then(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                      final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, then(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
     }
 
     @Override
@@ -3246,6 +3834,16 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> And(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                final RunnableStep step) {
+      this.executor.execute(step.with(
+        KEYWORD, and(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
+      return this;
+    }
+
+    @Override
     public <R> R And(final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, and()));
     }
@@ -3254,6 +3852,15 @@ public interface GherkinAround<T> {
     public <R> R And(final String name,
                      final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, and(), NAME, name));
+    }
+
+    @Override
+    public <R> R And(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                     final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, and(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
     }
 
     @Override
@@ -3276,6 +3883,16 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> And(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                final ConsumerStep<? super T> step) {
+      this.executor.execute(step.with(
+        KEYWORD, and(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public <R> R And(final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(
         step.with(KEYWORD, and()),
@@ -3290,6 +3907,15 @@ public interface GherkinAround<T> {
         step.with(KEYWORD, and(), NAME, name),
         this.context
       );
+    }
+
+    @Override
+    public <R> R And(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                     final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, and(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
     }
 
     @Override
@@ -3454,6 +4080,16 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> But(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                final RunnableStep step) {
+      this.executor.execute(step.with(
+        KEYWORD, but(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
+      return this;
+    }
+
+    @Override
     public <R> R But(final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, but()));
     }
@@ -3462,6 +4098,15 @@ public interface GherkinAround<T> {
     public <R> R But(final String name,
                      final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(KEYWORD, but(), NAME, name));
+    }
+
+    @Override
+    public <R> R But(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                     final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, but(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ));
     }
 
     @Override
@@ -3484,6 +4129,16 @@ public interface GherkinAround<T> {
     }
 
     @Override
+    public GherkinAround<T> But(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                                final ConsumerStep<? super T> step) {
+      this.executor.execute(step.with(
+        KEYWORD, but(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
+      return this;
+    }
+
+    @Override
     public <R> R But(final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(
         step.with(KEYWORD, but()),
@@ -3498,6 +4153,15 @@ public interface GherkinAround<T> {
         step.with(KEYWORD, but(), NAME, name),
         this.context
       );
+    }
+
+    @Override
+    public <R> R But(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                     final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(step.with(
+        KEYWORD, but(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ), this.context);
     }
 
     @Override
