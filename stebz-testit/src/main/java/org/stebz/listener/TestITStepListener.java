@@ -124,7 +124,7 @@ public class TestITStepListener implements StepListener {
    */
   public static void stepName(final String name) {
     Adapter.getAdapterManager().updateStep(stepResult ->
-      stepResult.setName(name)
+      stepResult.setTitle(name)
     );
   }
 
@@ -137,7 +137,7 @@ public class TestITStepListener implements StepListener {
   public static void stepName(final ThrowingFunction<? super String, String, ?> update) {
     if (update == null) { throw new NullPointerException("update arg is null"); }
     Adapter.getAdapterManager().updateStep(stepResult ->
-      stepResult.setName(ThrowingFunction.unchecked(update).apply(stepResult.getName()))
+      stepResult.setTitle(ThrowingFunction.unchecked(update).apply(stepResult.getTitle()))
     );
   }
 
@@ -204,7 +204,7 @@ public class TestITStepListener implements StepListener {
       stringParams.putIfAbsent(this.contextParamName, contextValue == null ? "" : contextValue.toString());
     }
     stepResult.setParameters(stringParams);
-    stepResult.setName(this.keywordPosition.concat(
+    stepResult.setTitle(this.keywordPosition.concat(
       this.keywordValue(keyword),
       this.processStepName(step, step.getName(), stringParams)
     ));
