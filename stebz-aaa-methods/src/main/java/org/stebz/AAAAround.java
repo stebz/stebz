@@ -42,8 +42,8 @@ import static org.stebz.attribute.StepAttribute.PARAMS;
 import static org.stebz.extension.AAAKeywords._assert;
 import static org.stebz.extension.AAAKeywords.act;
 import static org.stebz.extension.AAAKeywords.arrange;
-import static org.stebz.extension.AAAKeywords.setup;
-import static org.stebz.extension.AAAKeywords.teardown;
+import static org.stebz.extension.AAAKeywords.setUp;
+import static org.stebz.extension.AAAKeywords.tearDown;
 
 /**
  * Allows to call steps around a specific context with Arrange-Act-Assert keywords.
@@ -53,55 +53,55 @@ import static org.stebz.extension.AAAKeywords.teardown;
 public interface AAAAround<T> {
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword.
    *
    * @param step the step
    * @return {@code Around} object
    */
-  AAAAround<T> Setup(RunnableStep step);
+  AAAAround<T> SetUp(RunnableStep step);
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name.
    *
    * @param name the name
    * @param step the step
    * @return {@code Around} object
    */
-  AAAAround<T> Setup(String name,
+  AAAAround<T> SetUp(String name,
                      RunnableStep step);
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name created by {@code nameGenerator}.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @return {@code Around} object
    */
-  AAAAround<T> Setup(ThrowingFunction<? super String, String, ?> nameGenerator,
+  AAAAround<T> SetUp(ThrowingFunction<? super String, String, ?> nameGenerator,
                      RunnableStep step);
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and returns step result.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  <R> R Setup(SupplierStep<? extends R> step);
+  <R> R SetUp(SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name and returns step result.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name and returns step result.
    *
    * @param name the name
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  <R> R Setup(String name,
+  <R> R SetUp(String name,
               SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name created by {@code nameGenerator} and returns
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name created by {@code nameGenerator} and returns
    * step result.
    *
    * @param nameGenerator the name generator
@@ -109,49 +109,49 @@ public interface AAAAround<T> {
    * @param <R>           the type of the result
    * @return step result
    */
-  <R> R Setup(ThrowingFunction<? super String, String, ?> nameGenerator,
+  <R> R SetUp(ThrowingFunction<? super String, String, ?> nameGenerator,
               SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword on the context value.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword on the context value.
    *
    * @param step the step
    * @return {@code Around} object
    */
-  AAAAround<T> Setup(ConsumerStep<? super T> step);
+  AAAAround<T> SetUp(ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name on the context value.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name on the context value.
    *
    * @param name the name
    * @param step the step
    * @return {@code Around} object
    */
-  AAAAround<T> Setup(String name,
+  AAAAround<T> SetUp(String name,
                      ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name created by {@code nameGenerator} on the
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name created by {@code nameGenerator} on the
    * context value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @return {@code Around} object
    */
-  AAAAround<T> Setup(ThrowingFunction<? super String, String, ?> nameGenerator,
+  AAAAround<T> SetUp(ThrowingFunction<? super String, String, ?> nameGenerator,
                      ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword on the context value and returns step result.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword on the context value and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
    */
-  <R> R Setup(FunctionStep<? super T, ? extends R> step);
+  <R> R SetUp(FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name on the context value and returns step
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name on the context value and returns step
    * result.
    *
    * @param name the name
@@ -159,11 +159,11 @@ public interface AAAAround<T> {
    * @param <R>  the type of the result
    * @return step result
    */
-  <R> R Setup(String name,
+  <R> R SetUp(String name,
               FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name created by {@code nameGenerator} on the
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name created by {@code nameGenerator} on the
    * context value and returns step result.
    *
    * @param nameGenerator the name generator
@@ -171,53 +171,53 @@ public interface AAAAround<T> {
    * @param <R>           the type of the result
    * @return step result
    */
-  <R> R Setup(ThrowingFunction<? super String, String, ?> nameGenerator,
+  <R> R SetUp(ThrowingFunction<? super String, String, ?> nameGenerator,
               FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword on the context value.
+   * Executes step with {@link AAAKeywords#setUp()} keyword on the context value.
    *
    * @param body the step body
    * @return {@code Around} object
    */
-  AAAAround<T> Setup(ThrowingConsumer<? super T, ?> body);
+  AAAAround<T> SetUp(ThrowingConsumer<? super T, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes on the context value.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes on the context value.
    *
    * @param name the step name
    * @param body the step body
    * @return {@code Around} object
    */
-  AAAAround<T> Setup(String name,
+  AAAAround<T> SetUp(String name,
                      ThrowingConsumer<? super T, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes on the context value.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes on the context value.
    *
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
    * @return {@code Around} object
    */
-  AAAAround<T> Setup(String name,
+  AAAAround<T> SetUp(String name,
                      Map<String, ?> params,
                      ThrowingConsumer<? super T, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes on the context value.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes on the context value.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    * @return {@code Around} object
    */
-  AAAAround<T> Setup(String name,
+  AAAAround<T> SetUp(String name,
                      String expectedResult,
                      ThrowingConsumer<? super T, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes on the context value.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes on the context value.
    *
    * @param name           the step name
    * @param params         the step params
@@ -225,22 +225,22 @@ public interface AAAAround<T> {
    * @param body           the step body
    * @return {@code Around} object
    */
-  AAAAround<T> Setup(String name,
+  AAAAround<T> SetUp(String name,
                      Map<String, ?> params,
                      String expectedResult,
                      ThrowingConsumer<? super T, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword on the context value and returns step result.
+   * Executes step with {@link AAAKeywords#setUp()} keyword on the context value and returns step result.
    *
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
    */
-  <R> R Setup(ThrowingFunction<? super T, ? extends R, ?> body);
+  <R> R SetUp(ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes on the context value and returns step
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes on the context value and returns step
    * result.
    *
    * @param name the step name
@@ -248,11 +248,11 @@ public interface AAAAround<T> {
    * @param <R>  the type of the step result
    * @return step result
    */
-  <R> R Setup(String name,
+  <R> R SetUp(String name,
               ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes on the context value and returns step
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes on the context value and returns step
    * result.
    *
    * @param name   the step name
@@ -261,12 +261,12 @@ public interface AAAAround<T> {
    * @param <R>    the type of the step result
    * @return step result
    */
-  <R> R Setup(String name,
+  <R> R SetUp(String name,
               Map<String, ?> params,
               ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes on the context value and returns step
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes on the context value and returns step
    * result
    *
    * @param name           the step name
@@ -275,12 +275,12 @@ public interface AAAAround<T> {
    * @param <R>            the type of the step result
    * @return step result
    */
-  <R> R Setup(String name,
+  <R> R SetUp(String name,
               String expectedResult,
               ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes on the context value and returns step
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes on the context value and returns step
    * result
    *
    * @param name           the step name
@@ -290,101 +290,101 @@ public interface AAAAround<T> {
    * @param <R>            the type of the step result
    * @return step result
    */
-  <R> R Setup(String name,
+  <R> R SetUp(String name,
               Map<String, ?> params,
               String expectedResult,
               ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes.
    *
    * @param name the step name
    * @return {@code Around} object
    */
-  AAAAround<T> Setup(String name);
+  AAAAround<T> SetUp(String name);
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes.
    *
    * @param name   the step name
    * @param params the step params
    * @return {@code Around} object
    */
-  AAAAround<T> Setup(String name,
+  AAAAround<T> SetUp(String name,
                      Map<String, ?> params);
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @return {@code Around} object
    */
-  AAAAround<T> Setup(String name,
+  AAAAround<T> SetUp(String name,
                      String expectedResult);
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes.
    *
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
    * @return {@code Around} object
    */
-  AAAAround<T> Setup(String name,
+  AAAAround<T> SetUp(String name,
                      Map<String, ?> params,
                      String expectedResult);
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword.
    *
    * @param step the step
    * @return {@code Around} object
    */
-  AAAAround<T> Teardown(RunnableStep step);
+  AAAAround<T> TearDown(RunnableStep step);
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword and name.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name.
    *
    * @param name the name
    * @param step the step
    * @return {@code Around} object
    */
-  AAAAround<T> Teardown(String name,
+  AAAAround<T> TearDown(String name,
                         RunnableStep step);
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name created by {@code nameGenerator}.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @return {@code Around} object
    */
-  AAAAround<T> Teardown(ThrowingFunction<? super String, String, ?> nameGenerator,
+  AAAAround<T> TearDown(ThrowingFunction<? super String, String, ?> nameGenerator,
                         RunnableStep step);
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword and returns step result.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  <R> R Teardown(SupplierStep<? extends R> step);
+  <R> R TearDown(SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword and name and returns step result.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name and returns step result.
    *
    * @param name the name
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  <R> R Teardown(String name,
+  <R> R TearDown(String name,
                  SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword and name created by {@code nameGenerator} and
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name created by {@code nameGenerator} and
    * returns step result.
    *
    * @param nameGenerator the name generator
@@ -392,49 +392,49 @@ public interface AAAAround<T> {
    * @param <R>           the type of the result
    * @return step result
    */
-  <R> R Teardown(ThrowingFunction<? super String, String, ?> nameGenerator,
+  <R> R TearDown(ThrowingFunction<? super String, String, ?> nameGenerator,
                  SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword on the context value.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword on the context value.
    *
    * @param step the step
    * @return {@code Around} object
    */
-  AAAAround<T> Teardown(ConsumerStep<? super T> step);
+  AAAAround<T> TearDown(ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword and name on the context value.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name on the context value.
    *
    * @param name the name
    * @param step the step
    * @return {@code Around} object
    */
-  AAAAround<T> Teardown(String name,
+  AAAAround<T> TearDown(String name,
                         ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword and name created by {@code nameGenerator} on the
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name created by {@code nameGenerator} on the
    * context value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @return {@code Around} object
    */
-  AAAAround<T> Teardown(ThrowingFunction<? super String, String, ?> nameGenerator,
+  AAAAround<T> TearDown(ThrowingFunction<? super String, String, ?> nameGenerator,
                         ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword on the context value and returns step result.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword on the context value and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
    */
-  <R> R Teardown(FunctionStep<? super T, ? extends R> step);
+  <R> R TearDown(FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword and name on the context value and returns step
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name on the context value and returns step
    * result.
    *
    * @param name the name
@@ -442,11 +442,11 @@ public interface AAAAround<T> {
    * @param <R>  the type of the result
    * @return step result
    */
-  <R> R Teardown(String name,
+  <R> R TearDown(String name,
                  FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword and name created by {@code nameGenerator} on the
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name created by {@code nameGenerator} on the
    * context value and returns step result.
    *
    * @param nameGenerator the name generator
@@ -454,53 +454,53 @@ public interface AAAAround<T> {
    * @param <R>           the type of the result
    * @return step result
    */
-  <R> R Teardown(ThrowingFunction<? super String, String, ?> nameGenerator,
+  <R> R TearDown(ThrowingFunction<? super String, String, ?> nameGenerator,
                  FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword on the context value.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword on the context value.
    *
    * @param body the step body
    * @return {@code Around} object
    */
-  AAAAround<T> Teardown(ThrowingConsumer<? super T, ?> body);
+  AAAAround<T> TearDown(ThrowingConsumer<? super T, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes on the context value.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes on the context value.
    *
    * @param name the step name
    * @param body the step body
    * @return {@code Around} object
    */
-  AAAAround<T> Teardown(String name,
+  AAAAround<T> TearDown(String name,
                         ThrowingConsumer<? super T, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes on the context value.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes on the context value.
    *
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
    * @return {@code Around} object
    */
-  AAAAround<T> Teardown(String name,
+  AAAAround<T> TearDown(String name,
                         Map<String, ?> params,
                         ThrowingConsumer<? super T, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes on the context value.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes on the context value.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    * @return {@code Around} object
    */
-  AAAAround<T> Teardown(String name,
+  AAAAround<T> TearDown(String name,
                         String expectedResult,
                         ThrowingConsumer<? super T, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes on the context value.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes on the context value.
    *
    * @param name           the step name
    * @param params         the step params
@@ -508,22 +508,22 @@ public interface AAAAround<T> {
    * @param body           the step body
    * @return {@code Around} object
    */
-  AAAAround<T> Teardown(String name,
+  AAAAround<T> TearDown(String name,
                         Map<String, ?> params,
                         String expectedResult,
                         ThrowingConsumer<? super T, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword on the context value and returns step result.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword on the context value and returns step result.
    *
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
    */
-  <R> R Teardown(ThrowingFunction<? super T, ? extends R, ?> body);
+  <R> R TearDown(ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes on the context value and returns
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes on the context value and returns
    * step result.
    *
    * @param name the step name
@@ -531,11 +531,11 @@ public interface AAAAround<T> {
    * @param <R>  the type of the step result
    * @return step result
    */
-  <R> R Teardown(String name,
+  <R> R TearDown(String name,
                  ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes on the context value and returns
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes on the context value and returns
    * step result.
    *
    * @param name   the step name
@@ -544,12 +544,12 @@ public interface AAAAround<T> {
    * @param <R>    the type of the step result
    * @return step result
    */
-  <R> R Teardown(String name,
+  <R> R TearDown(String name,
                  Map<String, ?> params,
                  ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes on the context value and returns
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes on the context value and returns
    * step result
    *
    * @param name           the step name
@@ -558,12 +558,12 @@ public interface AAAAround<T> {
    * @param <R>            the type of the step result
    * @return step result
    */
-  <R> R Teardown(String name,
+  <R> R TearDown(String name,
                  String expectedResult,
                  ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes on the context value and returns
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes on the context value and returns
    * step result
    *
    * @param name           the step name
@@ -573,48 +573,48 @@ public interface AAAAround<T> {
    * @param <R>            the type of the step result
    * @return step result
    */
-  <R> R Teardown(String name,
+  <R> R TearDown(String name,
                  Map<String, ?> params,
                  String expectedResult,
                  ThrowingFunction<? super T, ? extends R, ?> body);
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes.
    *
    * @param name the step name
    * @return {@code Around} object
    */
-  AAAAround<T> Teardown(String name);
+  AAAAround<T> TearDown(String name);
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes.
    *
    * @param name   the step name
    * @param params the step params
    * @return {@code Around} object
    */
-  AAAAround<T> Teardown(String name,
+  AAAAround<T> TearDown(String name,
                         Map<String, ?> params);
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @return {@code Around} object
    */
-  AAAAround<T> Teardown(String name,
+  AAAAround<T> TearDown(String name,
                         String expectedResult);
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes.
    *
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
    * @return {@code Around} object
    */
-  AAAAround<T> Teardown(String name,
+  AAAAround<T> TearDown(String name,
                         Map<String, ?> params,
                         String expectedResult);
 
@@ -1490,117 +1490,117 @@ public interface AAAAround<T> {
     }
 
     @Override
-    public AAAAround<T> Setup(final RunnableStep step) {
-      this.executor.execute(step.with(KEYWORD, setup()));
+    public AAAAround<T> SetUp(final RunnableStep step) {
+      this.executor.execute(step.with(KEYWORD, setUp()));
       return this;
     }
 
     @Override
-    public AAAAround<T> Setup(final String name,
+    public AAAAround<T> SetUp(final String name,
                               final RunnableStep step) {
-      this.executor.execute(step.with(KEYWORD, setup(), NAME, name));
+      this.executor.execute(step.with(KEYWORD, setUp(), NAME, name));
       return this;
     }
 
     @Override
-    public AAAAround<T> Setup(final ThrowingFunction<? super String, String, ?> nameGenerator,
+    public AAAAround<T> SetUp(final ThrowingFunction<? super String, String, ?> nameGenerator,
                               final RunnableStep step) {
       this.executor.execute(step.with(
-        KEYWORD, setup(),
+        KEYWORD, setUp(),
         NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
       ));
       return this;
     }
 
     @Override
-    public <R> R Setup(final SupplierStep<? extends R> step) {
-      return this.executor.execute(step.with(KEYWORD, setup()));
+    public <R> R SetUp(final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(KEYWORD, setUp()));
     }
 
     @Override
-    public <R> R Setup(final String name,
+    public <R> R SetUp(final String name,
                        final SupplierStep<? extends R> step) {
-      return this.executor.execute(step.with(KEYWORD, setup(), NAME, name));
+      return this.executor.execute(step.with(KEYWORD, setUp(), NAME, name));
     }
 
     @Override
-    public <R> R Setup(final ThrowingFunction<? super String, String, ?> nameGenerator,
+    public <R> R SetUp(final ThrowingFunction<? super String, String, ?> nameGenerator,
                        final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(
-        KEYWORD, setup(),
+        KEYWORD, setUp(),
         NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
       ));
     }
 
     @Override
-    public AAAAround<T> Setup(final ConsumerStep<? super T> step) {
+    public AAAAround<T> SetUp(final ConsumerStep<? super T> step) {
       this.executor.execute(
-        step.with(KEYWORD, setup()),
+        step.with(KEYWORD, setUp()),
         this.context
       );
       return this;
     }
 
     @Override
-    public AAAAround<T> Setup(final String name,
+    public AAAAround<T> SetUp(final String name,
                               final ConsumerStep<? super T> step) {
       this.executor.execute(
-        step.with(KEYWORD, setup(), NAME, name),
+        step.with(KEYWORD, setUp(), NAME, name),
         this.context
       );
       return this;
     }
 
     @Override
-    public AAAAround<T> Setup(final ThrowingFunction<? super String, String, ?> nameGenerator,
+    public AAAAround<T> SetUp(final ThrowingFunction<? super String, String, ?> nameGenerator,
                               final ConsumerStep<? super T> step) {
       this.executor.execute(step.with(
-        KEYWORD, setup(),
+        KEYWORD, setUp(),
         NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
       ), this.context);
       return this;
     }
 
     @Override
-    public <R> R Setup(final FunctionStep<? super T, ? extends R> step) {
+    public <R> R SetUp(final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(
-        step.with(KEYWORD, setup()),
+        step.with(KEYWORD, setUp()),
         this.context
       );
     }
 
     @Override
-    public <R> R Setup(final String name,
+    public <R> R SetUp(final String name,
                        final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(
-        step.with(KEYWORD, setup(), NAME, name),
+        step.with(KEYWORD, setUp(), NAME, name),
         this.context
       );
     }
 
     @Override
-    public <R> R Setup(final ThrowingFunction<? super String, String, ?> nameGenerator,
+    public <R> R SetUp(final ThrowingFunction<? super String, String, ?> nameGenerator,
                        final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(step.with(
-        KEYWORD, setup(),
+        KEYWORD, setUp(),
         NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
       ), this.context);
     }
 
     @Override
-    public AAAAround<T> Setup(final ThrowingConsumer<? super T, ?> body) {
+    public AAAAround<T> SetUp(final ThrowingConsumer<? super T, ?> body) {
       this.executor.execute(new ConsumerStep.Of<>(
-        new StepAttributes.Of(KEYWORD, setup()),
+        new StepAttributes.Of(KEYWORD, setUp()),
         body
       ), this.context);
       return this;
     }
 
     @Override
-    public AAAAround<T> Setup(final String name,
+    public AAAAround<T> SetUp(final String name,
                               final ThrowingConsumer<? super T, ?> body) {
       this.executor.execute(new ConsumerStep.Of<>(
-        new StepAttributes.Of(KEYWORD, setup(), NAME, name),
+        new StepAttributes.Of(KEYWORD, setUp(), NAME, name),
         body
       ), this.context);
       return this;
@@ -1608,22 +1608,22 @@ public interface AAAAround<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public AAAAround<T> Setup(final String name,
+    public AAAAround<T> SetUp(final String name,
                               final Map<String, ?> params,
                               final ThrowingConsumer<? super T, ?> body) {
       this.executor.execute(new ConsumerStep.Of<>(
-        new StepAttributes.Of(KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params),
+        new StepAttributes.Of(KEYWORD, setUp(), NAME, name, PARAMS, (Map<String, Object>) params),
         body
       ), this.context);
       return this;
     }
 
     @Override
-    public AAAAround<T> Setup(final String name,
+    public AAAAround<T> SetUp(final String name,
                               final String expectedResult,
                               final ThrowingConsumer<? super T, ?> body) {
       this.executor.execute(new ConsumerStep.Of<>(
-        new StepAttributes.Of(KEYWORD, setup(), NAME, name, EXPECTED_RESULT, expectedResult),
+        new StepAttributes.Of(KEYWORD, setUp(), NAME, name, EXPECTED_RESULT, expectedResult),
         body
       ), this.context);
       return this;
@@ -1631,73 +1631,73 @@ public interface AAAAround<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public AAAAround<T> Setup(final String name,
+    public AAAAround<T> SetUp(final String name,
                               final Map<String, ?> params,
                               final String expectedResult,
                               final ThrowingConsumer<? super T, ?> body) {
       this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(
-          KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+          KEYWORD, setUp(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
         body
       ), this.context);
       return this;
     }
 
     @Override
-    public <R> R Setup(final ThrowingFunction<? super T, ? extends R, ?> body) {
+    public <R> R SetUp(final ThrowingFunction<? super T, ? extends R, ?> body) {
       return this.executor.execute(new FunctionStep.Of<>(
-        new StepAttributes.Of(KEYWORD, setup()),
+        new StepAttributes.Of(KEYWORD, setUp()),
         body
       ), this.context);
     }
 
     @Override
-    public <R> R Setup(final String name,
+    public <R> R SetUp(final String name,
                        final ThrowingFunction<? super T, ? extends R, ?> body) {
       return this.executor.execute(new FunctionStep.Of<>(
-        new StepAttributes.Of(KEYWORD, setup(), NAME, name),
+        new StepAttributes.Of(KEYWORD, setUp(), NAME, name),
         body
       ), this.context);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <R> R Setup(final String name,
+    public <R> R SetUp(final String name,
                        final Map<String, ?> params,
                        final ThrowingFunction<? super T, ? extends R, ?> body) {
       return this.executor.execute(new FunctionStep.Of<>(
-        new StepAttributes.Of(KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params),
+        new StepAttributes.Of(KEYWORD, setUp(), NAME, name, PARAMS, (Map<String, Object>) params),
         body
       ), this.context);
     }
 
     @Override
-    public <R> R Setup(final String name,
+    public <R> R SetUp(final String name,
                        final String expectedResult,
                        final ThrowingFunction<? super T, ? extends R, ?> body) {
       return this.executor.execute(new FunctionStep.Of<>(
-        new StepAttributes.Of(KEYWORD, setup(), NAME, name, EXPECTED_RESULT, expectedResult),
+        new StepAttributes.Of(KEYWORD, setUp(), NAME, name, EXPECTED_RESULT, expectedResult),
         body
       ), this.context);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <R> R Setup(final String name,
+    public <R> R SetUp(final String name,
                        final Map<String, ?> params,
                        final String expectedResult,
                        final ThrowingFunction<? super T, ? extends R, ?> body) {
       return this.executor.execute(new FunctionStep.Of<>(
         new StepAttributes.Of(
-          KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+          KEYWORD, setUp(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
         body
       ), this.context);
     }
 
     @Override
-    public AAAAround<T> Setup(final String name) {
+    public AAAAround<T> SetUp(final String name) {
       this.executor.execute(new RunnableStep.Of(
-        new StepAttributes.Of(KEYWORD, setup(), NAME, name),
+        new StepAttributes.Of(KEYWORD, setUp(), NAME, name),
         RunnableStep.emptyBody()
       ));
       return this;
@@ -1705,20 +1705,20 @@ public interface AAAAround<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public AAAAround<T> Setup(final String name,
+    public AAAAround<T> SetUp(final String name,
                               final Map<String, ?> params) {
       this.executor.execute(new RunnableStep.Of(
-        new StepAttributes.Of(KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params),
+        new StepAttributes.Of(KEYWORD, setUp(), NAME, name, PARAMS, (Map<String, Object>) params),
         RunnableStep.emptyBody()
       ));
       return this;
     }
 
     @Override
-    public AAAAround<T> Setup(final String name,
+    public AAAAround<T> SetUp(final String name,
                               final String expectedResult) {
       this.executor.execute(new RunnableStep.Of(
-        new StepAttributes.Of(KEYWORD, setup(), NAME, name, EXPECTED_RESULT, expectedResult),
+        new StepAttributes.Of(KEYWORD, setUp(), NAME, name, EXPECTED_RESULT, expectedResult),
         RunnableStep.emptyBody()
       ));
       return this;
@@ -1726,127 +1726,127 @@ public interface AAAAround<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public AAAAround<T> Setup(final String name, final Map<String, ?> params, final String expectedResult) {
+    public AAAAround<T> SetUp(final String name, final Map<String, ?> params, final String expectedResult) {
       this.executor.execute(new RunnableStep.Of(
         new StepAttributes.Of(
-          KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+          KEYWORD, setUp(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
         RunnableStep.emptyBody()
       ));
       return this;
     }
 
     @Override
-    public AAAAround<T> Teardown(final RunnableStep step) {
-      this.executor.execute(step.with(KEYWORD, teardown()));
+    public AAAAround<T> TearDown(final RunnableStep step) {
+      this.executor.execute(step.with(KEYWORD, tearDown()));
       return this;
     }
 
     @Override
-    public AAAAround<T> Teardown(final String name,
+    public AAAAround<T> TearDown(final String name,
                                  final RunnableStep step) {
-      this.executor.execute(step.with(KEYWORD, teardown(), NAME, name));
+      this.executor.execute(step.with(KEYWORD, tearDown(), NAME, name));
       return this;
     }
 
     @Override
-    public AAAAround<T> Teardown(final ThrowingFunction<? super String, String, ?> nameGenerator,
+    public AAAAround<T> TearDown(final ThrowingFunction<? super String, String, ?> nameGenerator,
                                  final RunnableStep step) {
       this.executor.execute(step.with(
-        KEYWORD, teardown(),
+        KEYWORD, tearDown(),
         NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
       ));
       return this;
     }
 
     @Override
-    public <R> R Teardown(final SupplierStep<? extends R> step) {
-      return this.executor.execute(step.with(KEYWORD, teardown()));
+    public <R> R TearDown(final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(KEYWORD, tearDown()));
     }
 
     @Override
-    public <R> R Teardown(final String name,
+    public <R> R TearDown(final String name,
                           final SupplierStep<? extends R> step) {
-      return this.executor.execute(step.with(KEYWORD, teardown(), NAME, name));
+      return this.executor.execute(step.with(KEYWORD, tearDown(), NAME, name));
     }
 
     @Override
-    public <R> R Teardown(final ThrowingFunction<? super String, String, ?> nameGenerator,
+    public <R> R TearDown(final ThrowingFunction<? super String, String, ?> nameGenerator,
                           final SupplierStep<? extends R> step) {
       return this.executor.execute(step.with(
-        KEYWORD, teardown(),
+        KEYWORD, tearDown(),
         NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
       ));
     }
 
     @Override
-    public AAAAround<T> Teardown(final ConsumerStep<? super T> step) {
+    public AAAAround<T> TearDown(final ConsumerStep<? super T> step) {
       this.executor.execute(
-        step.with(KEYWORD, teardown()),
+        step.with(KEYWORD, tearDown()),
         this.context
       );
       return this;
     }
 
     @Override
-    public AAAAround<T> Teardown(final String name,
+    public AAAAround<T> TearDown(final String name,
                                  final ConsumerStep<? super T> step) {
       this.executor.execute(
-        step.with(KEYWORD, teardown(), NAME, name),
+        step.with(KEYWORD, tearDown(), NAME, name),
         this.context
       );
       return this;
     }
 
     @Override
-    public AAAAround<T> Teardown(final ThrowingFunction<? super String, String, ?> nameGenerator,
+    public AAAAround<T> TearDown(final ThrowingFunction<? super String, String, ?> nameGenerator,
                                  final ConsumerStep<? super T> step) {
       this.executor.execute(step.with(
-        KEYWORD, teardown(),
+        KEYWORD, tearDown(),
         NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
       ), this.context);
       return this;
     }
 
     @Override
-    public <R> R Teardown(final FunctionStep<? super T, ? extends R> step) {
+    public <R> R TearDown(final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(
-        step.with(KEYWORD, teardown()),
+        step.with(KEYWORD, tearDown()),
         this.context
       );
     }
 
     @Override
-    public <R> R Teardown(final String name,
+    public <R> R TearDown(final String name,
                           final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(
-        step.with(KEYWORD, teardown(), NAME, name),
+        step.with(KEYWORD, tearDown(), NAME, name),
         this.context
       );
     }
 
     @Override
-    public <R> R Teardown(final ThrowingFunction<? super String, String, ?> nameGenerator,
+    public <R> R TearDown(final ThrowingFunction<? super String, String, ?> nameGenerator,
                           final FunctionStep<? super T, ? extends R> step) {
       return this.executor.execute(step.with(
-        KEYWORD, teardown(),
+        KEYWORD, tearDown(),
         NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
       ), this.context);
     }
 
     @Override
-    public AAAAround<T> Teardown(final ThrowingConsumer<? super T, ?> body) {
+    public AAAAround<T> TearDown(final ThrowingConsumer<? super T, ?> body) {
       this.executor.execute(new ConsumerStep.Of<>(
-        new StepAttributes.Of(KEYWORD, teardown()),
+        new StepAttributes.Of(KEYWORD, tearDown()),
         body
       ), this.context);
       return this;
     }
 
     @Override
-    public AAAAround<T> Teardown(final String name,
+    public AAAAround<T> TearDown(final String name,
                                  final ThrowingConsumer<? super T, ?> body) {
       this.executor.execute(new ConsumerStep.Of<>(
-        new StepAttributes.Of(KEYWORD, teardown(), NAME, name),
+        new StepAttributes.Of(KEYWORD, tearDown(), NAME, name),
         body
       ), this.context);
       return this;
@@ -1854,22 +1854,22 @@ public interface AAAAround<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public AAAAround<T> Teardown(final String name,
+    public AAAAround<T> TearDown(final String name,
                                  final Map<String, ?> params,
                                  final ThrowingConsumer<? super T, ?> body) {
       this.executor.execute(new ConsumerStep.Of<>(
-        new StepAttributes.Of(KEYWORD, teardown(), NAME, name, PARAMS, (Map<String, Object>) params),
+        new StepAttributes.Of(KEYWORD, tearDown(), NAME, name, PARAMS, (Map<String, Object>) params),
         body
       ), this.context);
       return this;
     }
 
     @Override
-    public AAAAround<T> Teardown(final String name,
+    public AAAAround<T> TearDown(final String name,
                                  final String expectedResult,
                                  final ThrowingConsumer<? super T, ?> body) {
       this.executor.execute(new ConsumerStep.Of<>(
-        new StepAttributes.Of(KEYWORD, teardown(), NAME, name, EXPECTED_RESULT, expectedResult),
+        new StepAttributes.Of(KEYWORD, tearDown(), NAME, name, EXPECTED_RESULT, expectedResult),
         body
       ), this.context);
       return this;
@@ -1877,73 +1877,73 @@ public interface AAAAround<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public AAAAround<T> Teardown(final String name,
+    public AAAAround<T> TearDown(final String name,
                                  final Map<String, ?> params,
                                  final String expectedResult,
                                  final ThrowingConsumer<? super T, ?> body) {
       this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(
-          KEYWORD, teardown(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+          KEYWORD, tearDown(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
         body
       ), this.context);
       return this;
     }
 
     @Override
-    public <R> R Teardown(final ThrowingFunction<? super T, ? extends R, ?> body) {
+    public <R> R TearDown(final ThrowingFunction<? super T, ? extends R, ?> body) {
       return this.executor.execute(new FunctionStep.Of<>(
-        new StepAttributes.Of(KEYWORD, teardown()),
+        new StepAttributes.Of(KEYWORD, tearDown()),
         body
       ), this.context);
     }
 
     @Override
-    public <R> R Teardown(final String name,
+    public <R> R TearDown(final String name,
                           final ThrowingFunction<? super T, ? extends R, ?> body) {
       return this.executor.execute(new FunctionStep.Of<>(
-        new StepAttributes.Of(KEYWORD, teardown(), NAME, name),
+        new StepAttributes.Of(KEYWORD, tearDown(), NAME, name),
         body
       ), this.context);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <R> R Teardown(final String name,
+    public <R> R TearDown(final String name,
                           final Map<String, ?> params,
                           final ThrowingFunction<? super T, ? extends R, ?> body) {
       return this.executor.execute(new FunctionStep.Of<>(
-        new StepAttributes.Of(KEYWORD, teardown(), NAME, name, PARAMS, (Map<String, Object>) params),
+        new StepAttributes.Of(KEYWORD, tearDown(), NAME, name, PARAMS, (Map<String, Object>) params),
         body
       ), this.context);
     }
 
     @Override
-    public <R> R Teardown(final String name,
+    public <R> R TearDown(final String name,
                           final String expectedResult,
                           final ThrowingFunction<? super T, ? extends R, ?> body) {
       return this.executor.execute(new FunctionStep.Of<>(
-        new StepAttributes.Of(KEYWORD, teardown(), NAME, name, EXPECTED_RESULT, expectedResult),
+        new StepAttributes.Of(KEYWORD, tearDown(), NAME, name, EXPECTED_RESULT, expectedResult),
         body
       ), this.context);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <R> R Teardown(final String name,
+    public <R> R TearDown(final String name,
                           final Map<String, ?> params,
                           final String expectedResult,
                           final ThrowingFunction<? super T, ? extends R, ?> body) {
       return this.executor.execute(new FunctionStep.Of<>(
         new StepAttributes.Of(
-          KEYWORD, teardown(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+          KEYWORD, tearDown(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
         body
       ), this.context);
     }
 
     @Override
-    public AAAAround<T> Teardown(final String name) {
+    public AAAAround<T> TearDown(final String name) {
       this.executor.execute(new RunnableStep.Of(
-        new StepAttributes.Of(KEYWORD, teardown(), NAME, name),
+        new StepAttributes.Of(KEYWORD, tearDown(), NAME, name),
         RunnableStep.emptyBody()
       ));
       return this;
@@ -1951,20 +1951,20 @@ public interface AAAAround<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public AAAAround<T> Teardown(final String name,
+    public AAAAround<T> TearDown(final String name,
                                  final Map<String, ?> params) {
       this.executor.execute(new RunnableStep.Of(
-        new StepAttributes.Of(KEYWORD, teardown(), NAME, name, PARAMS, (Map<String, Object>) params),
+        new StepAttributes.Of(KEYWORD, tearDown(), NAME, name, PARAMS, (Map<String, Object>) params),
         RunnableStep.emptyBody()
       ));
       return this;
     }
 
     @Override
-    public AAAAround<T> Teardown(final String name,
+    public AAAAround<T> TearDown(final String name,
                                  final String expectedResult) {
       this.executor.execute(new RunnableStep.Of(
-        new StepAttributes.Of(KEYWORD, teardown(), NAME, name, EXPECTED_RESULT, expectedResult),
+        new StepAttributes.Of(KEYWORD, tearDown(), NAME, name, EXPECTED_RESULT, expectedResult),
         RunnableStep.emptyBody()
       ));
       return this;
@@ -1972,10 +1972,10 @@ public interface AAAAround<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public AAAAround<T> Teardown(final String name, final Map<String, ?> params, final String expectedResult) {
+    public AAAAround<T> TearDown(final String name, final Map<String, ?> params, final String expectedResult) {
       this.executor.execute(new RunnableStep.Of(
         new StepAttributes.Of(
-          KEYWORD, teardown(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+          KEYWORD, tearDown(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
         RunnableStep.emptyBody()
       ));
       return this;

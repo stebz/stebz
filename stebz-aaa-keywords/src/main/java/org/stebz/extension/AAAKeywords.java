@@ -33,8 +33,8 @@ import org.stebz.util.property.PropertiesReader;
  */
 public final class AAAKeywords implements StebzExtension {
   private static final Object LOCK = new Object();
-  private static final String SETUP_KEYWORD_DEFAULT_VALUE = "Setup:";
-  private static final String TEARDOWN_KEYWORD_DEFAULT_VALUE = "Teardown:";
+  private static final String SET_UP_KEYWORD_DEFAULT_VALUE = "Set Up:";
+  private static final String TEAR_DOWN_KEYWORD_DEFAULT_VALUE = "Tear Down:";
   private static final String ARRANGE_KEYWORD_DEFAULT_VALUE = "Arrange:";
   private static final String ACT_KEYWORD_DEFAULT_VALUE = "Act:";
   private static final String ASSERT_KEYWORD_DEFAULT_VALUE = "Assert:";
@@ -54,8 +54,8 @@ public final class AAAKeywords implements StebzExtension {
    */
   private AAAKeywords(final PropertiesReader properties) {
     setKeywordsOnce(new Keywords(
-      new Keyword.Of(properties.getString("stebz.extensions.aaa.keywords.setup", SETUP_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.extensions.aaa.keywords.teardown", TEARDOWN_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.extensions.aaa.keywords.setUp", SET_UP_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.extensions.aaa.keywords.tearDown", TEAR_DOWN_KEYWORD_DEFAULT_VALUE)),
       new Keyword.Of(properties.getString("stebz.extensions.aaa.keywords.arrange", ARRANGE_KEYWORD_DEFAULT_VALUE)),
       new Keyword.Of(properties.getString("stebz.extensions.aaa.keywords.act", ACT_KEYWORD_DEFAULT_VALUE)),
       new Keyword.Of(properties.getString("stebz.extensions.aaa.keywords.assert", ASSERT_KEYWORD_DEFAULT_VALUE))
@@ -63,21 +63,21 @@ public final class AAAKeywords implements StebzExtension {
   }
 
   /**
-   * Returns "Setup" keyword.
+   * Returns "Set up" keyword.
    *
-   * @return "Setup" keyword
+   * @return "Set up" keyword
    */
-  public static Keyword setup() {
-    return getKeywords().setup;
+  public static Keyword setUp() {
+    return getKeywords().setUp;
   }
 
   /**
-   * Returns "Teardown" keyword.
+   * Returns "Tear down" keyword.
    *
-   * @return "Teardown" keyword
+   * @return "Tear down" keyword
    */
-  public static Keyword teardown() {
-    return getKeywords().teardown;
+  public static Keyword tearDown() {
+    return getKeywords().tearDown;
   }
 
   /**
@@ -140,8 +140,8 @@ public final class AAAKeywords implements StebzExtension {
 
   private static Keywords defaultKeywords() {
     return new Keywords(
-      new Keyword.Of(SETUP_KEYWORD_DEFAULT_VALUE),
-      new Keyword.Of(TEARDOWN_KEYWORD_DEFAULT_VALUE),
+      new Keyword.Of(SET_UP_KEYWORD_DEFAULT_VALUE),
+      new Keyword.Of(TEAR_DOWN_KEYWORD_DEFAULT_VALUE),
       new Keyword.Of(ARRANGE_KEYWORD_DEFAULT_VALUE),
       new Keyword.Of(ACT_KEYWORD_DEFAULT_VALUE),
       new Keyword.Of(ASSERT_KEYWORD_DEFAULT_VALUE)
@@ -149,19 +149,19 @@ public final class AAAKeywords implements StebzExtension {
   }
 
   private static final class Keywords {
-    private final Keyword setup;
-    private final Keyword teardown;
+    private final Keyword setUp;
+    private final Keyword tearDown;
     private final Keyword arrange;
     private final Keyword act;
     private final Keyword _assert;
 
-    private Keywords(final Keyword setup,
-                     final Keyword teardown,
+    private Keywords(final Keyword setUp,
+                     final Keyword tearDown,
                      final Keyword arrange,
                      final Keyword act,
                      final Keyword _assert) {
-      this.setup = setup;
-      this.teardown = teardown;
+      this.setUp = setUp;
+      this.tearDown = tearDown;
       this.arrange = arrange;
       this.act = act;
       this._assert = _assert;

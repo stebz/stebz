@@ -27,8 +27,8 @@ import dev.jlet.function.ThrowingFunction;
 import org.stebz.annotation.aaa.Act;
 import org.stebz.annotation.aaa.Arrange;
 import org.stebz.annotation.aaa.Assert;
-import org.stebz.annotation.aaa.Setup;
-import org.stebz.annotation.aaa.Teardown;
+import org.stebz.annotation.aaa.SetUp;
+import org.stebz.annotation.aaa.TearDown;
 import org.stebz.attribute.Keyword;
 import org.stebz.attribute.StepAttribute;
 import org.stebz.executor.StartupPropertiesReader;
@@ -56,8 +56,8 @@ public class AAAAnnotationsExtension implements InterceptStep {
   /**
    * Arrange-Act-Assert keyword annotation attribute.
    *
-   * @see Setup
-   * @see Teardown
+   * @see SetUp
+   * @see TearDown
    * @see Arrange
    * @see Act
    * @see Assert
@@ -65,8 +65,8 @@ public class AAAAnnotationsExtension implements InterceptStep {
   public static final StepAttribute<Annotation> AAA_KEYWORD = StepAttribute.nullable(AAA_KEYWORD_ATTRIBUTE_KEY);
   private static final Cached<Map<Class<? extends Annotation>, Keyword>> KEYWORDS = new Cached<>(() -> {
     final Map<Class<? extends Annotation>, Keyword> keywords = new HashMap<>();
-    keywords.put(Setup.class, AAAKeywords.setup());
-    keywords.put(Teardown.class, AAAKeywords.teardown());
+    keywords.put(SetUp.class, AAAKeywords.setUp());
+    keywords.put(TearDown.class, AAAKeywords.tearDown());
     keywords.put(Arrange.class, AAAKeywords.arrange());
     keywords.put(Act.class, AAAKeywords.act());
     keywords.put(Assert.class, AAAKeywords._assert());
@@ -75,8 +75,8 @@ public class AAAAnnotationsExtension implements InterceptStep {
   private static final Cached<Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>>> VALUES =
     new Cached<>(() -> {
       final Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>> values = new HashMap<>();
-      values.put(Setup.class, annot -> ((Setup) annot).value());
-      values.put(Teardown.class, annot -> ((Teardown) annot).value());
+      values.put(SetUp.class, annot -> ((SetUp) annot).value());
+      values.put(TearDown.class, annot -> ((TearDown) annot).value());
       values.put(Arrange.class, annot -> ((Arrange) annot).value());
       values.put(Act.class, annot -> ((Act) annot).value());
       values.put(Assert.class, annot -> ((Assert) annot).value());

@@ -33,15 +33,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 final class AAAKeywordsTest {
 
   @Test
-  void setupKeywordDefaultValue() {
-    assertThat(AAAKeywords.setup().value())
-      .isEqualTo("Setup:");
+  void setUpKeywordDefaultValue() {
+    assertThat(AAAKeywords.setUp().value())
+      .isEqualTo("Set Up:");
   }
 
   @Test
-  void teardownKeywordDefaultValue() {
-    assertThat(AAAKeywords.teardown().value())
-      .isEqualTo("Teardown:");
+  void tearDownKeywordDefaultValue() {
+    assertThat(AAAKeywords.tearDown().value())
+      .isEqualTo("Tear Down:");
   }
 
   @Test
