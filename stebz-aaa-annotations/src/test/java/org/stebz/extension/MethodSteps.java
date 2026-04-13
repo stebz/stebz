@@ -28,8 +28,8 @@ import org.stebz.annotation.WithName;
 import org.stebz.annotation.aaa.Act;
 import org.stebz.annotation.aaa.Arrange;
 import org.stebz.annotation.aaa.Assert;
-import org.stebz.annotation.aaa.Setup;
-import org.stebz.annotation.aaa.Teardown;
+import org.stebz.annotation.aaa.SetUp;
+import org.stebz.annotation.aaa.TearDown;
 import org.stebz.step.executable.RunnableStep;
 
 final class MethodSteps {
@@ -53,13 +53,13 @@ final class MethodSteps {
     return RunnableStep.empty();
   }
 
-  @Setup("custom name")
+  @SetUp("custom name")
   @Step("step name")
   static RunnableStep aaaKeywordAnnotationWithNameAndStepAnnotation() {
     return RunnableStep.empty();
   }
 
-  @Teardown("custom name")
+  @TearDown("custom name")
   @WithName("step name")
   static RunnableStep aaaKeywordAnnotationWithNameAndWithNameAnnotation() {
     return RunnableStep.empty();

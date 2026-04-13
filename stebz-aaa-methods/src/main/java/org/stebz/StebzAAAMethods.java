@@ -43,8 +43,8 @@ import static org.stebz.attribute.StepAttribute.PARAMS;
 import static org.stebz.extension.AAAKeywords._assert;
 import static org.stebz.extension.AAAKeywords.act;
 import static org.stebz.extension.AAAKeywords.arrange;
-import static org.stebz.extension.AAAKeywords.setup;
-import static org.stebz.extension.AAAKeywords.teardown;
+import static org.stebz.extension.AAAKeywords.setUp;
+import static org.stebz.extension.AAAKeywords.tearDown;
 
 /**
  * Stebz Arrange-Act-Assert methods.
@@ -80,112 +80,112 @@ public final class StebzAAAMethods {
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword.
    *
    * @param step the step
    */
-  public static void Setup(final RunnableStep step) {
-    StepExecutor.get().execute(step.withKeyword(setup()));
+  public static void SetUp(final RunnableStep step) {
+    StepExecutor.get().execute(step.withKeyword(setUp()));
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name.
    *
    * @param name the name
    * @param step the step
    */
-  public static void Setup(final String name,
+  public static void SetUp(final String name,
                            final RunnableStep step) {
-    StepExecutor.get().execute(step.with(KEYWORD, setup(), NAME, name));
+    StepExecutor.get().execute(step.with(KEYWORD, setUp(), NAME, name));
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name created by {@code nameGenerator}.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    */
-  public static void Setup(final ThrowingFunction<? super String, String, ?> nameGenerator,
+  public static void SetUp(final ThrowingFunction<? super String, String, ?> nameGenerator,
                            final RunnableStep step) {
     StepExecutor.get().execute(step.with(
-      KEYWORD, setup(),
+      KEYWORD, setUp(),
       NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
     ));
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and returns step result.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R Setup(final SupplierStep<? extends R> step) {
-    return StepExecutor.get().execute(step.with(KEYWORD, setup()));
+  public static <R> R SetUp(final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(KEYWORD, setUp()));
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name and returns step result.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name and returns step result.
    *
    * @param name the name
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R Setup(final String name,
+  public static <R> R SetUp(final String name,
                             final SupplierStep<? extends R> step) {
-    return StepExecutor.get().execute(step.with(KEYWORD, setup(), NAME, name));
+    return StepExecutor.get().execute(step.with(KEYWORD, setUp(), NAME, name));
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name created by {@code nameGenerator} and returns
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name created by {@code nameGenerator} and returns
    * step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    */
-  public static <R> R Setup(final ThrowingFunction<? super String, String, ?> nameGenerator,
+  public static <R> R SetUp(final ThrowingFunction<? super String, String, ?> nameGenerator,
                             final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(
-      KEYWORD, setup(),
+      KEYWORD, setUp(),
       NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
     ));
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword on given value.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword on given value.
    *
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
    */
-  public static <T> void Setup(final ConsumerStep<? super T> step,
+  public static <T> void SetUp(final ConsumerStep<? super T> step,
                                final T value) {
     StepExecutor.get().execute(
-      step.with(KEYWORD, setup()),
+      step.with(KEYWORD, setUp()),
       value
     );
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name on given value.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name on given value.
    *
    * @param name  the name
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
    */
-  public static <T> void Setup(final String name,
+  public static <T> void SetUp(final String name,
                                final ConsumerStep<? super T> step,
                                final T value) {
     StepExecutor.get().execute(
-      step.with(KEYWORD, setup(), NAME, name),
+      step.with(KEYWORD, setUp(), NAME, name),
       value
     );
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name created by {@code nameGenerator} on given
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name created by {@code nameGenerator} on given
    * value.
    *
    * @param nameGenerator the name generator
@@ -193,12 +193,12 @@ public final class StebzAAAMethods {
    * @param value         the value
    * @param <T>           the type of the value
    */
-  public static <T> void Setup(final ThrowingFunction<? super String, String, ?> nameGenerator,
+  public static <T> void SetUp(final ThrowingFunction<? super String, String, ?> nameGenerator,
                                final ConsumerStep<? super T> step,
                                final T value) {
     StepExecutor.get().execute(
       step.with(
-        KEYWORD, setup(),
+        KEYWORD, setUp(),
         NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
       ),
       value
@@ -206,7 +206,7 @@ public final class StebzAAAMethods {
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword on given value and returns step result.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword on given value and returns step result.
    *
    * @param step  the step
    * @param value the value
@@ -214,16 +214,16 @@ public final class StebzAAAMethods {
    * @param <R>   the type of the step result
    * @return step result
    */
-  public static <T, R> R Setup(final FunctionStep<? super T, ? extends R> step,
+  public static <T, R> R SetUp(final FunctionStep<? super T, ? extends R> step,
                                final T value) {
     return StepExecutor.get().execute(
-      step.with(KEYWORD, setup()),
+      step.with(KEYWORD, setUp()),
       value
     );
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name on given value and returns step result.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name on given value and returns step result.
    *
    * @param name  the name
    * @param step  the step
@@ -232,17 +232,17 @@ public final class StebzAAAMethods {
    * @param <R>   the type of the step result
    * @return step result
    */
-  public static <T, R> R Setup(final String name,
+  public static <T, R> R SetUp(final String name,
                                final FunctionStep<? super T, ? extends R> step,
                                final T value) {
     return StepExecutor.get().execute(
-      step.with(KEYWORD, setup(), NAME, name),
+      step.with(KEYWORD, setUp(), NAME, name),
       value
     );
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#setup()} keyword and name created by {@code nameGenerator} on given
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name created by {@code nameGenerator} on given
    * value and returns step result.
    *
    * @param nameGenerator the name generator
@@ -252,12 +252,12 @@ public final class StebzAAAMethods {
    * @param <R>           the type of the step result
    * @return step result
    */
-  public static <T, R> R Setup(final ThrowingFunction<? super String, String, ?> nameGenerator,
+  public static <T, R> R SetUp(final ThrowingFunction<? super String, String, ?> nameGenerator,
                                final FunctionStep<? super T, ? extends R> step,
                                final T value) {
     return StepExecutor.get().execute(
       step.with(
-        KEYWORD, setup(),
+        KEYWORD, setUp(),
         NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
       ),
       value
@@ -265,66 +265,66 @@ public final class StebzAAAMethods {
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword.
+   * Executes step with {@link AAAKeywords#setUp()} keyword.
    *
    * @param body the step body
    */
-  public static void Setup(final ThrowingRunnable<?> body) {
+  public static void SetUp(final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, setup()),
+      new StepAttributes.Of(KEYWORD, setUp()),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes.
    *
    * @param name the step name
    * @param body the step body
    */
-  public static void Setup(final String name,
+  public static void SetUp(final String name,
                            final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, setup(), NAME, name),
+      new StepAttributes.Of(KEYWORD, setUp(), NAME, name),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes.
    *
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
    */
   @SuppressWarnings("unchecked")
-  public static void Setup(final String name,
+  public static void SetUp(final String name,
                            final Map<String, ?> params,
                            final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params),
+      new StepAttributes.Of(KEYWORD, setUp(), NAME, name, PARAMS, (Map<String, Object>) params),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    */
-  public static void Setup(final String name,
+  public static void SetUp(final String name,
                            final String expectedResult,
                            final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, setup(), NAME, name, EXPECTED_RESULT, expectedResult),
+      new StepAttributes.Of(KEYWORD, setUp(), NAME, name, EXPECTED_RESULT, expectedResult),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes.
    *
    * @param name           the step name
    * @param params         the step params
@@ -332,49 +332,49 @@ public final class StebzAAAMethods {
    * @param body           the step body
    */
   @SuppressWarnings("unchecked")
-  public static void Setup(final String name,
+  public static void SetUp(final String name,
                            final Map<String, ?> params,
                            final String expectedResult,
                            final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
-        KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        KEYWORD, setUp(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and returns step result.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and returns step result.
    *
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
    */
-  public static <R> R Setup(final ThrowingSupplier<? extends R, ?> body) {
+  public static <R> R SetUp(final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
-      new StepAttributes.Of(KEYWORD, setup()),
+      new StepAttributes.Of(KEYWORD, setUp()),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes and returns step result.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes and returns step result.
    *
    * @param name the step name
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
    */
-  public static <R> R Setup(final String name,
+  public static <R> R SetUp(final String name,
                             final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
-      new StepAttributes.Of(KEYWORD, setup(), NAME, name),
+      new StepAttributes.Of(KEYWORD, setUp(), NAME, name),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes and returns step result.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes and returns step result.
    *
    * @param name   the step name
    * @param params the step params
@@ -383,17 +383,17 @@ public final class StebzAAAMethods {
    * @return step result
    */
   @SuppressWarnings("unchecked")
-  public static <R> R Setup(final String name,
+  public static <R> R SetUp(final String name,
                             final Map<String, ?> params,
                             final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
-      new StepAttributes.Of(KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params),
+      new StepAttributes.Of(KEYWORD, setUp(), NAME, name, PARAMS, (Map<String, Object>) params),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes and returns step result.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes and returns step result.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
@@ -401,17 +401,17 @@ public final class StebzAAAMethods {
    * @param <R>            the type of the step result
    * @return step result
    */
-  public static <R> R Setup(final String name,
+  public static <R> R SetUp(final String name,
                             final String expectedResult,
                             final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
-      new StepAttributes.Of(KEYWORD, setup(), NAME, name, EXPECTED_RESULT, expectedResult),
+      new StepAttributes.Of(KEYWORD, setUp(), NAME, name, EXPECTED_RESULT, expectedResult),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes and returns step result.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes and returns step result.
    *
    * @param name           the step name
    * @param params         the step params
@@ -421,183 +421,183 @@ public final class StebzAAAMethods {
    * @return step result
    */
   @SuppressWarnings("unchecked")
-  public static <R> R Setup(final String name,
+  public static <R> R SetUp(final String name,
                             final Map<String, ?> params,
                             final String expectedResult,
                             final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
       new StepAttributes.Of(
-        KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        KEYWORD, setUp(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes.
    *
    * @param name the step name
    */
-  public static void Setup(final String name) {
+  public static void SetUp(final String name) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, setup(), NAME, name),
+      new StepAttributes.Of(KEYWORD, setUp(), NAME, name),
       RunnableStep.emptyBody()
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes.
    *
    * @param name   the step name
    * @param params the step params
    */
   @SuppressWarnings("unchecked")
-  public static void Setup(final String name,
+  public static void SetUp(final String name,
                            final Map<String, ?> params) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params),
+      new StepAttributes.Of(KEYWORD, setUp(), NAME, name, PARAMS, (Map<String, Object>) params),
       RunnableStep.emptyBody()
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    */
-  public static void Setup(final String name,
+  public static void SetUp(final String name,
                            final String expectedResult) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, setup(), NAME, name, EXPECTED_RESULT, expectedResult),
+      new StepAttributes.Of(KEYWORD, setUp(), NAME, name, EXPECTED_RESULT, expectedResult),
       RunnableStep.emptyBody()
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#setup()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes.
    *
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
    */
   @SuppressWarnings("unchecked")
-  public static void Setup(final String name,
+  public static void SetUp(final String name,
                            final Map<String, ?> params,
                            final String expectedResult) {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
-        KEYWORD, setup(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        KEYWORD, setUp(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
       RunnableStep.emptyBody()
     ));
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword.
    *
    * @param step the step
    */
-  public static void Teardown(final RunnableStep step) {
-    StepExecutor.get().execute(step.withKeyword(teardown()));
+  public static void TearDown(final RunnableStep step) {
+    StepExecutor.get().execute(step.withKeyword(tearDown()));
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword and name.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name.
    *
    * @param name the name
    * @param step the step
    */
-  public static void Teardown(final String name,
+  public static void TearDown(final String name,
                               final RunnableStep step) {
-    StepExecutor.get().execute(step.with(KEYWORD, teardown(), NAME, name));
+    StepExecutor.get().execute(step.with(KEYWORD, tearDown(), NAME, name));
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name created by {@code nameGenerator}.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    */
-  public static void Teardown(final ThrowingFunction<? super String, String, ?> nameGenerator,
+  public static void TearDown(final ThrowingFunction<? super String, String, ?> nameGenerator,
                               final RunnableStep step) {
     StepExecutor.get().execute(step.with(
-      KEYWORD, teardown(),
+      KEYWORD, tearDown(),
       NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
     ));
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword and returns step result.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R Teardown(final SupplierStep<? extends R> step) {
-    return StepExecutor.get().execute(step.with(KEYWORD, teardown()));
+  public static <R> R TearDown(final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(KEYWORD, tearDown()));
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword and name and returns step result.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name and returns step result.
    *
    * @param name the name
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
    */
-  public static <R> R Teardown(final String name,
+  public static <R> R TearDown(final String name,
                                final SupplierStep<? extends R> step) {
-    return StepExecutor.get().execute(step.with(KEYWORD, teardown(), NAME, name));
+    return StepExecutor.get().execute(step.with(KEYWORD, tearDown(), NAME, name));
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword and name created by {@code nameGenerator} and
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name created by {@code nameGenerator} and
    * returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    */
-  public static <R> R Teardown(final ThrowingFunction<? super String, String, ?> nameGenerator,
+  public static <R> R TearDown(final ThrowingFunction<? super String, String, ?> nameGenerator,
                                final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(
-      KEYWORD, teardown(),
+      KEYWORD, tearDown(),
       NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
     ));
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword on given value.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword on given value.
    *
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
    */
-  public static <T> void Teardown(final ConsumerStep<? super T> step,
+  public static <T> void TearDown(final ConsumerStep<? super T> step,
                                   final T value) {
     StepExecutor.get().execute(
-      step.with(KEYWORD, teardown()),
+      step.with(KEYWORD, tearDown()),
       value
     );
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword and name on given value.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name on given value.
    *
    * @param name  the name
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
    */
-  public static <T> void Teardown(final String name,
+  public static <T> void TearDown(final String name,
                                   final ConsumerStep<? super T> step,
                                   final T value) {
     StepExecutor.get().execute(
-      step.with(KEYWORD, teardown(), NAME, name),
+      step.with(KEYWORD, tearDown(), NAME, name),
       value
     );
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword and name created by {@code nameGenerator} on given
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name created by {@code nameGenerator} on given
    * value.
    *
    * @param nameGenerator the name generator
@@ -605,12 +605,12 @@ public final class StebzAAAMethods {
    * @param value         the value
    * @param <T>           the type of the value
    */
-  public static <T> void Teardown(final ThrowingFunction<? super String, String, ?> nameGenerator,
+  public static <T> void TearDown(final ThrowingFunction<? super String, String, ?> nameGenerator,
                                   final ConsumerStep<? super T> step,
                                   final T value) {
     StepExecutor.get().execute(
       step.with(
-        KEYWORD, teardown(),
+        KEYWORD, tearDown(),
         NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
       ),
       value
@@ -618,7 +618,7 @@ public final class StebzAAAMethods {
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword on given value and returns step result.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword on given value and returns step result.
    *
    * @param step  the step
    * @param value the value
@@ -626,16 +626,16 @@ public final class StebzAAAMethods {
    * @param <R>   the type of the step result
    * @return step result
    */
-  public static <T, R> R Teardown(final FunctionStep<? super T, ? extends R> step,
+  public static <T, R> R TearDown(final FunctionStep<? super T, ? extends R> step,
                                   final T value) {
     return StepExecutor.get().execute(
-      step.with(KEYWORD, teardown()),
+      step.with(KEYWORD, tearDown()),
       value
     );
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword and name on given value and returns step result.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name on given value and returns step result.
    *
    * @param name  the name
    * @param step  the step
@@ -644,17 +644,17 @@ public final class StebzAAAMethods {
    * @param <R>   the type of the step result
    * @return step result
    */
-  public static <T, R> R Teardown(final String name,
+  public static <T, R> R TearDown(final String name,
                                   final FunctionStep<? super T, ? extends R> step,
                                   final T value) {
     return StepExecutor.get().execute(
-      step.with(KEYWORD, teardown(), NAME, name),
+      step.with(KEYWORD, tearDown(), NAME, name),
       value
     );
   }
 
   /**
-   * Executes given step with {@link AAAKeywords#teardown()} keyword and name created by {@code nameGenerator} on given
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name created by {@code nameGenerator} on given
    * value and returns step result.
    *
    * @param nameGenerator the name generator
@@ -664,12 +664,12 @@ public final class StebzAAAMethods {
    * @param <R>           the type of the step result
    * @return step result
    */
-  public static <T, R> R Teardown(final ThrowingFunction<? super String, String, ?> nameGenerator,
+  public static <T, R> R TearDown(final ThrowingFunction<? super String, String, ?> nameGenerator,
                                   final FunctionStep<? super T, ? extends R> step,
                                   final T value) {
     return StepExecutor.get().execute(
       step.with(
-        KEYWORD, teardown(),
+        KEYWORD, tearDown(),
         NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
       ),
       value
@@ -677,66 +677,66 @@ public final class StebzAAAMethods {
   }
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword.
    *
    * @param body the step body
    */
-  public static void Teardown(final ThrowingRunnable<?> body) {
+  public static void TearDown(final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, teardown()),
+      new StepAttributes.Of(KEYWORD, tearDown()),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes.
    *
    * @param name the step name
    * @param body the step body
    */
-  public static void Teardown(final String name,
+  public static void TearDown(final String name,
                               final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, teardown(), NAME, name),
+      new StepAttributes.Of(KEYWORD, tearDown(), NAME, name),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes.
    *
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
    */
   @SuppressWarnings("unchecked")
-  public static void Teardown(final String name,
+  public static void TearDown(final String name,
                               final Map<String, ?> params,
                               final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, teardown(), NAME, name, PARAMS, (Map<String, Object>) params),
+      new StepAttributes.Of(KEYWORD, tearDown(), NAME, name, PARAMS, (Map<String, Object>) params),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    */
-  public static void Teardown(final String name,
+  public static void TearDown(final String name,
                               final String expectedResult,
                               final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, teardown(), NAME, name, EXPECTED_RESULT, expectedResult),
+      new StepAttributes.Of(KEYWORD, tearDown(), NAME, name, EXPECTED_RESULT, expectedResult),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes.
    *
    * @param name           the step name
    * @param params         the step params
@@ -744,49 +744,49 @@ public final class StebzAAAMethods {
    * @param body           the step body
    */
   @SuppressWarnings("unchecked")
-  public static void Teardown(final String name,
+  public static void TearDown(final String name,
                               final Map<String, ?> params,
                               final String expectedResult,
                               final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
-        KEYWORD, teardown(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        KEYWORD, tearDown(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and returns step result.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and returns step result.
    *
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
    */
-  public static <R> R Teardown(final ThrowingSupplier<? extends R, ?> body) {
+  public static <R> R TearDown(final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
-      new StepAttributes.Of(KEYWORD, teardown()),
+      new StepAttributes.Of(KEYWORD, tearDown()),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes and returns step result.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes and returns step result.
    *
    * @param name the step name
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
    */
-  public static <R> R Teardown(final String name,
+  public static <R> R TearDown(final String name,
                                final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
-      new StepAttributes.Of(KEYWORD, teardown(), NAME, name),
+      new StepAttributes.Of(KEYWORD, tearDown(), NAME, name),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes and returns step result.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes and returns step result.
    *
    * @param name   the step name
    * @param params the step params
@@ -795,17 +795,17 @@ public final class StebzAAAMethods {
    * @return step result
    */
   @SuppressWarnings("unchecked")
-  public static <R> R Teardown(final String name,
+  public static <R> R TearDown(final String name,
                                final Map<String, ?> params,
                                final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
-      new StepAttributes.Of(KEYWORD, teardown(), NAME, name, PARAMS, (Map<String, Object>) params),
+      new StepAttributes.Of(KEYWORD, tearDown(), NAME, name, PARAMS, (Map<String, Object>) params),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes and returns step result.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes and returns step result.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
@@ -813,17 +813,17 @@ public final class StebzAAAMethods {
    * @param <R>            the type of the step result
    * @return step result
    */
-  public static <R> R Teardown(final String name,
+  public static <R> R TearDown(final String name,
                                final String expectedResult,
                                final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
-      new StepAttributes.Of(KEYWORD, teardown(), NAME, name, EXPECTED_RESULT, expectedResult),
+      new StepAttributes.Of(KEYWORD, tearDown(), NAME, name, EXPECTED_RESULT, expectedResult),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes and returns step result.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes and returns step result.
    *
    * @param name           the step name
    * @param params         the step params
@@ -833,72 +833,72 @@ public final class StebzAAAMethods {
    * @return step result
    */
   @SuppressWarnings("unchecked")
-  public static <R> R Teardown(final String name,
+  public static <R> R TearDown(final String name,
                                final Map<String, ?> params,
                                final String expectedResult,
                                final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
       new StepAttributes.Of(
-        KEYWORD, teardown(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        KEYWORD, tearDown(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
       body
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes.
    *
    * @param name the step name
    */
-  public static void Teardown(final String name) {
+  public static void TearDown(final String name) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, teardown(), NAME, name),
+      new StepAttributes.Of(KEYWORD, tearDown(), NAME, name),
       RunnableStep.emptyBody()
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes.
    *
    * @param name   the step name
    * @param params the step params
    */
   @SuppressWarnings("unchecked")
-  public static void Teardown(final String name,
+  public static void TearDown(final String name,
                               final Map<String, ?> params) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, teardown(), NAME, name, PARAMS, (Map<String, Object>) params),
+      new StepAttributes.Of(KEYWORD, tearDown(), NAME, name, PARAMS, (Map<String, Object>) params),
       RunnableStep.emptyBody()
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    */
-  public static void Teardown(final String name,
+  public static void TearDown(final String name,
                               final String expectedResult) {
     StepExecutor.get().execute(new RunnableStep.Of(
-      new StepAttributes.Of(KEYWORD, teardown(), NAME, name, EXPECTED_RESULT, expectedResult),
+      new StepAttributes.Of(KEYWORD, tearDown(), NAME, name, EXPECTED_RESULT, expectedResult),
       RunnableStep.emptyBody()
     ));
   }
 
   /**
-   * Executes step with {@link AAAKeywords#teardown()} keyword and given attributes.
+   * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes.
    *
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
    */
   @SuppressWarnings("unchecked")
-  public static void Teardown(final String name,
+  public static void TearDown(final String name,
                               final Map<String, ?> params,
                               final String expectedResult) {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
-        KEYWORD, teardown(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        KEYWORD, tearDown(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
       RunnableStep.emptyBody()
     ));
   }

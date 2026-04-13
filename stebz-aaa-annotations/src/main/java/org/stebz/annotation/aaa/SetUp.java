@@ -39,13 +39,13 @@ import static org.stebz.extension.AAAAnnotationsExtension.AAA_KEYWORD_ATTRIBUTE_
 
 /**
  * Alias for the combination of the {@link WithName} and {@link WithKeyword} annotations. The keyword is
- * {@link AAAKeywords#teardown()}.
+ * {@link AAAKeywords#setUp()}.
  */
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @StepAttributeAnnotation(AAA_KEYWORD_ATTRIBUTE_KEY)
-public @interface Teardown {
+public @interface SetUp {
 
   /**
    * Returns name attribute value. Non empty value overrides {@link WithName#value()} and {@link Step#value()}.
