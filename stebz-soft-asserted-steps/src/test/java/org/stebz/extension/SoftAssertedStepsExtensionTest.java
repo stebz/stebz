@@ -38,6 +38,7 @@ import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.stebz.extension.SoftAssertedStepsExtension.softAssertedSteps;
 import static org.stebz.extension.SoftAssertedStepsExtension.softAssertedStepsResult;
 
@@ -92,9 +93,9 @@ final class SoftAssertedStepsExtensionTest {
     final Throwable exception1 = new Throwable("1");
     final Throwable exception2 = new Throwable("2");
     final Throwable exception3 = new Throwable("3");
-
     final SoftAssertedStepsExtension extension =
       new SoftAssertedStepsExtension(new PropertiesReader.Of(new Properties()));
+
     assertThatCode(() ->
       softAssertedSteps((ThrowingRunnable<?>) () -> {
         assertThat(extension.interceptStepException(step, NullableOptional.empty(), exception1))
@@ -109,106 +110,135 @@ final class SoftAssertedStepsExtensionTest {
   }
 
   @Test
-  void softAssertedStepsMethodShouldCatchceptions() throws Exception {
+  void softAssertedStepsMethodShouldCatchStepExceptions() throws Exception {
     final RunnableStep step = RunnableStep.empty();
     final Throwable exception1 = new Throwable("1");
     final Throwable exception2 = new Throwable("2");
     final Throwable exception3 = new Throwable("3");
     final Throwable exception4 = new Throwable("4");
     final Throwable exception5 = new Throwable("5");
-
     final SoftAssertedStepsExtension extension =
       new SoftAssertedStepsExtension(new PropertiesReader.Of(new Properties()));
-    assertThatCode(() ->
+
+    final Throwable resultException = assertThrows(MultipleFailuresError.class, () ->
       softAssertedSteps((ThrowingRunnable<?>) () -> {
         assertThat(extension.interceptStepException(step, NullableOptional.empty(), exception1))
           .isSameAs(exception1);
         assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception2, false))
           .isFalse();
-        assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception3, false))
+        assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception3, true))
           .isFalse();
         assertThat(extension.hiddenStepException(step, NullableOptional.empty(), exception4, false))
           .isFalse();
-        assertThat(extension.hiddenStepException(step, NullableOptional.empty(), exception5, false))
+        assertThat(extension.hiddenStepException(step, NullableOptional.empty(), exception5, true))
           .isTrue();
       })
-    ).isInstanceOf(MultipleFailuresError.class)
-      .hasSuppressedException(exception2)
-      .hasSuppressedException(exception3);
+    );
+    assertThat(resultException.getSuppressed())
+      .containsOnly(exception2, exception3);
     assertThatTreadLocalsAreCleared();
   }
 
   @Test
-  void softAssertedStepsMethodShouldCatchNestedExceptions() throws Exception {
+  void softAssertedStepsMethodShouldCatchNestedStepExceptions() throws Exception {
     final RunnableStep step = RunnableStep.empty();
     final Throwable exception1 = new Throwable("1");
     final Throwable exception2 = new Throwable("2");
     final Throwable exception3 = new Throwable("3");
     final Throwable exception4 = new Throwable("4");
-
     final SoftAssertedStepsExtension extension =
       new SoftAssertedStepsExtension(new PropertiesReader.Of(new Properties()));
 
-    Throwable mainException = null;
-    try {
+    final Throwable resultException = assertThrows(MultipleFailuresError.class, () ->
       softAssertedSteps((ThrowingRunnable<?>) () -> {
         assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception1, false))
           .isFalse();
-        assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception2, false))
+        assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception2, true))
           .isFalse();
         softAssertedSteps(() -> {
           assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception3, false))
             .isFalse();
-          assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception4, false))
+          assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception4, true))
             .isFalse();
         });
-      });
-    } catch (final Throwable ex) {
-      mainException = ex;
-    }
-    assertThat(mainException).isInstanceOf(MultipleFailuresError.class)
-      .hasSuppressedException(exception1)
-      .hasSuppressedException(exception2);
-    final Throwable[] suppressed = mainException.getSuppressed();
-    assertThat(suppressed)
-      .hasSize(3);
-    assertThat(suppressed[2])
-      .isInstanceOf(MultipleFailuresError.class)
-      .hasSuppressedException(exception3)
-      .hasSuppressedException(exception4);
-    assertThatTreadLocalsAreCleared();
-  }
-
-  @Test
-  void softStepAssertionsMethodShouldCatchNonStepExceptions() throws Exception {
-    final RunnableStep step = RunnableStep.empty();
-    final Throwable exception1 = new Throwable("1");
-    final Throwable exception2 = new Throwable("2");
-
-    final SoftAssertedStepsExtension extension =
-      new SoftAssertedStepsExtension(new PropertiesReader.Of(new Properties()));
-    assertThatCode(() ->
-      softAssertedSteps((ThrowingRunnable<?>) () -> {
-        assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception1, false))
-          .isFalse();
-        throw exception2;
       })
-    ).isInstanceOf(MultipleFailuresError.class)
-      .hasSuppressedException(exception1)
-      .hasSuppressedException(exception2);
+    );
+    final Throwable[] suppressed = resultException.getSuppressed();
+    assertThat(suppressed)
+      .hasSize(3)
+      .contains(exception1, exception2);
+    assertThat(suppressed[2])
+      .isInstanceOf(MultipleFailuresError.class);
+    assertThat(suppressed[2].getSuppressed())
+      .containsOnly(exception3, exception4);
     assertThatTreadLocalsAreCleared();
   }
 
   @Test
-  void softStepAssertionsMethodShouldCatchOnlyNonStepExceptions() throws Exception {
+  void softStepAssertionsMethodShouldNotCatchNonStepExceptions() throws Exception {
     final Throwable exception = new Throwable();
 
     assertThatCode(() ->
       softAssertedSteps((ThrowingRunnable<?>) () -> {
         throw exception;
       })
-    ).isInstanceOf(MultipleFailuresError.class)
-      .hasSuppressedException(exception);
+    ).isSameAs(exception);
+    assertThatTreadLocalsAreCleared();
+  }
+
+  @Test
+  void softStepAssertionsMethodShouldCatchStepExceptionsAndNotCatchNonStepExceptions() throws Exception {
+    final RunnableStep step = RunnableStep.empty();
+    final Throwable exception1 = new Throwable("1");
+    final Throwable exception2 = new Throwable("2");
+
+    final SoftAssertedStepsExtension extension =
+      new SoftAssertedStepsExtension(new PropertiesReader.Of(new Properties()));
+
+    final Throwable resultException = assertThrows(Throwable.class, () ->
+      softAssertedSteps((ThrowingRunnable<?>) () -> {
+        assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception1, false))
+          .isFalse();
+        throw exception2;
+      })
+    );
+    assertThat(resultException)
+      .isSameAs(exception2);
+    assertThat(resultException.getSuppressed())
+      .containsOnly(exception1);
+    assertThatTreadLocalsAreCleared();
+  }
+
+  @Test
+  void softAssertedStepsMethodShouldCatchNestedStepExceptionsAndNotCatchNestedNonStepExceptions() throws Exception {
+    final RunnableStep step = RunnableStep.empty();
+    final Throwable exception1 = new Throwable("1");
+    final Throwable exception2 = new Throwable("2");
+    final Throwable exception3 = new Throwable("3");
+    final Throwable exception4 = new Throwable("4");
+    final Throwable exception5 = new Throwable("5");
+    final SoftAssertedStepsExtension extension =
+      new SoftAssertedStepsExtension(new PropertiesReader.Of(new Properties()));
+
+    final Throwable resultException = assertThrows(Throwable.class, () ->
+      softAssertedSteps((ThrowingRunnable<?>) () -> {
+        assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception1, false))
+          .isFalse();
+        assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception2, true))
+          .isFalse();
+        softAssertedSteps(() -> {
+          assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception3, false))
+            .isFalse();
+          assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception4, true))
+            .isFalse();
+          throw exception5;
+        });
+      })
+    );
+    assertThat(resultException)
+      .isSameAs(exception5);
+    assertThat(resultException.getSuppressed())
+      .containsOnly(exception1, exception2, exception3, exception4);
     assertThatTreadLocalsAreCleared();
   }
 
@@ -236,122 +266,22 @@ final class SoftAssertedStepsExtensionTest {
     assertThatTreadLocalsAreCleared();
   }
 
-  @Test
-  void softAssertedStepsMethodWithResultShouldCatchExceptions() throws Exception {
-    final RunnableStep step = RunnableStep.empty();
-    final Throwable exception1 = new Throwable("1");
-    final Throwable exception2 = new Throwable("2");
-    final Throwable exception3 = new Throwable("3");
-    final Throwable exception4 = new Throwable("4");
-    final Throwable exception5 = new Throwable("5");
-    final Object result = new Object();
-    final SoftAssertedStepsExtension extension =
-      new SoftAssertedStepsExtension(new PropertiesReader.Of(new Properties()));
-
-    assertThatCode(() ->
-      softAssertedStepsResult((ThrowingSupplier<Object, ?>) () -> {
-        assertThat(extension.interceptStepException(step, NullableOptional.empty(), exception1))
-          .isSameAs(exception1);
-        assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception2, false))
-          .isFalse();
-        assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception3, false))
-          .isFalse();
-        assertThat(extension.hiddenStepException(step, NullableOptional.empty(), exception4, false))
-          .isFalse();
-        assertThat(extension.hiddenStepException(step, NullableOptional.empty(), exception5, false))
-          .isTrue();
-        return result;
-      })
-    ).isInstanceOf(MultipleFailuresError.class)
-      .hasSuppressedException(exception2)
-      .hasSuppressedException(exception3);
-    assertThatTreadLocalsAreCleared();
-  }
-
-  @Test
-  void softAssertedStepsMethodWithResultShouldCatchNestedExceptions() throws Exception {
-    final RunnableStep step = RunnableStep.empty();
-    final Throwable exception1 = new Throwable("1");
-    final Throwable exception2 = new Throwable("2");
-    final Throwable exception3 = new Throwable("3");
-    final Throwable exception4 = new Throwable("4");
-    final Object result = new Object();
-    final SoftAssertedStepsExtension extension =
-      new SoftAssertedStepsExtension(new PropertiesReader.Of(new Properties()));
-
-    Throwable mainException = null;
-    try {
-      softAssertedStepsResult((ThrowingSupplier<Object, ?>) () -> {
-        assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception1, false))
-          .isFalse();
-        assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception2, false))
-          .isFalse();
-        return softAssertedStepsResult(() -> {
-          assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception3, false))
-            .isFalse();
-          assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception4, false))
-            .isFalse();
-          return result;
-        });
-      });
-    } catch (final Throwable ex) {
-      mainException = ex;
-    }
-    assertThat(mainException).isInstanceOf(MultipleFailuresError.class)
-      .hasSuppressedException(exception1)
-      .hasSuppressedException(exception2);
-    final Throwable[] suppressed = mainException.getSuppressed();
-    assertThat(suppressed)
-      .hasSize(3);
-    assertThat(suppressed[2])
-      .isInstanceOf(MultipleFailuresError.class)
-      .hasSuppressedException(exception3)
-      .hasSuppressedException(exception4);
-    assertThatTreadLocalsAreCleared();
-  }
-
-  @Test
-  void softStepAssertionsMethodWithResultShouldCatchNonStepExceptions() throws Exception {
-    final RunnableStep step = RunnableStep.empty();
-    final Throwable exception1 = new Throwable("1");
-    final Throwable exception2 = new Throwable("2");
-
-    final SoftAssertedStepsExtension extension =
-      new SoftAssertedStepsExtension(new PropertiesReader.Of(new Properties()));
-    assertThatCode(() ->
-      softAssertedStepsResult((ThrowingSupplier<Object, ?>) () -> {
-        assertThat(extension.thrownStepException(step, NullableOptional.empty(), exception1, false))
-          .isFalse();
-        throw exception2;
-      })
-    ).isInstanceOf(MultipleFailuresError.class)
-      .hasSuppressedException(exception1)
-      .hasSuppressedException(exception2);
-    assertThatTreadLocalsAreCleared();
-  }
-
-  @Test
-  void softStepAssertionsMethodWithResultShouldCatchOnlyNonStepExceptions() throws Exception {
-    final Throwable exception = new Throwable();
-
-    assertThatCode(() ->
-      softAssertedStepsResult((ThrowingSupplier<Object, ?>) () -> {
-        throw exception;
-      })
-    ).isInstanceOf(MultipleFailuresError.class)
-      .hasSuppressedException(exception);
-    assertThatTreadLocalsAreCleared();
-  }
-
   @SuppressWarnings("unchecked")
   private static void assertThatTreadLocalsAreCleared() throws Exception {
-    final Field depthField = SoftAssertedStepsExtension.class.getDeclaredField("THREAD_LOCAL_DEPTH");
+    final Field depthField =
+      SoftAssertedStepsExtension.class.getDeclaredField("THREAD_LOCAL_DEPTH");
     depthField.setAccessible(true);
     assertThat(((ThreadLocal<Integer>) depthField.get(null)).get())
       .isNull();
-    final Field exceptionsField = SoftAssertedStepsExtension.class.getDeclaredField("THREAD_LOCAL_EXCEPTIONS");
+    final Field exceptionsField =
+      SoftAssertedStepsExtension.class.getDeclaredField("THREAD_LOCAL_EXCEPTIONS");
     exceptionsField.setAccessible(true);
     assertThat(((ThreadLocal<Map<Integer, List<Throwable>>>) depthField.get(null)).get())
+      .isNull();
+    final Field lastAssertionErrorField =
+      SoftAssertedStepsExtension.class.getDeclaredField("LAST_ASSERTION_ERROR");
+    lastAssertionErrorField.setAccessible(true);
+    assertThat(((ThreadLocal<MultipleFailuresError>) lastAssertionErrorField.get(null)).get())
       .isNull();
   }
 }

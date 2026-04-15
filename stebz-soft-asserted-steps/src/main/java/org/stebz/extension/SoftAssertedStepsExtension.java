@@ -38,12 +38,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.stebz.util.Throw.unchecked;
+
 /**
  * Soft assertions {@link StebzExtension}.
  */
 public class SoftAssertedStepsExtension implements InterceptStepException {
   private static final ThreadLocal<Integer> THREAD_LOCAL_DEPTH = new ThreadLocal<>();
   private static final ThreadLocal<Map<Integer, List<Throwable>>> THREAD_LOCAL_EXCEPTIONS = new ThreadLocal<>();
+  private static final ThreadLocal<MultipleFailuresError> LAST_ASSERTION_ERROR = new ThreadLocal<>();
   private final boolean enabled;
   private final int order;
 
@@ -68,7 +71,8 @@ public class SoftAssertedStepsExtension implements InterceptStepException {
    * Executes given block of steps with soft assertions.
    *
    * @param steps the block of steps for soft assertions
-   * @throws NullPointerException if {@code steps} arg is null
+   * @throws NullPointerException  if {@code steps} arg is null
+   * @throws MultipleFailuresError if one or more steps throw an any exception
    */
   public static void softAssertedSteps(final ThrowingRunnable<?> steps) {
     if (steps == null) { throw new NullPointerException("steps arg is null"); }
@@ -89,7 +93,8 @@ public class SoftAssertedStepsExtension implements InterceptStepException {
    * @param value the additional value
    * @param steps the block of steps for soft assertions
    * @param <V>   the type of the additional value
-   * @throws NullPointerException if {@code steps} arg is null
+   * @throws NullPointerException  if {@code steps} arg is null
+   * @throws MultipleFailuresError if one or more steps throw an any exception
    */
   public static <V> void softAssertedSteps(final V value,
                                            final ThrowingConsumer<? super V, ?> steps) {
@@ -111,7 +116,8 @@ public class SoftAssertedStepsExtension implements InterceptStepException {
    * @param steps the block of steps for soft assertions
    * @param <R>   the type of the result
    * @return execution result
-   * @throws NullPointerException if {@code steps} arg is null
+   * @throws NullPointerException  if {@code steps} arg is null
+   * @throws MultipleFailuresError if one or more steps throw an any exception
    */
   public static <R> R softAssertedStepsResult(final ThrowingSupplier<? extends R, ?> steps) {
     if (steps == null) { throw new NullPointerException("steps arg is null"); }
@@ -135,7 +141,8 @@ public class SoftAssertedStepsExtension implements InterceptStepException {
    * @param <V>   the type of the additional value
    * @param <R>   the type of the result
    * @return execution result
-   * @throws NullPointerException if {@code steps} arg is null
+   * @throws NullPointerException  if {@code steps} arg is null
+   * @throws MultipleFailuresError if one or more steps throw an any exception
    */
   public static <V, R> R softAssertedStepsResult(final V value,
                                                  final ThrowingFunction<? super V, ? extends R, ?> steps) {
@@ -175,23 +182,28 @@ public class SoftAssertedStepsExtension implements InterceptStepException {
       if (exceptions.isEmpty()) {
         THREAD_LOCAL_EXCEPTIONS.remove();
       }
-      if (currentExceptions != null) {
+      if (currentExceptions != null && !currentExceptions.isEmpty()) {
         if (blockException != null) {
+          if (blockException != LAST_ASSERTION_ERROR.get()) {
+            LAST_ASSERTION_ERROR.remove();
+            currentExceptions.forEach(blockException::addSuppressed);
+            throw unchecked(blockException);
+          }
           currentExceptions.add(blockException);
         }
-        if (!currentExceptions.isEmpty()) {
-          final MultipleFailuresError error = new MultipleFailuresError(null, currentExceptions);
-          currentExceptions.forEach(error::addSuppressed);
-          throw error;
+        final MultipleFailuresError error = new MultipleFailuresError(null, currentExceptions);
+        currentExceptions.forEach(error::addSuppressed);
+        if (currentDepth == 0) {
+          LAST_ASSERTION_ERROR.remove();
+        } else {
+          LAST_ASSERTION_ERROR.set(error);
         }
+        throw error;
       }
     }
     if (blockException != null) {
-      final List<Throwable> currentExceptions = new ArrayList<>(1);
-      currentExceptions.add(blockException);
-      final MultipleFailuresError error = new MultipleFailuresError(null, currentExceptions);
-      error.addSuppressed(blockException);
-      throw error;
+      LAST_ASSERTION_ERROR.remove();
+      throw unchecked(blockException);
     }
   }
 
