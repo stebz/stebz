@@ -40,7 +40,7 @@
   <description>Module "stebz-gherkin-keywords" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.gherkin.keywords</automatic.module.name>
+    <automatic.module.name>org.stebz.gherkin.keyword</automatic.module.name>
   </properties>
 
   <dependencies>

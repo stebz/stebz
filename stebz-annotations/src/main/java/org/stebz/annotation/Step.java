@@ -23,6 +23,8 @@
  */
 package org.stebz.annotation;
 
+import org.stebz.core.attribute.StepAttribute;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -34,8 +36,8 @@ import java.lang.annotation.Target;
  *
  * @see WithName
  * @see WithParams
- * @see org.stebz.attribute.StepAttribute#NAME
- * @see org.stebz.attribute.StepAttribute#PARAMS
+ * @see StepAttribute#NAME
+ * @see StepAttribute#PARAMS
  */
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})

@@ -40,7 +40,7 @@
   <description>Module "stebz-soft-asserted-steps" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.soft.asserted.steps</automatic.module.name>
+    <automatic.module.name>org.stebz.softassertedsteps</automatic.module.name>
   </properties>
 
   <dependencies>

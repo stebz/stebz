@@ -40,7 +40,7 @@
   <description>Module "stebz-aaa-methods" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.aaa.methods</automatic.module.name>
+    <automatic.module.name>org.stebz.aaa.method</automatic.module.name>
   </properties>
 
   <dependencies>

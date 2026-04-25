@@ -23,6 +23,8 @@
  */
 package org.stebz.annotation;
 
+import org.stebz.annotation.aspect.StepAspects;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -31,7 +33,7 @@ import java.lang.annotation.Target;
 
 /**
  * Parameter annotation. Allows to change the step parameters specified through the {@link WithParams} annotation via
- * {@link org.stebz.aspect.StepAspects}.
+ * {@link StepAspects}.
  */
 @Documented
 @Target({ElementType.PARAMETER})

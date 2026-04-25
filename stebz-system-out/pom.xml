@@ -40,7 +40,7 @@
   <description>Module "stebz-system-out" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.system.out</automatic.module.name>
+    <automatic.module.name>org.stebz.systemout</automatic.module.name>
   </properties>
 
   <dependencies>

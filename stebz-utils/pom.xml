@@ -40,7 +40,7 @@
   <description>Module "stebz-utils" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.utils</automatic.module.name>
+    <automatic.module.name>org.stebz.util</automatic.module.name>
   </properties>
 
   <dependencies>

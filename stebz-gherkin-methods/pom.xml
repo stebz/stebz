@@ -40,7 +40,7 @@
   <description>Module "stebz-gherkin-methods" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.gherkin.methods</automatic.module.name>
+    <automatic.module.name>org.stebz.gherkin.method</automatic.module.name>
   </properties>
 
   <dependencies>

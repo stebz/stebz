@@ -23,6 +23,9 @@
  */
 package org.stebz.annotation;
 
+import org.stebz.annotation.aspect.StepAspects;
+import org.stebz.core.attribute.StepAttribute;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -31,8 +34,8 @@ import java.lang.annotation.Target;
 
 /**
  * Step attribute annotation. Annotations marked with {@link StepAttributeAnnotation} annotation except default
- * annotations are converted into step attributes via {@link org.stebz.aspect.StepAspects} in accordance with
- * {@link org.stebz.attribute.StepAttribute#nullable(String)} method.
+ * annotations are converted into step attributes via {@link StepAspects} in accordance with
+ * {@link StepAttribute#nullable(String)} method.
  * <p>Default annotations list:
  * <ul>
  *   <li>{@link Step}</li>

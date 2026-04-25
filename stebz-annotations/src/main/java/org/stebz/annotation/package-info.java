@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * Annotations.
+ * Stebz annotations.
  */
 package org.stebz.annotation;

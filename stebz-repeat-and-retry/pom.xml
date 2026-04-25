@@ -40,7 +40,7 @@
   <description>Module "stebz-repeat-and-retry" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.repeat.and.retry</automatic.module.name>
+    <automatic.module.name>org.stebz.repeatandretry</automatic.module.name>
   </properties>
 
   <dependencies>
