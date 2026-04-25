@@ -23,6 +23,9 @@
  */
 package org.stebz.annotation;
 
+import org.stebz.annotation.aspect.StepAspects;
+import org.stebz.core.attribute.StepAttribute;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
@@ -31,11 +34,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Step attribute annotation. Adds single parameter to a step. Maps to {@link org.stebz.attribute.StepAttribute#PARAMS}
- * attribute via {@link org.stebz.aspect.StepAspects}.
+ * Step attribute annotation. Adds single parameter to a step. Maps to {@link StepAttribute#PARAMS} attribute via
+ * {@link StepAspects}.
  *
  * @see WithParam.List
- * @see org.stebz.attribute.StepAttribute#PARAMS
+ * @see StepAttribute#PARAMS
  */
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
@@ -63,11 +66,10 @@ public @interface WithParam {
   String value();
 
   /**
-   * Step attribute annotation. Adds several parameters to a step. Mapped to
-   * {@link org.stebz.attribute.StepAttribute#PARAMS} attribute.
+   * Step attribute annotation. Adds several parameters to a step. Mapped to {@link StepAttribute#PARAMS} attribute.
    *
    * @see WithParam
-   * @see org.stebz.attribute.StepAttribute#PARAMS
+   * @see StepAttribute#PARAMS
    */
   @Documented
   @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})

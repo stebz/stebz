@@ -40,7 +40,7 @@
   <description>Module "stebz-annotations" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.annotations</automatic.module.name>
+    <automatic.module.name>org.stebz.annotation</automatic.module.name>
   </properties>
 
   <dependencies>

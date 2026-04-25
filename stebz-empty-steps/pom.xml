@@ -40,7 +40,7 @@
   <description>Module "stebz-empty-steps" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.empty.steps</automatic.module.name>
+    <automatic.module.name>org.stebz.emptysteps</automatic.module.name>
   </properties>
 
   <dependencies>

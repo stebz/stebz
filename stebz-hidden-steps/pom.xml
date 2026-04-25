@@ -40,7 +40,7 @@
   <description>Module "stebz-hidden-steps" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.hidden.steps</automatic.module.name>
+    <automatic.module.name>org.stebz.hiddensteps</automatic.module.name>
   </properties>
 
   <dependencies>

@@ -1,6 +1,6 @@
 <aspectj>
   <weaver options="-warn:none -Xlint:ignore"/>
   <aspects>
-    <aspect name="org.stebz.aspect.StepAspects"/>
+    <aspect name="org.stebz.annotation.aspect.StepAspects"/>
   </aspects>
 </aspectj>

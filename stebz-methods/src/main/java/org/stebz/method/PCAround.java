@@ -1,0 +1,1022 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2025-2026 Evgenii Plugatar
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package org.stebz.method;
+
+import dev.jlet.function.ThrowingConsumer;
+import dev.jlet.function.ThrowingFunction;
+import org.stebz.core.attribute.Keyword;
+import org.stebz.core.attribute.StepAttributes;
+import org.stebz.core.executor.StepExecutor;
+import org.stebz.core.step.executable.ConsumerStep;
+import org.stebz.core.step.executable.FunctionStep;
+import org.stebz.core.step.executable.RunnableStep;
+import org.stebz.core.step.executable.SupplierStep;
+
+import java.util.Map;
+
+import static org.stebz.core.attribute.StepAttribute.EXPECTED_RESULT;
+import static org.stebz.core.attribute.StepAttribute.KEYWORD;
+import static org.stebz.core.attribute.StepAttribute.NAME;
+import static org.stebz.core.attribute.StepAttribute.PARAMS;
+
+/**
+ * Allows to call steps around a specific context with methods in Pascal Case style.
+ *
+ * @param <T> the type of the context
+ */
+public interface PCAround<T> {
+
+  /**
+   * Executes given step.
+   *
+   * @param step the step
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(RunnableStep step);
+
+  /**
+   * Executes given step with keyword.
+   *
+   * @param keyword the keyword
+   * @param step    the step
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(Keyword keyword,
+                   RunnableStep step);
+
+  /**
+   * Executes given step with name.
+   *
+   * @param name the name
+   * @param step the step
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(String name,
+                   RunnableStep step);
+
+  /**
+   * Executes given step with name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(ThrowingFunction<? super String, String, ?> nameGenerator,
+                   RunnableStep step);
+
+  /**
+   * Executes given step with keyword and name.
+   *
+   * @param name    the name
+   * @param keyword the keyword
+   * @param step    the step
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(Keyword keyword,
+                   String name,
+                   RunnableStep step);
+
+  /**
+   * Executes given step and returns step result.
+   *
+   * @param step the step
+   * @param <R>  the type of the result
+   * @return step result
+   */
+  <R> R Step(SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step with keyword and returns step result.
+   *
+   * @param keyword the keyword
+   * @param step    the step
+   * @param <R>     the type of the result
+   * @return step result
+   */
+  <R> R Step(Keyword keyword,
+             SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step with name and returns step result.
+   *
+   * @param name the name
+   * @param step the step
+   * @param <R>  the type of the result
+   * @return step result
+   */
+  <R> R Step(String name,
+             SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step with name created by {@code nameGenerator} and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Step(ThrowingFunction<? super String, String, ?> nameGenerator,
+             SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step with keyword and name and returns step result.
+   *
+   * @param keyword the keyword
+   * @param name    the name
+   * @param step    the step
+   * @param <R>     the type of the result
+   * @return step result
+   */
+  <R> R Step(Keyword keyword,
+             String name,
+             SupplierStep<? extends R> step);
+
+  /**
+   * Executes given step on the context value.
+   *
+   * @param step the step
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(ConsumerStep<? super T> step);
+
+  /**
+   * Executes given step with keyword on the context value.
+   *
+   * @param keyword the keyword
+   * @param step    the step
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(Keyword keyword,
+                   ConsumerStep<? super T> step);
+
+  /**
+   * Executes given step with name on the context value.
+   *
+   * @param name the name
+   * @param step the step
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(String name,
+                   ConsumerStep<? super T> step);
+
+  /**
+   * Executes given step with name created by {@code nameGenerator} on the context value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(ThrowingFunction<? super String, String, ?> nameGenerator,
+                   ConsumerStep<? super T> step);
+
+  /**
+   * Executes given step with keyword and name on the context value.
+   *
+   * @param keyword the keyword
+   * @param name    the name
+   * @param step    the step
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(Keyword keyword,
+                   String name,
+                   ConsumerStep<? super T> step);
+
+  /**
+   * Executes given step on the context value and returns step result.
+   *
+   * @param step the step
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  <R> R Step(FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with keyword on the context value and returns step result.
+   *
+   * @param keyword the keyword
+   * @param step    the step
+   * @param <R>     the type of the result
+   * @return step result
+   */
+  <R> R Step(Keyword keyword,
+             FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with name on the context value and returns step result.
+   *
+   * @param name the name
+   * @param step the step
+   * @param <R>  the type of the result
+   * @return step result
+   */
+  <R> R Step(String name,
+             FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with name created by {@code nameGenerator} on the context value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param <R>           the type of the result
+   * @return step result
+   */
+  <R> R Step(ThrowingFunction<? super String, String, ?> nameGenerator,
+             FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes given step with keyword and name on the context value and returns step result.
+   *
+   * @param keyword the keyword
+   * @param name    the name
+   * @param step    the step
+   * @param <R>     the type of the result
+   * @return step result
+   */
+  <R> R Step(Keyword keyword,
+             String name,
+             FunctionStep<? super T, ? extends R> step);
+
+  /**
+   * Executes step with given attributes on the context value.
+   *
+   * @param name the step name
+   * @param body the step body
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(String name,
+                   ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with given attributes on the context value.
+   *
+   * @param keyword the step keyword
+   * @param name    the step name
+   * @param body    the step body
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(Keyword keyword,
+                   String name,
+                   ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with given attributes on the context value.
+   *
+   * @param name   the step name
+   * @param params the step params
+   * @param body   the step body
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(String name,
+                   Map<String, ?> params,
+                   ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with given attributes on the context value.
+   *
+   * @param keyword the step keyword
+   * @param name    the step name
+   * @param params  the step params
+   * @param body    the step body
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(Keyword keyword,
+                   String name,
+                   Map<String, ?> params,
+                   ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with given attributes on the context value.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(String name,
+                   String expectedResult,
+                   ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with given attributes on the context value.
+   *
+   * @param keyword        the step keyword
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(Keyword keyword,
+                   String name,
+                   String expectedResult,
+                   ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with given attributes on the context value.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(String name,
+                   Map<String, ?> params,
+                   String expectedResult,
+                   ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with given attributes on the context value.
+   *
+   * @param keyword        the step keyword
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(Keyword keyword,
+                   String name,
+                   Map<String, ?> params,
+                   String expectedResult,
+                   ThrowingConsumer<? super T, ?> body);
+
+  /**
+   * Executes step with given attributes on the context value and returns step result.
+   *
+   * @param name the step name
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  <R> R Step(String name,
+             ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
+   * Executes step with given attributes on the context value and returns step result.
+   *
+   * @param keyword the step keyword
+   * @param name    the step name
+   * @param body    the step body
+   * @param <R>     the type of the step result
+   * @return step result
+   */
+  <R> R Step(Keyword keyword,
+             String name,
+             ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
+   * Executes step with given attributes on the context value and returns step result.
+   *
+   * @param name   the step name
+   * @param params the step params
+   * @param body   the step body
+   * @param <R>    the type of the step result
+   * @return step result
+   */
+  <R> R Step(String name,
+             Map<String, ?> params,
+             ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
+   * Executes step with given attributes on the context value and returns step result.
+   *
+   * @param keyword the step keyword
+   * @param name    the step name
+   * @param params  the step params
+   * @param body    the step body
+   * @param <R>     the type of the step result
+   * @return step result
+   */
+  <R> R Step(Keyword keyword,
+             String name,
+             Map<String, ?> params,
+             ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
+   * Executes step with given attributes on the context value and returns step result.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
+   */
+  <R> R Step(String name,
+             String expectedResult,
+             ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
+   * Executes step with given attributes on the context value and returns step result.
+   *
+   * @param keyword        the step keyword
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
+   */
+  <R> R Step(Keyword keyword,
+             String name,
+             String expectedResult,
+             ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
+   * Executes step with given attributes on the context value and returns step result.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
+   */
+  <R> R Step(String name,
+             Map<String, ?> params,
+             String expectedResult,
+             ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
+   * Executes step with given attributes on the context value and returns step result.
+   *
+   * @param keyword        the step keyword
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
+   */
+  <R> R Step(Keyword keyword,
+             String name,
+             Map<String, ?> params,
+             String expectedResult,
+             ThrowingFunction<? super T, ? extends R, ?> body);
+
+  /**
+   * Executes step with given attributes.
+   *
+   * @param name the step name
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(String name);
+
+  /**
+   * Executes step with given attributes.
+   *
+   * @param keyword the step keyword
+   * @param name    the step name
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(Keyword keyword,
+                   String name);
+
+  /**
+   * Executes step with given attributes.
+   *
+   * @param name   the step name
+   * @param params the step params
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(String name,
+                   Map<String, ?> params);
+
+  /**
+   * Executes step with given attributes.
+   *
+   * @param keyword the step keyword
+   * @param name    the step name
+   * @param params  the step params
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(Keyword keyword,
+                   String name,
+                   Map<String, ?> params);
+
+  /**
+   * Executes step with given attributes.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(String name,
+                   String expectedResult);
+
+  /**
+   * Executes step with given attributes.
+   *
+   * @param keyword        the step keyword
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(Keyword keyword,
+                   String name,
+                   String expectedResult);
+
+  /**
+   * Executes step with given attributes.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(String name,
+                   Map<String, ?> params,
+                   String expectedResult);
+
+  /**
+   * Executes step with given attributes.
+   *
+   * @param keyword        the step keyword
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @return {@code Around} object
+   */
+  PCAround<T> Step(Keyword keyword,
+                   String name,
+                   Map<String, ?> params,
+                   String expectedResult);
+
+  /**
+   * Default {@code Around} implementation.
+   *
+   * @param <T> the type of the context
+   */
+  class Of<T> implements PCAround<T> {
+    private final StepExecutor executor;
+    private final T context;
+
+    /**
+     * Ctor.
+     *
+     * @param executor the executor
+     * @param context  the context
+     * @throws NullPointerException if {@code executor} arg is null
+     */
+    public Of(final StepExecutor executor,
+              final T context) {
+      if (executor == null) { throw new NullPointerException("executor arg is null"); }
+      this.executor = executor;
+      this.context = context;
+    }
+
+    @Override
+    public PCAround<T> Step(final RunnableStep step) {
+      this.executor.execute(step);
+      return this;
+    }
+
+    @Override
+    public PCAround<T> Step(final Keyword keyword,
+                            final RunnableStep step) {
+      this.executor.execute(step.with(KEYWORD, keyword));
+      return this;
+    }
+
+    @Override
+    public PCAround<T> Step(final String name,
+                            final RunnableStep step) {
+      this.executor.execute(step.with(NAME, name));
+      return this;
+    }
+
+    @Override
+    public PCAround<T> Step(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                            final RunnableStep step) {
+      this.executor.execute(step.with(NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))));
+      return this;
+    }
+
+    @Override
+    public PCAround<T> Step(final Keyword keyword,
+                            final String name,
+                            final RunnableStep step) {
+      this.executor.execute(step.with(KEYWORD, keyword, NAME, name));
+      return this;
+    }
+
+    @Override
+    public <R> R Step(final SupplierStep<? extends R> step) {
+      return this.executor.execute(step);
+    }
+
+    @Override
+    public <R> R Step(final Keyword keyword,
+                      final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(KEYWORD, keyword));
+    }
+
+    @Override
+    public <R> R Step(final String name,
+                      final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(NAME, name));
+    }
+
+    @Override
+    public <R> R Step(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                      final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))));
+    }
+
+    @Override
+    public <R> R Step(final Keyword keyword,
+                      final String name,
+                      final SupplierStep<? extends R> step) {
+      return this.executor.execute(step.with(KEYWORD, keyword, NAME, name));
+    }
+
+    @Override
+    public PCAround<T> Step(final ConsumerStep<? super T> step) {
+      this.executor.execute(
+        step,
+        this.context
+      );
+      return this;
+    }
+
+    @Override
+    public PCAround<T> Step(final Keyword keyword,
+                            final ConsumerStep<? super T> step) {
+      this.executor.execute(
+        step.with(KEYWORD, keyword),
+        this.context
+      );
+      return this;
+    }
+
+    @Override
+    public PCAround<T> Step(final String name,
+                            final ConsumerStep<? super T> step) {
+      this.executor.execute(
+        step.with(NAME, name),
+        this.context
+      );
+      return this;
+    }
+
+    @Override
+    public PCAround<T> Step(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                            final ConsumerStep<? super T> step) {
+      this.executor.execute(
+        step.with(NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))),
+        this.context
+      );
+      return this;
+    }
+
+    @Override
+    public PCAround<T> Step(final Keyword keyword,
+                            final String name,
+                            final ConsumerStep<? super T> step) {
+      this.executor.execute(
+        step.with(KEYWORD, keyword, NAME, name),
+        this.context
+      );
+      return this;
+    }
+
+    @Override
+    public <R> R Step(final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(
+        step,
+        this.context
+      );
+    }
+
+    @Override
+    public <R> R Step(final Keyword keyword,
+                      final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(
+        step.with(KEYWORD, keyword),
+        this.context
+      );
+    }
+
+    @Override
+    public <R> R Step(final String name,
+                      final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(
+        step.with(NAME, name),
+        this.context
+      );
+    }
+
+    @Override
+    public <R> R Step(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                      final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(
+        step.with(NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))),
+        this.context
+      );
+    }
+
+    @Override
+    public <R> R Step(final Keyword keyword,
+                      final String name,
+                      final FunctionStep<? super T, ? extends R> step) {
+      return this.executor.execute(
+        step.with(KEYWORD, keyword, NAME, name),
+        this.context
+      );
+    }
+
+    @Override
+    public PCAround<T> Step(final String name,
+                            final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(NAME, name),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    public PCAround<T> Step(final Keyword keyword,
+                            final String name,
+                            final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, keyword, NAME, name),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public PCAround<T> Step(final String name,
+                            final Map<String, ?> params,
+                            final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(NAME, name, PARAMS, (Map<String, Object>) params),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public PCAround<T> Step(final Keyword keyword,
+                            final String name,
+                            final Map<String, ?> params,
+                            final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, keyword, NAME, name, PARAMS, (Map<String, Object>) params),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    public PCAround<T> Step(final String name,
+                            final String expectedResult,
+                            final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(NAME, name, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    public PCAround<T> Step(final Keyword keyword,
+                            final String name,
+                            final String expectedResult,
+                            final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, keyword, NAME, name, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public PCAround<T> Step(final String name,
+                            final Map<String, ?> params,
+                            final String expectedResult,
+                            final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public PCAround<T> Step(final Keyword keyword,
+                            final String name,
+                            final Map<String, ?> params,
+                            final String expectedResult,
+                            final ThrowingConsumer<? super T, ?> body) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(
+          KEYWORD, keyword, NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    public <R> R Step(final String name,
+                      final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(NAME, name),
+        body
+      ), this.context);
+    }
+
+    @Override
+    public <R> R Step(final Keyword keyword,
+                      final String name,
+                      final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(KEYWORD, keyword, NAME, name),
+        body
+      ), this.context);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <R> R Step(final String name,
+                      final Map<String, ?> params,
+                      final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(NAME, name, PARAMS, (Map<String, Object>) params),
+        body
+      ), this.context);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <R> R Step(final Keyword keyword,
+                      final String name,
+                      final Map<String, ?> params,
+                      final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(KEYWORD, keyword, NAME, name, PARAMS, (Map<String, Object>) params),
+        body
+      ), this.context);
+    }
+
+    @Override
+    public <R> R Step(final String name,
+                      final String expectedResult,
+                      final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(NAME, name, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+    }
+
+    @Override
+    public <R> R Step(final Keyword keyword,
+                      final String name,
+                      final String expectedResult,
+                      final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(KEYWORD, keyword, NAME, name, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <R> R Step(final String name,
+                      final Map<String, ?> params,
+                      final String expectedResult,
+                      final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <R> R Step(final Keyword keyword,
+                      final String name,
+                      final Map<String, ?> params,
+                      final String expectedResult,
+                      final ThrowingFunction<? super T, ? extends R, ?> body) {
+      return this.executor.execute(new FunctionStep.Of<>(
+        new StepAttributes.Of(
+          KEYWORD, keyword, NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        body
+      ), this.context);
+    }
+
+    @Override
+    public PCAround<T> Step(final String name) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(NAME, name),
+        ConsumerStep.emptyBody()
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    public PCAround<T> Step(final Keyword keyword,
+                            final String name) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, keyword, NAME, name),
+        ConsumerStep.emptyBody()
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public PCAround<T> Step(final String name,
+                            final Map<String, ?> params) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(NAME, name, PARAMS, (Map<String, Object>) params),
+        ConsumerStep.emptyBody()
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public PCAround<T> Step(final Keyword keyword,
+                            final String name,
+                            final Map<String, ?> params) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, keyword, NAME, name, PARAMS, (Map<String, Object>) params),
+        ConsumerStep.emptyBody()
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    public PCAround<T> Step(final String name,
+                            final String expectedResult) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(NAME, name, EXPECTED_RESULT, expectedResult),
+        ConsumerStep.emptyBody()
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    public PCAround<T> Step(final Keyword keyword,
+                            final String name,
+                            final String expectedResult) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(KEYWORD, keyword, NAME, name, EXPECTED_RESULT, expectedResult),
+        ConsumerStep.emptyBody()
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public PCAround<T> Step(final String name,
+                            final Map<String, ?> params,
+                            final String expectedResult) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        ConsumerStep.emptyBody()
+      ), this.context);
+      return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public PCAround<T> Step(final Keyword keyword,
+                            final String name,
+                            final Map<String, ?> params,
+                            final String expectedResult) {
+      this.executor.execute(new ConsumerStep.Of<>(
+        new StepAttributes.Of(
+          KEYWORD, keyword, NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+        ConsumerStep.emptyBody()
+      ), this.context);
+      return this;
+    }
+  }
+}

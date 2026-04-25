@@ -23,6 +23,9 @@
  */
 package org.stebz.annotation;
 
+import org.stebz.annotation.aspect.StepAspects;
+import org.stebz.core.attribute.StepAttribute;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -31,10 +34,10 @@ import java.lang.annotation.Target;
 
 /**
  * Step attribute annotation. Adds all parameters of a method or constructor to a step. Maps to
- * {@link org.stebz.attribute.StepAttribute#PARAMS} attribute via {@link org.stebz.aspect.StepAspects}.
+ * {@link StepAttribute#PARAMS} attribute via {@link StepAspects}.
  *
  * @see Param
- * @see org.stebz.attribute.StepAttribute#PARAMS
+ * @see StepAttribute#PARAMS
  */
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR})

@@ -23,6 +23,9 @@
  */
 package org.stebz.annotation;
 
+import org.stebz.annotation.aspect.StepAspects;
+import org.stebz.core.attribute.StepAttribute;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -30,10 +33,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Step attribute annotation. Maps to {@link org.stebz.attribute.StepAttribute#COMMENT} attribute via
- * {@link org.stebz.aspect.StepAspects}.
+ * Step attribute annotation. Maps to {@link StepAttribute#COMMENT} attribute via {@link StepAspects}.
  *
- * @see org.stebz.attribute.StepAttribute#COMMENT
+ * @see StepAttribute#COMMENT
  */
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})

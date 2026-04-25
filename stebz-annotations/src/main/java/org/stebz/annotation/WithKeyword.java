@@ -23,7 +23,9 @@
  */
 package org.stebz.annotation;
 
-import org.stebz.attribute.Keyword;
+import org.stebz.annotation.aspect.StepAspects;
+import org.stebz.core.attribute.Keyword;
+import org.stebz.core.attribute.StepAttribute;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -34,10 +36,9 @@ import java.lang.annotation.Target;
 import static org.stebz.annotation.WithKeyword.KEY;
 
 /**
- * Step attribute annotation. Maps to {@link org.stebz.attribute.StepAttribute#KEYWORD} attribute via
- * {@link org.stebz.aspect.StepAspects}.
+ * Step attribute annotation. Maps to {@link StepAttribute#KEYWORD} attribute via {@link StepAspects}.
  *
- * @see org.stebz.attribute.StepAttribute#KEYWORD
+ * @see StepAttribute#KEYWORD
  */
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})

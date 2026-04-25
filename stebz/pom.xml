@@ -40,7 +40,7 @@
   <description>Module "stebz" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.stebz</automatic.module.name>
+    <automatic.module.name>org.stebz</automatic.module.name>
   </properties>
 
   <dependencies>

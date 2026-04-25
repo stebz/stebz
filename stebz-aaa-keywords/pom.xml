@@ -40,7 +40,7 @@
   <description>Module "stebz-aaa-keywords" of Stebz</description>
 
   <properties>
-    <automatic.module.name>org.stebz.aaa.keywords</automatic.module.name>
+    <automatic.module.name>org.stebz.aaa.keyword</automatic.module.name>
   </properties>
 
   <dependencies>
