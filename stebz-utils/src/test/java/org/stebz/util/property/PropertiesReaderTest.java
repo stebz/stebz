@@ -66,6 +66,17 @@ final class PropertiesReaderTest {
       .isSameAs(value);
   }
 
+  @Test
+  void getStringMethodShouldIgnoreCase() {
+    final String value = "value";
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf(
+      "NaMe", value
+    ));
+
+    assertThat(reader.getString("nAmE"))
+      .isSameAs(value);
+  }
+
   private static Properties propertiesOf(final String... nameAndValueList) {
     final Properties properties = new Properties();
     for (int idx = 0; idx < nameAndValueList.length; idx = idx + 2) {
