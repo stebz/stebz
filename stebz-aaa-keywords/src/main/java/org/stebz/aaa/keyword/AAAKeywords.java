@@ -55,11 +55,11 @@ public final class AAAKeywords implements StebzExtension {
    */
   private AAAKeywords(final PropertiesReader properties) {
     setKeywordsOnce(new Keywords(
-      new Keyword.Of(properties.getString("stebz.extensions.aaa.keywords.setUp", SET_UP_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.extensions.aaa.keywords.tearDown", TEAR_DOWN_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.extensions.aaa.keywords.arrange", ARRANGE_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.extensions.aaa.keywords.act", ACT_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.extensions.aaa.keywords.assert", ASSERT_KEYWORD_DEFAULT_VALUE))
+      new Keyword.Of(properties.getString("stebz.aaa.keyword.setUp", SET_UP_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.aaa.keyword.tearDown", TEAR_DOWN_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.aaa.keyword.arrange", ARRANGE_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.aaa.keyword.act", ACT_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.aaa.keyword.assert", ASSERT_KEYWORD_DEFAULT_VALUE))
     ));
   }
 

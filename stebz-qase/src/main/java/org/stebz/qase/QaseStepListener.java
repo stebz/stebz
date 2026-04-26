@@ -74,17 +74,17 @@ public class QaseStepListener implements StepListener {
    * @param properties the properties reader
    */
   public QaseStepListener(final PropertiesReader properties) {
-    this.enabled = properties.getBoolean("stebz.listeners.qase.enabled", true);
-    this.order = properties.getInteger("stebz.listeners.qase.order", MIDDLE_ORDER);
-    this.onlyKeywordSteps = properties.getBoolean("stebz.listeners.qase.onlyKeywordSteps", false);
+    this.enabled = properties.getBoolean("stebz.qase.enabled", true);
+    this.order = properties.getInteger("stebz.qase.order", MIDDLE_ORDER);
+    this.onlyKeywordSteps = properties.getBoolean("stebz.qase.onlyKeywordSteps", false);
     this.keywordPosition =
-      properties.getEnum("stebz.listeners.qase.keywordPosition", KeywordPosition.class, KeywordPosition.AT_START);
-    this.keywordToUppercase = properties.getBoolean("stebz.listeners.qase.keywordToUppercase", false);
-    this.processName = properties.getBoolean("stebz.listeners.qase.processName", true);
-    this.contextParam = properties.getBoolean("stebz.listeners.qase.contextParam", true);
-    this.contextParamName = properties.getString("stebz.listeners.qase.contextParamName", "Context");
-    this.commentAttachment = properties.getBoolean("stebz.listeners.qase.commentAttachment", true);
-    this.commentAttachmentName = properties.getString("stebz.listeners.qase.commentAttachmentName", "Comment");
+      properties.getEnum("stebz.qase.keywordPosition", KeywordPosition.class, KeywordPosition.AT_START);
+    this.keywordToUppercase = properties.getBoolean("stebz.qase.keywordToUppercase", false);
+    this.processName = properties.getBoolean("stebz.qase.processName", true);
+    this.contextParam = properties.getBoolean("stebz.qase.contextParam", true);
+    this.contextParamName = properties.getString("stebz.qase.contextParamName", "Context");
+    this.commentAttachment = properties.getBoolean("stebz.qase.commentAttachment", true);
+    this.commentAttachmentName = properties.getString("stebz.qase.commentAttachmentName", "Comment");
     this.isStebzAnnotationsUsed = isStebzAnnotationsUsed();
   }
 

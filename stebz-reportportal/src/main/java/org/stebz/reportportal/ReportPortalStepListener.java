@@ -78,22 +78,22 @@ public class ReportPortalStepListener implements StepListener {
    * @param properties the properties reader
    */
   public ReportPortalStepListener(final PropertiesReader properties) {
-    this.enabled = properties.getBoolean("stebz.listeners.reportportal.enabled", true);
-    this.order = properties.getInteger("stebz.listeners.reportportal.order", MIDDLE_ORDER);
-    this.onlyKeywordSteps = properties.getBoolean("stebz.listeners.reportportal.onlyKeywordSteps", false);
-    this.keywordPosition = properties.getEnum("stebz.listeners.reportportal.keywordPosition",
+    this.enabled = properties.getBoolean("stebz.reportportal.enabled", true);
+    this.order = properties.getInteger("stebz.reportportal.order", MIDDLE_ORDER);
+    this.onlyKeywordSteps = properties.getBoolean("stebz.reportportal.onlyKeywordSteps", false);
+    this.keywordPosition = properties.getEnum("stebz.reportportal.keywordPosition",
       KeywordPosition.class, KeywordPosition.AT_START);
-    this.keywordToUppercase = properties.getBoolean("stebz.listeners.reportportal.keywordToUppercase", false);
-    this.processName = properties.getBoolean("stebz.listeners.reportportal.processName", true);
-    this.contextParam = properties.getBoolean("stebz.listeners.reportportal.contextParam", true);
-    this.contextParamName = properties.getString("stebz.listeners.reportportal.contextParamName", "Context");
-    this.contextDesc = properties.getBoolean("stebz.listeners.reportportal.contextDesc", false);
-    this.contextDescName = properties.getString("stebz.listeners.reportportal.contextDescName", "Context");
-    this.expectedResultDesc = properties.getBoolean("stebz.listeners.reportportal.expectedResultDesc", true);
+    this.keywordToUppercase = properties.getBoolean("stebz.reportportal.keywordToUppercase", false);
+    this.processName = properties.getBoolean("stebz.reportportal.processName", true);
+    this.contextParam = properties.getBoolean("stebz.reportportal.contextParam", true);
+    this.contextParamName = properties.getString("stebz.reportportal.contextParamName", "Context");
+    this.contextDesc = properties.getBoolean("stebz.reportportal.contextDesc", false);
+    this.contextDescName = properties.getString("stebz.reportportal.contextDescName", "Context");
+    this.expectedResultDesc = properties.getBoolean("stebz.reportportal.expectedResultDesc", true);
     this.expectedResultDescName =
-      properties.getString("stebz.listeners.reportportal.expectedResultDescName", "Expected result");
-    this.commentDesc = properties.getBoolean("stebz.listeners.reportportal.commentDesc", true);
-    this.commentDescName = properties.getString("stebz.listeners.reportportal.commentDescName", "Comment");
+      properties.getString("stebz.reportportal.expectedResultDescName", "Expected result");
+    this.commentDesc = properties.getBoolean("stebz.reportportal.commentDesc", true);
+    this.commentDescName = properties.getString("stebz.reportportal.commentDescName", "Comment");
     this.isStebzAnnotationsUsed = isStebzAnnotationsUsed();
   }
 

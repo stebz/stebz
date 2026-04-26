@@ -61,11 +61,11 @@ public class CleanStackTraceExtension implements BeforeStepFailure {
    * @param properties the properties reader
    */
   public CleanStackTraceExtension(final PropertiesReader properties) {
-    this.enabled = properties.getBoolean("stebz.extensions.cleanStackTrace.enabled", true);
-    this.order = properties.getInteger("stebz.extensions.cleanStackTrace.order", MIDDLE_ORDER);
-    this.clearRelated = properties.getBoolean("stebz.extensions.cleanStackTrace.clearRelated", true);
-    final boolean clearStebzLines = properties.getBoolean("stebz.extensions.cleanStackTrace.clearStebzLines", true);
-    Boolean clearAspectjLines = properties.getBoolean("stebz.extensions.cleanStackTrace.clearAspectjLines", null);
+    this.enabled = properties.getBoolean("stebz.cleanStackTrace.enabled", true);
+    this.order = properties.getInteger("stebz.cleanStackTrace.order", MIDDLE_ORDER);
+    this.clearRelated = properties.getBoolean("stebz.cleanStackTrace.clearRelated", true);
+    final boolean clearStebzLines = properties.getBoolean("stebz.cleanStackTrace.clearStebzLines", true);
+    Boolean clearAspectjLines = properties.getBoolean("stebz.cleanStackTrace.clearAspectjLines", null);
     if (clearAspectjLines == null) {
       clearAspectjLines = isStebzAnnotationsUsed();
     }

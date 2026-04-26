@@ -105,8 +105,8 @@ public class GherkinAnnotationsExtension implements InterceptStep {
    * @param properties the properties reader
    */
   public GherkinAnnotationsExtension(final PropertiesReader properties) {
-    this.enabled = properties.getBoolean("stebz.extensions.gherkin.annotations.enabled", true);
-    this.order = properties.getInteger("stebz.extensions.gherkin.annotations.order", MID_EARLY_ORDER);
+    this.enabled = properties.getBoolean("stebz.gherkin.annotation.enabled", true);
+    this.order = properties.getInteger("stebz.gherkin.annotation.order", MID_EARLY_ORDER);
   }
 
   @Override

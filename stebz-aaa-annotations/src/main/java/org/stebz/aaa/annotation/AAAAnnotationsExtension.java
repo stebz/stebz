@@ -96,8 +96,8 @@ public class AAAAnnotationsExtension implements InterceptStep {
    * @param properties the properties reader
    */
   public AAAAnnotationsExtension(final PropertiesReader properties) {
-    this.enabled = properties.getBoolean("stebz.extensions.aaa.annotations.enabled", true);
-    this.order = properties.getInteger("stebz.extensions.aaa.annotations.order", MID_EARLY_ORDER);
+    this.enabled = properties.getBoolean("stebz.aaa.annotation.enabled", true);
+    this.order = properties.getInteger("stebz.aaa.annotation.order", MID_EARLY_ORDER);
   }
 
   @Override
@@ -106,7 +106,6 @@ public class AAAAnnotationsExtension implements InterceptStep {
   }
 
   @Override
-  @Act("asd")
   public StepObj<?> interceptStep(final StepObj<?> step,
                                   final NullableOptional<Object> context) {
     if (!this.enabled) {
