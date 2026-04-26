@@ -60,9 +60,9 @@ public class EmptyStepsExtension implements InterceptStep {
    * @param properties the properties reader
    */
   public EmptyStepsExtension(final PropertiesReader properties) {
-    this.enabled = properties.getBoolean("stebz.extensions.emptySteps.enabled", true);
-    this.order = properties.getInteger("stebz.extensions.emptySteps.order", LATE_ORDER);
-    this.each = properties.getBoolean("stebz.extensions.emptySteps.each", false);
+    this.enabled = properties.getBoolean("stebz.emptySteps.enabled", true);
+    this.order = properties.getInteger("stebz.emptySteps.order", LATE_ORDER);
+    this.each = properties.getBoolean("stebz.emptySteps.each", false);
   }
 
   /**

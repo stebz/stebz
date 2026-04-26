@@ -316,12 +316,12 @@ public interface StepExecutor {
       try {
         /* extensions */
         final List<StebzExtension> extensions;
-        if (properties.getBoolean("stebz.extensions.enabled", true)) {
+        if (properties.getBoolean("stebz.extension.enabled", true)) {
           extensions = new ArrayList<>();
-          for (final Class<?> cls : properties.getClassList("stebz.extensions.list", ",")) {
+          for (final Class<?> cls : properties.getClassList("stebz.extension.list", ",")) {
             extensions.add((StebzExtension) cls.getConstructor().newInstance());
           }
-          if (properties.getBoolean("stebz.extensions.autodetection", true)) {
+          if (properties.getBoolean("stebz.extension.autodetection", true)) {
             ServiceLoader.load(StebzExtension.class).forEach(extensions::add);
           }
           extensions.forEach(extension -> extension.configure(properties));
@@ -332,12 +332,12 @@ public interface StepExecutor {
 
         /* listeners */
         final List<StepListener> listeners;
-        if (properties.getBoolean("stebz.listeners.enabled", true)) {
+        if (properties.getBoolean("stebz.listener.enabled", true)) {
           listeners = new ArrayList<>();
-          for (final Class<?> cls : properties.getClassList("stebz.listeners.list", ",")) {
+          for (final Class<?> cls : properties.getClassList("stebz.listener.list", ",")) {
             listeners.add((StepListener) cls.getConstructor().newInstance());
           }
-          if (properties.getBoolean("stebz.listeners.autodetection", true)) {
+          if (properties.getBoolean("stebz.listener.autodetection", true)) {
             ServiceLoader.load(StepListener.class).forEach(listeners::add);
           }
           listeners.forEach(listener -> listener.configure(properties));

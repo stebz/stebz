@@ -79,20 +79,20 @@ public class AllureStepListener implements StepListener {
    * @param properties the properties reader
    */
   public AllureStepListener(final PropertiesReader properties) {
-    this.enabled = properties.getBoolean("stebz.listeners.allure.enabled", true);
-    this.order = properties.getInteger("stebz.listeners.allure.order", MIDDLE_ORDER);
-    this.onlyKeywordSteps = properties.getBoolean("stebz.listeners.allure.onlyKeywordSteps", false);
-    this.keywordPosition = properties.getEnum("stebz.listeners.allure.keywordPosition",
+    this.enabled = properties.getBoolean("stebz.allure.enabled", true);
+    this.order = properties.getInteger("stebz.allure.order", MIDDLE_ORDER);
+    this.onlyKeywordSteps = properties.getBoolean("stebz.allure.onlyKeywordSteps", false);
+    this.keywordPosition = properties.getEnum("stebz.allure.keywordPosition",
       KeywordPosition.class, KeywordPosition.AT_START);
-    this.keywordToUppercase = properties.getBoolean("stebz.listeners.allure.keywordToUppercase", false);
-    this.processName = properties.getBoolean("stebz.listeners.allure.processName", true);
-    this.contextParam = properties.getBoolean("stebz.listeners.allure.contextParam", true);
-    this.contextParamName = properties.getString("stebz.listeners.allure.contextParamName", "Context");
-    this.expectedResultParam = properties.getBoolean("stebz.listeners.allure.expectedResultParam", true);
+    this.keywordToUppercase = properties.getBoolean("stebz.allure.keywordToUppercase", false);
+    this.processName = properties.getBoolean("stebz.allure.processName", true);
+    this.contextParam = properties.getBoolean("stebz.allure.contextParam", true);
+    this.contextParamName = properties.getString("stebz.allure.contextParamName", "Context");
+    this.expectedResultParam = properties.getBoolean("stebz.allure.expectedResultParam", true);
     this.expectedResultParamName =
-      properties.getString("stebz.listeners.allure.expectedResultParamName", "Expected result");
-    this.commentParam = properties.getBoolean("stebz.listeners.allure.commentParam", true);
-    this.commentParamName = properties.getString("stebz.listeners.allure.commentParamName", "Comment");
+      properties.getString("stebz.allure.expectedResultParamName", "Expected result");
+    this.commentParam = properties.getBoolean("stebz.allure.commentParam", true);
+    this.commentParamName = properties.getString("stebz.allure.commentParamName", "Comment");
     this.isStebzAnnotationsUsed = isStebzAnnotationsUsed();
   }
 

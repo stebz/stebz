@@ -78,22 +78,22 @@ public class TestITStepListener implements StepListener {
    * @param properties the properties reader
    */
   public TestITStepListener(final PropertiesReader properties) {
-    this.enabled = properties.getBoolean("stebz.listeners.testit.enabled", true);
-    this.order = properties.getInteger("stebz.listeners.testit.order", MIDDLE_ORDER);
-    this.onlyKeywordSteps = properties.getBoolean("stebz.listeners.testit.onlyKeywordSteps", false);
-    this.keywordPosition = properties.getEnum("stebz.listeners.testit.keywordPosition",
+    this.enabled = properties.getBoolean("stebz.testit.enabled", true);
+    this.order = properties.getInteger("stebz.testit.order", MIDDLE_ORDER);
+    this.onlyKeywordSteps = properties.getBoolean("stebz.testit.onlyKeywordSteps", false);
+    this.keywordPosition = properties.getEnum("stebz.testit.keywordPosition",
       KeywordPosition.class, KeywordPosition.AT_START);
-    this.keywordToUppercase = properties.getBoolean("stebz.listeners.testit.keywordToUppercase", false);
-    this.processName = properties.getBoolean("stebz.listeners.testit.processName", true);
-    this.contextParam = properties.getBoolean("stebz.listeners.testit.contextParam", true);
-    this.contextParamName = properties.getString("stebz.listeners.testit.contextParamName", "Context");
-    this.contextDesc = properties.getBoolean("stebz.listeners.testit.contextDesc", false);
-    this.contextDescName = properties.getString("stebz.listeners.testit.contextDescName", "Context");
-    this.expectedResultDesc = properties.getBoolean("stebz.listeners.testit.expectedResultDesc", true);
+    this.keywordToUppercase = properties.getBoolean("stebz.testit.keywordToUppercase", false);
+    this.processName = properties.getBoolean("stebz.testit.processName", true);
+    this.contextParam = properties.getBoolean("stebz.testit.contextParam", true);
+    this.contextParamName = properties.getString("stebz.testit.contextParamName", "Context");
+    this.contextDesc = properties.getBoolean("stebz.testit.contextDesc", false);
+    this.contextDescName = properties.getString("stebz.testit.contextDescName", "Context");
+    this.expectedResultDesc = properties.getBoolean("stebz.testit.expectedResultDesc", true);
     this.expectedResultDescName =
-      properties.getString("stebz.listeners.testit.expectedResultDescName", "Expected result");
-    this.commentDesc = properties.getBoolean("stebz.listeners.testit.commentDesc", true);
-    this.commentDescName = properties.getString("stebz.listeners.testit.commentDescName", "Comment");
+      properties.getString("stebz.testit.expectedResultDescName", "Expected result");
+    this.commentDesc = properties.getBoolean("stebz.testit.commentDesc", true);
+    this.commentDescName = properties.getString("stebz.testit.commentDescName", "Comment");
     this.isStebzAnnotationsUsed = isStebzAnnotationsUsed();
   }
 

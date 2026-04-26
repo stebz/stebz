@@ -65,8 +65,8 @@ public class SoftAssertedStepsExtension implements InterceptStepException {
    * @param properties the properties reader
    */
   public SoftAssertedStepsExtension(final PropertiesReader properties) {
-    this.enabled = properties.getBoolean("stebz.extensions.softAssertedSteps.enabled", true);
-    this.order = properties.getInteger("stebz.extensions.softAssertedSteps.order", LATE_ORDER);
+    this.enabled = properties.getBoolean("stebz.softAssertedSteps.enabled", true);
+    this.order = properties.getInteger("stebz.softAssertedSteps.order", LATE_ORDER);
   }
 
   /**

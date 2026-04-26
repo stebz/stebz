@@ -78,16 +78,16 @@ public class SystemOutStepListener implements StepListener {
                                final PropertiesReader properties) {
     this.depth = ThreadLocal.withInitial(AtomicInteger::new);
     this.printStream = printStream;
-    this.enabled = properties.getBoolean("stebz.listeners.systemout.enabled", true);
-    this.order = properties.getInteger("stebz.listeners.systemout.order", MIDDLE_ORDER);
-    this.onlyKeywordSteps = properties.getBoolean("stebz.listeners.systemout.onlyKeywordSteps", false);
-    this.keywordPosition = properties.getEnum("stebz.listeners.systemout.keywordPosition",
+    this.enabled = properties.getBoolean("stebz.systemOut.enabled", true);
+    this.order = properties.getInteger("stebz.systemOut.order", MIDDLE_ORDER);
+    this.onlyKeywordSteps = properties.getBoolean("stebz.systemOut.onlyKeywordSteps", false);
+    this.keywordPosition = properties.getEnum("stebz.systemOut.keywordPosition",
       KeywordPosition.class, KeywordPosition.AT_START);
-    this.keywordToUppercase = properties.getBoolean("stebz.listeners.systemout.keywordToUppercase", false);
-    this.indent = multiplyString(" ", properties.getInteger("stebz.listeners.systemout.indent", 2));
-    this.logParams = properties.getBoolean("stebz.listeners.systemout.params", true);
-    this.logExpectedResult = properties.getBoolean("stebz.listeners.systemout.expectedResult", true);
-    this.logComment = properties.getBoolean("stebz.listeners.systemout.comment", true);
+    this.keywordToUppercase = properties.getBoolean("stebz.systemOut.keywordToUppercase", false);
+    this.indent = multiplyString(" ", properties.getInteger("stebz.systemOut.indent", 2));
+    this.logParams = properties.getBoolean("stebz.systemOut.params", true);
+    this.logExpectedResult = properties.getBoolean("stebz.systemOut.expectedResult", true);
+    this.logComment = properties.getBoolean("stebz.systemOut.comment", true);
   }
 
   @Override

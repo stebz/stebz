@@ -80,8 +80,8 @@ public class RetryExtension implements InterceptStep {
    * @param properties the properties reader
    */
   public RetryExtension(final PropertiesReader properties) {
-    this.enabled = properties.getBoolean("stebz.extensions.retry.enabled", true);
-    this.order = properties.getInteger("stebz.extensions.retry.order", MIDDLE_ORDER);
+    this.enabled = properties.getBoolean("stebz.retry.enabled", true);
+    this.order = properties.getInteger("stebz.retry.order", MIDDLE_ORDER);
   }
 
   /**
