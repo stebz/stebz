@@ -26,7 +26,9 @@ package org.stebz.util.property;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -312,7 +314,7 @@ public interface PropertiesReader {
    * Default PropertiesReader implementation.
    */
   class Of implements PropertiesReader {
-    private final Properties properties;
+    private final Map<String, String> propertiesMap;
 
     /**
      * Ctor.
@@ -321,22 +323,26 @@ public interface PropertiesReader {
      * @throws NullPointerException if {@code resourcePropertiesFiles} arg is null
      */
     public Of(final String... resourcePropertiesFiles) {
-      if (resourcePropertiesFiles == null) { throw new NullPointerException("resourcePropertiesFiles arg is null"); }
-      final Properties props = new Properties();
+      if (resourcePropertiesFiles == null) {
+        throw new NullPointerException("resourcePropertiesFiles arg is null");
+      }
+      final Properties properties = new Properties();
       for (String file : resourcePropertiesFiles) {
         try (final InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(file)) {
           if (stream != null) {
-            props.load(stream);
+            properties.load(stream);
           }
-        } catch (final Exception ignored) { }
+        } catch (final Exception ignored) {
+        }
         try (final InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(file)) {
           if (stream != null) {
-            props.load(stream);
+            properties.load(stream);
           }
-        } catch (final Exception ignored) { }
+        } catch (final Exception ignored) {
+        }
       }
-      props.putAll(System.getProperties());
-      this.properties = props;
+      properties.putAll(System.getProperties());
+      this.propertiesMap = propertiesAsMap(properties);
     }
 
     /**
@@ -346,8 +352,29 @@ public interface PropertiesReader {
      * @throws NullPointerException if {@code properties} arg is null
      */
     public Of(final Properties properties) {
-      if (properties == null) { throw new NullPointerException("properties arg is null"); }
-      this.properties = properties;
+      if (properties == null) {
+        throw new NullPointerException("properties arg is null");
+      }
+      this.propertiesMap = propertiesAsMap(properties);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param propertiesMap the properties map
+     * @throws NullPointerException if {@code propertiesMap} arg is null
+     */
+    public Of(final Map<String, String> propertiesMap) {
+      if (propertiesMap == null) {
+        throw new NullPointerException("propertiesMap arg is null");
+      }
+      this.propertiesMap = propertiesMap;
+    }
+
+    private static Map<String, String> propertiesAsMap(final Properties properties) {
+      final Map<String, String> map = new HashMap<>();
+      properties.forEach((k, v) -> map.put(((String) k).toLowerCase(), (String) v));
+      return map;
     }
 
     @Override
@@ -362,8 +389,10 @@ public interface PropertiesReader {
     @Override
     public String getString(final String name,
                             final String defaultValue) {
-      if (name == null) { throw new NullPointerException("name arg is null"); }
-      final String value = this.properties.getProperty(name);
+      if (name == null) {
+        throw new NullPointerException("name arg is null");
+      }
+      final String value = this.propertiesMap.get(name.toLowerCase());
       if (value == null || value.isEmpty()) {
         return defaultValue;
       }
@@ -378,7 +407,9 @@ public interface PropertiesReader {
     public List<String> getStringList(final String name,
                                       final String delimiter) {
       final String strValue = this.getString(name, null);
-      if (delimiter == null) { throw new NullPointerException("delimiter arg is null"); }
+      if (delimiter == null) {
+        throw new NullPointerException("delimiter arg is null");
+      }
       if (strValue == null || strValue.isEmpty()) {
         return Collections.emptyList();
       }
@@ -419,7 +450,9 @@ public interface PropertiesReader {
     public List<Character> getCharacterList(final String name,
                                             final String delimiter) {
       final String strValue = this.getString(name, null);
-      if (delimiter == null) { throw new NullPointerException("delimiter arg is null"); }
+      if (delimiter == null) {
+        throw new NullPointerException("delimiter arg is null");
+      }
       if (strValue == null || strValue.isEmpty()) {
         return Collections.emptyList();
       }
@@ -463,7 +496,9 @@ public interface PropertiesReader {
     public List<Boolean> getBooleanList(final String name,
                                         final String delimiter) {
       final String strValue = this.getString(name, null);
-      if (delimiter == null) { throw new NullPointerException("delimiter arg is null"); }
+      if (delimiter == null) {
+        throw new NullPointerException("delimiter arg is null");
+      }
       if (strValue == null || strValue.isEmpty()) {
         return Collections.emptyList();
       }
@@ -505,7 +540,9 @@ public interface PropertiesReader {
     public List<Integer> getIntegerList(final String name,
                                         final String delimiter) {
       final String strValue = this.getString(name, null);
-      if (delimiter == null) { throw new NullPointerException("delimiter arg is null"); }
+      if (delimiter == null) {
+        throw new NullPointerException("delimiter arg is null");
+      }
       if (strValue == null || strValue.isEmpty()) {
         return Collections.emptyList();
       }
@@ -547,7 +584,9 @@ public interface PropertiesReader {
     public List<Long> getLongList(final String name,
                                   final String delimiter) {
       final String strValue = this.getString(name, null);
-      if (delimiter == null) { throw new NullPointerException("delimiter arg is null"); }
+      if (delimiter == null) {
+        throw new NullPointerException("delimiter arg is null");
+      }
       if (strValue == null || strValue.isEmpty()) {
         return Collections.emptyList();
       }
@@ -589,7 +628,9 @@ public interface PropertiesReader {
     public List<Double> getDoubleList(final String name,
                                       final String delimiter) {
       final String strValue = this.getString(name, null);
-      if (delimiter == null) { throw new NullPointerException("delimiter arg is null"); }
+      if (delimiter == null) {
+        throw new NullPointerException("delimiter arg is null");
+      }
       if (strValue == null || strValue.isEmpty()) {
         return Collections.emptyList();
       }
@@ -637,7 +678,9 @@ public interface PropertiesReader {
                                                    final Class<E> enumType,
                                                    final String delimiter) {
       final String strValue = this.getString(name, null);
-      if (delimiter == null) { throw new NullPointerException("delimiter arg is null"); }
+      if (delimiter == null) {
+        throw new NullPointerException("delimiter arg is null");
+      }
       if (strValue == null || strValue.isEmpty()) {
         return Collections.emptyList();
       }
@@ -680,7 +723,9 @@ public interface PropertiesReader {
     public List<Class<?>> getClassList(final String name,
                                        final String delimiter) {
       final String strValue = this.getString(name, null);
-      if (delimiter == null) { throw new NullPointerException("delimiter arg is null"); }
+      if (delimiter == null) {
+        throw new NullPointerException("delimiter arg is null");
+      }
       if (strValue == null || strValue.isEmpty()) {
         return Collections.emptyList();
       }
