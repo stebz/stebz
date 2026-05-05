@@ -88,6 +88,16 @@ public interface StepAttributes {
                              ThrowingFunction<? super V, ? extends V, ?> generator);
 
   /**
+   * Returns {@code StepAttributes} with default attribute value.
+   *
+   * @param attribute the attribute
+   * @param <V>       the type of the attribute
+   * @return {@code StepAttributes} with default attribute value
+   * @throws NullPointerException if {@code attribute} arg is null
+   */
+  <V> StepAttributes with(StepAttribute<V> attribute);
+
+  /**
    * Returns {@code StepAttributes} with given attribute value.
    *
    * @param attribute the attribute
@@ -507,6 +517,12 @@ public interface StepAttributes {
         attribute,
         ThrowingFunction.unchecked(generator).apply(this.get(attribute))
       );
+    }
+
+    @Override
+    public <V> StepAttributes with(final StepAttribute<V> attribute) {
+      if (attribute == null) { throw new NullPointerException("attribute arg is null"); }
+      return this.with(attribute, attribute.defaultValue());
     }
 
     @Override
