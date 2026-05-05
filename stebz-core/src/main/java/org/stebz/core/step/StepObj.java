@@ -120,6 +120,20 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
+   * Returns {@code StepObj} with default attribute value.
+   *
+   * @param attribute the attribute
+   * @param <V>       the type of the attribute
+   * @return {@code StepObj} with default attribute value
+   * @throws NullPointerException if {@code attribute} arg is null
+   */
+  default <V> S with(final StepAttribute<V> attribute) {
+    return this.withAttributes(this.attributes().with(
+      attribute
+    ));
+  }
+
+  /**
    * Returns {@code StepObj} with given attribute value.
    *
    * @param attribute the attribute
