@@ -83,7 +83,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    */
   default SupplierStep<R> withBefore(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingSupplier<R, ?> body = this.body();
+    final ThrowingSupplier<R, ?> body = this.getBody();
     return this.withBody(() -> {
       block.run();
       return body.get();
@@ -101,7 +101,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    */
   default SupplierStep<R> withAfter(final ThrowingConsumer<? super R, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingSupplier<R, ?> body = this.body();
+    final ThrowingSupplier<R, ?> body = this.getBody();
     return this.withBody(() -> {
       final R result = body.get();
       block.accept(result);
@@ -120,7 +120,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    */
   default SupplierStep<R> withAfter(final ThrowingFunction<? super R, ? extends R, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingSupplier<R, ?> body = this.body();
+    final ThrowingSupplier<R, ?> body = this.getBody();
     return this.withBody(() ->
       block.apply(body.get())
     );
@@ -138,7 +138,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    */
   default SupplierStep<R> withOnSuccess(final ThrowingConsumer<? super R, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingSupplier<R, ?> body = this.body();
+    final ThrowingSupplier<R, ?> body = this.getBody();
     return this.withBody(() -> {
       final R result = body.get();
       block.accept(result);
@@ -171,7 +171,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    */
   default SupplierStep<R> withOnFailure(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingSupplier<R, ?> body = this.body();
+    final ThrowingSupplier<R, ?> body = this.getBody();
     return this.withBody(() -> {
       try {
         return body.get();
@@ -198,7 +198,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    */
   default SupplierStep<R> withFinally(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingSupplier<R, ?> body = this.body();
+    final ThrowingSupplier<R, ?> body = this.getBody();
     return this.withBody(() -> {
       Throwable mainEx = null;
       R result = null;
@@ -228,7 +228,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @return this step as {@code RunnableStep}
    */
   default RunnableStep noResult() {
-    return new RunnableStep.Of(this.attributes(), this.body()::get);
+    return new RunnableStep.Of(this.attributes(), this.getBody()::get);
   }
 
   /**
@@ -502,7 +502,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
      * @throws NullPointerException if {@code origin} arg is null
      */
     public Of(final SupplierStep<R> origin) {
-      this(origin.attributes(), origin.body());
+      this(origin.attributes(), origin.getBody());
     }
 
     /**
@@ -531,7 +531,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
     }
 
     @Override
-    public ThrowingSupplier<R, ?> body() {
+    public ThrowingSupplier<R, ?> getBody() {
       return this.body;
     }
 

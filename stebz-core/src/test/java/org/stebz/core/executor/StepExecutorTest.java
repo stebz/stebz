@@ -428,7 +428,7 @@ final class StepExecutorTest {
 
   private static RunnableStep mockRunnableStep(final ThrowingRunnable<?> body) {
     final RunnableStep step = mockCallingRealMethods(RunnableStep.class);
-    doReturn(body).when(step).body();
+    doReturn(body).when(step).getBody();
     return step;
   }
 
@@ -447,7 +447,7 @@ final class StepExecutorTest {
   @SuppressWarnings("unchecked")
   private static ConsumerStep<Object> mockConsumerStep(final ThrowingConsumer<Object, Error> body) {
     final ConsumerStep<Object> step = mockCallingRealMethods(ConsumerStep.class);
-    doReturn(body).when(step).body();
+    doReturn(body).when(step).getBody();
     return step;
   }
 
@@ -468,7 +468,7 @@ final class StepExecutorTest {
   @SuppressWarnings("unchecked")
   private static SupplierStep<Object> mockSupplierStep(final ThrowingSupplier<Object, Error> body) {
     final SupplierStep<Object> step = mockCallingRealMethods(SupplierStep.class);
-    doReturn(body).when(step).body();
+    doReturn(body).when(step).getBody();
     return step;
   }
 
@@ -489,7 +489,7 @@ final class StepExecutorTest {
   @SuppressWarnings("unchecked")
   private static FunctionStep<Object, Object> mockFunctionStep(final ThrowingFunction<Object, Object, Error> body) {
     final FunctionStep<Object, Object> step = mockCallingRealMethods(FunctionStep.class);
-    doReturn(body).when(step).body();
+    doReturn(body).when(step).getBody();
     return step;
   }
 

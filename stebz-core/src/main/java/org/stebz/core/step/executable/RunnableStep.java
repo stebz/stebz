@@ -69,7 +69,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    */
   default RunnableStep withBefore(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingRunnable<?> body = this.body();
+    final ThrowingRunnable<?> body = this.getBody();
     return this.withBody(() -> {
       block.run();
       body.run();
@@ -87,7 +87,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    */
   default RunnableStep withAfter(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingRunnable<?> body = this.body();
+    final ThrowingRunnable<?> body = this.getBody();
     return this.withBody(() -> {
       body.run();
       block.run();
@@ -119,7 +119,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    */
   default RunnableStep withOnFailure(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingRunnable<?> body = this.body();
+    final ThrowingRunnable<?> body = this.getBody();
     return this.withBody(() -> {
       try {
         body.run();
@@ -146,7 +146,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    */
   default RunnableStep withFinally(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingRunnable<?> body = this.body();
+    final ThrowingRunnable<?> body = this.getBody();
     return this.withBody(() -> {
       Throwable mainEx = null;
       try {
@@ -400,7 +400,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
      * @throws NullPointerException if {@code origin} arg is null
      */
     public Of(final RunnableStep origin) {
-      this(origin.attributes(), origin.body());
+      this(origin.attributes(), origin.getBody());
     }
 
     /**
@@ -429,7 +429,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
     }
 
     @Override
-    public ThrowingRunnable<?> body() {
+    public ThrowingRunnable<?> getBody() {
       return this.body;
     }
 

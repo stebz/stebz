@@ -143,25 +143,25 @@ public class RetryExtension implements InterceptStep {
     if (step instanceof RunnableStep) {
       final RunnableStep runnableStep = (RunnableStep) step;
       return runnableStep.withBody(retryRunnable(
-        runnableStep.body(), count, delayMillis, on, but
+        runnableStep.getBody(), count, delayMillis, on, but
       ));
     } else if (step instanceof ConsumerStep) {
       @SuppressWarnings("unchecked")
       final ConsumerStep<Object> consumerStep = (ConsumerStep<Object>) step;
       return consumerStep.withBody(retryConsumer(
-        consumerStep.body(), count, delayMillis, on, but
+        consumerStep.getBody(), count, delayMillis, on, but
       ));
     } else if (step instanceof SupplierStep) {
       @SuppressWarnings("unchecked")
       final SupplierStep<Object> supplierStep = (SupplierStep<Object>) step;
       return supplierStep.withBody(retrySupplier(
-        supplierStep.body(), count, delayMillis, on, but
+        supplierStep.getBody(), count, delayMillis, on, but
       ));
     } else if (step instanceof FunctionStep) {
       @SuppressWarnings("unchecked")
       final FunctionStep<Object, Object> functionStep = (FunctionStep<Object, Object>) step;
       return functionStep.withBody(retryFunction(
-        functionStep.body(), count, delayMillis, on, but
+        functionStep.getBody(), count, delayMillis, on, but
       ));
     }
     return step;
