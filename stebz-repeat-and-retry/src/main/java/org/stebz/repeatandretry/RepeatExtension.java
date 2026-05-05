@@ -143,25 +143,25 @@ public class RepeatExtension implements InterceptStep {
     if (step instanceof RunnableStep) {
       final RunnableStep runnableStep = (RunnableStep) step;
       return runnableStep.withBody(repeatRunnable(
-        runnableStep.body(), count, delayMillis, skip, but
+        runnableStep.getBody(), count, delayMillis, skip, but
       ));
     } else if (step instanceof ConsumerStep) {
       @SuppressWarnings("unchecked")
       final ConsumerStep<Object> consumerStep = (ConsumerStep<Object>) step;
       return consumerStep.withBody(repeatConsumer(
-        consumerStep.body(), count, delayMillis, skip, but
+        consumerStep.getBody(), count, delayMillis, skip, but
       ));
     } else if (step instanceof SupplierStep) {
       @SuppressWarnings("unchecked")
       final SupplierStep<Object> supplierStep = (SupplierStep<Object>) step;
       return supplierStep.withBody(repeatSupplier(
-        supplierStep.body(), count, delayMillis, skip, but
+        supplierStep.getBody(), count, delayMillis, skip, but
       ));
     } else if (step instanceof FunctionStep) {
       @SuppressWarnings("unchecked")
       final FunctionStep<Object, Object> functionStep = (FunctionStep<Object, Object>) step;
       return functionStep.withBody(repeatFunction(
-        functionStep.body(), count, delayMillis, skip, but
+        functionStep.getBody(), count, delayMillis, skip, but
       ));
     }
     return step;

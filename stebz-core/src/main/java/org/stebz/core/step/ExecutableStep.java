@@ -34,29 +34,29 @@ import dev.jlet.function.ThrowingFunction;
 public interface ExecutableStep<B, S extends ExecutableStep<B, S>> extends StepObj<S> {
 
   /**
-   * Returns body.
+   * Returns step body.
    *
-   * @return body
+   * @return step body
    */
-  B body();
+  B getBody();
 
   /**
-   * Returns {@code ExecutableStep} with given body.
+   * Returns {@code ExecutableStep} with given step body.
    *
-   * @param body the body
-   * @return {@code ExecutableStep} with given attribute value
+   * @param body the step body
+   * @return {@code ExecutableStep} with given step body
    * @throws NullPointerException if {@code body} arg is null
    */
   S withBody(B body);
 
   /**
-   * Returns {@code ExecutableStep} with given body created by {@code generator}.
+   * Returns {@code ExecutableStep} with given step body created by {@code generator}.
    *
-   * @param generator the generator
-   * @return {@code ExecutableStep} with given body
+   * @param generator the step body generator
+   * @return {@code ExecutableStep} with given step body
    * @throws NullPointerException if {@code generator} arg is null
    */
   default S withBodyOf(final ThrowingFunction<? super B, ? extends B, ?> generator) {
-    return this.withBody(ThrowingFunction.unchecked(generator).apply(this.body()));
+    return this.withBody(ThrowingFunction.unchecked(generator).apply(this.getBody()));
   }
 }

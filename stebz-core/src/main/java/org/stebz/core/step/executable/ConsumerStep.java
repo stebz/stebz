@@ -71,7 +71,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    */
   default ConsumerStep<T> withBefore(final ThrowingConsumer<? super T, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingConsumer<T, ?> body = this.body();
+    final ThrowingConsumer<T, ?> body = this.getBody();
     return this.withBody(context -> {
       block.accept(context);
       body.accept(context);
@@ -89,7 +89,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    */
   default ConsumerStep<T> withAfter(final ThrowingConsumer<? super T, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingConsumer<T, ?> body = this.body();
+    final ThrowingConsumer<T, ?> body = this.getBody();
     return this.withBody(context -> {
       body.accept(context);
       block.accept(context);
@@ -121,7 +121,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    */
   default ConsumerStep<T> withOnFailure(final ThrowingConsumer<? super T, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingConsumer<T, ?> body = this.body();
+    final ThrowingConsumer<T, ?> body = this.getBody();
     return this.withBody(context -> {
       try {
         body.accept(context);
@@ -148,7 +148,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    */
   default ConsumerStep<T> withFinally(final ThrowingConsumer<? super T, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingConsumer<T, ?> body = this.body();
+    final ThrowingConsumer<T, ?> body = this.getBody();
     return this.withBody(context -> {
       Throwable mainEx = null;
       try {
@@ -419,7 +419,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
      * @throws NullPointerException if {@code origin} arg is null
      */
     public Of(final ConsumerStep<T> origin) {
-      this(origin.attributes(), origin.body());
+      this(origin.attributes(), origin.getBody());
     }
 
     /**
@@ -448,7 +448,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
     }
 
     @Override
-    public ThrowingConsumer<T, ?> body() {
+    public ThrowingConsumer<T, ?> getBody() {
       return this.body;
     }
 

@@ -49,7 +49,7 @@ final class EmptyStepsExtensionTest {
     final EmptyStepsExtension extension = new EmptyStepsExtension(new PropertiesReader.Of(new Properties()));
 
     final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
-    assertThat(((RunnableStep) resultStep).body())
+    assertThat(((RunnableStep) resultStep).getBody())
       .isSameAs(body);
     assertThatTreadLocalsAreCleared();
   }
@@ -61,7 +61,7 @@ final class EmptyStepsExtensionTest {
 
     emptySteps(() -> {
       final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
-      assertThat(((RunnableStep) resultStep).body())
+      assertThat(((RunnableStep) resultStep).getBody())
         .isSameAs(RunnableStep.emptyBody());
     });
     assertThatTreadLocalsAreCleared();
@@ -76,7 +76,7 @@ final class EmptyStepsExtensionTest {
     assertThat(
       emptyStepsResult(() -> {
         final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
-        assertThat(((RunnableStep) resultStep).body())
+        assertThat(((RunnableStep) resultStep).getBody())
           .isSameAs(RunnableStep.emptyBody());
         return result;
       })
@@ -92,11 +92,11 @@ final class EmptyStepsExtensionTest {
     emptySteps(() -> {
       emptySteps(() -> {
         final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
-        assertThat(((RunnableStep) resultStep).body())
+        assertThat(((RunnableStep) resultStep).getBody())
           .isSameAs(RunnableStep.emptyBody());
       });
       final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
-      assertThat(((RunnableStep) resultStep).body())
+      assertThat(((RunnableStep) resultStep).getBody())
         .isSameAs(RunnableStep.emptyBody());
     });
     assertThatTreadLocalsAreCleared();

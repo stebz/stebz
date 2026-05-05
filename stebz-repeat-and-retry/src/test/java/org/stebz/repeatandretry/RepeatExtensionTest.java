@@ -63,7 +63,7 @@ final class RepeatExtensionTest {
     final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
     assertThat(resultStep)
       .isInstanceOf(RunnableStep.class);
-    final ThrowingRunnable<?> body = ((RunnableStep) resultStep).body();
+    final ThrowingRunnable<?> body = ((RunnableStep) resultStep).getBody();
     assertThat(body)
       .isNotSameAs(originBody);
     body.run();
@@ -85,7 +85,7 @@ final class RepeatExtensionTest {
     final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
     assertThat(resultStep)
       .isInstanceOf(RunnableStep.class);
-    final ThrowingRunnable<?> body = ((RunnableStep) resultStep).body();
+    final ThrowingRunnable<?> body = ((RunnableStep) resultStep).getBody();
     assertThat(body)
       .isNotSameAs(originBody);
     assertThatCode(() -> body.run())
@@ -108,7 +108,7 @@ final class RepeatExtensionTest {
     final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
     assertThat(resultStep)
       .isInstanceOf(RunnableStep.class);
-    final ThrowingRunnable<?> body = ((RunnableStep) resultStep).body();
+    final ThrowingRunnable<?> body = ((RunnableStep) resultStep).getBody();
     assertThat(body)
       .isNotSameAs(originBody);
     body.run();
@@ -131,7 +131,7 @@ final class RepeatExtensionTest {
     assertThat(resultStep)
       .isInstanceOf(SupplierStep.class);
     @SuppressWarnings("unchecked")
-    final ThrowingSupplier<Object, ?> body = ((SupplierStep<Object>) resultStep).body();
+    final ThrowingSupplier<Object, ?> body = ((SupplierStep<Object>) resultStep).getBody();
     assertThat(body)
       .isNotSameAs(originBody);
     assertThat(body.get())
@@ -155,7 +155,7 @@ final class RepeatExtensionTest {
     assertThat(resultStep)
       .isInstanceOf(SupplierStep.class);
     @SuppressWarnings("unchecked")
-    final ThrowingSupplier<Object, ?> body = ((SupplierStep<Object>) resultStep).body();
+    final ThrowingSupplier<Object, ?> body = ((SupplierStep<Object>) resultStep).getBody();
     assertThat(body)
       .isNotSameAs(originBody);
     assertThatCode(() -> body.get())
@@ -180,7 +180,7 @@ final class RepeatExtensionTest {
     assertThat(resultStep)
       .isInstanceOf(SupplierStep.class);
     @SuppressWarnings("unchecked")
-    final ThrowingSupplier<Object, ?> body = ((SupplierStep<Object>) resultStep).body();
+    final ThrowingSupplier<Object, ?> body = ((SupplierStep<Object>) resultStep).getBody();
 
     assertThat(body)
       .isNotSameAs(originBody);

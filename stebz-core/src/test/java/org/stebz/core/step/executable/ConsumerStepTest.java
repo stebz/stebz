@@ -43,7 +43,7 @@ final class ConsumerStepTest {
 
     assertThat(step.attributes())
       .isSameAs(attributes);
-    assertThat(step.body())
+    assertThat(step.getBody())
       .isSameAs(body);
   }
 
@@ -67,7 +67,7 @@ final class ConsumerStepTest {
     final ConsumerStep<Object> step = new ConsumerStep.Of<>(attributes, body);
 
     final ConsumerStep<Object> newStep = step.withBody(newBody);
-    assertThat(newStep.body())
+    assertThat(newStep.getBody())
       .isSameAs(newBody);
   }
 

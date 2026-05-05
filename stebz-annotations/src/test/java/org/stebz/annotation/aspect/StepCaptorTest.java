@@ -67,7 +67,7 @@ final class StepCaptorTest {
       );
     assertThat(step.getHidden())
       .isTrue();
-    assertThat(step.body().get())
+    assertThat(step.getBody().get())
       .isEqualTo("value");
     assertThat(StaticStepListener.lastStep)
       .isNull();
@@ -88,7 +88,7 @@ final class StepCaptorTest {
       );
     assertThat(step.getHidden())
       .isTrue();
-    assertThat(step.body().get())
+    assertThat(step.getBody().get())
       .isEqualTo(100);
     assertThat(StaticStepListener.lastStep)
       .isNull();
@@ -105,7 +105,7 @@ final class StepCaptorTest {
         entry("param1", "******"),
         entry("param name", "param value")
       );
-    assertThat(step.body().get())
+    assertThat(step.getBody().get())
       .isInstanceOf(QuickConstructorStep.class);
     assertThat(StaticStepListener.lastStep)
       .isNull();
@@ -125,7 +125,7 @@ final class StepCaptorTest {
         entry("param1", "******"),
         entry("param name", "param value")
       );
-    assertThat(step.body().get())
+    assertThat(step.getBody().get())
       .isEqualTo(100);
     assertThat(StaticStepListener.lastStep)
       .isNull();
@@ -134,7 +134,7 @@ final class StepCaptorTest {
   @Test
   void capturedConstructorSupplierStepReturnsNewInstances() throws Throwable {
     final SupplierStep<QuickConstructorStep> step = captured(QuickConstructorStep::new, "value1", "value2");
-    final ThrowingSupplier<QuickConstructorStep, ?> body = step.body();
+    final ThrowingSupplier<QuickConstructorStep, ?> body = step.getBody();
     final QuickConstructorStep firstResult = body.get();
 
     assertThat(body.get())

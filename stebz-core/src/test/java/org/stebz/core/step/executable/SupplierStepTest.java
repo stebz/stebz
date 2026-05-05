@@ -43,7 +43,7 @@ final class SupplierStepTest {
 
     assertThat(step.attributes())
       .isSameAs(attributes);
-    assertThat(step.body())
+    assertThat(step.getBody())
       .isSameAs(body);
   }
 
@@ -67,7 +67,7 @@ final class SupplierStepTest {
     final SupplierStep<Object> step = new SupplierStep.Of<>(attributes, body);
 
     final SupplierStep<Object> newStep = step.withBody(newBody);
-    assertThat(newStep.body())
+    assertThat(newStep.getBody())
       .isSameAs(newBody);
   }
 

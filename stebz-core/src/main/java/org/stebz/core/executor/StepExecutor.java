@@ -165,7 +165,7 @@ public interface StepExecutor {
     public void execute(final RunnableStep step) {
       if (step == null) { throw new NullPointerException("step arg is null"); }
       this.exec(step, false, null, false, (updatedStep, updatedContext) -> {
-        ((RunnableStep) updatedStep).body().run();
+        ((RunnableStep) updatedStep).getBody().run();
         return null;
       });
     }
@@ -175,7 +175,7 @@ public interface StepExecutor {
     public <R> R execute(final SupplierStep<? extends R> step) {
       if (step == null) { throw new NullPointerException("step arg is null"); }
       return (R) this.exec(step, false, null, true, (updatedStep, updatedContext) ->
-        ((SupplierStep<Object>) updatedStep).body().get()
+        ((SupplierStep<Object>) updatedStep).getBody().get()
       );
     }
 
@@ -185,7 +185,7 @@ public interface StepExecutor {
                             final T contextValue) {
       if (step == null) { throw new NullPointerException("step arg is null"); }
       this.exec(step, true, contextValue, false, (updatedStep, updatedContext) -> {
-        ((ConsumerStep<Object>) updatedStep).body().accept(updatedContext);
+        ((ConsumerStep<Object>) updatedStep).getBody().accept(updatedContext);
         return null;
       });
     }
@@ -196,7 +196,7 @@ public interface StepExecutor {
                             final T contextValue) {
       if (step == null) { throw new NullPointerException("step arg is null"); }
       return (R) this.exec(step, true, contextValue, true, (updatedStep, updatedContext) ->
-        ((FunctionStep<Object, Object>) updatedStep).body().apply(updatedContext)
+        ((FunctionStep<Object, Object>) updatedStep).getBody().apply(updatedContext)
       );
     }
 

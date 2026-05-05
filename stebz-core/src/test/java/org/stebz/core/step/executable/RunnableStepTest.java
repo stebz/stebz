@@ -43,7 +43,7 @@ final class RunnableStepTest {
 
     assertThat(step.attributes())
       .isSameAs(attributes);
-    assertThat(step.body())
+    assertThat(step.getBody())
       .isSameAs(body);
   }
 
@@ -67,7 +67,7 @@ final class RunnableStepTest {
     final RunnableStep step = new RunnableStep.Of(attributes, body);
 
     final RunnableStep newStep = step.withBody(newBody);
-    assertThat(newStep.body())
+    assertThat(newStep.getBody())
       .isSameAs(newBody);
   }
 

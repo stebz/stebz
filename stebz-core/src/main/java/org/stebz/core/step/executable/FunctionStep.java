@@ -84,7 +84,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    */
   default FunctionStep<T, R> withBefore(final ThrowingConsumer<? super T, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingFunction<? super T, ? extends R, ?> body = this.body();
+    final ThrowingFunction<? super T, ? extends R, ?> body = this.getBody();
     return this.withBody(context -> {
       block.accept(context);
       return body.apply(context);
@@ -102,7 +102,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    */
   default FunctionStep<T, R> withAfter(final ThrowingConsumer2<? super T, ? super R, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingFunction<? super T, ? extends R, ?> body = this.body();
+    final ThrowingFunction<? super T, ? extends R, ?> body = this.getBody();
     return this.withBody(context -> {
       final R result = body.apply(context);
       block.accept(context, result);
@@ -121,7 +121,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    */
   default FunctionStep<T, R> withAfter(final ThrowingFunction2<? super T, ? super R, ? extends R, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingFunction<? super T, ? extends R, ?> body = this.body();
+    final ThrowingFunction<? super T, ? extends R, ?> body = this.getBody();
     return this.withBody(context ->
       block.apply(context, body.apply(context))
     );
@@ -166,7 +166,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    */
   default FunctionStep<T, R> withOnFailure(final ThrowingConsumer<? super T, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingFunction<? super T, ? extends R, ?> body = this.body();
+    final ThrowingFunction<? super T, ? extends R, ?> body = this.getBody();
     return this.withBody(context -> {
       try {
         return body.apply(context);
@@ -193,7 +193,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    */
   default FunctionStep<T, R> withFinally(final ThrowingConsumer<? super T, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
-    final ThrowingFunction<? super T, ? extends R, ?> body = this.body();
+    final ThrowingFunction<? super T, ? extends R, ?> body = this.getBody();
     return this.withBody(context -> {
       Throwable mainEx = null;
       R result = null;
@@ -223,7 +223,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @return this step as {@code ConsumerStep}
    */
   default ConsumerStep<T> noResult() {
-    return new ConsumerStep.Of<>(this.attributes(), this.body()::apply);
+    return new ConsumerStep.Of<>(this.attributes(), this.getBody()::apply);
   }
 
   /**
@@ -511,7 +511,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
      * @throws NullPointerException if {@code origin} arg is null
      */
     public Of(final FunctionStep<T, R> origin) {
-      this(origin.attributes(), origin.body());
+      this(origin.attributes(), origin.getBody());
     }
 
     /**
@@ -540,7 +540,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
     }
 
     @Override
-    public ThrowingFunction<T, R, ?> body() {
+    public ThrowingFunction<T, R, ?> getBody() {
       return this.body;
     }
 
