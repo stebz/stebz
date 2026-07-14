@@ -59,6 +59,7 @@ public class AAAAnnotationsExtension implements InterceptStep {
    * @see Arrange
    * @see Act
    * @see Assert
+   * @see ___
    */
   public static final SimpleStepAttribute<Annotation> AAA_KEYWORD =
     SimpleStepAttribute.nullable(AAA_KEYWORD_ATTRIBUTE_KEY);
@@ -69,6 +70,7 @@ public class AAAAnnotationsExtension implements InterceptStep {
     keywords.put(Arrange.class, AAAKeywords.arrange());
     keywords.put(Act.class, AAAKeywords.act());
     keywords.put(Assert.class, AAAKeywords._assert());
+    keywords.put(___.class, AAAKeywords.asterisk());
     return keywords;
   });
   private static final Cached<Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>>> VALUES =
@@ -79,6 +81,7 @@ public class AAAAnnotationsExtension implements InterceptStep {
       values.put(Arrange.class, annot -> ((Arrange) annot).value());
       values.put(Act.class, annot -> ((Act) annot).value());
       values.put(Assert.class, annot -> ((Assert) annot).value());
+      values.put(___.class, annot -> ((___) annot).value());
       return values;
     });
   private final boolean enabled;

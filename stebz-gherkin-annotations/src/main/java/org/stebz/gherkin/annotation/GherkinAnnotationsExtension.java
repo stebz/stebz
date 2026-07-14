@@ -62,6 +62,7 @@ public class GherkinAnnotationsExtension implements InterceptStep {
    * @see Then
    * @see And
    * @see But
+   * @see ___
    */
   public static final SimpleStepAttribute<Annotation> GHERKIN_KEYWORD =
     SimpleStepAttribute.nullable(GHERKIN_KEYWORD_ATTRIBUTE_KEY);
@@ -75,6 +76,7 @@ public class GherkinAnnotationsExtension implements InterceptStep {
     keywords.put(Then.class, GherkinKeywords.then());
     keywords.put(And.class, GherkinKeywords.and());
     keywords.put(But.class, GherkinKeywords.but());
+    keywords.put(___.class, GherkinKeywords.asterisk());
     return keywords;
   });
   private static final Cached<Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>>> VALUES =
@@ -88,6 +90,7 @@ public class GherkinAnnotationsExtension implements InterceptStep {
       values.put(Then.class, annot -> ((Then) annot).value());
       values.put(And.class, annot -> ((And) annot).value());
       values.put(But.class, annot -> ((But) annot).value());
+      values.put(___.class, annot -> ((___) annot).value());
       return values;
     });
   private final boolean enabled;

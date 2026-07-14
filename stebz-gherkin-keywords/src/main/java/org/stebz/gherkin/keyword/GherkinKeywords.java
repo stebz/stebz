@@ -42,6 +42,7 @@ public final class GherkinKeywords implements StebzExtension {
   private static final String THEN_KEYWORD_DEFAULT_VALUE = "Then";
   private static final String AND_KEYWORD_DEFAULT_VALUE = "And";
   private static final String BUT_KEYWORD_DEFAULT_VALUE = "But";
+  private static final String ASTERISK_KEYWORD_DEFAULT_VALUE = "*";
   private static volatile Keywords keywords = null;
 
   /**
@@ -65,7 +66,8 @@ public final class GherkinKeywords implements StebzExtension {
       new Keyword.Of(properties.getString("stebz.gherkin.keyword.when", WHEN_KEYWORD_DEFAULT_VALUE)),
       new Keyword.Of(properties.getString("stebz.gherkin.keyword.then", THEN_KEYWORD_DEFAULT_VALUE)),
       new Keyword.Of(properties.getString("stebz.gherkin.keyword.and", AND_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.gherkin.keyword.but", BUT_KEYWORD_DEFAULT_VALUE))
+      new Keyword.Of(properties.getString("stebz.gherkin.keyword.but", BUT_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.gherkin.keyword.asterisk", ASTERISK_KEYWORD_DEFAULT_VALUE))
     ));
   }
 
@@ -141,6 +143,15 @@ public final class GherkinKeywords implements StebzExtension {
     return getKeywords().but;
   }
 
+  /**
+   * Returns "*" keyword.
+   *
+   * @return "*" keyword
+   */
+  public static Keyword asterisk() {
+    return getKeywords().asterisk;
+  }
+
   @Override
   public int order() {
     return EARLY_ORDER;
@@ -181,7 +192,8 @@ public final class GherkinKeywords implements StebzExtension {
       new Keyword.Of(WHEN_KEYWORD_DEFAULT_VALUE),
       new Keyword.Of(THEN_KEYWORD_DEFAULT_VALUE),
       new Keyword.Of(AND_KEYWORD_DEFAULT_VALUE),
-      new Keyword.Of(BUT_KEYWORD_DEFAULT_VALUE)
+      new Keyword.Of(BUT_KEYWORD_DEFAULT_VALUE),
+      new Keyword.Of(ASTERISK_KEYWORD_DEFAULT_VALUE)
     );
   }
 
@@ -194,6 +206,7 @@ public final class GherkinKeywords implements StebzExtension {
     private final Keyword then;
     private final Keyword and;
     private final Keyword but;
+    private final Keyword asterisk;
 
     private Keywords(final Keyword background,
                      final Keyword conclusion,
@@ -202,7 +215,8 @@ public final class GherkinKeywords implements StebzExtension {
                      final Keyword when,
                      final Keyword then,
                      final Keyword and,
-                     final Keyword but) {
+                     final Keyword but,
+                     final Keyword asterisk) {
       this.background = background;
       this.conclusion = conclusion;
       this.rule = rule;
@@ -211,6 +225,7 @@ public final class GherkinKeywords implements StebzExtension {
       this.then = then;
       this.and = and;
       this.but = but;
+      this.asterisk = asterisk;
     }
   }
 }
