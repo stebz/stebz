@@ -39,6 +39,7 @@ public final class AAAKeywords implements StebzExtension {
   private static final String ARRANGE_KEYWORD_DEFAULT_VALUE = "Arrange:";
   private static final String ACT_KEYWORD_DEFAULT_VALUE = "Act:";
   private static final String ASSERT_KEYWORD_DEFAULT_VALUE = "Assert:";
+  private static final String ASTERISK_KEYWORD_DEFAULT_VALUE = "*";
   private static volatile Keywords keywords = null;
 
   /**
@@ -59,7 +60,8 @@ public final class AAAKeywords implements StebzExtension {
       new Keyword.Of(properties.getString("stebz.aaa.keyword.tearDown", TEAR_DOWN_KEYWORD_DEFAULT_VALUE)),
       new Keyword.Of(properties.getString("stebz.aaa.keyword.arrange", ARRANGE_KEYWORD_DEFAULT_VALUE)),
       new Keyword.Of(properties.getString("stebz.aaa.keyword.act", ACT_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.aaa.keyword.assert", ASSERT_KEYWORD_DEFAULT_VALUE))
+      new Keyword.Of(properties.getString("stebz.aaa.keyword.assert", ASSERT_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.aaa.keyword.asterisk", ASTERISK_KEYWORD_DEFAULT_VALUE))
     ));
   }
 
@@ -108,6 +110,15 @@ public final class AAAKeywords implements StebzExtension {
     return getKeywords()._assert;
   }
 
+  /**
+   * Returns "*" keyword.
+   *
+   * @return "*" keyword
+   */
+  public static Keyword asterisk() {
+    return getKeywords().asterisk;
+  }
+
   @Override
   public int order() {
     return EARLY_ORDER;
@@ -145,7 +156,8 @@ public final class AAAKeywords implements StebzExtension {
       new Keyword.Of(TEAR_DOWN_KEYWORD_DEFAULT_VALUE),
       new Keyword.Of(ARRANGE_KEYWORD_DEFAULT_VALUE),
       new Keyword.Of(ACT_KEYWORD_DEFAULT_VALUE),
-      new Keyword.Of(ASSERT_KEYWORD_DEFAULT_VALUE)
+      new Keyword.Of(ASSERT_KEYWORD_DEFAULT_VALUE),
+      new Keyword.Of(ASTERISK_KEYWORD_DEFAULT_VALUE)
     );
   }
 
@@ -155,17 +167,20 @@ public final class AAAKeywords implements StebzExtension {
     private final Keyword arrange;
     private final Keyword act;
     private final Keyword _assert;
+    private final Keyword asterisk;
 
     private Keywords(final Keyword setUp,
                      final Keyword tearDown,
                      final Keyword arrange,
                      final Keyword act,
-                     final Keyword _assert) {
+                     final Keyword _assert,
+                     final Keyword asterisk) {
       this.setUp = setUp;
       this.tearDown = tearDown;
       this.arrange = arrange;
       this.act = act;
       this._assert = _assert;
+      this.asterisk = asterisk;
     }
   }
 }

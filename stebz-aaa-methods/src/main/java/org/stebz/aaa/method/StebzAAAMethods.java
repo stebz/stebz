@@ -39,6 +39,7 @@ import java.util.Map;
 import static org.stebz.aaa.keyword.AAAKeywords._assert;
 import static org.stebz.aaa.keyword.AAAKeywords.act;
 import static org.stebz.aaa.keyword.AAAKeywords.arrange;
+import static org.stebz.aaa.keyword.AAAKeywords.asterisk;
 import static org.stebz.aaa.keyword.AAAKeywords.setUp;
 import static org.stebz.aaa.keyword.AAAKeywords.tearDown;
 import static org.stebz.core.attribute.StepAttribute.EXPECTED_RESULT;
@@ -2135,6 +2136,418 @@ public final class StebzAAAMethods {
     StepExecutor.get().execute(new RunnableStep.Of(
       new StepAttributes.Of(
         KEYWORD, _assert(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      RunnableStep.emptyBody()
+    ));
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#asterisk()} keyword.
+   *
+   * @param step the step
+   */
+  public static void ___(final RunnableStep step) {
+    StepExecutor.get().execute(step.withKeyword(asterisk()));
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#asterisk()} keyword and name.
+   *
+   * @param name the name
+   * @param step the step
+   */
+  public static void ___(final String name,
+                         final RunnableStep step) {
+    StepExecutor.get().execute(step.with(KEYWORD, asterisk(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#asterisk()} keyword and name created by {@code nameGenerator}.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static void ___(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                         final RunnableStep step) {
+    StepExecutor.get().execute(step.with(
+      KEYWORD, asterisk(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#asterisk()} keyword and returns step result.
+   *
+   * @param step the step
+   * @param <R>  the type of the result
+   * @return step result
+   */
+  public static <R> R ___(final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(KEYWORD, asterisk()));
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#asterisk()} keyword and name and returns step result.
+   *
+   * @param name the name
+   * @param step the step
+   * @param <R>  the type of the result
+   * @return step result
+   */
+  public static <R> R ___(final String name,
+                          final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(KEYWORD, asterisk(), NAME, name));
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#asterisk()} keyword and name created by {@code nameGenerator} and
+   * returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   */
+  public static <R> R ___(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                          final SupplierStep<? extends R> step) {
+    return StepExecutor.get().execute(step.with(
+      KEYWORD, asterisk(),
+      NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+    ));
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#asterisk()} keyword on given value.
+   *
+   * @param step  the step
+   * @param value the value
+   * @param <T>   the type of the value
+   */
+  public static <T> void ___(final ConsumerStep<? super T> step,
+                             final T value) {
+    StepExecutor.get().execute(
+      step.with(KEYWORD, asterisk()),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#asterisk()} keyword and name on given value.
+   *
+   * @param name  the name
+   * @param step  the step
+   * @param value the value
+   * @param <T>   the type of the value
+   */
+  public static <T> void ___(final String name,
+                             final ConsumerStep<? super T> step,
+                             final T value) {
+    StepExecutor.get().execute(
+      step.with(KEYWORD, asterisk(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#asterisk()} keyword and name created by {@code nameGenerator} on given
+   * value.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   */
+  public static <T> void ___(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                             final ConsumerStep<? super T> step,
+                             final T value) {
+    StepExecutor.get().execute(
+      step.with(
+        KEYWORD, asterisk(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#asterisk()} keyword on given value and returns step result.
+   *
+   * @param step  the step
+   * @param value the value
+   * @param <T>   the type of the value
+   * @param <R>   the type of the step result
+   * @return step result
+   */
+  public static <T, R> R ___(final FunctionStep<? super T, ? extends R> step,
+                             final T value) {
+    return StepExecutor.get().execute(
+      step.with(KEYWORD, asterisk()),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#asterisk()} keyword and name on given value and returns step result.
+   *
+   * @param name  the name
+   * @param step  the step
+   * @param value the value
+   * @param <T>   the type of the value
+   * @param <R>   the type of the step result
+   * @return step result
+   */
+  public static <T, R> R ___(final String name,
+                             final FunctionStep<? super T, ? extends R> step,
+                             final T value) {
+    return StepExecutor.get().execute(
+      step.with(KEYWORD, asterisk(), NAME, name),
+      value
+    );
+  }
+
+  /**
+   * Executes given step with {@link AAAKeywords#asterisk()} keyword and name created by {@code nameGenerator} on given
+   * value and returns step result.
+   *
+   * @param nameGenerator the name generator
+   * @param step          the step
+   * @param value         the value
+   * @param <T>           the type of the value
+   * @param <R>           the type of the step result
+   * @return step result
+   */
+  public static <T, R> R ___(final ThrowingFunction<? super String, String, ?> nameGenerator,
+                             final FunctionStep<? super T, ? extends R> step,
+                             final T value) {
+    return StepExecutor.get().execute(
+      step.with(
+        KEYWORD, asterisk(),
+        NAME, ThrowingFunction.unchecked(nameGenerator).apply(step.get(NAME))
+      ),
+      value
+    );
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#asterisk()} keyword.
+   *
+   * @param body the step body
+   */
+  public static void ___(final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, asterisk()),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#asterisk()} keyword and given attributes.
+   *
+   * @param name the step name
+   * @param body the step body
+   */
+  public static void ___(final String name,
+                         final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, asterisk(), NAME, name),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#asterisk()} keyword and given attributes.
+   *
+   * @param name   the step name
+   * @param params the step params
+   * @param body   the step body
+   */
+  @SuppressWarnings("unchecked")
+  public static void ___(final String name,
+                         final Map<String, ?> params,
+                         final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, asterisk(), NAME, name, PARAMS, (Map<String, Object>) params),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#asterisk()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  public static void ___(final String name,
+                         final String expectedResult,
+                         final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, asterisk(), NAME, name, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#asterisk()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   */
+  @SuppressWarnings("unchecked")
+  public static void ___(final String name,
+                         final Map<String, ?> params,
+                         final String expectedResult,
+                         final ThrowingRunnable<?> body) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(
+        KEYWORD, asterisk(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#asterisk()} keyword and returns step result.
+   *
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  public static <R> R ___(final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, asterisk()),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#asterisk()} keyword and given attributes and returns step result.
+   *
+   * @param name the step name
+   * @param body the step body
+   * @param <R>  the type of the step result
+   * @return step result
+   */
+  public static <R> R ___(final String name,
+                          final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, asterisk(), NAME, name),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#asterisk()} keyword and given attributes and returns step result.
+   *
+   * @param name   the step name
+   * @param params the step params
+   * @param body   the step body
+   * @param <R>    the type of the step result
+   * @return step result
+   */
+  @SuppressWarnings("unchecked")
+  public static <R> R ___(final String name,
+                          final Map<String, ?> params,
+                          final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, asterisk(), NAME, name, PARAMS, (Map<String, Object>) params),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#asterisk()} keyword and given attributes and returns step result.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
+   */
+  public static <R> R ___(final String name,
+                          final String expectedResult,
+                          final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(KEYWORD, asterisk(), NAME, name, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#asterisk()} keyword and given attributes and returns step result.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   * @param body           the step body
+   * @param <R>            the type of the step result
+   * @return step result
+   */
+  @SuppressWarnings("unchecked")
+  public static <R> R ___(final String name,
+                          final Map<String, ?> params,
+                          final String expectedResult,
+                          final ThrowingSupplier<? extends R, ?> body) {
+    return StepExecutor.get().execute(new SupplierStep.Of<>(
+      new StepAttributes.Of(
+        KEYWORD, asterisk(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
+      body
+    ));
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#asterisk()} keyword and given attributes.
+   *
+   * @param name the step name
+   */
+  public static void ___(final String name) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, asterisk(), NAME, name),
+      RunnableStep.emptyBody()
+    ));
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#asterisk()} keyword and given attributes.
+   *
+   * @param name   the step name
+   * @param params the step params
+   */
+  @SuppressWarnings("unchecked")
+  public static void ___(final String name,
+                         final Map<String, ?> params) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, asterisk(), NAME, name, PARAMS, (Map<String, Object>) params),
+      RunnableStep.emptyBody()
+    ));
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#asterisk()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param expectedResult the step expected result
+   */
+  public static void ___(final String name,
+                         final String expectedResult) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(KEYWORD, asterisk(), NAME, name, EXPECTED_RESULT, expectedResult),
+      RunnableStep.emptyBody()
+    ));
+  }
+
+  /**
+   * Executes step with {@link AAAKeywords#asterisk()} keyword and given attributes.
+   *
+   * @param name           the step name
+   * @param params         the step params
+   * @param expectedResult the step expected result
+   */
+  @SuppressWarnings("unchecked")
+  public static void ___(final String name,
+                         final Map<String, ?> params,
+                         final String expectedResult) {
+    StepExecutor.get().execute(new RunnableStep.Of(
+      new StepAttributes.Of(
+        KEYWORD, asterisk(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
       RunnableStep.emptyBody()
     ));
   }
