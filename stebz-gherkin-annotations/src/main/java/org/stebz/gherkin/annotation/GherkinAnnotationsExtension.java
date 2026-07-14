@@ -25,7 +25,7 @@ package org.stebz.gherkin.annotation;
 
 import dev.jlet.function.ThrowingFunction;
 import org.stebz.core.attribute.Keyword;
-import org.stebz.core.attribute.StepAttribute;
+import org.stebz.core.attribute.SimpleStepAttribute;
 import org.stebz.core.executor.StartupPropertiesReader;
 import org.stebz.core.extension.InterceptStep;
 import org.stebz.core.extension.StebzExtension;
@@ -63,7 +63,8 @@ public class GherkinAnnotationsExtension implements InterceptStep {
    * @see And
    * @see But
    */
-  public static final StepAttribute<Annotation> GHERKIN_KEYWORD = StepAttribute.nullable(GHERKIN_KEYWORD_ATTRIBUTE_KEY);
+  public static final SimpleStepAttribute<Annotation> GHERKIN_KEYWORD =
+    SimpleStepAttribute.nullable(GHERKIN_KEYWORD_ATTRIBUTE_KEY);
   private static final Cached<Map<Class<? extends Annotation>, Keyword>> KEYWORDS = new Cached<>(() -> {
     final Map<Class<? extends Annotation>, Keyword> keywords = new HashMap<>();
     keywords.put(Background.class, GherkinKeywords.background());

@@ -26,7 +26,7 @@ package org.stebz.aaa.annotation;
 import dev.jlet.function.ThrowingFunction;
 import org.stebz.aaa.keyword.AAAKeywords;
 import org.stebz.core.attribute.Keyword;
-import org.stebz.core.attribute.StepAttribute;
+import org.stebz.core.attribute.SimpleStepAttribute;
 import org.stebz.core.executor.StartupPropertiesReader;
 import org.stebz.core.extension.InterceptStep;
 import org.stebz.core.extension.StebzExtension;
@@ -60,7 +60,8 @@ public class AAAAnnotationsExtension implements InterceptStep {
    * @see Act
    * @see Assert
    */
-  public static final StepAttribute<Annotation> AAA_KEYWORD = StepAttribute.nullable(AAA_KEYWORD_ATTRIBUTE_KEY);
+  public static final SimpleStepAttribute<Annotation> AAA_KEYWORD =
+    SimpleStepAttribute.nullable(AAA_KEYWORD_ATTRIBUTE_KEY);
   private static final Cached<Map<Class<? extends Annotation>, Keyword>> KEYWORDS = new Cached<>(() -> {
     final Map<Class<? extends Annotation>, Keyword> keywords = new HashMap<>();
     keywords.put(SetUp.class, AAAKeywords.setUp());

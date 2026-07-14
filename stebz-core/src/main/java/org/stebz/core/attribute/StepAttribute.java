@@ -36,71 +36,79 @@ import static java.util.Collections.emptyMap;
 /**
  * Step attribute.
  *
- * @param <V> the type of attribute value
+ * @param <I> the type of input attribute value
+ * @param <S> the type of stored attribute value
+ * @param <O> the type of output attribute value
  */
-public interface StepAttribute<V> {
+public interface StepAttribute<I, S, O> {
 
   /**
    * Keyword step attribute (default).
    *
    * @see #keyword
    */
-  StepAttribute<Keyword> KEYWORD = nonNull("default:keyword", Keyword.empty());
+  SimpleStepAttribute<Keyword> KEYWORD =
+    SimpleStepAttribute.nonNull("default:keyword", Keyword.empty());
 
   /**
    * Keyword step attribute (default). Alias for {@link #KEYWORD}.
    */
-  StepAttribute<Keyword> keyword = KEYWORD;
+  SimpleStepAttribute<Keyword> keyword = KEYWORD;
 
   /**
    * Name step attribute (default).
    */
-  StepAttribute<String> NAME = nonNull("default:name", "");
+  SimpleStepAttribute<String> NAME =
+    SimpleStepAttribute.nonNull("default:name", "");
 
   /**
    * Name step attribute (default). Alias for {@link #NAME}.
    */
-  StepAttribute<String> name = NAME;
+  SimpleStepAttribute<String> name = NAME;
 
   /**
    * Params step attribute (default).
    */
-  StepAttribute<Map<String, Object>> PARAMS = nonNull("default:params", emptyMap(), LinkedHashMap::new);
+  SimpleStepAttribute<Map<String, Object>> PARAMS =
+    SimpleStepAttribute.nonNull("default:params", emptyMap(), LinkedHashMap::new);
 
   /**
    * Params step attribute (default). Alias for {@link #PARAMS}.
    */
-  StepAttribute<Map<String, Object>> params = PARAMS;
+  SimpleStepAttribute<Map<String, Object>> params = PARAMS;
 
   /**
    * Expected result step attribute (default).
    */
-  StepAttribute<String> EXPECTED_RESULT = nonNull("default:expected_result", "");
+  SimpleStepAttribute<String> EXPECTED_RESULT =
+    SimpleStepAttribute.nonNull("default:expected_result", "");
 
   /**
    * Expected result step attribute (default). Alias for {@link #EXPECTED_RESULT}.
    */
-  StepAttribute<String> expectedResult = EXPECTED_RESULT;
+  SimpleStepAttribute<String> expectedResult = EXPECTED_RESULT;
 
   /**
    * Comment step attribute (default).
    */
-  StepAttribute<String> COMMENT = nonNull("default:comment", "");
+  SimpleStepAttribute<String> COMMENT =
+    SimpleStepAttribute.nonNull("default:comment", "");
 
   /**
    * Comment step attribute (default). Alias for {@link #COMMENT}.
    */
-  StepAttribute<String> comment = COMMENT;
+  SimpleStepAttribute<String> comment = COMMENT;
 
   /**
    * Hidden step attribute (default).
    */
-  StepAttribute<Boolean> HIDDEN = nonNull("default:hidden", false);
+  SimpleStepAttribute<Boolean> HIDDEN =
+    SimpleStepAttribute.nonNull("default:hidden", false);
 
   /**
    * Hidden step attribute (default). Alias for {@link #HIDDEN}.
    */
-  StepAttribute<Boolean> hidden = HIDDEN;
+  SimpleStepAttribute<Boolean> hidden = HIDDEN;
 
   /**
    * Returns attribute key.
@@ -110,26 +118,34 @@ public interface StepAttribute<V> {
   String key();
 
   /**
-   * Returns {@code true} if attribute is nullable, otherwise returns {@code false}.
+   * Returns attribute default input value.
    *
-   * @return {@code true} if attribute is nullable, otherwise {@code false}
+   * @return attribute default input value
    */
-  boolean nullable();
+  I defaultInputValue();
 
   /**
-   * Returns attribute default value.
+   * Returns attribute default output value.
    *
-   * @return attribute default value
+   * @return attribute default output value
    */
-  V defaultValue();
+  O defaultOutputValue();
 
   /**
-   * Returns the processed given value.
+   * Returns the processed given input value.
    *
    * @param value the value
-   * @return processed given value
+   * @return processed given input value
    */
-  V safeValue(V value);
+  S extractInputValue(I value);
+
+  /**
+   * Returns the processed given output value.
+   *
+   * @param value the value
+   * @return processed given output value
+   */
+  O extractOutputValue(S value);
 
   /**
    * Indicates whether some other object is "equal to" this one. Implementations of the {@link StepAttribute} should
@@ -150,79 +166,6 @@ public interface StepAttribute<V> {
    */
   @Override
   int hashCode();
-
-  /**
-   * Returns non-null attribute with given key and default value.
-   *
-   * @param key          the attribute key
-   * @param defaultValue the attribute default value
-   * @param <V>          the type of the attribute value
-   * @return non-null attribute
-   * @throws NullPointerException if {@code key} arg or {@code defaultValue} arg is null
-   */
-  static <V> StepAttribute<V> nonNull(final String key,
-                                      final V defaultValue) {
-    return new Of<>(key, false, defaultValue);
-  }
-
-  /**
-   * Returns non-null attribute with given key, default value and safe value function.
-   *
-   * @param key               the attribute key
-   * @param defaultValue      the attribute default value
-   * @param safeValueFunction the safe value function
-   * @param <V>               the type of the attribute value
-   * @return non-null attribute
-   * @throws NullPointerException if {@code key} arg or {@code defaultValue} arg or {@code safeValueFunction} arg is
-   *                              null
-   */
-  static <V> StepAttribute<V> nonNull(final String key,
-                                      final V defaultValue,
-                                      final ThrowingFunction<V, V, Error> safeValueFunction) {
-    return new Of<>(key, false, defaultValue, safeValueFunction);
-  }
-
-  /**
-   * Returns nullable attribute with given key and {@code null} default value.
-   *
-   * @param key the attribute key
-   * @param <V> the type of the attribute value
-   * @return nullable attribute
-   * @throws NullPointerException if {@code key} arg is null
-   */
-  static <V> StepAttribute<V> nullable(final String key) {
-    return new Of<>(key, true, null);
-  }
-
-  /**
-   * Returns nullable attribute with given key and default value.
-   *
-   * @param key          the attribute key
-   * @param defaultValue the attribute default value
-   * @param <V>          the type of the attribute value
-   * @return nullable attribute
-   * @throws NullPointerException if {@code key} arg is null
-   */
-  static <V> StepAttribute<V> nullable(final String key,
-                                       final V defaultValue) {
-    return new Of<>(key, true, defaultValue);
-  }
-
-  /**
-   * Returns nullable attribute with given key, default value and safe value function.
-   *
-   * @param key               the attribute key
-   * @param defaultValue      the attribute default value
-   * @param safeValueFunction the safe value function
-   * @param <V>               the type of the attribute value
-   * @return nullable attribute
-   * @throws NullPointerException if {@code key} arg or {@code safeValueFunction} arg is null
-   */
-  static <V> StepAttribute<V> nullable(final String key,
-                                       final V defaultValue,
-                                       final ThrowingFunction<V, V, Error> safeValueFunction) {
-    return new Of<>(key, true, defaultValue, safeValueFunction);
-  }
 
   /**
    * Returns keyword of given value.
@@ -382,52 +325,41 @@ public interface StepAttribute<V> {
   /**
    * Default {@code StepAttribute} implementation.
    *
-   * @param <V> the type of attribute value
+   * @param <I> the type of input attribute value
+   * @param <S> the type of stored attribute value
+   * @param <O> the type of output attribute value
    */
-  class Of<V> implements StepAttribute<V> {
-    private static final ThrowingFunction<?, ?, ?> IDENTITY_FUNCTION = v -> v;
+  class Of<I, S, O> implements StepAttribute<I, S, O> {
     private final String key;
-    private final boolean nullable;
-    private final V defaultValue;
-    private final ThrowingFunction<V, V, Error> safeValueFunction;
+    private final I defaultInputValue;
+    private final O defaultOutputValue;
+    private final ThrowingFunction<I, S, Error> extractInputValue;
+    private final ThrowingFunction<S, O, Error> extractOutputValue;
 
     /**
      * Ctor.
      *
-     * @param key          the attribute key
-     * @param nullable     the nullable sign
-     * @param defaultValue the attribute default value
-     * @throws NullPointerException if {@code key} arg or {@code safeValueFunction} arg is null or if {@code nullable}
-     *                              is {@code false} and {@code defaultValue} arg is null
-     */
-    @SuppressWarnings("unchecked")
-    public Of(final String key,
-              final boolean nullable,
-              final V defaultValue) {
-      this(key, nullable, defaultValue, (ThrowingFunction<V, V, Error>) IDENTITY_FUNCTION);
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param key               the attribute key
-     * @param nullable          the nullable sign
-     * @param defaultValue      the attribute default value
-     * @param safeValueFunction the safe value function
-     * @throws NullPointerException if {@code key} arg or {@code safeValueFunction} arg is null or if {@code nullable}
-     *                              is {@code false} and {@code defaultValue} arg is null
+     * @param key                the attribute key
+     * @param defaultInputValue  the default input value
+     * @param extractInputValue  the extract input value function
+     * @param defaultOutputValue the default output value
+     * @param extractOutputValue the extract output value function
+     * @throws NullPointerException if {@code key} arg or {@code extractInputValue} arg or {@code extractOutputValue}
+     *                              arg is null
      */
     public Of(final String key,
-              final boolean nullable,
-              final V defaultValue,
-              final ThrowingFunction<V, V, ?> safeValueFunction) {
+              final I defaultInputValue,
+              final ThrowingFunction<I, S, ?> extractInputValue,
+              final O defaultOutputValue,
+              final ThrowingFunction<S, O, ?> extractOutputValue) {
       if (key == null) { throw new NullPointerException("key arg is null"); }
-      if (!nullable && defaultValue == null) { throw new NullPointerException("defaultValue arg is null"); }
-      if (safeValueFunction == null) { throw new NullPointerException("safeValueFunction arg is null"); }
+      if (extractInputValue == null) { throw new NullPointerException("extractInputValue arg is null"); }
+      if (extractOutputValue == null) { throw new NullPointerException("extractOutputValue arg is null"); }
       this.key = key;
-      this.nullable = nullable;
-      this.defaultValue = defaultValue;
-      this.safeValueFunction = ThrowingFunction.unchecked(safeValueFunction);
+      this.defaultInputValue = defaultInputValue;
+      this.defaultOutputValue = defaultOutputValue;
+      this.extractInputValue = ThrowingFunction.unchecked(extractInputValue);
+      this.extractOutputValue = ThrowingFunction.unchecked(extractOutputValue);
     }
 
     @Override
@@ -436,18 +368,23 @@ public interface StepAttribute<V> {
     }
 
     @Override
-    public boolean nullable() {
-      return this.nullable;
+    public I defaultInputValue() {
+      return this.defaultInputValue;
     }
 
     @Override
-    public V defaultValue() {
-      return this.defaultValue;
+    public O defaultOutputValue() {
+      return this.defaultOutputValue;
     }
 
     @Override
-    public V safeValue(final V value) {
-      return this.safeValueFunction.apply(value);
+    public S extractInputValue(final I value) {
+      return this.extractInputValue.apply(value);
+    }
+
+    @Override
+    public O extractOutputValue(final S value) {
+      return this.extractOutputValue.apply(value);
     }
 
     @Override
@@ -456,10 +393,7 @@ public interface StepAttribute<V> {
         return true;
       }
       if (obj instanceof StepAttribute) {
-        final StepAttribute<?> other = (StepAttribute<?>) obj;
-        return Objects.equals(this.key, other.key())
-          && this.nullable == other.nullable()
-          && Objects.equals(this.defaultValue, other.defaultValue());
+        return Objects.equals(this.key, ((StepAttribute<?, ?, ?>) obj).key());
       }
       return false;
     }

@@ -43,6 +43,7 @@ import org.stebz.annotation.WithParam;
 import org.stebz.annotation.WithParams;
 import org.stebz.annotation.attribute.StepSourceType;
 import org.stebz.core.attribute.Keyword;
+import org.stebz.core.attribute.SimpleStepAttribute;
 import org.stebz.core.attribute.StepAttribute;
 import org.stebz.core.attribute.StepAttributes;
 import org.stebz.core.executor.StepExecutor;
@@ -81,7 +82,7 @@ import static org.stebz.core.attribute.StepAttribute.PARAMS;
  */
 @Aspect
 public class StepAspects {
-  private static final Map<String, StepAttribute<?>> CACHED_CUSTOM_ATTRS = new ConcurrentHashMap<>();
+  private static final Map<String, StepAttribute<?, ?, ?>> CACHED_CUSTOM_ATTRS = new ConcurrentHashMap<>();
   private static final Map<String, Keyword> CACHED_KEYWORDS = new ConcurrentHashMap<>();
   private static final Cached<StepAttributesSetters> STEP_ATTRIBUTES_SETTERS = new Cached<>(() -> {
     final MethodHandles.Lookup lookup = MethodHandles.lookup();
@@ -321,7 +322,7 @@ public class StepAspects {
     builder.add(REFLECTIVE_NAME, reflectiveName);
     if (!attrAnnotations.isEmpty()) {
       attrAnnotations.forEach((key, value) -> builder.add(
-        (StepAttribute<Object>) CACHED_CUSTOM_ATTRS.computeIfAbsent(key, StepAttribute::nullable),
+        (StepAttribute<Object, Object, Object>) CACHED_CUSTOM_ATTRS.computeIfAbsent(key, SimpleStepAttribute::nullable),
         value
       ));
     }

@@ -27,7 +27,7 @@ import dev.jlet.function.ThrowingConsumer;
 import dev.jlet.function.ThrowingFunction;
 import dev.jlet.function.ThrowingRunnable;
 import dev.jlet.function.ThrowingSupplier;
-import org.stebz.core.attribute.StepAttribute;
+import org.stebz.core.attribute.SimpleStepAttribute;
 import org.stebz.core.executor.StartupPropertiesReader;
 import org.stebz.core.extension.InterceptStep;
 import org.stebz.core.extension.StebzExtension;
@@ -55,15 +55,15 @@ public class RepeatExtension implements InterceptStep {
    *
    * @see WithRepeat
    */
-  public static final StepAttribute<RepeatOptions> REPEAT = StepAttribute.nullable("extension:repeat");
+  public static final SimpleStepAttribute<RepeatOptions> REPEAT = SimpleStepAttribute.nullable("extension:repeat");
 
   /**
    * Repeat step attribute. Alias for {@link #REPEAT}.
    *
    * @see WithRepeat
    */
-  public static final StepAttribute<RepeatOptions> repeat = REPEAT;
-  private static final StepAttribute<WithRepeat> REPEAT_ANNOT = StepAttribute.nullable(WithRepeat.KEY);
+  public static final SimpleStepAttribute<RepeatOptions> repeat = REPEAT;
+  private static final SimpleStepAttribute<WithRepeat> REPEAT_ANNOT = SimpleStepAttribute.nullable(WithRepeat.KEY);
   private final boolean enabled;
   private final int order;
 
