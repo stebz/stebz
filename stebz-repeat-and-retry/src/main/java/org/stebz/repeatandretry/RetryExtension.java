@@ -27,7 +27,7 @@ import dev.jlet.function.ThrowingConsumer;
 import dev.jlet.function.ThrowingFunction;
 import dev.jlet.function.ThrowingRunnable;
 import dev.jlet.function.ThrowingSupplier;
-import org.stebz.core.attribute.StepAttribute;
+import org.stebz.core.attribute.SimpleStepAttribute;
 import org.stebz.core.executor.StartupPropertiesReader;
 import org.stebz.core.extension.InterceptStep;
 import org.stebz.core.extension.StebzExtension;
@@ -55,15 +55,15 @@ public class RetryExtension implements InterceptStep {
    *
    * @see WithRetry
    */
-  public static final StepAttribute<RetryOptions> RETRY = StepAttribute.nullable("extension:retry");
+  public static final SimpleStepAttribute<RetryOptions> RETRY = SimpleStepAttribute.nullable("extension:retry");
 
   /**
    * Retry step attribute. Alias for {@link #RETRY}.
    *
    * @see WithRetry
    */
-  public static final StepAttribute<RetryOptions> retry = RETRY;
-  private static final StepAttribute<WithRetry> RETRY_ANNOT = StepAttribute.nullable(WithRetry.KEY);
+  public static final SimpleStepAttribute<RetryOptions> retry = RETRY;
+  private static final SimpleStepAttribute<WithRetry> RETRY_ANNOT = SimpleStepAttribute.nullable(WithRetry.KEY);
   private final boolean enabled;
   private final int order;
 

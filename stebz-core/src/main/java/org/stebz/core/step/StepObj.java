@@ -74,7 +74,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @return {@code true} if given attribute value is present, otherwise {@code false}
    * @throws NullPointerException if {@code attribute} arg is null
    */
-  default boolean contains(final StepAttribute<?> attribute) {
+  default boolean contains(final StepAttribute<?, ?, ?> attribute) {
     return this.attributes().contains(attribute);
   }
 
@@ -82,26 +82,12 @@ public interface StepObj<S extends StepObj<S>> {
    * Returns value of given attribute or default value if attribute is not present.
    *
    * @param attribute the attribute
-   * @param <V>       the type of the attribute
+   * @param <O>       the type of the attribute
    * @return value of given attribute or default value if attribute is not present
    * @throws NullPointerException if {@code attribute} arg is null
    */
-  default <V> V get(final StepAttribute<? extends V> attribute) {
+  default <O> O get(final StepAttribute<?, ?, O> attribute) {
     return this.attributes().get(attribute);
-  }
-
-  /**
-   * Returns {@code StepObj} with given attribute value updated by {@code updater}.
-   *
-   * @param attribute the attribute
-   * @param updater   the updater
-   * @param <V>       the type of the attribute
-   * @return {@code StepObj} with given attribute value
-   * @throws NullPointerException if {@code attribute} arg or {@code updater} arg is null
-   */
-  default <V> S withUpd(final StepAttribute<V> attribute,
-                        final ThrowingConsumer<? super V, ?> updater) {
-    return this.withAttributes(this.attributes().withUpd(attribute, updater));
   }
 
   /**
@@ -109,25 +95,24 @@ public interface StepObj<S extends StepObj<S>> {
    *
    * @param attribute the attribute
    * @param generator the generator
-   * @param <V>       the type of the attribute
+   * @param <I>       the type of the attribute
    * @return {@code StepObj} with given attribute value
-   * @throws NullPointerException if {@code attribute} arg or {@code generator} arg is null or if {@code attribute} is
-   *                              not nullable and {@code generator} result is null
+   * @throws NullPointerException if {@code attribute} arg or {@code generator} arg is null
    */
-  default <V> S withNew(final StepAttribute<V> attribute,
-                        final ThrowingFunction<? super V, ? extends V, ?> generator) {
-    return this.withAttributes(this.attributes().withNew(attribute, generator));
+  default <I, O> S withOf(final StepAttribute<I, ?, O> attribute,
+                          final ThrowingFunction<? super O, ? extends I, ?> generator) {
+    return this.withAttributes(this.attributes().withOf(attribute, generator));
   }
 
   /**
    * Returns {@code StepObj} with default attribute value.
    *
    * @param attribute the attribute
-   * @param <V>       the type of the attribute
+   * @param <I>       the type of the attribute
    * @return {@code StepObj} with default attribute value
    * @throws NullPointerException if {@code attribute} arg is null
    */
-  default <V> S with(final StepAttribute<V> attribute) {
+  default <I> S with(final StepAttribute<I, ?, ?> attribute) {
     return this.withAttributes(this.attributes().with(
       attribute
     ));
@@ -138,13 +123,12 @@ public interface StepObj<S extends StepObj<S>> {
    *
    * @param attribute the attribute
    * @param value     the attribute value
-   * @param <V>       the type of the attribute
+   * @param <I>       the type of the attribute
    * @return {@code StepObj} with given attribute value
-   * @throws NullPointerException if {@code attribute} arg is null or if {@code attribute} is not nullable and
-   *                              {@code value} is null
+   * @throws NullPointerException if {@code attribute} arg is null
    */
-  default <V> S with(final StepAttribute<V> attribute,
-                     final V value) {
+  default <I> S with(final StepAttribute<I, ?, ?> attribute,
+                     final I value) {
     return this.withAttributes(this.attributes().with(
       attribute, value
     ));
@@ -157,17 +141,15 @@ public interface StepObj<S extends StepObj<S>> {
    * @param value1     the first attribute value
    * @param attribute2 the second attribute
    * @param value2     the second attribute value
-   * @param <V1>       the type of the first attribute
-   * @param <V2>       the type of the second attribute
+   * @param <I1>       the type of the first attribute
+   * @param <I2>       the type of the second attribute
    * @return {@code StepObj} with given attributes values
-   * @throws NullPointerException if {@code attribute1} arg or {@code attribute2} arg is null or if {@code attribute1}
-   *                              is not nullable and {@code value1} is null or if {@code attribute2} is not nullable
-   *                              and {@code value2} is null
+   * @throws NullPointerException if {@code attribute1} arg or {@code attribute2} arg is null
    */
-  default <V1, V2> S with(final StepAttribute<V1> attribute1,
-                          final V1 value1,
-                          final StepAttribute<V2> attribute2,
-                          final V2 value2) {
+  default <I1, I2> S with(final StepAttribute<I1, ?, ?> attribute1,
+                          final I1 value1,
+                          final StepAttribute<I2, ?, ?> attribute2,
+                          final I2 value2) {
     return this.withAttributes(this.attributes().with(
       attribute1, value1,
       attribute2, value2
@@ -183,21 +165,18 @@ public interface StepObj<S extends StepObj<S>> {
    * @param value2     the second attribute value
    * @param attribute3 the third attribute
    * @param value3     the third attribute value
-   * @param <V1>       the type of the first attribute
-   * @param <V2>       the type of the second attribute
-   * @param <V3>       the type of the third attribute
+   * @param <I1>       the type of the first attribute
+   * @param <I2>       the type of the second attribute
+   * @param <I3>       the type of the third attribute
    * @return {@code StepObj} with given attributes values
    * @throws NullPointerException if {@code attribute1} arg or {@code attribute2} arg or {@code attribute3} arg is null
-   *                              or if {@code attribute1} is not nullable and {@code value1} is null or if
-   *                              {@code attribute2} is not nullable and {@code value2} is null or if {@code attribute3}
-   *                              is not nullable and {@code value3} is null
    */
-  default <V1, V2, V3> S with(final StepAttribute<V1> attribute1,
-                              final V1 value1,
-                              final StepAttribute<V2> attribute2,
-                              final V2 value2,
-                              final StepAttribute<V3> attribute3,
-                              final V3 value3) {
+  default <I1, I2, I3> S with(final StepAttribute<I1, ?, ?> attribute1,
+                              final I1 value1,
+                              final StepAttribute<I2, ?, ?> attribute2,
+                              final I2 value2,
+                              final StepAttribute<I3, ?, ?> attribute3,
+                              final I3 value3) {
     return this.withAttributes(this.attributes().with(
       attribute1, value1,
       attribute2, value2,
@@ -212,7 +191,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @return {@code StepObj} without given attribute
    * @throws NullPointerException if {@code attribute} arg is null
    */
-  default S without(final StepAttribute<?> attribute) {
+  default S without(final StepAttribute<?, ?, ?> attribute) {
     return this.withAttributes(this.attributes().without(attribute));
   }
 
@@ -304,8 +283,8 @@ public interface StepObj<S extends StepObj<S>> {
    * @see #with(StepAttribute, Object)
    * @see StepAttribute#KEYWORD
    */
-  default S withKeyword(final ThrowingFunction<? super Keyword, Keyword, ?> generator) {
-    return this.withNew(KEYWORD, generator);
+  default S withKeyword(final ThrowingFunction<? super Keyword, ? extends Keyword, ?> generator) {
+    return this.withOf(KEYWORD, generator);
   }
 
   /**
@@ -330,8 +309,8 @@ public interface StepObj<S extends StepObj<S>> {
    * @see #with(StepAttribute, Object)
    * @see StepAttribute#NAME
    */
-  default S withName(final ThrowingFunction<? super String, String, ?> generator) {
-    return this.withNew(NAME, generator);
+  default S withName(final ThrowingFunction<? super String, ? extends String, ?> generator) {
+    return this.withOf(NAME, generator);
   }
 
   /**
@@ -353,15 +332,20 @@ public interface StepObj<S extends StepObj<S>> {
    * @param updater the updater
    * @return {@code StepObj} with given params attribute value
    * @throws NullPointerException if {@code updater} arg is null
-   * @see #withUpd(StepAttribute, ThrowingConsumer)
+   * @see #withOf(StepAttribute, ThrowingFunction)
    * @see StepAttribute#PARAMS
    */
   default S withParams(final ThrowingConsumer<? super Map<String, Object>, ?> updater) {
-    return this.withUpd(PARAMS, updater);
+    if (updater == null) { throw new NullPointerException("updater arg is null"); }
+    return this.withOf(PARAMS, i -> {
+      updater.accept(i);
+      return i;
+    });
   }
 
   /**
    * Returns {@code StepObj} with added to params attribute value param. Alias for
+   * <p>
    * {@link #withAddedParam(String, Object)} method.
    *
    * @param name  the param name
@@ -425,7 +409,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @see StepAttribute#EXPECTED_RESULT
    */
   default S withExpectedResult(final ThrowingFunction<? super String, String, ?> generator) {
-    return this.withNew(EXPECTED_RESULT, generator);
+    return this.withOf(EXPECTED_RESULT, generator);
   }
 
   /**
@@ -451,7 +435,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @see StepAttribute#COMMENT
    */
   default S withComment(final ThrowingFunction<? super String, String, ?> generator) {
-    return this.withNew(COMMENT, generator);
+    return this.withOf(COMMENT, generator);
   }
 
   /**

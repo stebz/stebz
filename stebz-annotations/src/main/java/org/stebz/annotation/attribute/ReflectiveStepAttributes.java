@@ -24,7 +24,7 @@
 package org.stebz.annotation.attribute;
 
 import org.aspectj.lang.JoinPoint;
-import org.stebz.core.attribute.StepAttribute;
+import org.stebz.core.attribute.SimpleStepAttribute;
 
 import java.lang.annotation.Annotation;
 
@@ -36,16 +36,16 @@ public final class ReflectiveStepAttributes {
   /**
    * Join point step attribute.
    */
-  public static final StepAttribute<JoinPoint> JOIN_POINT =
-    StepAttribute.nullable("reflective:join_point");
+  public static final SimpleStepAttribute<JoinPoint> JOIN_POINT =
+    SimpleStepAttribute.nullable("reflective:join_point");
 
   /**
    * Step source step attribute.
    *
    * @see #STEP_SOURCE
    */
-  public static final StepAttribute<StepSourceType> STEP_SOURCE_TYPE =
-    StepAttribute.nonNull("reflective:step_source_type", StepSourceType.UNKNOWN);
+  public static final SimpleStepAttribute<StepSourceType> STEP_SOURCE_TYPE =
+    SimpleStepAttribute.nonNull("reflective:step_source_type", StepSourceType.UNKNOWN);
 
   /**
    * Step source step attribute. May be {@link java.lang.reflect.Field}, {@link java.lang.reflect.Method},
@@ -53,20 +53,20 @@ public final class ReflectiveStepAttributes {
    *
    * @see #STEP_SOURCE_TYPE
    */
-  public static final StepAttribute<Object> STEP_SOURCE =
-    StepAttribute.nullable("reflective:step_source");
+  public static final SimpleStepAttribute<Object> STEP_SOURCE =
+    SimpleStepAttribute.nullable("reflective:step_source");
 
   /**
    * Declared annotations step attribute.
    */
-  public static final StepAttribute<Annotation[]> DECLARED_ANNOTATIONS =
-    StepAttribute.nonNull("reflective:annotations", new Annotation[0], Annotation[]::clone);
+  public static final SimpleStepAttribute<Annotation[]> DECLARED_ANNOTATIONS =
+    SimpleStepAttribute.nonNull("reflective:annotations", new Annotation[0], Annotation[]::clone);
 
   /**
    * Reflective name step attribute.
    */
-  public static final StepAttribute<String> REFLECTIVE_NAME =
-    StepAttribute.nonNull("reflective:reflective_name", "");
+  public static final SimpleStepAttribute<String> REFLECTIVE_NAME =
+    SimpleStepAttribute.nonNull("reflective:reflective_name", "");
 
   /**
    * Utility class ctor.
