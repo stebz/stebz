@@ -43,7 +43,7 @@ import java.util.Map;
 
 import static org.stebz.core.attribute.StepAttribute.COMMENT;
 import static org.stebz.core.attribute.StepAttribute.EXPECTED_RESULT;
-import static org.stebz.core.attribute.StepAttribute.HIDDEN;
+import static org.stebz.core.attribute.StepAttribute.HIDING;
 import static org.stebz.core.attribute.StepAttribute.KEYWORD;
 import static org.stebz.core.attribute.StepAttribute.NAME;
 import static org.stebz.core.attribute.StepAttribute.PARAMS;
@@ -270,10 +270,10 @@ public interface StepObj<S extends StepObj<S>> {
    *
    * @return hidden attribute value
    * @see #get(StepAttribute)
-   * @see StepAttribute#HIDDEN
+   * @see StepAttribute#HIDING
    */
   default boolean isHidden() {
-    return this.get(HIDDEN);
+    return this.get(HIDING);
   }
 
   /**
@@ -458,7 +458,7 @@ public interface StepObj<S extends StepObj<S>> {
    *
    * @return {@code StepObj} with {@code true} hidden attribute value
    * @see #with(StepAttribute, Object)
-   * @see StepAttribute#HIDDEN
+   * @see StepAttribute#HIDING
    */
   default S withHiding() {
     return this.withHiding(true);
@@ -470,10 +470,10 @@ public interface StepObj<S extends StepObj<S>> {
    * @param value the hidden attribute value
    * @return {@code StepObj} with given hidden attribute value
    * @see #with(StepAttribute, Object)
-   * @see StepAttribute#HIDDEN
+   * @see StepAttribute#HIDING
    */
   default S withHiding(final boolean value) {
-    return this.with(HIDDEN, value);
+    return this.with(HIDING, value);
   }
 
   /**
@@ -565,10 +565,10 @@ public interface StepObj<S extends StepObj<S>> {
    *
    * @return {@code StepObj} without hidden attribute
    * @see #without(StepAttribute)
-   * @see StepAttribute#HIDDEN
+   * @see StepAttribute#HIDING
    */
   default S withoutHiding() {
-    return this.without(HIDDEN);
+    return this.without(HIDING);
   }
 
   /**

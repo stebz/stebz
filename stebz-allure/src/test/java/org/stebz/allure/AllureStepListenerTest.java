@@ -45,7 +45,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.stebz.core.attribute.StepAttribute.COMMENT;
 import static org.stebz.core.attribute.StepAttribute.EXPECTED_RESULT;
-import static org.stebz.core.attribute.StepAttribute.HIDDEN;
+import static org.stebz.core.attribute.StepAttribute.HIDING;
 import static org.stebz.core.attribute.StepAttribute.KEYWORD;
 import static org.stebz.core.attribute.StepAttribute.NAME;
 import static org.stebz.core.attribute.StepAttribute.PARAMS;
@@ -74,7 +74,7 @@ final class AllureStepListenerTest {
       new StepAttributes.BuilderOf()
         .add(KEYWORD, keyword)
         .add(NAME, name)
-        .add(HIDDEN, hidden)
+        .add(HIDING, hidden)
         .add(PARAMS, params)
         .add(EXPECTED_RESULT, expectedResultValue)
         .add(COMMENT, commentValue)
