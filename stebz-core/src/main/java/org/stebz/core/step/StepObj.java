@@ -95,6 +95,17 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
+   * Returns {@code Boolean} value of given attribute or default value if attribute is not present.
+   *
+   * @param attribute the attribute
+   * @return {@code Boolean} value of given attribute or default value if attribute is not present
+   * @throws NullPointerException if {@code attribute} arg is null
+   */
+  default Boolean is(final StepAttribute<?, ?, Boolean> attribute) {
+    return this.attributes().get(attribute);
+  }
+
+  /**
    * Returns {@code StepObj} with given attribute value created by {@code generator}.
    *
    * @param attribute the attribute
