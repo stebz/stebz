@@ -100,15 +100,15 @@ public interface StepAttribute<I, S, O> {
   SimpleStepAttribute<String> comment = COMMENT;
 
   /**
-   * Hidden step attribute (default).
+   * Hiding step attribute (default).
    */
-  SimpleStepAttribute<Boolean> HIDDEN =
-    SimpleStepAttribute.nonNull("default:hidden", false);
+  SimpleStepAttribute<Boolean> HIDING =
+    SimpleStepAttribute.nonNull("default:hiding", false);
 
   /**
-   * Hidden step attribute (default). Alias for {@link #HIDDEN}.
+   * Hiding step attribute (default). Alias for {@link #HIDING}.
    */
-  SimpleStepAttribute<Boolean> hidden = HIDDEN;
+  SimpleStepAttribute<Boolean> hiding = HIDING;
 
   /**
    * Returns attribute key.

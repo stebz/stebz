@@ -72,7 +72,7 @@ import static org.stebz.annotation.attribute.ReflectiveStepAttributes.STEP_SOURC
 import static org.stebz.annotation.attribute.ReflectiveStepAttributes.STEP_SOURCE_TYPE;
 import static org.stebz.core.attribute.StepAttribute.COMMENT;
 import static org.stebz.core.attribute.StepAttribute.EXPECTED_RESULT;
-import static org.stebz.core.attribute.StepAttribute.HIDDEN;
+import static org.stebz.core.attribute.StepAttribute.HIDING;
 import static org.stebz.core.attribute.StepAttribute.KEYWORD;
 import static org.stebz.core.attribute.StepAttribute.NAME;
 import static org.stebz.core.attribute.StepAttribute.PARAMS;
@@ -406,7 +406,7 @@ public class StepAspects {
                                 final Map<String, Annotation> annotations) {
     final WithHidden annotation = (WithHidden) annotations.get(WithHidden.KEY);
     if (annotation != null) {
-      builder.add(HIDDEN, annotation.value());
+      builder.add(HIDING, annotation.value());
     }
   }
 

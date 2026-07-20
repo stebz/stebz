@@ -33,9 +33,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Step attribute annotation. Maps to {@link StepAttribute#HIDDEN} attribute via {@link StepAspects}.
+ * Step attribute annotation. Maps to {@link StepAttribute#HIDING} attribute via {@link StepAspects}.
  *
- * @see StepAttribute#HIDDEN
+ * @see StepAttribute#HIDING
  */
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
