@@ -29,7 +29,6 @@ import org.stebz.core.step.StepObj;
 import org.stebz.core.step.executable.RunnableStep;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.stebz.method.StebzMethods.hidden;
 
 /**
  * Tests for {@link StebzMethods}.
@@ -39,15 +38,6 @@ final class StebzMethodsTest {
   @BeforeEach
   void clearListener() {
     StaticStepListener.clear();
-  }
-
-  @Test
-  void hiddenMethodShouldAddHiddenAttribute() {
-    final RunnableStep originStep = RunnableStep.empty();
-
-    final RunnableStep resultStep = hidden(originStep);
-    assertThat(resultStep.getHidden())
-      .isTrue();
   }
 
   @Test

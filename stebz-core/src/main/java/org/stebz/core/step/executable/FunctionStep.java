@@ -30,6 +30,8 @@ import dev.jlet.function.ThrowingFunction2;
 import org.stebz.core.attribute.StepAttributes;
 import org.stebz.core.exception.StepNotImplementedError;
 import org.stebz.core.step.ExecutableStep;
+import org.stebz.core.step.executable.alias.CStep;
+import org.stebz.core.step.executable.alias.FStep;
 
 import java.util.Map;
 
@@ -43,7 +45,7 @@ import static org.stebz.core.attribute.StepAttribute.PARAMS;
  * @param <T> the type of the step input value
  * @param <R> the type of the step result
  */
-public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R, ?>, FunctionStep<T, R>> {
+public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R, ?>, FStep<T, R>> {
 
   /**
    * Returns {@code FunctionStep} with empty body that returns {@code null} result.
@@ -222,7 +224,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    *
    * @return this step as {@code ConsumerStep}
    */
-  default ConsumerStep<T> noResult() {
+  default CStep<T> noResult() {
     return new ConsumerStep.Of<>(this.attributes(), this.getBody()::apply);
   }
 
@@ -234,8 +236,8 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @return {@code FunctionStep} with empty body that returns {@code null} result
    */
   @SuppressWarnings("unchecked")
-  static <T, R> FunctionStep<T, R> empty() {
-    return (FunctionStep<T, R>) Of.EMPTY_STEP;
+  static <T, R> FStep<T, R> empty() {
+    return (FStep<T, R>) Of.EMPTY_STEP;
   }
 
   /**
@@ -246,8 +248,8 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @param <R>    the type of the step result
    * @return {@code FunctionStep} with empty body that returns given result
    */
-  static <T, R> FunctionStep<T, R> emptyReturning(final R result) {
-    return FunctionStep.of(emptyBodyReturning(result));
+  static <T, R> FStep<T, R> emptyReturning(final R result) {
+    return new FunctionStep.Of<>(emptyBodyReturning(result));
   }
 
   /**
@@ -258,8 +260,8 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @return {@code FunctionStep} with body that throws an {@code StepNotImplementedError}
    */
   @SuppressWarnings("unchecked")
-  static <T, R> FunctionStep<T, R> notImplemented() {
-    return (FunctionStep<T, R>) Of.NOT_IMPLEMENTED_STEP;
+  static <T, R> FStep<T, R> notImplemented() {
+    return (FStep<T, R>) Of.NOT_IMPLEMENTED_STEP;
   }
 
   /**
@@ -307,7 +309,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @return {@code FunctionStep} with given body
    * @throws NullPointerException if {@code body} arg is null
    */
-  static <T, R> FunctionStep<T, R> of(final ThrowingFunction<T, R, ?> body) {
+  static <T, R> FStep<T, R> of(final ThrowingFunction<T, R, ?> body) {
     return new Of<>(body);
   }
 
@@ -321,8 +323,8 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @return {@code FunctionStep} with given attributes and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
-  static <T, R> FunctionStep<T, R> of(final String name,
-                                      final ThrowingFunction<T, R, ?> body) {
+  static <T, R> FStep<T, R> of(final String name,
+                               final ThrowingFunction<T, R, ?> body) {
     return new Of<>(name, body);
   }
 
@@ -337,9 +339,9 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @return {@code FunctionStep} with given attributes and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
-  static <T, R> FunctionStep<T, R> of(final String name,
-                                      final String expectedResult,
-                                      final ThrowingFunction<T, R, ?> body) {
+  static <T, R> FStep<T, R> of(final String name,
+                               final String expectedResult,
+                               final ThrowingFunction<T, R, ?> body) {
     return new Of<>(name, expectedResult, body);
   }
 
@@ -354,9 +356,9 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @return {@code FunctionStep} with given attributes and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
-  static <T, R> FunctionStep<T, R> of(final String name,
-                                      final Map<String, ?> params,
-                                      final ThrowingFunction<T, R, ?> body) {
+  static <T, R> FStep<T, R> of(final String name,
+                               final Map<String, ?> params,
+                               final ThrowingFunction<T, R, ?> body) {
     return new Of<>(name, params, body);
   }
 
@@ -373,10 +375,10 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
-  static <T, R> FunctionStep<T, R> of(final String name,
-                                      final Map<String, ?> params,
-                                      final String expectedResult,
-                                      final ThrowingFunction<T, R, ?> body) {
+  static <T, R> FStep<T, R> of(final String name,
+                               final Map<String, ?> params,
+                               final String expectedResult,
+                               final ThrowingFunction<T, R, ?> body) {
     return new Of<>(name, params, expectedResult, body);
   }
 
@@ -389,7 +391,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @return {@code FunctionStep} of given step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
-  static <T, R> FunctionStep<T, R> of(final FunctionStep<T, R> origin) {
+  static <T, R> FStep<T, R> of(final FunctionStep<T, R> origin) {
     return new Of<>(origin);
   }
 
@@ -403,8 +405,8 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @return {@code FunctionStep} with given attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
-  static <T, R> FunctionStep<T, R> of(final StepAttributes attributes,
-                                      final ThrowingFunction<T, R, ?> body) {
+  static <T, R> FStep<T, R> of(final StepAttributes attributes,
+                               final ThrowingFunction<T, R, ?> body) {
     return new Of<>(attributes, body);
   }
 
@@ -414,12 +416,12 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @param <T> the type of the step input value
    * @param <R> the type of the step result
    */
-  class Of<T, R> implements FunctionStep<T, R> {
+  class Of<T, R> implements FStep<T, R> {
     private static final ThrowingFunction<?, ?, ?> EMPTY_BODY = t -> null;
     private static final ThrowingFunction<?, ?, ?> NOT_IMPLEMENTED_BODY =
       t -> { throw new StepNotImplementedError("FunctionStep not implemented"); };
-    private static final FunctionStep<?, ?> EMPTY_STEP = new FunctionStep.Of<>(EMPTY_BODY);
-    private static final FunctionStep<?, ?> NOT_IMPLEMENTED_STEP = new FunctionStep.Of<>(NOT_IMPLEMENTED_BODY);
+    private static final FStep<?, ?> EMPTY_STEP = new Of<>(EMPTY_BODY);
+    private static final FStep<?, ?> NOT_IMPLEMENTED_STEP = new Of<>(NOT_IMPLEMENTED_BODY);
     private final StepAttributes attributes;
     private final ThrowingFunction<T, R, ?> body;
 
@@ -535,7 +537,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
     }
 
     @Override
-    public FunctionStep<T, R> withAttributes(final StepAttributes attributes) {
+    public FStep<T, R> withAttributes(final StepAttributes attributes) {
       return new Of<>(attributes, this.body);
     }
 
@@ -545,7 +547,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
     }
 
     @Override
-    public FunctionStep<T, R> withBody(final ThrowingFunction<T, R, ?> body) {
+    public FStep<T, R> withBody(final ThrowingFunction<T, R, ?> body) {
       return new Of<>(this.attributes, body);
     }
 

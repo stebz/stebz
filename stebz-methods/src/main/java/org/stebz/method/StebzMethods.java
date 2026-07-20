@@ -30,7 +30,6 @@ import dev.jlet.function.ThrowingSupplier;
 import org.stebz.core.attribute.Keyword;
 import org.stebz.core.attribute.StepAttributes;
 import org.stebz.core.executor.StepExecutor;
-import org.stebz.core.step.StepObj;
 import org.stebz.core.step.executable.ConsumerStep;
 import org.stebz.core.step.executable.FunctionStep;
 import org.stebz.core.step.executable.RunnableStep;
@@ -39,7 +38,6 @@ import org.stebz.core.step.executable.SupplierStep;
 import java.util.Map;
 
 import static org.stebz.core.attribute.StepAttribute.EXPECTED_RESULT;
-import static org.stebz.core.attribute.StepAttribute.HIDDEN;
 import static org.stebz.core.attribute.StepAttribute.KEYWORD;
 import static org.stebz.core.attribute.StepAttribute.NAME;
 import static org.stebz.core.attribute.StepAttribute.PARAMS;
@@ -118,17 +116,6 @@ public final class StebzMethods {
                                      final ThrowingFunction<? super V, ? extends R, ?> steps) {
     if (steps == null) { throw new NullPointerException("steps arg is null"); }
     return ThrowingFunction.unchecked(steps).apply(value);
-  }
-
-  /**
-   * Returns given step with hidden attribute.
-   *
-   * @param step the origin step
-   * @param <S>  the type of the step
-   * @return step with hidden attribute
-   */
-  public static <S extends StepObj<S>> S hidden(final S step) {
-    return step.with(HIDDEN, true);
   }
 
   /**

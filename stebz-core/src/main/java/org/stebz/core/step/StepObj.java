@@ -34,6 +34,10 @@ import org.stebz.core.step.executable.ConsumerStep;
 import org.stebz.core.step.executable.FunctionStep;
 import org.stebz.core.step.executable.RunnableStep;
 import org.stebz.core.step.executable.SupplierStep;
+import org.stebz.core.step.executable.alias.CStep;
+import org.stebz.core.step.executable.alias.FStep;
+import org.stebz.core.step.executable.alias.RStep;
+import org.stebz.core.step.executable.alias.SStep;
 
 import java.util.Map;
 
@@ -546,33 +550,33 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code RunnableStep} with given body. Alias for {@link RunnableStep#of(ThrowingRunnable)} method.
+   * Returns {@code RunnableStep} with given body. Alias for {@link RStep#of(ThrowingRunnable)} method.
    *
    * @param body the step body
    * @return {@code RunnableStep} with given body
    * @throws NullPointerException if {@code body} arg is null
    */
-  static RunnableStep stepOf(final ThrowingRunnable<?> body) {
-    return RunnableStep.of(body);
+  static RStep stepOf(final ThrowingRunnable<?> body) {
+    return new RunnableStep.Of(body);
   }
 
   /**
-   * Returns {@code RunnableStep} with given attributes and body. Alias for
-   * {@link RunnableStep#of(String, ThrowingRunnable)} method.
+   * Returns {@code RunnableStep} with given attributes and body. Alias for {@link RStep#of(String, ThrowingRunnable)}
+   * method.
    *
    * @param name the step name
    * @param body the step body
    * @return {@code RunnableStep} with given name and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
-  static RunnableStep stepOf(final String name,
-                             final ThrowingRunnable<?> body) {
-    return RunnableStep.of(name, body);
+  static RStep stepOf(final String name,
+                      final ThrowingRunnable<?> body) {
+    return new RunnableStep.Of(name, body);
   }
 
   /**
    * Returns {@code RunnableStep} with given attributes and body. Alias for
-   * {@link RunnableStep#of(String, String, ThrowingRunnable)} method.
+   * {@link RStep#of(String, String, ThrowingRunnable)} method.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
@@ -580,15 +584,15 @@ public interface StepObj<S extends StepObj<S>> {
    * @return {@code RunnableStep} with given name and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
-  static RunnableStep stepOf(final String name,
-                             final String expectedResult,
-                             final ThrowingRunnable<?> body) {
-    return RunnableStep.of(name, expectedResult, body);
+  static RStep stepOf(final String name,
+                      final String expectedResult,
+                      final ThrowingRunnable<?> body) {
+    return new RunnableStep.Of(name, expectedResult, body);
   }
 
   /**
    * Returns {@code RunnableStep} with given attributes and body. Alias for
-   * {@link RunnableStep#of(String, Map, ThrowingRunnable)} method.
+   * {@link RStep#of(String, Map, ThrowingRunnable)} method.
    *
    * @param name   the step name
    * @param params the step params
@@ -596,15 +600,15 @@ public interface StepObj<S extends StepObj<S>> {
    * @return {@code RunnableStep} with given name, params and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
-  static RunnableStep stepOf(final String name,
-                             final Map<String, ?> params,
-                             final ThrowingRunnable<?> body) {
-    return RunnableStep.of(name, params, body);
+  static RStep stepOf(final String name,
+                      final Map<String, ?> params,
+                      final ThrowingRunnable<?> body) {
+    return new RunnableStep.Of(name, params, body);
   }
 
   /**
    * Returns {@code RunnableStep} with given attributes and body. Alias for
-   * {@link RunnableStep#of(String, Map, String, ThrowingRunnable)} method.
+   * {@link RStep#of(String, Map, String, ThrowingRunnable)} method.
    *
    * @param name           the step name
    * @param params         the step params
@@ -614,54 +618,53 @@ public interface StepObj<S extends StepObj<S>> {
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
-  static RunnableStep stepOf(final String name,
-                             final Map<String, ?> params,
-                             final String expectedResult,
-                             final ThrowingRunnable<?> body) {
-    return RunnableStep.of(name, params, expectedResult, body);
+  static RStep stepOf(final String name,
+                      final Map<String, ?> params,
+                      final String expectedResult,
+                      final ThrowingRunnable<?> body) {
+    return new RunnableStep.Of(name, params, expectedResult, body);
   }
 
   /**
-   * Returns {@code RunnableStep} of given step attributes and body. Alias for {@link RunnableStep#of(RunnableStep)}
-   * method.
+   * Returns {@code RunnableStep} of given step attributes and body. Alias for {@link RStep#of(RunnableStep)} method.
    *
    * @param origin the origin step
    * @return {@code RunnableStep} of given step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
-  static RunnableStep stepOf(final RunnableStep origin) {
-    return RunnableStep.of(origin);
+  static RStep stepOf(final RunnableStep origin) {
+    return new RunnableStep.Of(origin);
   }
 
   /**
    * Returns {@code RunnableStep} with given attributes and body. Alias for
-   * {@link RunnableStep#of(StepAttributes, ThrowingRunnable)} method.
+   * {@link RStep#of(StepAttributes, ThrowingRunnable)} method.
    *
    * @param attributes the step attributes
    * @param body       the step body
    * @return {@code RunnableStep} with given attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
-  static RunnableStep stepOf(final StepAttributes attributes,
-                             final ThrowingRunnable<?> body) {
-    return RunnableStep.of(attributes, body);
+  static RStep stepOf(final StepAttributes attributes,
+                      final ThrowingRunnable<?> body) {
+    return new RunnableStep.Of(attributes, body);
   }
 
   /**
-   * Returns {@code ConsumerStep} with given body. Alias for {@link ConsumerStep#of(ThrowingConsumer)} method.
+   * Returns {@code ConsumerStep} with given body. Alias for {@link CStep#of(ThrowingConsumer)} method.
    *
    * @param body the step body
    * @param <T>  the type of the step input value
    * @return {@code ConsumerStep} with given body
    * @throws NullPointerException if {@code body} arg is null
    */
-  static <T> ConsumerStep<T> stepOf(final ThrowingConsumer<T, ?> body) {
-    return ConsumerStep.of(body);
+  static <T> CStep<T> stepOf(final ThrowingConsumer<T, ?> body) {
+    return new ConsumerStep.Of<>(body);
   }
 
   /**
-   * Returns {@code ConsumerStep} with given attributes and body. Alias for
-   * {@link ConsumerStep#of(String, ThrowingConsumer)} method.
+   * Returns {@code ConsumerStep} with given attributes and body. Alias for {@link CStep#of(String, ThrowingConsumer)}
+   * method.
    *
    * @param name the step name
    * @param body the step body
@@ -669,14 +672,14 @@ public interface StepObj<S extends StepObj<S>> {
    * @return {@code ConsumerStep} with given name and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
-  static <T> ConsumerStep<T> stepOf(final String name,
-                                    final ThrowingConsumer<T, ?> body) {
-    return ConsumerStep.of(name, body);
+  static <T> CStep<T> stepOf(final String name,
+                             final ThrowingConsumer<T, ?> body) {
+    return new ConsumerStep.Of<>(name, body);
   }
 
   /**
    * Returns {@code ConsumerStep} with given attributes and body. Alias for
-   * {@link ConsumerStep#of(String, String, ThrowingConsumer)} method.
+   * {@link CStep#of(String, String, ThrowingConsumer)} method.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
@@ -685,15 +688,15 @@ public interface StepObj<S extends StepObj<S>> {
    * @return {@code ConsumerStep} with given name and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
-  static <T> ConsumerStep<T> stepOf(final String name,
-                                    final String expectedResult,
-                                    final ThrowingConsumer<T, ?> body) {
-    return ConsumerStep.of(name, expectedResult, body);
+  static <T> CStep<T> stepOf(final String name,
+                             final String expectedResult,
+                             final ThrowingConsumer<T, ?> body) {
+    return new ConsumerStep.Of<>(name, expectedResult, body);
   }
 
   /**
    * Returns {@code ConsumerStep} with given attributes and body. Alias for
-   * {@link ConsumerStep#of(String, Map, ThrowingConsumer)} method.
+   * {@link CStep#of(String, Map, ThrowingConsumer)} method.
    *
    * @param name   the step name
    * @param params the step params
@@ -702,15 +705,15 @@ public interface StepObj<S extends StepObj<S>> {
    * @return {@code ConsumerStep} with given name, params and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
-  static <T> ConsumerStep<T> stepOf(final String name,
-                                    final Map<String, ?> params,
-                                    final ThrowingConsumer<T, ?> body) {
-    return ConsumerStep.of(name, params, body);
+  static <T> CStep<T> stepOf(final String name,
+                             final Map<String, ?> params,
+                             final ThrowingConsumer<T, ?> body) {
+    return new ConsumerStep.Of<>(name, params, body);
   }
 
   /**
    * Returns {@code ConsumerStep} with given attributes and body. Alias for
-   * {@link ConsumerStep#of(String, Map, String, ThrowingConsumer)} method.
+   * {@link CStep#of(String, Map, String, ThrowingConsumer)} method.
    *
    * @param name           the step name
    * @param params         the step params
@@ -721,29 +724,28 @@ public interface StepObj<S extends StepObj<S>> {
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
-  static <T> ConsumerStep<T> stepOf(final String name,
-                                    final Map<String, ?> params,
-                                    final String expectedResult,
-                                    final ThrowingConsumer<T, ?> body) {
-    return ConsumerStep.of(name, params, expectedResult, body);
+  static <T> CStep<T> stepOf(final String name,
+                             final Map<String, ?> params,
+                             final String expectedResult,
+                             final ThrowingConsumer<T, ?> body) {
+    return new ConsumerStep.Of<>(name, params, expectedResult, body);
   }
 
   /**
-   * Returns {@code ConsumerStep} of given step attributes and body. Alias for {@link ConsumerStep#of(ConsumerStep)}
-   * method.
+   * Returns {@code ConsumerStep} of given step attributes and body. Alias for {@link CStep#of(ConsumerStep)} method.
    *
    * @param origin the origin step
    * @param <T>    the type of the step input value
    * @return {@code ConsumerStep} of given step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
-  static <T> ConsumerStep<T> stepOf(final ConsumerStep<T> origin) {
-    return ConsumerStep.of(origin);
+  static <T> CStep<T> stepOf(final ConsumerStep<T> origin) {
+    return new ConsumerStep.Of<>(origin);
   }
 
   /**
    * Returns {@code ConsumerStep} with given attributes and body. Alias for
-   * {@link ConsumerStep#of(StepAttributes, ThrowingConsumer)} method.
+   * {@link CStep#of(StepAttributes, ThrowingConsumer)} method.
    *
    * @param attributes the step attributes
    * @param body       the step body
@@ -751,26 +753,26 @@ public interface StepObj<S extends StepObj<S>> {
    * @return {@code ConsumerStep} with given attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
-  static <T> ConsumerStep<T> stepOf(final StepAttributes attributes,
-                                    final ThrowingConsumer<T, ?> body) {
-    return ConsumerStep.of(attributes, body);
+  static <T> CStep<T> stepOf(final StepAttributes attributes,
+                             final ThrowingConsumer<T, ?> body) {
+    return new ConsumerStep.Of<>(attributes, body);
   }
 
   /**
-   * Returns {@code SupplierStep} with given body. Alias for {@link SupplierStep#of(ThrowingSupplier)} method.
+   * Returns {@code SupplierStep} with given body. Alias for {@link SStep#of(ThrowingSupplier)} method.
    *
    * @param body the step body
    * @param <R>  the type of the step result
    * @return {@code SupplierStep} with given body
    * @throws NullPointerException if {@code body} arg is null
    */
-  static <R> SupplierStep<R> stepOf(final ThrowingSupplier<R, ?> body) {
-    return SupplierStep.of(body);
+  static <R> SStep<R> stepOf(final ThrowingSupplier<R, ?> body) {
+    return new SupplierStep.Of<>(body);
   }
 
   /**
-   * Returns {@code SupplierStep} with given attributes and body. Alias for
-   * {@link SupplierStep#of(String, ThrowingSupplier)} method.
+   * Returns {@code SupplierStep} with given attributes and body. Alias for {@link SStep#of(String, ThrowingSupplier)}
+   * method.
    *
    * @param name the step name
    * @param body the step body
@@ -778,14 +780,14 @@ public interface StepObj<S extends StepObj<S>> {
    * @return {@code SupplierStep} with given name and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
-  static <R> SupplierStep<R> stepOf(final String name,
-                                    final ThrowingSupplier<R, ?> body) {
-    return SupplierStep.of(name, body);
+  static <R> SStep<R> stepOf(final String name,
+                             final ThrowingSupplier<R, ?> body) {
+    return new SupplierStep.Of<>(name, body);
   }
 
   /**
    * Returns {@code SupplierStep} with given attributes and body. Alias for
-   * {@link SupplierStep#of(String, String, ThrowingSupplier)} method.
+   * {@link SStep#of(String, String, ThrowingSupplier)} method.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
@@ -794,15 +796,15 @@ public interface StepObj<S extends StepObj<S>> {
    * @return {@code SupplierStep} with given name and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
-  static <R> SupplierStep<R> stepOf(final String name,
-                                    final String expectedResult,
-                                    final ThrowingSupplier<R, ?> body) {
-    return SupplierStep.of(name, expectedResult, body);
+  static <R> SStep<R> stepOf(final String name,
+                             final String expectedResult,
+                             final ThrowingSupplier<R, ?> body) {
+    return new SupplierStep.Of<>(name, expectedResult, body);
   }
 
   /**
    * Returns {@code SupplierStep} with given attributes and body. Alias for
-   * {@link SupplierStep#of(String, Map, String, ThrowingSupplier)} method.
+   * {@link SStep#of(String, Map, String, ThrowingSupplier)} method.
    *
    * @param name           the step name
    * @param params         the step params
@@ -813,16 +815,16 @@ public interface StepObj<S extends StepObj<S>> {
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
-  static <R> SupplierStep<R> stepOf(final String name,
-                                    final Map<String, ?> params,
-                                    final String expectedResult,
-                                    final ThrowingSupplier<R, ?> body) {
-    return SupplierStep.of(name, params, expectedResult, body);
+  static <R> SStep<R> stepOf(final String name,
+                             final Map<String, ?> params,
+                             final String expectedResult,
+                             final ThrowingSupplier<R, ?> body) {
+    return new SupplierStep.Of<>(name, params, expectedResult, body);
   }
 
   /**
    * Returns {@code SupplierStep} with given attributes and body. Alias for
-   * {@link SupplierStep#of(String, Map, ThrowingSupplier)} method.
+   * {@link SStep#of(String, Map, ThrowingSupplier)} method.
    *
    * @param name   the step name
    * @param params the step params
@@ -831,28 +833,27 @@ public interface StepObj<S extends StepObj<S>> {
    * @return {@code SupplierStep} with given name, params and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
-  static <R> SupplierStep<R> stepOf(final String name,
-                                    final Map<String, ?> params,
-                                    final ThrowingSupplier<R, ?> body) {
-    return SupplierStep.of(name, params, body);
+  static <R> SStep<R> stepOf(final String name,
+                             final Map<String, ?> params,
+                             final ThrowingSupplier<R, ?> body) {
+    return new SupplierStep.Of<>(name, params, body);
   }
 
   /**
-   * Returns {@code SupplierStep} of given step attributes and body. Alias for {@link SupplierStep#of(SupplierStep)}
-   * method.
+   * Returns {@code SupplierStep} of given step attributes and body. Alias for {@link SStep#of(SupplierStep)} method.
    *
    * @param origin the origin step
    * @param <R>    the type of the step result
    * @return {@code SupplierStep} of given step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
-  static <R> SupplierStep<R> stepOf(final SupplierStep<R> origin) {
-    return SupplierStep.of(origin);
+  static <R> SStep<R> stepOf(final SupplierStep<R> origin) {
+    return new SupplierStep.Of<>(origin);
   }
 
   /**
    * Returns {@code SupplierStep} with given attributes and body. Alias for
-   * {@link SupplierStep#of(StepAttributes, ThrowingSupplier)} method.
+   * {@link SStep#of(StepAttributes, ThrowingSupplier)} method.
    *
    * @param attributes the step attributes
    * @param body       the step body
@@ -860,13 +861,13 @@ public interface StepObj<S extends StepObj<S>> {
    * @return {@code SupplierStep} with given attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
-  static <R> SupplierStep<R> stepOf(final StepAttributes attributes,
-                                    final ThrowingSupplier<R, ?> body) {
-    return SupplierStep.of(attributes, body);
+  static <R> SStep<R> stepOf(final StepAttributes attributes,
+                             final ThrowingSupplier<R, ?> body) {
+    return new SupplierStep.Of<>(attributes, body);
   }
 
   /**
-   * Returns {@code FunctionStep} with given body. Alias for {@link FunctionStep#of(ThrowingFunction)} method.
+   * Returns {@code FunctionStep} with given body. Alias for {@link FStep#of(ThrowingFunction)} method.
    *
    * @param body the step body
    * @param <T>  the type of the step input value
@@ -874,13 +875,13 @@ public interface StepObj<S extends StepObj<S>> {
    * @return {@code FunctionStep} with given body
    * @throws NullPointerException if {@code body} arg is null
    */
-  static <T, R> FunctionStep<T, R> stepOf(final ThrowingFunction<T, R, ?> body) {
-    return FunctionStep.of(body);
+  static <T, R> FStep<T, R> stepOf(final ThrowingFunction<T, R, ?> body) {
+    return new FunctionStep.Of<>(body);
   }
 
   /**
-   * Returns {@code FunctionStep} with given attributes and body. Alias for
-   * {@link FunctionStep#of(String, ThrowingFunction)} method.
+   * Returns {@code FunctionStep} with given attributes and body. Alias for {@link FStep#of(String, ThrowingFunction)}
+   * method.
    *
    * @param name the step name
    * @param body the step body
@@ -889,14 +890,14 @@ public interface StepObj<S extends StepObj<S>> {
    * @return {@code FunctionStep} with given attributes and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
-  static <T, R> FunctionStep<T, R> stepOf(final String name,
-                                          final ThrowingFunction<T, R, ?> body) {
-    return FunctionStep.of(name, body);
+  static <T, R> FStep<T, R> stepOf(final String name,
+                                   final ThrowingFunction<T, R, ?> body) {
+    return new FunctionStep.Of<>(name, body);
   }
 
   /**
    * Returns {@code FunctionStep} with given attributes and body. Alias for
-   * {@link FunctionStep#of(String, String, ThrowingFunction)} method.
+   * {@link FStep#of(String, String, ThrowingFunction)} method.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
@@ -906,15 +907,15 @@ public interface StepObj<S extends StepObj<S>> {
    * @return {@code FunctionStep} with given attributes and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
-  static <T, R> FunctionStep<T, R> stepOf(final String name,
-                                          final String expectedResult,
-                                          final ThrowingFunction<T, R, ?> body) {
-    return FunctionStep.of(name, expectedResult, body);
+  static <T, R> FStep<T, R> stepOf(final String name,
+                                   final String expectedResult,
+                                   final ThrowingFunction<T, R, ?> body) {
+    return new FunctionStep.Of<>(name, expectedResult, body);
   }
 
   /**
    * Returns {@code FunctionStep} with given attributes and body. Alias for
-   * {@link FunctionStep#of(String, Map, ThrowingFunction)} method.
+   * {@link FStep#of(String, Map, ThrowingFunction)} method.
    *
    * @param name   the step name
    * @param params the step params
@@ -924,15 +925,15 @@ public interface StepObj<S extends StepObj<S>> {
    * @return {@code FunctionStep} with given attributes and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
-  static <T, R> FunctionStep<T, R> stepOf(final String name,
-                                          final Map<String, ?> params,
-                                          final ThrowingFunction<T, R, ?> body) {
-    return FunctionStep.of(name, params, body);
+  static <T, R> FStep<T, R> stepOf(final String name,
+                                   final Map<String, ?> params,
+                                   final ThrowingFunction<T, R, ?> body) {
+    return new FunctionStep.Of<>(name, params, body);
   }
 
   /**
    * Returns {@code FunctionStep} with given attributes and body. Alias for
-   * {@link FunctionStep#of(String, Map, String, ThrowingFunction)} method.
+   * {@link FStep#of(String, Map, String, ThrowingFunction)} method.
    *
    * @param name           the step name
    * @param params         the step params
@@ -944,16 +945,15 @@ public interface StepObj<S extends StepObj<S>> {
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
-  static <T, R> FunctionStep<T, R> stepOf(final String name,
-                                          final Map<String, ?> params,
-                                          final String expectedResult,
-                                          final ThrowingFunction<T, R, ?> body) {
-    return FunctionStep.of(name, params, expectedResult, body);
+  static <T, R> FStep<T, R> stepOf(final String name,
+                                   final Map<String, ?> params,
+                                   final String expectedResult,
+                                   final ThrowingFunction<T, R, ?> body) {
+    return new FunctionStep.Of<>(name, params, expectedResult, body);
   }
 
   /**
-   * Returns {@code FunctionStep} of given step attributes and body. Alias for {@link FunctionStep#of(FunctionStep)}
-   * method.
+   * Returns {@code FunctionStep} of given step attributes and body. Alias for {@link FStep#of(FunctionStep)} method.
    *
    * @param origin the origin step
    * @param <T>    the type of the step input value
@@ -961,13 +961,13 @@ public interface StepObj<S extends StepObj<S>> {
    * @return {@code FunctionStep} of given step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
-  static <T, R> FunctionStep<T, R> stepOf(final FunctionStep<T, R> origin) {
-    return FunctionStep.of(origin);
+  static <T, R> FStep<T, R> stepOf(final FunctionStep<T, R> origin) {
+    return new FunctionStep.Of<>(origin);
   }
 
   /**
    * Returns {@code FunctionStep} with given attributes and body. Alias for
-   * {@link FunctionStep#of(StepAttributes, ThrowingFunction)} method.
+   * {@link FStep#of(StepAttributes, ThrowingFunction)} method.
    *
    * @param attributes the step attributes
    * @param body       the step body
@@ -976,8 +976,8 @@ public interface StepObj<S extends StepObj<S>> {
    * @return {@code FunctionStep} with given attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
-  static <T, R> FunctionStep<T, R> stepOf(final StepAttributes attributes,
-                                          final ThrowingFunction<T, R, ?> body) {
-    return FunctionStep.of(attributes, body);
+  static <T, R> FStep<T, R> stepOf(final StepAttributes attributes,
+                                   final ThrowingFunction<T, R, ?> body) {
+    return new FunctionStep.Of<>(attributes, body);
   }
 }
