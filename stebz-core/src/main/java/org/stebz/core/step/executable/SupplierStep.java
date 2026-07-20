@@ -30,6 +30,8 @@ import dev.jlet.function.ThrowingSupplier;
 import org.stebz.core.attribute.StepAttributes;
 import org.stebz.core.exception.StepNotImplementedError;
 import org.stebz.core.step.ExecutableStep;
+import org.stebz.core.step.executable.alias.RStep;
+import org.stebz.core.step.executable.alias.SStep;
 
 import java.util.Map;
 
@@ -42,14 +44,14 @@ import static org.stebz.core.attribute.StepAttribute.PARAMS;
  *
  * @param <R> the type of the step result
  */
-public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, SupplierStep<R>> {
+public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, SStep<R>> {
 
   /**
    * Returns {@code SupplierStep} with empty body that returns {@code null} result.
    *
    * @return {@code SupplierStep} with empty body that returns {@code null} result
    */
-  default SupplierStep<R> withEmptyBody() {
+  default SStep<R> withEmptyBody() {
     return this.withBody(emptyBody());
   }
 
@@ -59,7 +61,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @param result the step result
    * @return {@code SupplierStep} with empty body that returns given result
    */
-  default SupplierStep<R> withEmptyBodyReturning(final R result) {
+  default SStep<R> withEmptyBodyReturning(final R result) {
     return this.withBody(emptyBodyReturning(result));
   }
 
@@ -68,7 +70,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    *
    * @return {@code SupplierStep} with body that throws an {@code StepNotImplementedError}.
    */
-  default SupplierStep<R> withNotImplementedBody() {
+  default SStep<R> withNotImplementedBody() {
     return this.withBody(notImplementedBody());
   }
 
@@ -81,7 +83,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
    */
-  default SupplierStep<R> withBefore(final ThrowingRunnable<?> block) {
+  default SStep<R> withBefore(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingSupplier<R, ?> body = this.getBody();
     return this.withBody(() -> {
@@ -99,7 +101,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
    */
-  default SupplierStep<R> withAfter(final ThrowingConsumer<? super R, ?> block) {
+  default SStep<R> withAfter(final ThrowingConsumer<? super R, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingSupplier<R, ?> body = this.getBody();
     return this.withBody(() -> {
@@ -118,7 +120,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
    */
-  default SupplierStep<R> withAfter(final ThrowingFunction<? super R, ? extends R, ?> block) {
+  default SStep<R> withAfter(final ThrowingFunction<? super R, ? extends R, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingSupplier<R, ?> body = this.getBody();
     return this.withBody(() ->
@@ -136,7 +138,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
    */
-  default SupplierStep<R> withOnSuccess(final ThrowingConsumer<? super R, ?> block) {
+  default SStep<R> withOnSuccess(final ThrowingConsumer<? super R, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingSupplier<R, ?> body = this.getBody();
     return this.withBody(() -> {
@@ -156,7 +158,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
    */
-  default SupplierStep<R> withOnSuccess(final ThrowingFunction<? super R, ? extends R, ?> block) {
+  default SStep<R> withOnSuccess(final ThrowingFunction<? super R, ? extends R, ?> block) {
     return this.withAfter(block);
   }
 
@@ -169,7 +171,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
    */
-  default SupplierStep<R> withOnFailure(final ThrowingRunnable<?> block) {
+  default SStep<R> withOnFailure(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingSupplier<R, ?> body = this.getBody();
     return this.withBody(() -> {
@@ -196,7 +198,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
    */
-  default SupplierStep<R> withFinally(final ThrowingRunnable<?> block) {
+  default SStep<R> withFinally(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingSupplier<R, ?> body = this.getBody();
     return this.withBody(() -> {
@@ -227,7 +229,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    *
    * @return this step as {@code RunnableStep}
    */
-  default RunnableStep noResult() {
+  default RStep noResult() {
     return new RunnableStep.Of(this.attributes(), this.getBody()::get);
   }
 
@@ -238,8 +240,8 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @return {@code SupplierStep} with empty body that returns {@code null} result
    */
   @SuppressWarnings("unchecked")
-  static <R> SupplierStep<R> empty() {
-    return (SupplierStep<R>) Of.EMPTY_STEP;
+  static <R> SStep<R> empty() {
+    return (SStep<R>) Of.EMPTY_STEP;
   }
 
   /**
@@ -249,8 +251,8 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @param <R>    the type of the step result
    * @return {@code SupplierStep} with empty body that returns given result
    */
-  static <R> SupplierStep<R> emptyReturning(final R result) {
-    return SupplierStep.of(emptyBodyReturning(result));
+  static <R> SStep<R> emptyReturning(final R result) {
+    return new Of<>(emptyBodyReturning(result));
   }
 
   /**
@@ -260,8 +262,8 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @return {@code SupplierStep} with body that throws an {@code StepNotImplementedError}
    */
   @SuppressWarnings("unchecked")
-  static <R> SupplierStep<R> notImplemented() {
-    return (SupplierStep<R>) Of.NOT_IMPLEMENTED_STEP;
+  static <R> SStep<R> notImplemented() {
+    return (SStep<R>) Of.NOT_IMPLEMENTED_STEP;
   }
 
   /**
@@ -305,7 +307,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @return {@code SupplierStep} with given body
    * @throws NullPointerException if {@code body} arg is null
    */
-  static <R> SupplierStep<R> of(final ThrowingSupplier<R, ?> body) {
+  static <R> SStep<R> of(final ThrowingSupplier<R, ?> body) {
     return new Of<>(body);
   }
 
@@ -318,8 +320,8 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @return {@code SupplierStep} with given name and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
-  static <R> SupplierStep<R> of(final String name,
-                                final ThrowingSupplier<R, ?> body) {
+  static <R> SStep<R> of(final String name,
+                         final ThrowingSupplier<R, ?> body) {
     return new Of<>(name, body);
   }
 
@@ -333,9 +335,9 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @return {@code SupplierStep} with given name and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
-  static <R> SupplierStep<R> of(final String name,
-                                final String expectedResult,
-                                final ThrowingSupplier<R, ?> body) {
+  static <R> SStep<R> of(final String name,
+                         final String expectedResult,
+                         final ThrowingSupplier<R, ?> body) {
     return new Of<>(name, expectedResult, body);
   }
 
@@ -351,10 +353,10 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
-  static <R> SupplierStep<R> of(final String name,
-                                final Map<String, ?> params,
-                                final String expectedResult,
-                                final ThrowingSupplier<R, ?> body) {
+  static <R> SStep<R> of(final String name,
+                         final Map<String, ?> params,
+                         final String expectedResult,
+                         final ThrowingSupplier<R, ?> body) {
     return new Of<>(name, params, expectedResult, body);
   }
 
@@ -368,9 +370,9 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @return {@code SupplierStep} with given name, params and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
-  static <R> SupplierStep<R> of(final String name,
-                                final Map<String, ?> params,
-                                final ThrowingSupplier<R, ?> body) {
+  static <R> SStep<R> of(final String name,
+                         final Map<String, ?> params,
+                         final ThrowingSupplier<R, ?> body) {
     return new Of<>(name, params, body);
   }
 
@@ -382,7 +384,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @return {@code SupplierStep} of given step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
-  static <R> SupplierStep<R> of(final SupplierStep<R> origin) {
+  static <R> SStep<R> of(final SupplierStep<R> origin) {
     return new Of<>(origin);
   }
 
@@ -395,8 +397,8 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @return {@code SupplierStep} with given attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
-  static <R> SupplierStep<R> of(final StepAttributes attributes,
-                                final ThrowingSupplier<R, ?> body) {
+  static <R> SStep<R> of(final StepAttributes attributes,
+                         final ThrowingSupplier<R, ?> body) {
     return new Of<>(attributes, body);
   }
 
@@ -405,12 +407,12 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    *
    * @param <R> the type of the step result
    */
-  class Of<R> implements SupplierStep<R> {
+  class Of<R> implements SStep<R> {
     private static final ThrowingSupplier<?, Error> EMPTY_BODY = () -> null;
     private static final ThrowingSupplier<?, Error> NOT_IMPLEMENTED_BODY =
       () -> { throw new StepNotImplementedError("SupplierStep not implemented"); };
-    private static final SupplierStep<?> EMPTY_STEP = new SupplierStep.Of<>(EMPTY_BODY);
-    private static final SupplierStep<?> NOT_IMPLEMENTED_STEP = new SupplierStep.Of<>(NOT_IMPLEMENTED_BODY);
+    private static final SStep<?> EMPTY_STEP = new Of<>(EMPTY_BODY);
+    private static final SStep<?> NOT_IMPLEMENTED_STEP = new Of<>(NOT_IMPLEMENTED_BODY);
     private final StepAttributes attributes;
     private final ThrowingSupplier<R, ?> body;
 
@@ -526,7 +528,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
     }
 
     @Override
-    public SupplierStep<R> withAttributes(final StepAttributes attributes) {
+    public SStep<R> withAttributes(final StepAttributes attributes) {
       return new Of<>(attributes, this.body);
     }
 
@@ -536,7 +538,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
     }
 
     @Override
-    public SupplierStep<R> withBody(final ThrowingSupplier<R, ?> body) {
+    public SStep<R> withBody(final ThrowingSupplier<R, ?> body) {
       return new Of<>(this.attributes, body);
     }
 

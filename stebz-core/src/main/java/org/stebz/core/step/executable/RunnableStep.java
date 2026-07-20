@@ -28,6 +28,7 @@ import dev.jlet.function.ThrowingRunnable;
 import org.stebz.core.attribute.StepAttributes;
 import org.stebz.core.exception.StepNotImplementedError;
 import org.stebz.core.step.ExecutableStep;
+import org.stebz.core.step.executable.alias.RStep;
 
 import java.util.Map;
 
@@ -38,14 +39,14 @@ import static org.stebz.core.attribute.StepAttribute.PARAMS;
 /**
  * Runnable step.
  */
-public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RunnableStep> {
+public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep> {
 
   /**
    * Returns {@code RunnableStep} with empty body.
    *
    * @return {@code RunnableStep} with empty body
    */
-  default RunnableStep withEmptyBody() {
+  default RStep withEmptyBody() {
     return this.withBody(emptyBody());
   }
 
@@ -54,7 +55,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    *
    * @return {@code RunnableStep} with body that throws an {@code StepNotImplementedError}.
    */
-  default RunnableStep withNotImplementedBody() {
+  default RStep withNotImplementedBody() {
     return this.withBody(notImplementedBody());
   }
 
@@ -67,7 +68,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
    */
-  default RunnableStep withBefore(final ThrowingRunnable<?> block) {
+  default RStep withBefore(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingRunnable<?> body = this.getBody();
     return this.withBody(() -> {
@@ -85,7 +86,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
    */
-  default RunnableStep withAfter(final ThrowingRunnable<?> block) {
+  default RStep withAfter(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingRunnable<?> body = this.getBody();
     return this.withBody(() -> {
@@ -104,7 +105,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
    */
-  default RunnableStep withOnSuccess(final ThrowingRunnable<?> block) {
+  default RStep withOnSuccess(final ThrowingRunnable<?> block) {
     return this.withAfter(block);
   }
 
@@ -117,7 +118,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
    */
-  default RunnableStep withOnFailure(final ThrowingRunnable<?> block) {
+  default RStep withOnFailure(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingRunnable<?> body = this.getBody();
     return this.withBody(() -> {
@@ -144,7 +145,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
    */
-  default RunnableStep withFinally(final ThrowingRunnable<?> block) {
+  default RStep withFinally(final ThrowingRunnable<?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingRunnable<?> body = this.getBody();
     return this.withBody(() -> {
@@ -173,7 +174,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    *
    * @return {@code RunnableStep} with empty body
    */
-  static RunnableStep empty() {
+  static RStep empty() {
     return Of.EMPTY_STEP;
   }
 
@@ -182,7 +183,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    *
    * @return {@code RunnableStep} with body that throws an {@code StepNotImplementedError}
    */
-  static RunnableStep notImplemented() {
+  static RStep notImplemented() {
     return Of.NOT_IMPLEMENTED_STEP;
   }
 
@@ -211,7 +212,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    * @return {@code RunnableStep} with given body
    * @throws NullPointerException if {@code body} arg is null
    */
-  static RunnableStep of(final ThrowingRunnable<?> body) {
+  static RStep of(final ThrowingRunnable<?> body) {
     return new Of(body);
   }
 
@@ -223,8 +224,8 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    * @return {@code RunnableStep} with given name and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
-  static RunnableStep of(final String name,
-                         final ThrowingRunnable<?> body) {
+  static RStep of(final String name,
+                  final ThrowingRunnable<?> body) {
     return new Of(name, body);
   }
 
@@ -237,9 +238,9 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    * @return {@code RunnableStep} with given name and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
-  static RunnableStep of(final String name,
-                         final String expectedResult,
-                         final ThrowingRunnable<?> body) {
+  static RStep of(final String name,
+                  final String expectedResult,
+                  final ThrowingRunnable<?> body) {
     return new Of(name, expectedResult, body);
   }
 
@@ -252,9 +253,9 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    * @return {@code RunnableStep} with given name, params and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
-  static RunnableStep of(final String name,
-                         final Map<String, ?> params,
-                         final ThrowingRunnable<?> body) {
+  static RStep of(final String name,
+                  final Map<String, ?> params,
+                  final ThrowingRunnable<?> body) {
     return new Of(name, params, body);
   }
 
@@ -269,10 +270,10 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
-  static RunnableStep of(final String name,
-                         final Map<String, ?> params,
-                         final String expectedResult,
-                         final ThrowingRunnable<?> body) {
+  static RStep of(final String name,
+                  final Map<String, ?> params,
+                  final String expectedResult,
+                  final ThrowingRunnable<?> body) {
     return new Of(name, params, expectedResult, body);
   }
 
@@ -283,7 +284,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    * @return {@code RunnableStep} of given step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
-  static RunnableStep of(final RunnableStep origin) {
+  static RStep of(final RunnableStep origin) {
     return new Of(origin);
   }
 
@@ -295,20 +296,20 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
    * @return {@code RunnableStep} with given attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
-  static RunnableStep of(final StepAttributes attributes,
-                         final ThrowingRunnable<?> body) {
+  static RStep of(final StepAttributes attributes,
+                  final ThrowingRunnable<?> body) {
     return new Of(attributes, body);
   }
 
   /**
    * Default {@code RunnableStep} implementation.
    */
-  class Of implements RunnableStep {
+  class Of implements RStep {
     private static final ThrowingRunnable<Error> EMPTY_BODY = () -> { };
     private static final ThrowingRunnable<Error> NOT_IMPLEMENTED_BODY =
       () -> { throw new StepNotImplementedError("RunnableStep not implemented"); };
-    private static final RunnableStep EMPTY_STEP = new Of(EMPTY_BODY);
-    private static final RunnableStep NOT_IMPLEMENTED_STEP = new Of(NOT_IMPLEMENTED_BODY);
+    private static final RStep EMPTY_STEP = new Of(EMPTY_BODY);
+    private static final RStep NOT_IMPLEMENTED_STEP = new Of(NOT_IMPLEMENTED_BODY);
     private final StepAttributes attributes;
     private final ThrowingRunnable<?> body;
 
@@ -424,7 +425,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
     }
 
     @Override
-    public RunnableStep withAttributes(final StepAttributes attributes) {
+    public RStep withAttributes(final StepAttributes attributes) {
       return new Of(attributes, this.body);
     }
 
@@ -434,7 +435,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, Runnab
     }
 
     @Override
-    public RunnableStep withBody(final ThrowingRunnable<?> body) {
+    public RStep withBody(final ThrowingRunnable<?> body) {
       return new Of(this.attributes, body);
     }
 

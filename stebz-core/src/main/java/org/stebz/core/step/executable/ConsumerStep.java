@@ -28,6 +28,7 @@ import dev.jlet.function.ThrowingFunction;
 import org.stebz.core.attribute.StepAttributes;
 import org.stebz.core.exception.StepNotImplementedError;
 import org.stebz.core.step.ExecutableStep;
+import org.stebz.core.step.executable.alias.CStep;
 
 import java.util.Map;
 
@@ -40,14 +41,14 @@ import static org.stebz.core.attribute.StepAttribute.PARAMS;
  *
  * @param <T> the type of the step input value
  */
-public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, ConsumerStep<T>> {
+public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, CStep<T>> {
 
   /**
    * Returns {@code ConsumerStep} with empty body.
    *
    * @return {@code ConsumerStep} with empty body
    */
-  default ConsumerStep<T> withEmptyBody() {
+  default CStep<T> withEmptyBody() {
     return this.withBody(emptyBody());
   }
 
@@ -56,7 +57,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    *
    * @return {@code ConsumerStep} with body that throws an {@code StepNotImplementedError}.
    */
-  default ConsumerStep<T> withNotImplementedBody() {
+  default CStep<T> withNotImplementedBody() {
     return this.withBody(notImplementedBody());
   }
 
@@ -69,7 +70,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
    */
-  default ConsumerStep<T> withBefore(final ThrowingConsumer<? super T, ?> block) {
+  default CStep<T> withBefore(final ThrowingConsumer<? super T, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingConsumer<T, ?> body = this.getBody();
     return this.withBody(context -> {
@@ -87,7 +88,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
    */
-  default ConsumerStep<T> withAfter(final ThrowingConsumer<? super T, ?> block) {
+  default CStep<T> withAfter(final ThrowingConsumer<? super T, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingConsumer<T, ?> body = this.getBody();
     return this.withBody(context -> {
@@ -106,7 +107,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
    */
-  default ConsumerStep<T> withOnSuccess(final ThrowingConsumer<? super T, ?> block) {
+  default CStep<T> withOnSuccess(final ThrowingConsumer<? super T, ?> block) {
     return this.withAfter(block);
   }
 
@@ -119,7 +120,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
    */
-  default ConsumerStep<T> withOnFailure(final ThrowingConsumer<? super T, ?> block) {
+  default CStep<T> withOnFailure(final ThrowingConsumer<? super T, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingConsumer<T, ?> body = this.getBody();
     return this.withBody(context -> {
@@ -146,7 +147,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
    */
-  default ConsumerStep<T> withFinally(final ThrowingConsumer<? super T, ?> block) {
+  default CStep<T> withFinally(final ThrowingConsumer<? super T, ?> block) {
     if (block == null) { throw new NullPointerException("block arg is null"); }
     final ThrowingConsumer<T, ?> body = this.getBody();
     return this.withBody(context -> {
@@ -177,8 +178,8 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @return {@code ConsumerStep} with empty body
    */
   @SuppressWarnings("unchecked")
-  static <T> ConsumerStep<T> empty() {
-    return (ConsumerStep<T>) Of.EMPTY_STEP;
+  static <T> CStep<T> empty() {
+    return (CStep<T>) Of.EMPTY_STEP;
   }
 
   /**
@@ -188,8 +189,8 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @return {@code ConsumerStep} with body that throws an {@code StepNotImplementedError}
    */
   @SuppressWarnings("unchecked")
-  static <T> ConsumerStep<T> notImplemented() {
-    return (ConsumerStep<T>) Of.NOT_IMPLEMENTED_STEP;
+  static <T> CStep<T> notImplemented() {
+    return (CStep<T>) Of.NOT_IMPLEMENTED_STEP;
   }
 
   /**
@@ -222,7 +223,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @return {@code ConsumerStep} with given body
    * @throws NullPointerException if {@code body} arg is null
    */
-  static <T> ConsumerStep<T> of(final ThrowingConsumer<T, ?> body) {
+  static <T> CStep<T> of(final ThrowingConsumer<T, ?> body) {
     return new Of<>(body);
   }
 
@@ -235,8 +236,8 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @return {@code ConsumerStep} with given name and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
-  static <T> ConsumerStep<T> of(final String name,
-                                final ThrowingConsumer<T, ?> body) {
+  static <T> CStep<T> of(final String name,
+                         final ThrowingConsumer<T, ?> body) {
     return new Of<>(name, body);
   }
 
@@ -250,9 +251,9 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @return {@code ConsumerStep} with given name and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
-  static <T> ConsumerStep<T> of(final String name,
-                                final String expectedResult,
-                                final ThrowingConsumer<T, ?> body) {
+  static <T> CStep<T> of(final String name,
+                         final String expectedResult,
+                         final ThrowingConsumer<T, ?> body) {
     return new Of<>(name, expectedResult, body);
   }
 
@@ -266,9 +267,9 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @return {@code ConsumerStep} with given name, params and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
-  static <T> ConsumerStep<T> of(final String name,
-                                final Map<String, ?> params,
-                                final ThrowingConsumer<T, ?> body) {
+  static <T> CStep<T> of(final String name,
+                         final Map<String, ?> params,
+                         final ThrowingConsumer<T, ?> body) {
     return new Of<>(name, params, body);
   }
 
@@ -284,10 +285,10 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
-  static <T> ConsumerStep<T> of(final String name,
-                                final Map<String, ?> params,
-                                final String expectedResult,
-                                final ThrowingConsumer<T, ?> body) {
+  static <T> CStep<T> of(final String name,
+                         final Map<String, ?> params,
+                         final String expectedResult,
+                         final ThrowingConsumer<T, ?> body) {
     return new Of<>(name, params, expectedResult, body);
   }
 
@@ -299,7 +300,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @return {@code ConsumerStep} of given step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
-  static <T> ConsumerStep<T> of(final ConsumerStep<T> origin) {
+  static <T> CStep<T> of(final ConsumerStep<T> origin) {
     return new Of<>(origin);
   }
 
@@ -312,8 +313,8 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @return {@code ConsumerStep} with given attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
-  static <T> ConsumerStep<T> of(final StepAttributes attributes,
-                                final ThrowingConsumer<T, ?> body) {
+  static <T> CStep<T> of(final StepAttributes attributes,
+                         final ThrowingConsumer<T, ?> body) {
     return new Of<>(attributes, body);
   }
 
@@ -322,12 +323,12 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    *
    * @param <T> the type of the step input value
    */
-  class Of<T> implements ConsumerStep<T> {
+  class Of<T> implements CStep<T> {
     private static final ThrowingConsumer<?, Error> EMPTY_BODY = v -> { };
     private static final ThrowingConsumer<?, Error> NOT_IMPLEMENTED_BODY =
       v -> { throw new StepNotImplementedError("ConsumerStep not implemented"); };
-    private static final ConsumerStep<?> EMPTY_STEP = new Of<>(EMPTY_BODY);
-    private static final ConsumerStep<?> NOT_IMPLEMENTED_STEP = new Of<>(NOT_IMPLEMENTED_BODY);
+    private static final CStep<?> EMPTY_STEP = new Of<>(EMPTY_BODY);
+    private static final CStep<?> NOT_IMPLEMENTED_STEP = new Of<>(NOT_IMPLEMENTED_BODY);
     private final StepAttributes attributes;
     private final ThrowingConsumer<T, ?> body;
 
@@ -443,7 +444,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
     }
 
     @Override
-    public ConsumerStep<T> withAttributes(final StepAttributes attributes) {
+    public CStep<T> withAttributes(final StepAttributes attributes) {
       return new Of<>(attributes, this.body);
     }
 
@@ -453,7 +454,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
     }
 
     @Override
-    public ConsumerStep<T> withBody(final ThrowingConsumer<T, ?> body) {
+    public CStep<T> withBody(final ThrowingConsumer<T, ?> body) {
       return new Of<>(this.attributes, body);
     }
 
