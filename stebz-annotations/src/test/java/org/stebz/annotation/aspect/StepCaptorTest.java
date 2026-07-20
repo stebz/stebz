@@ -65,7 +65,7 @@ final class StepCaptorTest {
       .containsExactly(
         entry("param", "value")
       );
-    assertThat(step.getHidden())
+    assertThat(step.isHidden())
       .isTrue();
     assertThat(step.getBody().get())
       .isEqualTo("value");
@@ -86,7 +86,7 @@ final class StepCaptorTest {
       .containsExactly(
         entry("param", "value")
       );
-    assertThat(step.getHidden())
+    assertThat(step.isHidden())
       .isTrue();
     assertThat(step.getBody().get())
       .isEqualTo(100);

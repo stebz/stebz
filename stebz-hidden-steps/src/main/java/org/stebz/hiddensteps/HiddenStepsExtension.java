@@ -158,8 +158,8 @@ public class HiddenStepsExtension implements InterceptStep {
   @Override
   public StepObj<?> interceptStep(final StepObj<?> step,
                                   final NullableOptional<Object> context) {
-    return this.enabled && THREAD_LOCAL_DEPTH.get() != null && !step.getHidden()
-      ? step.withHidden(true)
+    return this.enabled && THREAD_LOCAL_DEPTH.get() != null && !step.isHidden()
+      ? step.withHiding()
       : step;
   }
 }

@@ -47,7 +47,7 @@ final class HiddenStepsExtensionTest {
     final HiddenStepsExtension extension = new HiddenStepsExtension(new PropertiesReader.Of(new Properties()));
 
     final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
-    assertThat(resultStep.getHidden())
+    assertThat(resultStep.isHidden())
       .isFalse();
     assertThatTreadLocalsAreCleared();
   }
@@ -59,7 +59,7 @@ final class HiddenStepsExtensionTest {
 
     hiddenSteps(() -> {
       final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
-      assertThat(resultStep.getHidden())
+      assertThat(resultStep.isHidden())
         .isTrue();
     });
     assertThatTreadLocalsAreCleared();
@@ -74,7 +74,7 @@ final class HiddenStepsExtensionTest {
     assertThat(
       hiddenStepsResult(() -> {
         final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
-        assertThat(resultStep.getHidden())
+        assertThat(resultStep.isHidden())
           .isTrue();
         return result;
       })
@@ -90,11 +90,11 @@ final class HiddenStepsExtensionTest {
     hiddenSteps(() -> {
       hiddenSteps(() -> {
         final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
-        assertThat(resultStep.getHidden())
+        assertThat(resultStep.isHidden())
           .isTrue();
       });
       final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
-      assertThat(resultStep.getHidden())
+      assertThat(resultStep.isHidden())
         .isTrue();
     });
     assertThatTreadLocalsAreCleared();

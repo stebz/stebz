@@ -157,7 +157,7 @@ final class StepAspectsTest {
       .containsExactly(
         entry("param", "value")
       );
-    assertThat(step.getHidden())
+    assertThat(step.isHidden())
       .isTrue();
   }
 

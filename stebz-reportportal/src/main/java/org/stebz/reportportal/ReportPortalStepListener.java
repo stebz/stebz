@@ -105,7 +105,7 @@ public class ReportPortalStepListener implements StepListener {
   @Override
   public void onStepStart(final StepObj<?> step,
                           final NullableOptional<Object> context) {
-    if (!this.enabled || step.getHidden()) {
+    if (!this.enabled || step.isHidden()) {
       return;
     }
     final Keyword keyword = step.getKeyword();
@@ -137,7 +137,7 @@ public class ReportPortalStepListener implements StepListener {
   public void onStepSuccess(final StepObj<?> step,
                             final NullableOptional<Object> context,
                             final NullableOptional<Object> result) {
-    if (!this.enabled || step.getHidden()) {
+    if (!this.enabled || step.isHidden()) {
       return;
     }
     if (this.onlyKeywordSteps && step.getKeyword().value().isEmpty()) {
@@ -155,7 +155,7 @@ public class ReportPortalStepListener implements StepListener {
   public void onStepFailure(final StepObj<?> step,
                             final NullableOptional<Object> context,
                             final Throwable exception) {
-    if (!this.enabled || step.getHidden()) {
+    if (!this.enabled || step.isHidden()) {
       return;
     }
     if (this.onlyKeywordSteps && step.getKeyword().value().isEmpty()) {

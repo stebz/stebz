@@ -272,7 +272,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @see #get(StepAttribute)
    * @see StepAttribute#HIDDEN
    */
-  default boolean getHidden() {
+  default boolean isHidden() {
     return this.get(HIDDEN);
   }
 
@@ -454,15 +454,26 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with hidden attribute value.
+   * Returns {@code StepObj} with {@code true} hidden attribute value.
    *
-   * @param hidden the hidden attribute value
+   * @return {@code StepObj} with {@code true} hidden attribute value
+   * @see #with(StepAttribute, Object)
+   * @see StepAttribute#HIDDEN
+   */
+  default S withHiding() {
+    return this.withHiding(true);
+  }
+
+  /**
+   * Returns {@code StepObj} with given hidden attribute value.
+   *
+   * @param value the hidden attribute value
    * @return {@code StepObj} with given hidden attribute value
    * @see #with(StepAttribute, Object)
    * @see StepAttribute#HIDDEN
    */
-  default S withHidden(final boolean hidden) {
-    return this.with(HIDDEN, hidden);
+  default S withHiding(final boolean value) {
+    return this.with(HIDDEN, value);
   }
 
   /**
@@ -556,7 +567,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @see #without(StepAttribute)
    * @see StepAttribute#HIDDEN
    */
-  default S withoutHidden() {
+  default S withoutHiding() {
     return this.without(HIDDEN);
   }
 
