@@ -119,7 +119,7 @@ public class StepAspects {
     final FieldSignature signature = (FieldSignature) joinPoint.getSignature();
     final Field field = signature.getField();
     final StepAttributes attributes = extractAttributes(
-      step.attributes(),
+      step.getAttributes(),
       joinPoint, StepSourceType.FIELD, field,
       field.getDeclaredAnnotations(),
       field.getName(),
@@ -145,7 +145,7 @@ public class StepAspects {
     final MethodSignature signature = (MethodSignature) joinPoint.getSignature();
     final Method method = signature.getMethod();
     final StepAttributes attributes = extractAttributes(
-      step.attributes(),
+      step.getAttributes(),
       joinPoint, StepSourceType.METHOD, method,
       method.getDeclaredAnnotations(),
       method.getName(),
@@ -168,7 +168,7 @@ public class StepAspects {
     final ConstructorSignature signature = (ConstructorSignature) joinPoint.getSignature();
     final Constructor<?> constructor = signature.getConstructor();
     final StepAttributes attributes = extractAttributes(
-      step.attributes(),
+      step.getAttributes(),
       joinPoint, StepSourceType.CONSTRUCTOR, constructor,
       constructor.getDeclaredAnnotations(),
       constructor.getDeclaringClass().getSimpleName(),

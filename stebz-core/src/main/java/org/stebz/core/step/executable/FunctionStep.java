@@ -249,7 +249,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @return this step as {@code ConsumerStep}
    */
   default CStep<T> noResult() {
-    return new ConsumerStep.Of<>(this.attributes(), this.getBody()::apply);
+    return new ConsumerStep.Of<>(this.getAttributes(), this.getBody()::apply);
   }
 
   /**
@@ -537,7 +537,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
      * @throws NullPointerException if {@code origin} arg is null
      */
     public Of(final FunctionStep<T, R> origin) {
-      this(origin.attributes(), origin.getBody());
+      this(origin.getAttributes(), origin.getBody());
     }
 
     /**
@@ -556,7 +556,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
     }
 
     @Override
-    public StepAttributes attributes() {
+    public StepAttributes getAttributes() {
       return this.attributes;
     }
 

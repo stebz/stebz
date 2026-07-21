@@ -443,7 +443,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
      * @throws NullPointerException if {@code origin} arg is null
      */
     public Of(final ConsumerStep<T> origin) {
-      this(origin.attributes(), origin.getBody());
+      this(origin.getAttributes(), origin.getBody());
     }
 
     /**
@@ -462,7 +462,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
     }
 
     @Override
-    public StepAttributes attributes() {
+    public StepAttributes getAttributes() {
       return this.attributes;
     }
 

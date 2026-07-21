@@ -41,7 +41,7 @@ final class FunctionStepTest {
     final ThrowingFunction<Object, Object, Error> body = mockFunction();
     final FunctionStep<Object, Object> step = new FunctionStep.Of<>(attributes, body);
 
-    assertThat(step.attributes())
+    assertThat(step.getAttributes())
       .isSameAs(attributes);
     assertThat(step.getBody())
       .isSameAs(body);
@@ -55,7 +55,7 @@ final class FunctionStepTest {
     final FunctionStep<Object, Object> step = new FunctionStep.Of<>(attributes, body);
 
     final FunctionStep<Object, Object> newStep = step.withAttributes(newAttributes);
-    assertThat(newStep.attributes())
+    assertThat(newStep.getAttributes())
       .isSameAs(newAttributes);
   }
 

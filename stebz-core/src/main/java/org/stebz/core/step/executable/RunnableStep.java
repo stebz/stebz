@@ -424,7 +424,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
      * @throws NullPointerException if {@code origin} arg is null
      */
     public Of(final RunnableStep origin) {
-      this(origin.attributes(), origin.getBody());
+      this(origin.getAttributes(), origin.getBody());
     }
 
     /**
@@ -443,7 +443,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
     }
 
     @Override
-    public StepAttributes attributes() {
+    public StepAttributes getAttributes() {
       return this.attributes;
     }
 
