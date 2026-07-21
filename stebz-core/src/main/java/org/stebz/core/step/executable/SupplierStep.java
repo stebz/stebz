@@ -75,6 +75,30 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
+   * {@code SupplierStep} with body that ignores given exception.
+   *
+   * @param exceptionType the exception type
+   * @return {@code SupplierStep} with body that ignores given exception
+   * @throws NullPointerException if {@code exceptionType} arg is null
+   * @see #withBody(Object)
+   * @see #withBodyOf(ThrowingFunction)
+   */
+  default SStep<R> withIgnored(final Class<? extends Throwable> exceptionType) {
+    if (exceptionType == null) { throw new NullPointerException("exceptionType arg is null"); }
+    final ThrowingSupplier<R, ?> body = this.getBody();
+    return this.withBody(() -> {
+      try {
+        return body.get();
+      } catch (final Throwable ex) {
+        if (!exceptionType.isAssignableFrom(ex.getClass())) {
+          throw ex;
+        }
+        return null;
+      }
+    });
+  }
+
+  /**
    * Returns {@code SupplierStep} with given block before step body.
    *
    * @param block the before block

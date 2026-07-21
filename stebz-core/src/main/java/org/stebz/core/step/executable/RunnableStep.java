@@ -60,6 +60,29 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
+   * {@code RunnableStep} with body that ignores given exception.
+   *
+   * @param exceptionType the exception type
+   * @return {@code RunnableStep} with body that ignores given exception
+   * @throws NullPointerException if {@code exceptionType} arg is null
+   * @see #withBody(Object)
+   * @see #withBodyOf(ThrowingFunction)
+   */
+  default RStep withIgnored(final Class<? extends Throwable> exceptionType) {
+    if (exceptionType == null) { throw new NullPointerException("exceptionType arg is null"); }
+    final ThrowingRunnable<?> body = this.getBody();
+    return this.withBody(() -> {
+      try {
+        body.run();
+      } catch (final Throwable ex) {
+        if (!exceptionType.isAssignableFrom(ex.getClass())) {
+          throw ex;
+        }
+      }
+    });
+  }
+
+  /**
    * Returns {@code RunnableStep} with given block before step body.
    *
    * @param block the before block

@@ -62,6 +62,29 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
+   * {@code ConsumerStep} with body that ignores given exception.
+   *
+   * @param exceptionType the exception type
+   * @return {@code ConsumerStep} with body that ignores given exception
+   * @throws NullPointerException if {@code exceptionType} arg is null
+   * @see #withBody(Object)
+   * @see #withBodyOf(ThrowingFunction)
+   */
+  default CStep<T> withIgnored(final Class<? extends Throwable> exceptionType) {
+    if (exceptionType == null) { throw new NullPointerException("exceptionType arg is null"); }
+    final ThrowingConsumer<T, ?> body = this.getBody();
+    return this.withBody(context -> {
+      try {
+        body.accept(context);
+      } catch (final Throwable ex) {
+        if (!exceptionType.isAssignableFrom(ex.getClass())) {
+          throw ex;
+        }
+      }
+    });
+  }
+
+  /**
    * Returns {@code ConsumerStep} with given block before body.
    *
    * @param block the before block
