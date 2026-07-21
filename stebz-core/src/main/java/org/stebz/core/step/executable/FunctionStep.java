@@ -76,6 +76,30 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
+   * {@code FunctionStep} with body that ignores given exception.
+   *
+   * @param exceptionType the exception type
+   * @return {@code FunctionStep} with body that ignores given exception
+   * @throws NullPointerException if {@code exceptionType} arg is null
+   * @see #withBody(Object)
+   * @see #withBodyOf(ThrowingFunction)
+   */
+  default FStep<T, R> withIgnored(final Class<? extends Throwable> exceptionType) {
+    if (exceptionType == null) { throw new NullPointerException("exceptionType arg is null"); }
+    final ThrowingFunction<T, R, ?> body = this.getBody();
+    return this.withBody(context -> {
+      try {
+        return body.apply(context);
+      } catch (final Throwable ex) {
+        if (!exceptionType.isAssignableFrom(ex.getClass())) {
+          throw ex;
+        }
+        return null;
+      }
+    });
+  }
+
+  /**
    * Returns {@code FunctionStep} with given block before body.
    *
    * @param block the before block
