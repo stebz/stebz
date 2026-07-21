@@ -60,7 +60,7 @@ public interface StepObj<S extends StepObj<S>> {
    *
    * @return step attributes
    */
-  StepAttributes attributes();
+  StepAttributes getAttributes();
 
   /**
    * Returns {@code StepObj} with given attributes.
@@ -79,7 +79,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @throws NullPointerException if {@code attribute} arg is null
    */
   default boolean contains(final StepAttribute<?, ?, ?> attribute) {
-    return this.attributes().contains(attribute);
+    return this.getAttributes().contains(attribute);
   }
 
   /**
@@ -91,7 +91,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @throws NullPointerException if {@code attribute} arg is null
    */
   default <O> O get(final StepAttribute<?, ?, O> attribute) {
-    return this.attributes().get(attribute);
+    return this.getAttributes().get(attribute);
   }
 
   /**
@@ -102,7 +102,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @throws NullPointerException if {@code attribute} arg is null
    */
   default Boolean is(final StepAttribute<?, ?, Boolean> attribute) {
-    return this.attributes().get(attribute);
+    return this.getAttributes().get(attribute);
   }
 
   /**
@@ -116,7 +116,7 @@ public interface StepObj<S extends StepObj<S>> {
    */
   default <I, O> S withOf(final StepAttribute<I, ?, O> attribute,
                           final ThrowingFunction<? super O, ? extends I, ?> generator) {
-    return this.withAttributes(this.attributes().withOf(attribute, generator));
+    return this.withAttributes(this.getAttributes().withOf(attribute, generator));
   }
 
   /**
@@ -128,7 +128,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @throws NullPointerException if {@code attribute} arg is null
    */
   default <I> S with(final StepAttribute<I, ?, ?> attribute) {
-    return this.withAttributes(this.attributes().with(
+    return this.withAttributes(this.getAttributes().with(
       attribute
     ));
   }
@@ -144,7 +144,7 @@ public interface StepObj<S extends StepObj<S>> {
    */
   default <I> S with(final StepAttribute<I, ?, ?> attribute,
                      final I value) {
-    return this.withAttributes(this.attributes().with(
+    return this.withAttributes(this.getAttributes().with(
       attribute, value
     ));
   }
@@ -165,7 +165,7 @@ public interface StepObj<S extends StepObj<S>> {
                           final I1 value1,
                           final StepAttribute<I2, ?, ?> attribute2,
                           final I2 value2) {
-    return this.withAttributes(this.attributes().with(
+    return this.withAttributes(this.getAttributes().with(
       attribute1, value1,
       attribute2, value2
     ));
@@ -192,7 +192,7 @@ public interface StepObj<S extends StepObj<S>> {
                               final I2 value2,
                               final StepAttribute<I3, ?, ?> attribute3,
                               final I3 value3) {
-    return this.withAttributes(this.attributes().with(
+    return this.withAttributes(this.getAttributes().with(
       attribute1, value1,
       attribute2, value2,
       attribute3, value3
@@ -207,7 +207,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @throws NullPointerException if {@code attribute} arg is null
    */
   default S without(final StepAttribute<?, ?, ?> attribute) {
-    return this.withAttributes(this.attributes().without(attribute));
+    return this.withAttributes(this.getAttributes().without(attribute));
   }
 
   /**

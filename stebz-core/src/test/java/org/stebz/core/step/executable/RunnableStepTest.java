@@ -41,7 +41,7 @@ final class RunnableStepTest {
     final ThrowingRunnable<Error> body = mockRunnable();
     final RunnableStep step = new RunnableStep.Of(attributes, body);
 
-    assertThat(step.attributes())
+    assertThat(step.getAttributes())
       .isSameAs(attributes);
     assertThat(step.getBody())
       .isSameAs(body);
@@ -55,7 +55,7 @@ final class RunnableStepTest {
     final RunnableStep step = new RunnableStep.Of(attributes, body);
 
     final RunnableStep newStep = step.withAttributes(newAttributes);
-    assertThat(newStep.attributes())
+    assertThat(newStep.getAttributes())
       .isSameAs(newAttributes);
   }
 

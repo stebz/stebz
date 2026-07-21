@@ -41,7 +41,7 @@ final class ConsumerStepTest {
     final ThrowingConsumer<Object, Error> body = mockConsumer();
     final ConsumerStep<Object> step = new ConsumerStep.Of<>(attributes, body);
 
-    assertThat(step.attributes())
+    assertThat(step.getAttributes())
       .isSameAs(attributes);
     assertThat(step.getBody())
       .isSameAs(body);
@@ -55,7 +55,7 @@ final class ConsumerStepTest {
     final ConsumerStep<Object> step = new ConsumerStep.Of<>(attributes, body);
 
     final ConsumerStep<Object> newStep = step.withAttributes(newAttributes);
-    assertThat(newStep.attributes())
+    assertThat(newStep.getAttributes())
       .isSameAs(newAttributes);
   }
 

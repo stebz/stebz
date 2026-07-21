@@ -41,7 +41,7 @@ final class SupplierStepTest {
     final ThrowingSupplier<Object, Error> body = mockSupplier();
     final SupplierStep<Object> step = new SupplierStep.Of<>(attributes, body);
 
-    assertThat(step.attributes())
+    assertThat(step.getAttributes())
       .isSameAs(attributes);
     assertThat(step.getBody())
       .isSameAs(body);
@@ -55,7 +55,7 @@ final class SupplierStepTest {
     final SupplierStep<Object> step = new SupplierStep.Of<>(attributes, body);
 
     final SupplierStep<Object> newStep = step.withAttributes(newAttributes);
-    assertThat(newStep.attributes())
+    assertThat(newStep.getAttributes())
       .isSameAs(newAttributes);
   }
 

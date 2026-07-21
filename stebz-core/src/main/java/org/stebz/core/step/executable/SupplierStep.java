@@ -254,7 +254,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @return this step as {@code RunnableStep}
    */
   default RStep noResult() {
-    return new RunnableStep.Of(this.attributes(), this.getBody()::get);
+    return new RunnableStep.Of(this.getAttributes(), this.getBody()::get);
   }
 
   /**
@@ -528,7 +528,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
      * @throws NullPointerException if {@code origin} arg is null
      */
     public Of(final SupplierStep<R> origin) {
-      this(origin.attributes(), origin.getBody());
+      this(origin.getAttributes(), origin.getBody());
     }
 
     /**
@@ -547,7 +547,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
     }
 
     @Override
-    public StepAttributes attributes() {
+    public StepAttributes getAttributes() {
       return this.attributes;
     }
 
