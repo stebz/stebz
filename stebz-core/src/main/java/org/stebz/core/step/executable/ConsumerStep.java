@@ -85,6 +85,128 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
+   * {@code ConsumerStep} with body that rethrow any exception.
+   *
+   * @param generator the exception generator
+   * @return {@code ConsumerStep} with body that rethrow any exception
+   * @throws NullPointerException if {@code generator} arg is null
+   * @see #withBody(Object)
+   * @see #withBodyOf(ThrowingFunction)
+   */
+  default CStep<T> withRethrown(final ThrowingFunction<? super Throwable, ? extends Throwable, ?> generator) {
+    if (generator == null) { throw new NullPointerException("generator arg is null"); }
+    final ThrowingConsumer<T, ?> body = this.getBody();
+    return this.withBody(context -> {
+      try {
+        body.accept(context);
+      } catch (final Throwable ex) {
+        throw generator.apply(ex);
+      }
+    });
+  }
+
+  /**
+   * {@code ConsumerStep} with body that rethrow exception.
+   *
+   * @param exceptionType the exception type
+   * @param generator     the exception generator
+   * @param <E>           the type of the exception
+   * @return {@code ConsumerStep} with body that rethrow exception
+   * @throws NullPointerException if {@code exceptionType} arg or {@code generator} arg is null
+   * @see #withBody(Object)
+   * @see #withBodyOf(ThrowingFunction)
+   */
+  @SuppressWarnings("unchecked")
+  default <E extends Throwable> CStep<T> withRethrown(final Class<? extends E> exceptionType,
+                                                      final ThrowingFunction<? super E, ? extends Throwable, ?> generator) {
+    if (exceptionType == null) { throw new NullPointerException("exceptionType arg is null"); }
+    if (generator == null) { throw new NullPointerException("generator arg is null"); }
+    final ThrowingConsumer<T, ?> body = this.getBody();
+    return this.withBody(context -> {
+      try {
+        body.accept(context);
+      } catch (final Throwable ex) {
+        if (exceptionType.isAssignableFrom(ex.getClass())) {
+          throw generator.apply((E) ex);
+        }
+        throw ex;
+      }
+    });
+  }
+
+  /**
+   * {@code ConsumerStep} with body that rethrow exception.
+   *
+   * @param exceptionType1 the first exception type
+   * @param exceptionType2 the second exception type
+   * @param generator      the exception generator
+   * @param <E>            the type of exceptions
+   * @return {@code ConsumerStep} with body that rethrow exception
+   * @throws NullPointerException if {@code exceptionType1} arg or {@code exceptionType2} arg or {@code generator} arg
+   *                              is null
+   * @see #withBody(Object)
+   * @see #withBodyOf(ThrowingFunction)
+   */
+  @SuppressWarnings("unchecked")
+  default <E extends Throwable> CStep<T> withRethrown(final Class<? extends E> exceptionType1,
+                                                      final Class<? extends E> exceptionType2,
+                                                      final ThrowingFunction<? super E, ? extends Throwable, ?> generator) {
+    if (exceptionType1 == null) { throw new NullPointerException("exceptionType1 arg is null"); }
+    if (exceptionType2 == null) { throw new NullPointerException("exceptionType2 arg is null"); }
+    if (generator == null) { throw new NullPointerException("generator arg is null"); }
+    final ThrowingConsumer<T, ?> body = this.getBody();
+    return this.withBody(context -> {
+      try {
+        body.accept(context);
+      } catch (final Throwable ex) {
+        if (exceptionType1.isAssignableFrom(ex.getClass()) ||
+          exceptionType2.isAssignableFrom(ex.getClass())) {
+          throw generator.apply((E) ex);
+        }
+        throw ex;
+      }
+    });
+  }
+
+  /**
+   * {@code ConsumerStep} with body that rethrow exception.
+   *
+   * @param exceptionType1 the first exception type
+   * @param exceptionType2 the second exception type
+   * @param exceptionType3 the third exception type
+   * @param generator      the exception generator
+   * @param <E>            the type of exceptions
+   * @return {@code ConsumerStep} with body that rethrow exception
+   * @throws NullPointerException if {@code exceptionType1} arg or {@code exceptionType2} arg or {@code exceptionType3}
+   *                              arg or {@code generator} arg is null
+   * @see #withBody(Object)
+   * @see #withBodyOf(ThrowingFunction)
+   */
+  @SuppressWarnings("unchecked")
+  default <E extends Throwable> CStep<T> withRethrown(final Class<? extends E> exceptionType1,
+                                                      final Class<? extends E> exceptionType2,
+                                                      final Class<? extends E> exceptionType3,
+                                                      final ThrowingFunction<? super E, ? extends Throwable, ?> generator) {
+    if (exceptionType1 == null) { throw new NullPointerException("exceptionType1 arg is null"); }
+    if (exceptionType2 == null) { throw new NullPointerException("exceptionType2 arg is null"); }
+    if (exceptionType3 == null) { throw new NullPointerException("exceptionType3 arg is null"); }
+    if (generator == null) { throw new NullPointerException("generator arg is null"); }
+    final ThrowingConsumer<T, ?> body = this.getBody();
+    return this.withBody(context -> {
+      try {
+        body.accept(context);
+      } catch (final Throwable ex) {
+        if (exceptionType1.isAssignableFrom(ex.getClass()) ||
+          exceptionType2.isAssignableFrom(ex.getClass()) ||
+          exceptionType3.isAssignableFrom(ex.getClass())) {
+          throw generator.apply((E) ex);
+        }
+        throw ex;
+      }
+    });
+  }
+
+  /**
    * Returns {@code ConsumerStep} with given block before body.
    *
    * @param block the before block

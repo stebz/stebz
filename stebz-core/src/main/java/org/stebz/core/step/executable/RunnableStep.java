@@ -83,6 +83,128 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
+   * {@code RunnableStep} with body that rethrow any exception.
+   *
+   * @param generator the exception generator
+   * @return {@code RunnableStep} with body that rethrow any exception
+   * @throws NullPointerException if {@code generator} arg is null
+   * @see #withBody(Object)
+   * @see #withBodyOf(ThrowingFunction)
+   */
+  default RStep withRethrown(final ThrowingFunction<? super Throwable, ? extends Throwable, ?> generator) {
+    if (generator == null) { throw new NullPointerException("generator arg is null"); }
+    final ThrowingRunnable<?> body = this.getBody();
+    return this.withBody(() -> {
+      try {
+        body.run();
+      } catch (final Throwable ex) {
+        throw generator.apply(ex);
+      }
+    });
+  }
+
+  /**
+   * {@code RunnableStep} with body that rethrow exception.
+   *
+   * @param exceptionType the exception type
+   * @param generator     the exception generator
+   * @param <E>           the type of the exception
+   * @return {@code RunnableStep} with body that rethrow exception
+   * @throws NullPointerException if {@code exceptionType} arg or {@code generator} arg is null
+   * @see #withBody(Object)
+   * @see #withBodyOf(ThrowingFunction)
+   */
+  @SuppressWarnings("unchecked")
+  default <E extends Throwable> RStep withRethrown(final Class<? extends E> exceptionType,
+                                                   final ThrowingFunction<? super E, ? extends Throwable, ?> generator) {
+    if (exceptionType == null) { throw new NullPointerException("exceptionType arg is null"); }
+    if (generator == null) { throw new NullPointerException("generator arg is null"); }
+    final ThrowingRunnable<?> body = this.getBody();
+    return this.withBody(() -> {
+      try {
+        body.run();
+      } catch (final Throwable ex) {
+        if (exceptionType.isAssignableFrom(ex.getClass())) {
+          throw generator.apply((E) ex);
+        }
+        throw ex;
+      }
+    });
+  }
+
+  /**
+   * {@code RunnableStep} with body that rethrow exception.
+   *
+   * @param exceptionType1 the first exception type
+   * @param exceptionType2 the second exception type
+   * @param generator      the exception generator
+   * @param <E>            the type of exceptions
+   * @return {@code RunnableStep} with body that rethrow exception
+   * @throws NullPointerException if {@code exceptionType1} arg or {@code exceptionType2} arg or {@code generator} arg
+   *                              is null
+   * @see #withBody(Object)
+   * @see #withBodyOf(ThrowingFunction)
+   */
+  @SuppressWarnings("unchecked")
+  default <E extends Throwable> RStep withRethrown(final Class<? extends E> exceptionType1,
+                                                   final Class<? extends E> exceptionType2,
+                                                   final ThrowingFunction<? super E, ? extends Throwable, ?> generator) {
+    if (exceptionType1 == null) { throw new NullPointerException("exceptionType1 arg is null"); }
+    if (exceptionType2 == null) { throw new NullPointerException("exceptionType2 arg is null"); }
+    if (generator == null) { throw new NullPointerException("generator arg is null"); }
+    final ThrowingRunnable<?> body = this.getBody();
+    return this.withBody(() -> {
+      try {
+        body.run();
+      } catch (final Throwable ex) {
+        if (exceptionType1.isAssignableFrom(ex.getClass()) ||
+          exceptionType2.isAssignableFrom(ex.getClass())) {
+          throw generator.apply((E) ex);
+        }
+        throw ex;
+      }
+    });
+  }
+
+  /**
+   * {@code RunnableStep} with body that rethrow exception.
+   *
+   * @param exceptionType1 the first exception type
+   * @param exceptionType2 the second exception type
+   * @param exceptionType3 the third exception type
+   * @param generator      the exception generator
+   * @param <E>            the type of exceptions
+   * @return {@code RunnableStep} with body that rethrow exception
+   * @throws NullPointerException if {@code exceptionType1} arg or {@code exceptionType2} arg or {@code exceptionType3}
+   *                              arg or {@code generator} arg is null
+   * @see #withBody(Object)
+   * @see #withBodyOf(ThrowingFunction)
+   */
+  @SuppressWarnings("unchecked")
+  default <E extends Throwable> RStep withRethrown(final Class<? extends E> exceptionType1,
+                                                   final Class<? extends E> exceptionType2,
+                                                   final Class<? extends E> exceptionType3,
+                                                   final ThrowingFunction<? super E, ? extends Throwable, ?> generator) {
+    if (exceptionType1 == null) { throw new NullPointerException("exceptionType1 arg is null"); }
+    if (exceptionType2 == null) { throw new NullPointerException("exceptionType2 arg is null"); }
+    if (exceptionType3 == null) { throw new NullPointerException("exceptionType3 arg is null"); }
+    if (generator == null) { throw new NullPointerException("generator arg is null"); }
+    final ThrowingRunnable<?> body = this.getBody();
+    return this.withBody(() -> {
+      try {
+        body.run();
+      } catch (final Throwable ex) {
+        if (exceptionType1.isAssignableFrom(ex.getClass()) ||
+          exceptionType2.isAssignableFrom(ex.getClass()) ||
+          exceptionType3.isAssignableFrom(ex.getClass())) {
+          throw generator.apply((E) ex);
+        }
+        throw ex;
+      }
+    });
+  }
+
+  /**
    * Returns {@code RunnableStep} with given block before step body.
    *
    * @param block the before block
