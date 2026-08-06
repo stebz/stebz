@@ -100,6 +100,67 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
+   * {@code FunctionStep} with body that ignores given exceptions.
+   *
+   * @param exceptionType1 the first exception type
+   * @param exceptionType2 the second exception type
+   * @return {@code FunctionStep} with body that ignores given exceptions
+   * @throws NullPointerException if {@code exceptionType} arg or {@code exceptionType2} arg is null
+   * @see #withBody(Object)
+   * @see #withBodyOf(ThrowingFunction)
+   */
+  default FStep<T, R> withIgnored(final Class<? extends Throwable> exceptionType1,
+                                  final Class<? extends Throwable> exceptionType2) {
+    if (exceptionType1 == null) { throw new NullPointerException("exceptionType1 arg is null"); }
+    if (exceptionType2 == null) { throw new NullPointerException("exceptionType2 arg is null"); }
+    final ThrowingFunction<T, R, ?> body = this.getBody();
+    return this.withBody(context -> {
+      try {
+        return body.apply(context);
+      } catch (final Throwable ex) {
+        if (!exceptionType1.isAssignableFrom(ex.getClass()) &&
+          !exceptionType2.isAssignableFrom(ex.getClass())) {
+          throw ex;
+        }
+        return null;
+      }
+    });
+  }
+
+  /**
+   * {@code FunctionStep} with body that ignores given exceptions.
+   *
+   * @param exceptionType1 the first exception type
+   * @param exceptionType2 the second exception type
+   * @param exceptionType3 the third exception type
+   * @return {@code FunctionStep} with body that ignores given exceptions
+   * @throws NullPointerException if {@code exceptionType} arg or {@code exceptionType2} arg or {@code exceptionType3}
+   *                              arg is null
+   * @see #withBody(Object)
+   * @see #withBodyOf(ThrowingFunction)
+   */
+  default FStep<T, R> withIgnored(final Class<? extends Throwable> exceptionType1,
+                                  final Class<? extends Throwable> exceptionType2,
+                                  final Class<? extends Throwable> exceptionType3) {
+    if (exceptionType1 == null) { throw new NullPointerException("exceptionType1 arg is null"); }
+    if (exceptionType2 == null) { throw new NullPointerException("exceptionType2 arg is null"); }
+    if (exceptionType3 == null) { throw new NullPointerException("exceptionType3 arg is null"); }
+    final ThrowingFunction<T, R, ?> body = this.getBody();
+    return this.withBody(context -> {
+      try {
+        return body.apply(context);
+      } catch (final Throwable ex) {
+        if (!exceptionType1.isAssignableFrom(ex.getClass()) &&
+          !exceptionType2.isAssignableFrom(ex.getClass()) &&
+          !exceptionType3.isAssignableFrom(ex.getClass())) {
+          throw ex;
+        }
+        return null;
+      }
+    });
+  }
+
+  /**
    * {@code FunctionStep} with body that rethrow any exception.
    *
    * @param generator the exception generator
