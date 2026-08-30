@@ -39,13 +39,13 @@ import static org.stebz.gherkin.annotation.GherkinAnnotationsExtension.GHERKIN_K
 
 /**
  * Alias for the combination of the {@link WithName} and {@link WithKeyword} annotations. The keyword is
- * {@link GherkinKeywords#conclusion()}.
+ * {@link GherkinKeywords#technical()}.
  */
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @StepAttributeAnnotation(GHERKIN_KEYWORD_ATTRIBUTE_KEY)
-public @interface Conclusion {
+public @interface Technical {
 
   /**
    * Returns name attribute value. Non empty value overrides {@link WithName#value()} and {@link Step#value()}.

@@ -35,7 +35,6 @@ import org.stebz.util.property.PropertiesReader;
 public final class GherkinKeywords implements StebzExtension {
   private static final Object LOCK = new Object();
   private static final String BACKGROUND_KEYWORD_DEFAULT_VALUE = "Background:";
-  private static final String CONCLUSION_KEYWORD_DEFAULT_VALUE = "Conclusion:";
   private static final String RULE_KEYWORD_DEFAULT_VALUE = "Rule:";
   private static final String GIVEN_KEYWORD_DEFAULT_VALUE = "Given";
   private static final String WHEN_KEYWORD_DEFAULT_VALUE = "When";
@@ -43,6 +42,7 @@ public final class GherkinKeywords implements StebzExtension {
   private static final String AND_KEYWORD_DEFAULT_VALUE = "And";
   private static final String BUT_KEYWORD_DEFAULT_VALUE = "But";
   private static final String ASTERISK_KEYWORD_DEFAULT_VALUE = "*";
+  private static final String TECHNICAL_KEYWORD_DEFAULT_VALUE = "Technical:";
   private static volatile Keywords keywords = null;
 
   /**
@@ -60,14 +60,14 @@ public final class GherkinKeywords implements StebzExtension {
   private GherkinKeywords(final PropertiesReader properties) {
     setKeywordsOnce(new Keywords(
       new Keyword.Of(properties.getString("stebz.gherkin.keyword.background", BACKGROUND_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.gherkin.keyword.conclusion", CONCLUSION_KEYWORD_DEFAULT_VALUE)),
       new Keyword.Of(properties.getString("stebz.gherkin.keyword.rule", RULE_KEYWORD_DEFAULT_VALUE)),
       new Keyword.Of(properties.getString("stebz.gherkin.keyword.given", GIVEN_KEYWORD_DEFAULT_VALUE)),
       new Keyword.Of(properties.getString("stebz.gherkin.keyword.when", WHEN_KEYWORD_DEFAULT_VALUE)),
       new Keyword.Of(properties.getString("stebz.gherkin.keyword.then", THEN_KEYWORD_DEFAULT_VALUE)),
       new Keyword.Of(properties.getString("stebz.gherkin.keyword.and", AND_KEYWORD_DEFAULT_VALUE)),
       new Keyword.Of(properties.getString("stebz.gherkin.keyword.but", BUT_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.gherkin.keyword.asterisk", ASTERISK_KEYWORD_DEFAULT_VALUE))
+      new Keyword.Of(properties.getString("stebz.gherkin.keyword.asterisk", ASTERISK_KEYWORD_DEFAULT_VALUE)),
+      new Keyword.Of(properties.getString("stebz.gherkin.keyword.technical", TECHNICAL_KEYWORD_DEFAULT_VALUE))
     ));
   }
 
@@ -78,15 +78,6 @@ public final class GherkinKeywords implements StebzExtension {
    */
   public static Keyword background() {
     return getKeywords().background;
-  }
-
-  /**
-   * Returns "Conclusion" keyword.
-   *
-   * @return "Conclusion" keyword
-   */
-  public static Keyword conclusion() {
-    return getKeywords().conclusion;
   }
 
   /**
@@ -152,6 +143,15 @@ public final class GherkinKeywords implements StebzExtension {
     return getKeywords().asterisk;
   }
 
+  /**
+   * Returns "Technical" keyword.
+   *
+   * @return "Technical" keyword
+   */
+  public static Keyword technical() {
+    return getKeywords().technical;
+  }
+
   @Override
   public int order() {
     return EARLY_ORDER;
@@ -186,20 +186,19 @@ public final class GherkinKeywords implements StebzExtension {
   private static Keywords defaultKeywords() {
     return new Keywords(
       new Keyword.Of(BACKGROUND_KEYWORD_DEFAULT_VALUE),
-      new Keyword.Of(CONCLUSION_KEYWORD_DEFAULT_VALUE),
       new Keyword.Of(RULE_KEYWORD_DEFAULT_VALUE),
       new Keyword.Of(GIVEN_KEYWORD_DEFAULT_VALUE),
       new Keyword.Of(WHEN_KEYWORD_DEFAULT_VALUE),
       new Keyword.Of(THEN_KEYWORD_DEFAULT_VALUE),
       new Keyword.Of(AND_KEYWORD_DEFAULT_VALUE),
       new Keyword.Of(BUT_KEYWORD_DEFAULT_VALUE),
-      new Keyword.Of(ASTERISK_KEYWORD_DEFAULT_VALUE)
+      new Keyword.Of(ASTERISK_KEYWORD_DEFAULT_VALUE),
+      new Keyword.Of(TECHNICAL_KEYWORD_DEFAULT_VALUE)
     );
   }
 
   private static final class Keywords {
     private final Keyword background;
-    private final Keyword conclusion;
     private final Keyword rule;
     private final Keyword given;
     private final Keyword when;
@@ -207,18 +206,18 @@ public final class GherkinKeywords implements StebzExtension {
     private final Keyword and;
     private final Keyword but;
     private final Keyword asterisk;
+    private final Keyword technical;
 
     private Keywords(final Keyword background,
-                     final Keyword conclusion,
                      final Keyword rule,
                      final Keyword given,
                      final Keyword when,
                      final Keyword then,
                      final Keyword and,
                      final Keyword but,
-                     final Keyword asterisk) {
+                     final Keyword asterisk,
+                     final Keyword technical) {
       this.background = background;
-      this.conclusion = conclusion;
       this.rule = rule;
       this.given = given;
       this.when = when;
@@ -226,6 +225,7 @@ public final class GherkinKeywords implements StebzExtension {
       this.and = and;
       this.but = but;
       this.asterisk = asterisk;
+      this.technical = technical;
     }
   }
 }

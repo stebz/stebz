@@ -55,7 +55,6 @@ public class GherkinAnnotationsExtension implements InterceptStep {
    * Gherkin keyword annotation attribute.
    *
    * @see Background
-   * @see Conclusion
    * @see Rule
    * @see Given
    * @see When
@@ -63,13 +62,13 @@ public class GherkinAnnotationsExtension implements InterceptStep {
    * @see And
    * @see But
    * @see ___
+   * @see Technical
    */
   public static final SimpleStepAttribute<Annotation> GHERKIN_KEYWORD =
     SimpleStepAttribute.nullable(GHERKIN_KEYWORD_ATTRIBUTE_KEY);
   private static final Cached<Map<Class<? extends Annotation>, Keyword>> KEYWORDS = new Cached<>(() -> {
     final Map<Class<? extends Annotation>, Keyword> keywords = new HashMap<>();
     keywords.put(Background.class, GherkinKeywords.background());
-    keywords.put(Conclusion.class, GherkinKeywords.conclusion());
     keywords.put(Rule.class, GherkinKeywords.rule());
     keywords.put(Given.class, GherkinKeywords.given());
     keywords.put(When.class, GherkinKeywords.when());
@@ -77,13 +76,13 @@ public class GherkinAnnotationsExtension implements InterceptStep {
     keywords.put(And.class, GherkinKeywords.and());
     keywords.put(But.class, GherkinKeywords.but());
     keywords.put(___.class, GherkinKeywords.asterisk());
+    keywords.put(Technical.class, GherkinKeywords.technical());
     return keywords;
   });
   private static final Cached<Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>>> VALUES =
     new Cached<>(() -> {
       final Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>> values = new HashMap<>();
       values.put(Background.class, annot -> ((Background) annot).value());
-      values.put(Conclusion.class, annot -> ((Conclusion) annot).value());
       values.put(Rule.class, annot -> ((Rule) annot).value());
       values.put(Given.class, annot -> ((Given) annot).value());
       values.put(When.class, annot -> ((When) annot).value());
@@ -91,6 +90,7 @@ public class GherkinAnnotationsExtension implements InterceptStep {
       values.put(And.class, annot -> ((And) annot).value());
       values.put(But.class, annot -> ((But) annot).value());
       values.put(___.class, annot -> ((___) annot).value());
+      values.put(Technical.class, annot -> ((Technical) annot).value());
       return values;
     });
   private final boolean enabled;
