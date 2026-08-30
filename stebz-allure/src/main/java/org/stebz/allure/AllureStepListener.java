@@ -86,7 +86,7 @@ public class AllureStepListener implements StepListener {
       KeywordPosition.class, KeywordPosition.AT_START);
     this.keywordToUppercase = properties.getBoolean("stebz.allure.keywordToUppercase", false);
     this.processName = properties.getBoolean("stebz.allure.processName", true);
-    this.contextParam = properties.getBoolean("stebz.allure.contextParam", true);
+    this.contextParam = properties.getBoolean("stebz.allure.contextParam", false);
     this.contextParamName = properties.getString("stebz.allure.contextParamName", "Context");
     this.expectedResultParam = properties.getBoolean("stebz.allure.expectedResultParam", true);
     this.expectedResultParamName =

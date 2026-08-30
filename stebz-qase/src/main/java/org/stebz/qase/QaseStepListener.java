@@ -81,7 +81,7 @@ public class QaseStepListener implements StepListener {
       properties.getEnum("stebz.qase.keywordPosition", KeywordPosition.class, KeywordPosition.AT_START);
     this.keywordToUppercase = properties.getBoolean("stebz.qase.keywordToUppercase", false);
     this.processName = properties.getBoolean("stebz.qase.processName", true);
-    this.contextParam = properties.getBoolean("stebz.qase.contextParam", true);
+    this.contextParam = properties.getBoolean("stebz.qase.contextParam", false);
     this.contextParamName = properties.getString("stebz.qase.contextParamName", "Context");
     this.commentAttachment = properties.getBoolean("stebz.qase.commentAttachment", true);
     this.commentAttachmentName = properties.getString("stebz.qase.commentAttachmentName", "Comment");
