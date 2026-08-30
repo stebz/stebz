@@ -436,7 +436,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    *
    * @return this step as {@code RunnableStep}
    */
-  default RStep noResult() {
+  default RStep withoutResult() {
     return new RunnableStep.Of(this.getAttributes(), this.getBody()::get);
   }
 
