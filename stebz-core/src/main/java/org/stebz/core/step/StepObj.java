@@ -39,6 +39,7 @@ import org.stebz.core.step.executable.alias.FStep;
 import org.stebz.core.step.executable.alias.RStep;
 import org.stebz.core.step.executable.alias.SStep;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.stebz.core.attribute.StepAttribute.COMMENT;
@@ -54,6 +55,7 @@ import static org.stebz.core.attribute.StepAttribute.PARAMS;
  * @param <S> the type of the step implementing {@code StepObj}
  */
 public interface StepObj<S extends StepObj<S>> {
+  String MASKED_PARAM_VALUE = "******";
 
   /**
    * Returns step attributes.
@@ -360,32 +362,31 @@ public interface StepObj<S extends StepObj<S>> {
 
   /**
    * Returns {@code StepObj} with added to params attribute value param. Alias for
-   * <p>
    * {@link #withAddedParam(String, Object)} method.
    *
-   * @param name  the param name
-   * @param value the param value
+   * @param paramName  the param name
+   * @param paramValue the param value
    * @return {@code StepObj} with added param
    * @see #withParams(ThrowingConsumer)
    * @see StepAttribute#PARAMS
    */
-  default S withParam(final String name,
-                      final Object value) {
-    return this.withParams(p -> p.put(name, value));
+  default S withParam(final String paramName,
+                      final Object paramValue) {
+    return this.withParams(p -> p.put(paramName, paramValue));
   }
 
   /**
    * Returns {@code StepObj} with added to params attribute value param.
    *
-   * @param name  the param name
-   * @param value the param value
+   * @param paramName  the param name
+   * @param paramValue the param value
    * @return {@code StepObj} with added param
    * @see #withParams(ThrowingConsumer)
    * @see StepAttribute#PARAMS
    */
-  default S withAddedParam(final String name,
-                           final Object value) {
-    return this.withParams(p -> p.put(name, value));
+  default S withAddedParam(final String paramName,
+                           final Object paramValue) {
+    return this.withParams(p -> p.put(paramName, paramValue));
   }
 
   /**
@@ -399,6 +400,64 @@ public interface StepObj<S extends StepObj<S>> {
    */
   default S withAddedParams(final Map<String, Object> params) {
     return this.withParams(p -> p.putAll(params));
+  }
+
+  /**
+   * Returns {@code StepObj} with added to params attribute value masked param.
+   *
+   * @param paramName the param name
+   * @return {@code StepObj} with added masked param
+   * @see #withParams(ThrowingConsumer)
+   * @see StepAttribute#PARAMS
+   */
+  default S withMaskedParam(final String paramName) {
+    return this.withParams(p -> p.put(paramName, MASKED_PARAM_VALUE));
+  }
+
+  /**
+   * Returns {@code StepObj} with added to params attribute value masked params.
+   *
+   * @param paramNames the param names
+   * @return {@code StepObj} with added masked params
+   * @throws NullPointerException if {@code params} arg is null
+   * @see #withParams(ThrowingConsumer)
+   * @see StepAttribute#PARAMS
+   */
+  default S withMaskedParams(final String... paramNames) {
+    return this.withParams(p -> {
+      for (final String param : paramNames) {
+        p.put(param, MASKED_PARAM_VALUE);
+      }
+    });
+  }
+
+  /**
+   * Returns {@code StepObj} with added to params attribute value masked params.
+   *
+   * @param params the params
+   * @return {@code StepObj} with added masked params
+   * @throws NullPointerException if {@code params} arg is null
+   * @see #withParams(ThrowingConsumer)
+   * @see StepAttribute#PARAMS
+   */
+  default S withMaskedParams(final Map<String, Object> params) {
+    return this.withParams(p -> {
+      final Map<String, Object> maskedParams = new LinkedHashMap<>(params);
+      maskedParams.replaceAll((k, v) -> MASKED_PARAM_VALUE);
+      p.putAll(maskedParams);
+    });
+  }
+
+  /**
+   * Returns {@code StepObj} with params attribute value with all masked params.
+   *
+   * @return {@code StepObj} with masked params
+   * @throws NullPointerException if {@code params} arg is null
+   * @see #withParams(ThrowingConsumer)
+   * @see StepAttribute#PARAMS
+   */
+  default S withMaskedParams() {
+    return this.withParams(p -> p.replaceAll((k, v) -> MASKED_PARAM_VALUE));
   }
 
   /**
