@@ -39,12 +39,6 @@ final class GherkinKeywordsTest {
   }
 
   @Test
-  void conclusionKeywordDefaultValue() {
-    assertThat(GherkinKeywords.conclusion().value())
-      .isEqualTo("Conclusion:");
-  }
-
-  @Test
   void ruleKeywordDefaultValue() {
     assertThat(GherkinKeywords.rule().value())
       .isEqualTo("Rule:");
@@ -78,5 +72,11 @@ final class GherkinKeywordsTest {
   void butKeywordDefaultValue() {
     assertThat(GherkinKeywords.but().value())
       .isEqualTo("But");
+  }
+
+  @Test
+  void technicalKeywordDefaultValue() {
+    assertThat(GherkinKeywords.technical().value())
+      .isEqualTo("Technical:");
   }
 }
