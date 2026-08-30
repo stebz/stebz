@@ -119,28 +119,6 @@ public final class StebzMethods {
   }
 
   /**
-   * Returns given {@code SupplierStep} as {@code RunnableStep}.
-   *
-   * @param step the origin step
-   * @return {@code SupplierStep} as {@code RunnableStep}
-   */
-  public static RunnableStep noResult(final SupplierStep<?> step) {
-    return step.noResult();
-  }
-
-  /**
-   * Returns given {@code FunctionStep} as {@code ConsumerStep}.
-   *
-   * @param step the origin step
-   * @param <T>  the type of the value
-   * @return {@code FunctionStep} as {@code ConsumerStep}
-   */
-  @SuppressWarnings("unchecked")
-  public static <T> ConsumerStep<T> noResult(final FunctionStep<? super T, ?> step) {
-    return (ConsumerStep<T>) step.noResult();
-  }
-
-  /**
    * Executes given step.
    *
    * @param step the step

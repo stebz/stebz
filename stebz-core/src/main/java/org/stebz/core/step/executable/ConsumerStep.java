@@ -29,6 +29,7 @@ import org.stebz.core.attribute.StepAttributes;
 import org.stebz.core.exception.StepNotImplementedError;
 import org.stebz.core.step.ExecutableStep;
 import org.stebz.core.step.executable.alias.CStep;
+import org.stebz.core.step.executable.alias.RStep;
 
 import java.util.Map;
 
@@ -373,6 +374,17 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
         throw mainEx;
       }
     });
+  }
+
+  /**
+   * Returns this step as {@code RunnableStep} with given context.
+   *
+   * @param context the context
+   * @return this step as {@code RunnableStep} with given context
+   */
+  default RStep withContext(final T context) {
+    final ThrowingConsumer<T, ?> body = this.getBody();
+    return new RunnableStep.Of(this.getAttributes(), () -> body.accept(context));
   }
 
   /**

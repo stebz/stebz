@@ -32,6 +32,7 @@ import org.stebz.core.exception.StepNotImplementedError;
 import org.stebz.core.step.ExecutableStep;
 import org.stebz.core.step.executable.alias.CStep;
 import org.stebz.core.step.executable.alias.FStep;
+import org.stebz.core.step.executable.alias.SStep;
 
 import java.util.Map;
 
@@ -427,11 +428,22 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
+   * Returns this step as {@code SupplierStep} with given context.
+   *
+   * @param context the context
+   * @return this step as {@code SupplierStep} with given context
+   */
+  default SStep<R> withContext(final T context) {
+    final ThrowingFunction<T, R, ?> body = this.getBody();
+    return new SupplierStep.Of<>(this.getAttributes(), () -> body.apply(context));
+  }
+
+  /**
    * Returns this step as {@code ConsumerStep}.
    *
    * @return this step as {@code ConsumerStep}
    */
-  default CStep<T> noResult() {
+  default CStep<T> withoutResult() {
     return new ConsumerStep.Of<>(this.getAttributes(), this.getBody()::apply);
   }
 
