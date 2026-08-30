@@ -98,7 +98,6 @@ final class AllureStepListenerTest {
       assertThat(stepResultRef.get().getParameters()).containsExactly(
         new Parameter().setName(paramName1).setValue(paramValue1),
         new Parameter().setName(paramName2).setValue(paramValue2),
-        new Parameter().setName("Context").setValue(contextValue),
         new Parameter().setName("Expected result").setValue(expectedResultValue),
         new Parameter().setName("Comment").setValue(commentValue)
       );
