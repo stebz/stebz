@@ -39,10 +39,13 @@ import java.lang.annotation.Target;
 @Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Param {
+
   /**
-   * Masked parameter value.
+   * Returns parameter name. Non empty value overrides {@link #name()}.
+   *
+   * @return parameter name
    */
-  String MASK = "******";
+  String value() default "";
 
   /**
    * Returns parameter name.
@@ -56,12 +59,19 @@ public @interface Param {
    *
    * @return parameter value
    */
-  String value() default "";
+  String val() default "";
+
+  /**
+   * Returns {@code true} if parameter should be masked, otherwise returns {@code false}.
+   *
+   * @return {@code true} if parameter should be masked, otherwise {@code false}
+   */
+  boolean masked() default false;
 
   /**
    * Returns {@code true} if parameter should be hidden, otherwise returns {@code false}.
    *
    * @return {@code true} if parameter should be hidden, otherwise {@code false}
    */
-  boolean hide() default false;
+  boolean hidden() default false;
 }
