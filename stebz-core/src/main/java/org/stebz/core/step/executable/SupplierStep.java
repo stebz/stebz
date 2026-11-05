@@ -29,11 +29,13 @@ import dev.jlet.function.ThrowingRunnable;
 import dev.jlet.function.ThrowingSupplier;
 import org.stebz.core.attribute.StepAttributes;
 import org.stebz.core.exception.StepNotImplementedError;
+import org.stebz.core.step.ContextContainerStep;
 import org.stebz.core.step.ExecutableStep;
 import org.stebz.core.step.executable.alias.RStep;
 import org.stebz.core.step.executable.alias.SStep;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import static org.stebz.core.attribute.StepAttribute.EXPECTED_RESULT;
 import static org.stebz.core.attribute.StepAttribute.NAME;
@@ -44,7 +46,8 @@ import static org.stebz.core.attribute.StepAttribute.PARAMS;
  *
  * @param <R> the type of the step result
  */
-public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, SStep<R>> {
+public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, SStep<R>>,
+  ContextContainerStep<Object, ThrowingFunction<?, R, ?>> {
 
   /**
    * Returns {@code SupplierStep} with empty body that returns {@code null} result.
@@ -622,6 +625,8 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
     private static final SStep<?> NOT_IMPLEMENTED_STEP = new Of<>(NOT_IMPLEMENTED_BODY);
     private final StepAttributes attributes;
     private final ThrowingSupplier<R, ?> body;
+    private final Object context;
+    private final ThrowingFunction<?, R, ?> contextualBody;
 
     /**
      * Ctor.
@@ -727,6 +732,28 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
       if (body == null) { throw new NullPointerException("body arg is null"); }
       this.attributes = attributes;
       this.body = body;
+      this.context = null;
+      this.contextualBody = null;
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param attributes     the step attributes
+     * @param context        the step context
+     * @param contextualBody the contextual step body
+     * @param <T>            the type of the step context
+     * @throws NullPointerException if {@code attributes} arg or {@code contextualBody} arg is null
+     */
+    public <T> Of(final StepAttributes attributes,
+                  final T context,
+                  final ThrowingFunction<T, R, ?> contextualBody) {
+      if (attributes == null) { throw new NullPointerException("attributes arg is null"); }
+      if (contextualBody == null) { throw new NullPointerException("contextualBody arg is null"); }
+      this.attributes = attributes;
+      this.body = null;
+      this.context = context;
+      this.contextualBody = contextualBody;
     }
 
     @Override
@@ -741,12 +768,39 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
 
     @Override
     public ThrowingSupplier<R, ?> getBody() {
-      return this.body;
+      if (this.body != null) {
+        return this.body;
+      }
+      @SuppressWarnings("unchecked")
+      final ThrowingFunction<Object, R, ?> localContextualBody = (ThrowingFunction<Object, R, ?>) this.contextualBody;
+      final Object localContext = this.context;
+      return () -> localContextualBody.apply(localContext);
     }
 
     @Override
     public SStep<R> withBody(final ThrowingSupplier<R, ?> body) {
       return new Of<>(this.attributes, body);
+    }
+
+    @Override
+    public boolean hasContext() {
+      return this.contextualBody != null;
+    }
+
+    @Override
+    public Object getContext() {
+      if (this.hasContext()) {
+        return this.context;
+      }
+      throw new NoSuchElementException("SupplierStep has no context");
+    }
+
+    @Override
+    public ThrowingFunction<?, R, ?> getContextualBody() {
+      if (this.hasContext()) {
+        return this.contextualBody;
+      }
+      throw new NoSuchElementException("SupplierStep has no context");
     }
 
     @Override
