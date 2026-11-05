@@ -56,7 +56,7 @@ final class MethodSteps {
   }
 
   @Step
-  @WithParam(name = "param name", value = "param value")
+  @WithParam(name = "param name", val = "param value")
   public static void quickStaticMethodStep() {
   }
 

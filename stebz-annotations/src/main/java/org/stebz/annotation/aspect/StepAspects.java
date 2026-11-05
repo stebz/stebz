@@ -82,6 +82,7 @@ import static org.stebz.core.attribute.StepAttribute.PARAMS;
  */
 @Aspect
 public class StepAspects {
+  private static final String PARAM_VALUE_MASK = "******";
   private static final Map<String, StepAttribute<?, ?, ?>> CACHED_CUSTOM_ATTRS = new ConcurrentHashMap<>();
   private static final Map<String, Keyword> CACHED_KEYWORDS = new ConcurrentHashMap<>();
   private static final Cached<StepAttributesSetters> STEP_ATTRIBUTES_SETTERS = new Cached<>(() -> {
@@ -436,12 +437,20 @@ public class StepAspects {
             paramsMap.put(names[idx], values[idx]);
           }
         } else {
-          if (annot.hide()) {
+          if (annot.hidden()) {
             continue;
           }
           paramsMap.put(
-            annot.name().isEmpty() ? names[idx] : annot.name(),
-            annot.value().isEmpty() ? values[idx] : annot.value()
+            !annot.value().isEmpty()
+              ? annot.value()
+              : !annot.name().isEmpty()
+              ? annot.name()
+              : names[idx],
+            annot.masked()
+              ? PARAM_VALUE_MASK
+              : !annot.val().isEmpty()
+              ? annot.val()
+              : values[idx]
           );
         }
       }
@@ -449,12 +458,32 @@ public class StepAspects {
 
     final WithParam paramAnnotation = (WithParam) annotations.get(WithParam.KEY);
     if (paramAnnotation != null) {
-      paramsMap.put(paramAnnotation.name(), paramAnnotation.value());
+      final String name = !paramAnnotation.value().isEmpty()
+        ? paramAnnotation.value()
+        : paramAnnotation.name();
+      if (!name.isEmpty()) {
+        paramsMap.put(
+          name,
+          paramAnnotation.masked()
+            ? PARAM_VALUE_MASK
+            : paramAnnotation.val()
+        );
+      }
     }
     final WithParam.List listAnnotation = (WithParam.List) annotations.get(WithParam.List.KEY);
     if (listAnnotation != null) {
       for (final WithParam param : listAnnotation.value()) {
-        paramsMap.put(param.name(), param.value());
+        final String name = !param.value().isEmpty()
+          ? param.value()
+          : param.name();
+        if (!name.isEmpty()) {
+          paramsMap.put(
+            name,
+            param.masked()
+              ? PARAM_VALUE_MASK
+              : param.val()
+          );
+        }
       }
     }
     builder.add(PARAMS, paramsMap);

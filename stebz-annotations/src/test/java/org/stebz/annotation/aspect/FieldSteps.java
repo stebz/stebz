@@ -35,7 +35,7 @@ final class FieldSteps {
   static RunnableStep staticFieldRunnableStep = RunnableStep.empty();
 
   @Step
-  @WithParam(name = "param name", value = "param value")
+  @WithParam(name = "param name", val = "param value")
   RunnableStep instanceFieldRunnableStep = RunnableStep.empty();
 
   FieldSteps() {

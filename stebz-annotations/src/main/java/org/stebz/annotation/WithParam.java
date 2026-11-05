@@ -52,18 +52,32 @@ public @interface WithParam {
   String KEY = "annotation:with_param";
 
   /**
+   * Returns parameter name. Non empty value overrides {@link #name()}.
+   *
+   * @return parameter name
+   */
+  String value() default "";
+
+  /**
    * Returns parameter name.
    *
    * @return parameter name
    */
-  String name();
+  String name() default "";
 
   /**
    * Returns parameter value.
    *
    * @return parameter value
    */
-  String value();
+  String val() default "";
+
+  /**
+   * Returns {@code true} if parameter should be masked, otherwise returns {@code false}.
+   *
+   * @return {@code true} if parameter should be masked, otherwise {@code false}
+   */
+  boolean masked() default false;
 
   /**
    * Step attribute annotation. Adds several parameters to a step. Mapped to {@link StepAttribute#PARAMS} attribute.

@@ -28,14 +28,12 @@ import org.stebz.annotation.WithName;
 import org.stebz.annotation.WithParam;
 import org.stebz.annotation.WithParams;
 
-import static org.stebz.annotation.Param.MASK;
-
 final class QuickConstructorStep {
 
   @WithName("name value")
-  @WithParam(name = "param name", value = "param value")
+  @WithParam(name = "param name", val = "param value")
   @WithParams
-  QuickConstructorStep(@Param(value = MASK) final String param1,
-                       @Param(hide = true) final String param2) {
+  QuickConstructorStep(@Param(masked = true) final String param1,
+                       @Param(hidden = true) final String param2) {
   }
 }
