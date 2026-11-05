@@ -383,8 +383,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
    * @return this step as {@code RunnableStep} with given context
    */
   default RStep withContext(final T context) {
-    final ThrowingConsumer<T, ?> body = this.getBody();
-    return new RunnableStep.Of(this.getAttributes(), () -> body.accept(context));
+    return new RunnableStep.Of(this.getAttributes(), context, this.getBody());
   }
 
   /**

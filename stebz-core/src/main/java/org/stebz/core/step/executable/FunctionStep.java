@@ -434,8 +434,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @return this step as {@code SupplierStep} with given context
    */
   default SStep<R> withContext(final T context) {
-    final ThrowingFunction<T, R, ?> body = this.getBody();
-    return new SupplierStep.Of<>(this.getAttributes(), () -> body.apply(context));
+    return new SupplierStep.Of<>(this.getAttributes(), context, this.getBody());
   }
 
   /**

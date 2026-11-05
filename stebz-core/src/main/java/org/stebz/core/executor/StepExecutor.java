@@ -23,6 +23,8 @@
  */
 package org.stebz.core.executor;
 
+import dev.jlet.function.ThrowingConsumer;
+import dev.jlet.function.ThrowingFunction;
 import dev.jlet.function.ThrowingFunction2;
 import org.stebz.core.exception.StebzStartupException;
 import org.stebz.core.extension.AfterStepFailure;
@@ -162,10 +164,17 @@ public interface StepExecutor {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void execute(final RunnableStep step) {
       if (step == null) { throw new NullPointerException("step arg is null"); }
-      this.exec(step, false, null, false, (updatedStep, updatedContext) -> {
-        ((RunnableStep) updatedStep).getBody().run();
+      final boolean hasContext = step.hasContext();
+      this.exec(step, hasContext, hasContext ? step.getContext() : null, false, (s, c) -> {
+        final RunnableStep updatedStep = (RunnableStep) s;
+        if (updatedStep.hasContext()) {
+          ((ThrowingConsumer<Object, ?>) updatedStep.getContextualBody()).accept(c);
+        } else {
+          updatedStep.getBody().run();
+        }
         return null;
       });
     }
@@ -174,9 +183,15 @@ public interface StepExecutor {
     @SuppressWarnings("unchecked")
     public <R> R execute(final SupplierStep<? extends R> step) {
       if (step == null) { throw new NullPointerException("step arg is null"); }
-      return (R) this.exec(step, false, null, true, (updatedStep, updatedContext) ->
-        ((SupplierStep<Object>) updatedStep).getBody().get()
-      );
+      final boolean hasContext = step.hasContext();
+      return (R) this.exec(step, hasContext, hasContext ? step.getContext() : null, true, (s, c) -> {
+        final SupplierStep<R> updatedStep = (SupplierStep<R>) s;
+        if (updatedStep.hasContext()) {
+          return ((ThrowingFunction<Object, Object, ?>) updatedStep.getContextualBody()).apply(c);
+        } else {
+          return updatedStep.getBody().get();
+        }
+      });
     }
 
     @Override
@@ -184,8 +199,8 @@ public interface StepExecutor {
     public <T> void execute(final ConsumerStep<? super T> step,
                             final T contextValue) {
       if (step == null) { throw new NullPointerException("step arg is null"); }
-      this.exec(step, true, contextValue, false, (updatedStep, updatedContext) -> {
-        ((ConsumerStep<Object>) updatedStep).getBody().accept(updatedContext);
+      this.exec(step, true, contextValue, false, (s, c) -> {
+        ((ConsumerStep<Object>) s).getBody().accept(c);
         return null;
       });
     }
@@ -195,8 +210,8 @@ public interface StepExecutor {
     public <T, R> R execute(final FunctionStep<? super T, ? extends R> step,
                             final T contextValue) {
       if (step == null) { throw new NullPointerException("step arg is null"); }
-      return (R) this.exec(step, true, contextValue, true, (updatedStep, updatedContext) ->
-        ((FunctionStep<Object, Object>) updatedStep).getBody().apply(updatedContext)
+      return (R) this.exec(step, true, contextValue, true, (s, c) ->
+        ((FunctionStep<Object, Object>) s).getBody().apply(c)
       );
     }
 
