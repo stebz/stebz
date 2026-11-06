@@ -25,10 +25,9 @@ package org.stebz.core.executor;
 
 import dev.jlet.function.ThrowingConsumer;
 import dev.jlet.function.ThrowingFunction;
-import dev.jlet.function.ThrowingRunnable;
-import dev.jlet.function.ThrowingSupplier;
 import org.junit.jupiter.api.Test;
-import org.mockito.InOrder;
+import org.stebz.core.attribute.StepAttribute;
+import org.stebz.core.attribute.StepAttributes;
 import org.stebz.core.extension.AfterStepFailure;
 import org.stebz.core.extension.AfterStepStart;
 import org.stebz.core.extension.AfterStepSuccess;
@@ -41,465 +40,344 @@ import org.stebz.core.extension.InterceptStepException;
 import org.stebz.core.extension.InterceptStepResult;
 import org.stebz.core.extension.StebzExtension;
 import org.stebz.core.listener.StepListener;
+import org.stebz.core.step.StepObj;
 import org.stebz.core.step.executable.ConsumerStep;
 import org.stebz.core.step.executable.FunctionStep;
 import org.stebz.core.step.executable.RunnableStep;
 import org.stebz.core.step.executable.SupplierStep;
 import org.stebz.util.container.NullableOptional;
 
-import java.util.NoSuchElementException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
-import static org.mockito.AdditionalAnswers.returnsLastArg;
-import static org.mockito.Answers.CALLS_REAL_METHODS;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.same;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.withSettings;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Tests for {@link StepExecutor}.
  */
 final class StepExecutorTest {
 
-  @Test
-  void ctorShouldThrowExceptionForNullExtensionsArg() {
-    final StebzExtension[] extensions = null;
-    final StepListener[] listeners = new StepListener[0];
+  private static final class RecordingListener implements StepListener {
+    final List<String> events = new ArrayList<>();
 
-    assertThatCode(() -> new StepExecutor.Of(listeners, extensions))
+    @Override
+    public void onStepStart(final StepObj<?> step,
+                            final NullableOptional<Object> context) {
+      this.events.add("start:" + step.getName());
+    }
+
+    @Override
+    public void onStepSuccess(final StepObj<?> step,
+                              final NullableOptional<Object> context,
+                              final NullableOptional<Object> result) {
+      this.events.add("success:" + step.getName()
+        + (result.isPresent() ? ":" + result.get() : ""));
+    }
+
+    @Override
+    public void onStepFailure(final StepObj<?> step,
+                              final NullableOptional<Object> context,
+                              final Throwable exception) {
+      this.events.add("failure:" + step.getName() + ":" + exception.getMessage());
+    }
+  }
+
+  private static final class RecordingExtension implements BeforeStepStart, AfterStepStart,
+    BeforeStepSuccess, AfterStepSuccess {
+    final List<String> events = new ArrayList<>();
+
+    @Override
+    public void beforeStepStart(final StepObj<?> step,
+                                final NullableOptional<Object> context) {
+      this.events.add("beforeStart:" + step.getName());
+    }
+
+    @Override
+    public void afterStepStart(final StepObj<?> step,
+                               final NullableOptional<Object> context) {
+      this.events.add("afterStart:" + step.getName());
+    }
+
+    @Override
+    public void beforeStepSuccess(final StepObj<?> step,
+                                  final NullableOptional<Object> context,
+                                  final NullableOptional<Object> result) {
+      this.events.add("beforeSuccess:" + step.getName());
+    }
+
+    @Override
+    public void afterStepSuccess(final StepObj<?> step,
+                                 final NullableOptional<Object> context,
+                                 final NullableOptional<Object> result) {
+      this.events.add("afterSuccess:" + step.getName());
+    }
+  }
+
+  private static final class RecordingFailureExtension implements BeforeStepFailure, AfterStepFailure {
+    final List<String> events = new ArrayList<>();
+
+    @Override
+    public void beforeStepFailure(final StepObj<?> step,
+                                  final NullableOptional<Object> context,
+                                  final Throwable exception) {
+      this.events.add("beforeFailure:" + step.getName());
+    }
+
+    @Override
+    public void afterStepFailure(final StepObj<?> step,
+                                 final NullableOptional<Object> context,
+                                 final Throwable exception) {
+      this.events.add("afterFailure:" + step.getName());
+    }
+  }
+
+  private static RunnableStep named(final RunnableStep step,
+                                    final String name) {
+    return step.withAttributes(step.getAttributes().with(StepAttribute.NAME, name));
+  }
+
+  private static RunnableStep failingStep(final String message) {
+    return RunnableStep.of("step", () -> {
+      throw new IllegalStateException(message);
+    });
+  }
+
+  @Test
+  void ctorShouldThrowExceptionForNullArgs() {
+    assertThatThrownBy(() -> new StepExecutor.Of(null, new StebzExtension[0]))
+      .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> new StepExecutor.Of(new StepListener[0], null))
       .isInstanceOf(NullPointerException.class);
   }
 
   @Test
-  void ctorShouldThrowExceptionForNullListenersArg() {
-    final StebzExtension[] extensions = new StebzExtension[0];
-    final StepListener[] listeners = null;
-
-    assertThatCode(() -> new StepExecutor.Of(listeners, extensions))
+  void executeShouldThrowExceptionForNullStep() {
+    final StepExecutor executor = new StepExecutor.Of(new StepListener[0], new StebzExtension[0]);
+    assertThatThrownBy(() -> executor.execute((RunnableStep) null))
+      .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> executor.execute((SupplierStep<Object>) null))
+      .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> executor.execute((ConsumerStep<Object>) null, "v"))
+      .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> executor.execute((FunctionStep<Object, Object>) null, "v"))
       .isInstanceOf(NullPointerException.class);
   }
 
   @Test
-  void executorShouldWorkWithRunnableStep() {
-    final ComplexExtension extension = mockStebzExtension();
-    final StepListener listener = mockStepListener();
-    final StepExecutor executor = new StepExecutor.Of(
-      new StepListener[]{listener},
-      new StebzExtension[]{extension}
-    );
-    final ThrowingRunnable<?> runnable = mockRunnable();
-    final RunnableStep step = mockRunnableStep(runnable);
-
-    executor.execute(step);
-
-    verify(extension, never()).configure(any());
-    verify(extension, never()).order();
-    verify(extension, never()).interceptStepContext(same(step), same(NullableOptional.empty()));
-    verify(extension, never()).interceptStepException(same(step), same(NullableOptional.empty()), any());
-    verify(extension, never()).interceptStepResult(same(step), same(NullableOptional.empty()), any());
-    verify(extension, never()).beforeStepFailure(same(step), same(NullableOptional.empty()), any());
-    verify(extension, never()).afterStepFailure(same(step), same(NullableOptional.empty()), any());
-    verify(listener, never()).configure(any());
-    verify(listener, never()).order();
-    verify(listener, never()).onStepFailure(same(step), same(NullableOptional.empty()), any());
-
-    final InOrder inOrder = inOrder(extension, listener);
-    inOrder.verify(extension, times(1)).interceptStep(same(step), same(NullableOptional.empty()));
-    inOrder.verify(extension, times(1)).beforeStepStart(same(step), same(NullableOptional.empty()));
-    inOrder.verify(listener, times(1)).onStepStart(same(step), same(NullableOptional.empty()));
-    inOrder.verify(extension, times(1)).afterStepStart(same(step), same(NullableOptional.empty()));
-    inOrder.verify(extension, times(1)).beforeStepSuccess(same(step), same(NullableOptional.empty()), any());
-    inOrder.verify(listener, times(1)).onStepSuccess(same(step), same(NullableOptional.empty()), any());
-    inOrder.verify(extension, times(1)).afterStepSuccess(same(step), same(NullableOptional.empty()), any());
+  void executeShouldRunRunnableStepBody() {
+    final List<Object> executed = new ArrayList<>();
+    final StepExecutor executor = new StepExecutor.Of(new StepListener[0], new StebzExtension[0]);
+    executor.execute(RunnableStep.of("step", () -> executed.add("run")));
+    assertThat(executed).containsExactly("run");
   }
 
   @Test
-  void executorShouldWorkWithRunnableStepWithException() {
-    final ComplexExtension extension = mockStebzExtension();
-    final StepListener listener = mockStepListener();
-    final StepExecutor executor = new StepExecutor.Of(
-      new StepListener[]{listener},
-      new StebzExtension[]{extension}
-    );
-    final Throwable exception = new Throwable();
-    final ThrowingRunnable<Error> runnable = mockRunnableWithException(exception);
-    final RunnableStep step = mockRunnableStep(runnable);
-
-    assertThatCode(() -> executor.execute(step))
-      .isSameAs(exception);
-
-    verify(extension, never()).configure(any());
-    verify(extension, never()).order();
-    verify(extension, never()).interceptStepContext(same(step), same(NullableOptional.empty()));
-    verify(extension, never()).interceptStepResult(same(step), same(NullableOptional.empty()), any());
-    verify(extension, never()).beforeStepSuccess(same(step), same(NullableOptional.empty()), any());
-    verify(extension, never()).afterStepSuccess(same(step), same(NullableOptional.empty()), any());
-    verify(listener, never()).configure(any());
-    verify(listener, never()).order();
-    verify(listener, never()).onStepSuccess(same(step), same(NullableOptional.empty()), any());
-
-    final InOrder inOrder = inOrder(extension, listener);
-    inOrder.verify(extension, times(1)).interceptStep(same(step), same(NullableOptional.empty()));
-    inOrder.verify(extension, times(1)).beforeStepStart(same(step), same(NullableOptional.empty()));
-    inOrder.verify(listener, times(1)).onStepStart(same(step), same(NullableOptional.empty()));
-    inOrder.verify(extension, times(1)).afterStepStart(same(step), same(NullableOptional.empty()));
-    inOrder.verify(extension, times(1)).interceptStepException(same(step), same(NullableOptional.empty()), same(exception));
-    inOrder.verify(extension, times(1)).hiddenStepException(same(step), same(NullableOptional.empty()), same(exception), same(false));
-    inOrder.verify(extension, times(1)).thrownStepException(same(step), same(NullableOptional.empty()), same(exception), same(true));
-    inOrder.verify(extension, times(1)).beforeStepFailure(same(step), same(NullableOptional.empty()), same(exception));
-    inOrder.verify(listener, times(1)).onStepFailure(same(step), same(NullableOptional.empty()), same(exception));
-    inOrder.verify(extension, times(1)).afterStepFailure(same(step), same(NullableOptional.empty()), same(exception));
+  void executeShouldReturnSupplierStepResult() {
+    final StepExecutor executor = new StepExecutor.Of(new StepListener[0], new StebzExtension[0]);
+    assertThat(executor.execute(SupplierStep.of("step", () -> "result"))).isEqualTo("result");
   }
 
   @Test
-  void executorShouldWorkWithConsumerStep() {
-    final ComplexExtension extension = mockStebzExtension();
-    final StepListener listener = mockStepListener();
-    final StepExecutor executor = new StepExecutor.Of(
-      new StepListener[]{listener},
-      new StebzExtension[]{extension}
-    );
-    final ThrowingConsumer<Object, Error> consumer = mockConsumer();
-    final ConsumerStep<Object> step = mockConsumerStep(consumer);
-    final Object contextValue = new Object();
-    final NullableOptional<Object> context = NullableOptional.of(contextValue);
-
-    executor.execute(step, contextValue);
-
-    verify(extension, never()).configure(any());
-    verify(extension, never()).order();
-    verify(extension, never()).interceptStepException(same(step), eq(context), any());
-    verify(extension, never()).interceptStepResult(same(step), eq(context), any());
-    verify(extension, never()).beforeStepFailure(same(step), eq(context), any());
-    verify(extension, never()).afterStepFailure(same(step), eq(context), any());
-    verify(listener, never()).configure(any());
-    verify(listener, never()).order();
-    verify(listener, never()).onStepFailure(same(step), eq(context), any());
-
-    final InOrder inOrder = inOrder(extension, listener);
-    inOrder.verify(extension, times(1)).interceptStepContext(same(step), same(contextValue));
-    inOrder.verify(extension, times(1)).interceptStep(same(step), eq(context));
-    inOrder.verify(extension, times(1)).beforeStepStart(same(step), eq(context));
-    inOrder.verify(listener, times(1)).onStepStart(same(step), eq(context));
-    inOrder.verify(extension, times(1)).afterStepStart(same(step), eq(context));
-    inOrder.verify(extension, times(1)).beforeStepSuccess(same(step), eq(context), any());
-    inOrder.verify(listener, times(1)).onStepSuccess(same(step), eq(context), any());
-    inOrder.verify(extension, times(1)).afterStepSuccess(same(step), eq(context), any());
+  void executeShouldPassContextValueToConsumerStep() {
+    final List<Object> received = new ArrayList<>();
+    final StepExecutor executor = new StepExecutor.Of(new StepListener[0], new StebzExtension[0]);
+    executor.execute(ConsumerStep.of("step", (ThrowingConsumer<Object, Error>) received::add), "value");
+    assertThat(received).containsExactly("value");
   }
 
   @Test
-  void executorShouldWorkWithConsumerStepWithException() {
-    final ComplexExtension extension = mockStebzExtension();
-    final StepListener listener = mockStepListener();
-    final StepExecutor executor = new StepExecutor.Of(
-      new StepListener[]{listener},
-      new StebzExtension[]{extension}
-    );
-    final Throwable exception = new Throwable();
-    final ThrowingConsumer<Object, Error> consumer = mockConsumerWithException(exception);
-    final ConsumerStep<Object> step = mockConsumerStep(consumer);
-    final Object contextValue = new Object();
-    final NullableOptional<Object> context = NullableOptional.of(contextValue);
-
-    assertThatCode(() -> executor.execute(step, contextValue))
-      .isSameAs(exception);
-
-    verify(extension, never()).configure(any());
-    verify(extension, never()).order();
-    verify(extension, never()).interceptStepResult(same(step), eq(context), any());
-    verify(extension, never()).beforeStepSuccess(same(step), eq(context), any());
-    verify(extension, never()).afterStepSuccess(same(step), eq(context), any());
-    verify(listener, never()).configure(any());
-    verify(listener, never()).order();
-    verify(listener, never()).onStepSuccess(same(step), eq(context), any());
-
-    final InOrder inOrder = inOrder(extension, listener);
-    inOrder.verify(extension, times(1)).interceptStepContext(same(step), same(contextValue));
-    inOrder.verify(extension, times(1)).interceptStep(same(step), eq(context));
-    inOrder.verify(extension, times(1)).beforeStepStart(same(step), eq(context));
-    inOrder.verify(listener, times(1)).onStepStart(same(step), eq(context));
-    inOrder.verify(extension, times(1)).afterStepStart(same(step), eq(context));
-
-    inOrder.verify(extension, times(1)).interceptStepException(same(step), eq(context), same(exception));
-    inOrder.verify(extension, times(1)).hiddenStepException(same(step), eq(context), same(exception), same(false));
-    inOrder.verify(extension, times(1)).thrownStepException(same(step), eq(context), same(exception), same(true));
-    inOrder.verify(extension, times(1)).beforeStepFailure(same(step), eq(context), same(exception));
-    inOrder.verify(listener, times(1)).onStepFailure(same(step), eq(context), same(exception));
-    inOrder.verify(extension, times(1)).afterStepFailure(same(step), eq(context), same(exception));
+  void executeShouldPassContextValueToFunctionStepAndReturnResult() {
+    final StepExecutor executor = new StepExecutor.Of(new StepListener[0], new StebzExtension[0]);
+    assertThat(executor.execute(
+      FunctionStep.of("step", (ThrowingFunction<Object, String, Error>) value -> "value:" + value), "x"))
+      .isEqualTo("value:x");
   }
 
   @Test
-  void executorShouldWorkWithSupplierStep() {
-    final ComplexExtension extension = mockStebzExtension();
-    final StepListener listener = mockStepListener();
-    final StepExecutor executor = new StepExecutor.Of(
-      new StepListener[]{listener},
-      new StebzExtension[]{extension}
-    );
-    final Object resultValue = new Object();
-    final NullableOptional<Object> result = NullableOptional.of(resultValue);
-    final ThrowingSupplier<Object, Error> supplier = mockSupplier(resultValue);
-    final SupplierStep<Object> step = mockSupplierStep(supplier);
-
-    assertThat(executor.execute(step))
-      .isSameAs(resultValue);
-
-    verify(extension, never()).configure(any());
-    verify(extension, never()).order();
-    verify(extension, never()).interceptStepContext(same(step), same(NullableOptional.empty()));
-    verify(extension, never()).interceptStepException(same(step), same(NullableOptional.empty()), any());
-    verify(extension, never()).beforeStepFailure(same(step), same(NullableOptional.empty()), any());
-    verify(extension, never()).afterStepFailure(same(step), same(NullableOptional.empty()), any());
-    verify(listener, never()).configure(any());
-    verify(listener, never()).order();
-    verify(listener, never()).onStepFailure(same(step), same(NullableOptional.empty()), any());
-
-    final InOrder inOrder = inOrder(extension, listener);
-    inOrder.verify(extension, times(1)).interceptStep(same(step), same(NullableOptional.empty()));
-    inOrder.verify(extension, times(1)).beforeStepStart(same(step), same(NullableOptional.empty()));
-    inOrder.verify(listener, times(1)).onStepStart(same(step), same(NullableOptional.empty()));
-    inOrder.verify(extension, times(1)).afterStepStart(same(step), same(NullableOptional.empty()));
-    inOrder.verify(extension, times(1)).interceptStepResult(same(step), same(NullableOptional.empty()), same(resultValue));
-    inOrder.verify(extension, times(1)).beforeStepSuccess(same(step), same(NullableOptional.empty()), eq(result));
-    inOrder.verify(listener, times(1)).onStepSuccess(same(step), same(NullableOptional.empty()), eq(result));
-    inOrder.verify(extension, times(1)).afterStepSuccess(same(step), same(NullableOptional.empty()), eq(result));
+  void executeShouldRunContextualBodyOfContextualRunnableStep() {
+    final List<Object> received = new ArrayList<>();
+    final StepExecutor executor = new StepExecutor.Of(new StepListener[0], new StebzExtension[0]);
+    executor.execute(new RunnableStep.Of(StepAttributes.empty(), "ctx",
+      (ThrowingConsumer<Object, Error>) received::add));
+    assertThat(received).containsExactly("ctx");
   }
 
   @Test
-  void executorShouldWorkWithSupplierStepWithException() {
-    final ComplexExtension extension = mockStebzExtension();
-    final StepListener listener = mockStepListener();
-    final StepExecutor executor = new StepExecutor.Of(
-      new StepListener[]{listener},
-      new StebzExtension[]{extension}
-    );
-    final Throwable exception = new Throwable();
-    final ThrowingSupplier<Object, Error> supplier = mockSupplierWithException(exception);
-    final SupplierStep<Object> step = mockSupplierStep(supplier);
-
-    assertThatCode(() -> executor.execute(step))
-      .isSameAs(exception);
-
-    verify(extension, never()).configure(any());
-    verify(extension, never()).order();
-    verify(extension, never()).interceptStepContext(same(step), same(NullableOptional.empty()));
-    verify(extension, never()).interceptStepResult(same(step), same(NullableOptional.empty()), any());
-    verify(extension, never()).beforeStepSuccess(same(step), same(NullableOptional.empty()), any());
-    verify(extension, never()).afterStepSuccess(same(step), same(NullableOptional.empty()), any());
-    verify(listener, never()).configure(any());
-    verify(listener, never()).order();
-    verify(listener, never()).onStepSuccess(same(step), same(NullableOptional.empty()), any());
-
-    final InOrder inOrder = inOrder(extension, listener);
-    inOrder.verify(extension, times(1)).interceptStep(same(step), same(NullableOptional.empty()));
-    inOrder.verify(extension, times(1)).beforeStepStart(same(step), same(NullableOptional.empty()));
-    inOrder.verify(listener, times(1)).onStepStart(same(step), same(NullableOptional.empty()));
-    inOrder.verify(extension, times(1)).afterStepStart(same(step), same(NullableOptional.empty()));
-    inOrder.verify(extension, times(1)).interceptStepException(same(step), same(NullableOptional.empty()), same(exception));
-    inOrder.verify(extension, times(1)).hiddenStepException(same(step), same(NullableOptional.empty()), same(exception), same(false));
-    inOrder.verify(extension, times(1)).thrownStepException(same(step), same(NullableOptional.empty()), same(exception), same(true));
-    inOrder.verify(extension, times(1)).beforeStepFailure(same(step), same(NullableOptional.empty()), same(exception));
-    inOrder.verify(listener, times(1)).onStepFailure(same(step), same(NullableOptional.empty()), same(exception));
-    inOrder.verify(extension, times(1)).afterStepFailure(same(step), same(NullableOptional.empty()), same(exception));
+  void executeShouldRunContextualBodyOfContextualSupplierStep() {
+    final StepExecutor executor = new StepExecutor.Of(new StepListener[0], new StebzExtension[0]);
+    assertThat(executor.execute(new SupplierStep.Of<>(StepAttributes.empty(), "ctx",
+      (ThrowingFunction<Object, String, Error>) value -> "value:" + value)))
+      .isEqualTo("value:ctx");
   }
 
   @Test
-  void executorShouldWorkWithFunctionStep() {
-    final ComplexExtension extension = mockStebzExtension();
-    final StepListener listener = mockStepListener();
-    final StepExecutor executor = new StepExecutor.Of(
-      new StepListener[]{listener},
-      new StebzExtension[]{extension}
-    );
-    final Object resultValue = new Object();
-    final NullableOptional<Object> result = NullableOptional.of(resultValue);
-    final ThrowingFunction<Object, Object, Error> function = mockFunction(resultValue);
-    final FunctionStep<Object, Object> step = mockFunctionStep(function);
-    final Object contextValue = new Object();
-    final NullableOptional<Object> context = NullableOptional.of(contextValue);
-
-    assertThat(executor.execute(step, contextValue))
-      .isSameAs(resultValue);
-
-    verify(extension, never()).configure(any());
-    verify(extension, never()).order();
-    verify(extension, never()).interceptStepException(same(step), eq(context), any());
-    verify(extension, never()).beforeStepFailure(same(step), eq(context), any());
-    verify(extension, never()).afterStepFailure(same(step), eq(context), any());
-    verify(listener, never()).configure(any());
-    verify(listener, never()).order();
-    verify(listener, never()).onStepFailure(same(step), eq(context), any());
-
-    final InOrder inOrder = inOrder(extension, listener);
-    inOrder.verify(extension, times(1)).interceptStepContext(same(step), same(contextValue));
-    inOrder.verify(extension, times(1)).interceptStep(same(step), eq(context));
-    inOrder.verify(extension, times(1)).beforeStepStart(same(step), eq(context));
-    inOrder.verify(listener, times(1)).onStepStart(same(step), eq(context));
-    inOrder.verify(extension, times(1)).afterStepStart(same(step), eq(context));
-    inOrder.verify(extension, times(1)).interceptStepResult(same(step), eq(context), same(resultValue));
-    inOrder.verify(extension, times(1)).beforeStepSuccess(same(step), eq(context), eq(result));
-    inOrder.verify(listener, times(1)).onStepSuccess(same(step), eq(context), eq(result));
-    inOrder.verify(extension, times(1)).afterStepSuccess(same(step), eq(context), eq(result));
+  void listenerShouldBeNotifiedOnStartSuccessAndFailure() {
+    final RecordingListener listener = new RecordingListener();
+    final StepExecutor executor = new StepExecutor.Of(new StepListener[]{listener}, new StebzExtension[0]);
+    executor.execute(RunnableStep.of("step", () -> { }));
+    try {
+      executor.execute(failingStep("fail"));
+    } catch (final IllegalStateException ignored) {
+    }
+    assertThat(listener.events).containsExactly(
+      "start:step", "success:step",
+      "start:step", "failure:step:fail");
   }
 
   @Test
-  void executorShouldWorkWithFunctionStepWithException() {
-    final ComplexExtension extension = mockStebzExtension();
-    final StepListener listener = mockStepListener();
+  void listenerShouldSeeNullResultOfResultlessStepAsEmpty() {
+    final RecordingListener listener = new RecordingListener();
+    final StepExecutor executor = new StepExecutor.Of(new StepListener[]{listener}, new StebzExtension[0]);
+    executor.execute(RunnableStep.of("step", () -> { }));
+    assertThat(listener.events).containsExactly("start:step", "success:step");
+  }
+
+  @Test
+  void listenerShouldSeeResultOfSupplierStep() {
+    final RecordingListener listener = new RecordingListener();
+    final StepExecutor executor = new StepExecutor.Of(new StepListener[]{listener}, new StebzExtension[0]);
+    executor.execute(SupplierStep.of("step", () -> "result"));
+    assertThat(listener.events).containsExactly("start:step", "success:step:result");
+  }
+
+  @Test
+  void listenersAndExtensionsShouldBeCalledInGivenOrder() {
+    final RecordingListener listener1 = new RecordingListener();
+    final RecordingListener listener2 = new RecordingListener();
+    final RecordingExtension extension = new RecordingExtension();
+    final StepExecutor executor = new StepExecutor.Of(
+      new StepListener[]{listener1, listener2}, new StebzExtension[]{extension});
+    executor.execute(RunnableStep.of("step", () -> { }));
+    assertThat(extension.events).containsExactly(
+      "beforeStart:step", "afterStart:step", "beforeSuccess:step", "afterSuccess:step");
+    assertThat(listener1.events).containsExactly("start:step", "success:step");
+    assertThat(listener2.events).containsExactly("start:step", "success:step");
+  }
+
+  @Test
+  void interceptContextExtensionShouldReplaceContext() {
+    final List<Object> received = new ArrayList<>();
+    final InterceptStepContext extension = new InterceptStepContext() {
+      @Override
+      public Object interceptStepContext(final StepObj<?> step, final Object context) {
+        return context + ":intercepted";
+      }
+    };
+    final StepExecutor executor = new StepExecutor.Of(new StepListener[0],
+      new StebzExtension[]{extension});
+    executor.execute(new RunnableStep.Of(StepAttributes.empty(), "ctx",
+      (ThrowingConsumer<Object, Error>) received::add));
+    assertThat(received).containsExactly("ctx:intercepted");
+  }
+
+  @Test
+  void interceptStepExtensionShouldReplaceStep() {
+    final RecordingListener listener = new RecordingListener();
+    final InterceptStep extension = new InterceptStep() {
+      @Override
+      public StepObj<?> interceptStep(final StepObj<?> step, final NullableOptional<Object> context) {
+        return named((RunnableStep) step, "replaced");
+      }
+    };
+    final StepExecutor executor = new StepExecutor.Of(new StepListener[]{listener},
+      new StebzExtension[]{extension});
+    executor.execute(RunnableStep.of("step", () -> { }));
+    assertThat(listener.events).containsExactly("start:replaced", "success:replaced");
+  }
+
+  @Test
+  void interceptResultExtensionShouldReplaceResult() {
+    final InterceptStepResult extension = new InterceptStepResult() {
+      @Override
+      public Object interceptStepResult(final StepObj<?> step,
+                                        final NullableOptional<Object> context,
+                                        final Object result) {
+        return "intercepted:" + result;
+      }
+    };
+    final StepExecutor executor = new StepExecutor.Of(new StepListener[0],
+      new StebzExtension[]{extension});
+    assertThat(executor.execute(SupplierStep.of("step", () -> "result")))
+      .isEqualTo("intercepted:result");
+  }
+
+  @Test
+  void interceptExceptionExtensionShouldReplaceException() {
+    final InterceptStepException extension = new InterceptStepException() {
+      @Override
+      public Throwable interceptStepException(final StepObj<?> step,
+                                              final NullableOptional<Object> context,
+                                              final Throwable exception) {
+        return new RuntimeException("replaced", exception);
+      }
+    };
+    final StepExecutor executor = new StepExecutor.Of(new StepListener[0],
+      new StebzExtension[]{extension});
+    assertThatThrownBy(() -> executor.execute(failingStep("origin")))
+      .isInstanceOf(RuntimeException.class)
+      .hasMessage("replaced")
+      .hasCauseInstanceOf(IllegalStateException.class);
+  }
+
+  @Test
+  void failureExtensionsShouldBeCalledBeforeAndAfterListenerOnFailure() {
+    final RecordingFailureExtension extension = new RecordingFailureExtension();
+    final RecordingListener listener = new RecordingListener();
     final StepExecutor executor = new StepExecutor.Of(
       new StepListener[]{listener},
       new StebzExtension[]{extension}
     );
-    final Throwable exception = new Throwable();
-    final ThrowingFunction<Object, Object, Error> function = mockFunctionWithException(exception);
-    final FunctionStep<Object, Object> step = mockFunctionStep(function);
-    final Object contextValue = new Object();
-    final NullableOptional<Object> context = NullableOptional.of(contextValue);
 
-    assertThatCode(() -> executor.execute(step, contextValue))
-      .isSameAs(exception);
+    assertThatThrownBy(() -> executor.execute(failingStep("fail")))
+      .isInstanceOf(IllegalStateException.class);
 
-    verify(extension, never()).configure(any());
-    verify(extension, never()).order();
-    verify(extension, never()).interceptStepResult(same(step), eq(context), any());
-    verify(extension, never()).beforeStepSuccess(same(step), eq(context), any());
-    verify(extension, never()).afterStepSuccess(same(step), eq(context), any());
-    verify(listener, never()).configure(any());
-    verify(listener, never()).order();
-    verify(listener, never()).onStepSuccess(same(step), eq(context), any());
-
-    final InOrder inOrder = inOrder(extension, listener);
-    inOrder.verify(extension, times(1)).interceptStepContext(same(step), same(contextValue));
-    inOrder.verify(extension, times(1)).interceptStep(same(step), eq(context));
-    inOrder.verify(extension, times(1)).beforeStepStart(same(step), eq(context));
-    inOrder.verify(listener, times(1)).onStepStart(same(step), eq(context));
-    inOrder.verify(extension, times(1)).afterStepStart(same(step), eq(context));
-    inOrder.verify(extension, times(1)).interceptStepException(same(step), eq(context), same(exception));
-    inOrder.verify(extension, times(1)).hiddenStepException(same(step), eq(context), same(exception), same(false));
-    inOrder.verify(extension, times(1)).thrownStepException(same(step), eq(context), same(exception), same(true));
-    inOrder.verify(extension, times(1)).beforeStepFailure(same(step), eq(context), same(exception));
-    inOrder.verify(listener, times(1)).onStepFailure(same(step), eq(context), same(exception));
-    inOrder.verify(extension, times(1)).afterStepFailure(same(step), eq(context), same(exception));
+    assertThat(extension.events).containsExactly("beforeFailure:step", "afterFailure:step");
+    assertThat(listener.events).containsExactly("start:step", "failure:step:fail");
   }
 
-  private static ComplexExtension mockStebzExtension() {
-    final ComplexExtension extension = mockCallingRealMethods(ComplexExtension.class);
-    doAnswer(returnsFirstArg()).when(extension).interceptStep(any(), any());
-    doAnswer(returnsLastArg()).when(extension).interceptStepContext(any(), any());
-    doAnswer(returnsLastArg()).when(extension).interceptStepResult(any(), any(), any());
-    return extension;
+  @Test
+  void hiddenExceptionShouldBeLoggedAsSuccess() {
+    final RecordingListener listener = new RecordingListener();
+    final RecordingFailureExtension failureExtension = new RecordingFailureExtension();
+    final InterceptStepException extension = new InterceptStepException() {
+      @Override
+      public boolean hiddenStepException(final StepObj<?> step,
+                                         final NullableOptional<Object> context,
+                                         final Throwable exception,
+                                         final boolean currentState) {
+        return true;
+      }
+    };
+    final StepExecutor executor = new StepExecutor.Of(new StepListener[]{listener},
+      new StebzExtension[]{extension, failureExtension});
+    assertThatThrownBy(() -> executor.execute(failingStep("fail")))
+      .isInstanceOf(IllegalStateException.class);
+    assertThat(listener.events).containsExactly("start:step", "success:step");
+    assertThat(failureExtension.events).isEmpty();
   }
 
-  private static StepListener mockStepListener() {
-    return mockCallingRealMethods(StepListener.class);
+  @Test
+  void notThrownExceptionShouldBeSwallowed() {
+    final RecordingListener listener = new RecordingListener();
+    final InterceptStepException extension = new InterceptStepException() {
+      @Override
+      public boolean thrownStepException(final StepObj<?> step,
+                                         final NullableOptional<Object> context,
+                                         final Throwable exception,
+                                         final boolean currentState) {
+        return false;
+      }
+    };
+    final StepExecutor executor = new StepExecutor.Of(new StepListener[]{listener},
+      new StebzExtension[]{extension});
+    assertThatCode(() -> executor.execute(failingStep("fail"))).doesNotThrowAnyException();
+    assertThat(listener.events).containsExactly("start:step", "failure:step:fail");
   }
 
-  @SuppressWarnings("unchecked")
-  private static NullableOptional<Object> mockEmptyOptionalValue() {
-    final NullableOptional<Object> nullableOptional = mockCallingRealMethods(NullableOptional.class);
-    doThrow(NoSuchElementException.class).when(nullableOptional).get();
-    doReturn(false).when(nullableOptional).isPresent();
-    doReturn(true).when(nullableOptional).isEmpty();
-    return nullableOptional;
-  }
-
-  @SuppressWarnings("unchecked")
-  private static ThrowingRunnable<Error> mockRunnable() {
-    return mockCallingRealMethods(ThrowingRunnable.class);
-  }
-
-  @SuppressWarnings("unchecked")
-  private static ThrowingRunnable<Error> mockRunnableWithException(final Throwable exception) {
-    final ThrowingRunnable<Error> runnable = mockCallingRealMethods(ThrowingRunnable.class);
-    doThrow(exception).when(runnable).run();
-    return runnable;
-  }
-
-  private static RunnableStep mockRunnableStep(final ThrowingRunnable<?> body) {
-    final RunnableStep step = mockCallingRealMethods(RunnableStep.class);
-    doReturn(body).when(step).getBody();
-    return step;
-  }
-
-  @SuppressWarnings("unchecked")
-  private static ThrowingConsumer<Object, Error> mockConsumer() {
-    return mockCallingRealMethods(ThrowingConsumer.class);
-  }
-
-  @SuppressWarnings("unchecked")
-  private static ThrowingConsumer<Object, Error> mockConsumerWithException(final Throwable exception) {
-    final ThrowingConsumer<Object, Error> consumer = mockCallingRealMethods(ThrowingConsumer.class);
-    doThrow(exception).when(consumer).accept(any());
-    return consumer;
-  }
-
-  @SuppressWarnings("unchecked")
-  private static ConsumerStep<Object> mockConsumerStep(final ThrowingConsumer<Object, Error> body) {
-    final ConsumerStep<Object> step = mockCallingRealMethods(ConsumerStep.class);
-    doReturn(body).when(step).getBody();
-    return step;
-  }
-
-  @SuppressWarnings("unchecked")
-  private static ThrowingSupplier<Object, Error> mockSupplier(final Object result) {
-    final ThrowingSupplier<Object, Error> supplier = mockCallingRealMethods(ThrowingSupplier.class);
-    doReturn(result).when(supplier).get();
-    return supplier;
-  }
-
-  @SuppressWarnings("unchecked")
-  private static ThrowingSupplier<Object, Error> mockSupplierWithException(final Throwable exception) {
-    final ThrowingSupplier<Object, Error> consumer = mockCallingRealMethods(ThrowingSupplier.class);
-    doThrow(exception).when(consumer).get();
-    return consumer;
-  }
-
-  @SuppressWarnings("unchecked")
-  private static SupplierStep<Object> mockSupplierStep(final ThrowingSupplier<Object, Error> body) {
-    final SupplierStep<Object> step = mockCallingRealMethods(SupplierStep.class);
-    doReturn(body).when(step).getBody();
-    return step;
-  }
-
-  @SuppressWarnings("unchecked")
-  private static ThrowingFunction<Object, Object, Error> mockFunction(final Object result) {
-    final ThrowingFunction<Object, Object, Error> function = mockCallingRealMethods(ThrowingFunction.class);
-    doReturn(result).when(function).apply(any());
-    return function;
-  }
-
-  @SuppressWarnings("unchecked")
-  private static ThrowingFunction<Object, Object, Error> mockFunctionWithException(final Throwable exception) {
-    final ThrowingFunction<Object, Object, Error> function = mockCallingRealMethods(ThrowingFunction.class);
-    doThrow(exception).when(function).apply(any());
-    return function;
-  }
-
-  @SuppressWarnings("unchecked")
-  private static FunctionStep<Object, Object> mockFunctionStep(final ThrowingFunction<Object, Object, Error> body) {
-    final FunctionStep<Object, Object> step = mockCallingRealMethods(FunctionStep.class);
-    doReturn(body).when(step).getBody();
-    return step;
-  }
-
-  private static <T> T mockCallingRealMethods(final Class<T> classToMock) {
-    return mock(classToMock, withSettings().defaultAnswer(CALLS_REAL_METHODS));
-  }
-
-  private interface ComplexExtension extends
-    AfterStepFailure, AfterStepStart, AfterStepSuccess,
-    BeforeStepFailure, BeforeStepStart, BeforeStepSuccess,
-    InterceptStep, InterceptStepContext, InterceptStepException, InterceptStepResult {
+  @Test
+  void getShouldReturnMainStepExecutor() {
+    assertThat(StepExecutor.get()).isNotNull();
   }
 }

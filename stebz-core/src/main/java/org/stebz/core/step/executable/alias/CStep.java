@@ -77,11 +77,11 @@ public interface CStep<T> extends ConsumerStep<T> {
   }
 
   /**
-   * Returns {@code ConsumerStep} with given body.
+   * Returns a {@code ConsumerStep} with the specified body.
    *
    * @param body the step body
    * @param <T>  the type of the step input value
-   * @return {@code ConsumerStep} with given body
+   * @return {@code ConsumerStep} with specified body
    * @throws NullPointerException if {@code body} arg is null
    */
   static <T> CStep<T> of(final ThrowingConsumer<T, ?> body) {
@@ -89,12 +89,12 @@ public interface CStep<T> extends ConsumerStep<T> {
   }
 
   /**
-   * Returns {@code ConsumerStep} with given attributes and body.
+   * Returns {@code ConsumerStep} with specified attributes and body.
    *
    * @param name the step name
    * @param body the step body
    * @param <T>  the type of the step input value
-   * @return {@code ConsumerStep} with given name and body
+   * @return {@code ConsumerStep} with the specified name and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   static <T> CStep<T> of(final String name,
@@ -103,13 +103,13 @@ public interface CStep<T> extends ConsumerStep<T> {
   }
 
   /**
-   * Returns {@code ConsumerStep} with given attributes and body.
+   * Returns {@code ConsumerStep} with specified attributes and body.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <T>            the type of the step input value
-   * @return {@code ConsumerStep} with given name and body
+   * @return {@code ConsumerStep} with the specified name and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   static <T> CStep<T> of(final String name,
@@ -119,13 +119,13 @@ public interface CStep<T> extends ConsumerStep<T> {
   }
 
   /**
-   * Returns {@code ConsumerStep} with given attributes and body.
+   * Returns {@code ConsumerStep} with specified attributes and body.
    *
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
    * @param <T>    the type of the step input value
-   * @return {@code ConsumerStep} with given name, params and body
+   * @return {@code ConsumerStep} with the specified name, params, and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   static <T> CStep<T> of(final String name,
@@ -135,14 +135,14 @@ public interface CStep<T> extends ConsumerStep<T> {
   }
 
   /**
-   * Returns {@code ConsumerStep} with given attributes and body.
+   * Returns {@code ConsumerStep} with specified attributes and body.
    *
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <T>            the type of the step input value
-   * @return {@code ConsumerStep} with given name, params and body
+   * @return {@code ConsumerStep} with the specified name, params, and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
@@ -154,11 +154,11 @@ public interface CStep<T> extends ConsumerStep<T> {
   }
 
   /**
-   * Returns {@code ConsumerStep} of given step attributes and body.
+   * Returns {@code ConsumerStep} of specified step attributes and body.
    *
    * @param origin the origin step
    * @param <T>    the type of the step input value
-   * @return {@code ConsumerStep} of given step attributes and body
+   * @return {@code ConsumerStep} of specified step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
   static <T> CStep<T> of(final ConsumerStep<T> origin) {
@@ -166,12 +166,12 @@ public interface CStep<T> extends ConsumerStep<T> {
   }
 
   /**
-   * Returns {@code ConsumerStep} with given attributes and body.
+   * Returns {@code ConsumerStep} with specified attributes and body.
    *
    * @param attributes the step attributes
    * @param body       the step body
    * @param <T>        the type of the step input value
-   * @return {@code ConsumerStep} with given attributes and body
+   * @return {@code ConsumerStep} with specified attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
   static <T> CStep<T> of(final StepAttributes attributes,

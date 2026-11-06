@@ -23,13 +23,12 @@
  */
 package org.stebz.core.attribute;
 
-import dev.jlet.function.ThrowingFunction;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
 
 /**
@@ -39,310 +38,142 @@ final class StepAttributeTest {
 
   @Test
   void keywordMethodShouldCreateKeywordWithGivenValue() {
-    final String value = "TestKeyword";
-    final Keyword keyword = StepAttribute.keyword(value);
-
-    assertThat(keyword.value())
-      .isEqualTo(value);
+    assertThat(StepAttribute.keyword("abc").value()).isEqualTo("abc");
   }
 
   @Test
   void keywordMethodShouldThrowExceptionForNullValue() {
-    assertThatCode(() -> StepAttribute.keyword(null))
+    assertThatThrownBy(() -> StepAttribute.keyword(null))
       .isInstanceOf(NullPointerException.class);
   }
 
   @Test
   void paramsMethodWithoutArgsShouldReturnEmptyMap() {
-    assertThat(StepAttribute.params())
-      .isEmpty();
+    assertThat(StepAttribute.params()).isEmpty();
   }
 
   @Test
-  void paramsMethodWith1ParamShouldReturnMapWith1Entry() {
-    final String paramName = "param1";
-    final Object paramValue = "value1";
-
-    final Map<String, Object> params = StepAttribute.params(paramName, paramValue);
-
-    assertThat(params).containsExactly(
-      entry(paramName, paramValue)
-    );
-  }
-
-  @Test
-  void paramsMethodWith2ParamsShouldReturnMapWith2Entries() {
-    final String paramName1 = "param1";
-    final Object paramValue1 = "value1";
-    final String paramName2 = "param2";
-    final Object paramValue2 = "value2";
-
-    final Map<String, Object> params = StepAttribute.params(
-      paramName1, paramValue1,
-      paramName2, paramValue2
-    );
-
-    assertThat(params).containsExactly(
-      entry(paramName1, paramValue1),
-      entry(paramName2, paramValue2)
-    );
-  }
-
-  @Test
-  void paramsMethodWith3ParamsShouldReturnMapWith3Entries() {
-    final String paramName1 = "param1";
-    final Object paramValue1 = "value1";
-    final String paramName2 = "param2";
-    final Object paramValue2 = "value2";
-    final String paramName3 = "param3";
-    final Object paramValue3 = "value3";
-
-    final Map<String, Object> params = StepAttribute.params(
-      paramName1, paramValue1,
-      paramName2, paramValue2,
-      paramName3, paramValue3
-    );
-
-    assertThat(params).containsExactly(
-      entry(paramName1, paramValue1),
-      entry(paramName2, paramValue2),
-      entry(paramName3, paramValue3)
-    );
-  }
-
-  @Test
-  void paramsMethodWith4ParamsShouldReturnMapWith4rEntries() {
-    final String paramName1 = "param1";
-    final Object paramValue1 = "value1";
-    final String paramName2 = "param2";
-    final Object paramValue2 = "value2";
-    final String paramName3 = "param3";
-    final Object paramValue3 = "value3";
-    final String paramName4 = "param4";
-    final Object paramValue4 = "value4";
-
-    final Map<String, Object> params = StepAttribute.params(
-      paramName1, paramValue1,
-      paramName2, paramValue2,
-      paramName3, paramValue3,
-      paramName4, paramValue4
-    );
-
-    assertThat(params).containsExactly(
-      entry(paramName1, paramValue1),
-      entry(paramName2, paramValue2),
-      entry(paramName3, paramValue3),
-      entry(paramName4, paramValue4)
-    );
-  }
-
-  @Test
-  void paramsMethodWith5ParamsShouldReturnMapWith5Entries() {
-    final String paramName1 = "param1";
-    final Object paramValue1 = "value1";
-    final String paramName2 = "param2";
-    final Object paramValue2 = "value2";
-    final String paramName3 = "param3";
-    final Object paramValue3 = "value3";
-    final String paramName4 = "param4";
-    final Object paramValue4 = "value4";
-    final String paramName5 = "param5";
-    final Object paramValue5 = "value5";
-
-    final Map<String, Object> params = StepAttribute.params(
-      paramName1, paramValue1,
-      paramName2, paramValue2,
-      paramName3, paramValue3,
-      paramName4, paramValue4,
-      paramName5, paramValue5
-    );
-
-    assertThat(params).containsExactly(
-      entry(paramName1, paramValue1),
-      entry(paramName2, paramValue2),
-      entry(paramName3, paramValue3),
-      entry(paramName4, paramValue4),
-      entry(paramName5, paramValue5)
-    );
+  void paramsMethodShouldReturnMapWithGivenEntries() {
+    assertThat(StepAttribute.params("param1", "value1"))
+      .containsExactly(entry("param1", "value1"));
+    assertThat(StepAttribute.params(
+      "param1", "value1",
+      "param2", "value2"))
+      .containsExactly(
+        entry("param1", "value1"),
+        entry("param2", "value2"));
+    assertThat(StepAttribute.params(
+      "param1", "value1",
+      "param2", "value2",
+      "param3", "value3"))
+      .containsExactly(
+        entry("param1", "value1"),
+        entry("param2", "value2"),
+        entry("param3", "value3"));
+    assertThat(StepAttribute.params(
+      "param1", "value1",
+      "param2", "value2",
+      "param3", "value3",
+      "param4", "value4"))
+      .containsExactly(
+        entry("param1", "value1"),
+        entry("param2", "value2"),
+        entry("param3", "value3"),
+        entry("param4", "value4"));
+    assertThat(StepAttribute.params(
+      "param1", "value1",
+      "param2", "value2",
+      "param3", "value3",
+      "param4", "value4",
+      "param5", "value5"))
+      .containsExactly(
+        entry("param1", "value1"),
+        entry("param2", "value2"),
+        entry("param3", "value3"),
+        entry("param4", "value4"),
+        entry("param5", "value5"));
   }
 
   @Test
   void paramsMethodWithVarargEntriesShouldReturnMapWithAllEntries() {
-    final String paramName1 = "param1";
-    final Object paramValue1 = "value1";
-    final String paramName2 = "param2";
-    final Object paramValue2 = "value2";
-    final String paramName3 = "param3";
-    final Object paramValue3 = "value3";
-
     final Map<String, Object> params = StepAttribute.params(
-      StepAttribute.param(paramName1, paramValue1),
-      StepAttribute.param(paramName2, paramValue2),
-      StepAttribute.param(paramName3, paramValue3)
-    );
+      StepAttribute.param("param1", "value1"),
+      StepAttribute.param("param2", "value2"),
+      StepAttribute.param("param3", "value3"));
 
     assertThat(params).containsExactly(
-      entry(paramName1, paramValue1),
-      entry(paramName2, paramValue2),
-      entry(paramName3, paramValue3)
-    );
+      entry("param1", "value1"),
+      entry("param2", "value2"),
+      entry("param3", "value3"));
   }
 
   @Test
   void paramMethodShouldCreateMapEntry() {
-    final Map.Entry<String, Object> entry = StepAttribute.param("testKey", "testValue");
+    final Map.Entry<String, Object> entry = StepAttribute.param("param1", "value1");
 
-    assertThat(entry.getKey())
-      .isEqualTo("testKey");
-    assertThat(entry.getValue())
-      .isEqualTo("testValue");
+    assertThat(entry.getKey()).isEqualTo("param1");
+    assertThat(entry.getValue()).isEqualTo("value1");
   }
 
   @Test
-  void ctorShouldCreateStepAttributeWithGivenParameters() {
-    final String key = "test:key";
+  void attributeOfShouldStoreKeyAndDefaultValues() {
     final Object defaultInput = "defaultInput";
     final Object defaultOutput = "defaultOutput";
-    final ThrowingFunction<Object, Object, ?> extractInput = v -> v;
-    final ThrowingFunction<Object, Object, ?> extractOutput = v -> v;
+    final StepAttribute<Object, Object, Object> attribute =
+      new StepAttribute.Of<>("test:key", defaultInput, v -> v, defaultOutput, v -> v);
 
-    final StepAttribute<Object, Object, Object> attribute = new StepAttribute.Of<>(
-      key, defaultInput, extractInput, defaultOutput, extractOutput
-    );
-
-    assertThat(attribute.key())
-      .isEqualTo(key);
-    assertThat(attribute.defaultInputValue())
-      .isSameAs(defaultInput);
-    assertThat(attribute.defaultOutputValue())
-      .isSameAs(defaultOutput);
+    assertThat(attribute.key()).isEqualTo("test:key");
+    assertThat(attribute.defaultInputValue()).isSameAs(defaultInput);
+    assertThat(attribute.defaultOutputValue()).isSameAs(defaultOutput);
   }
 
   @Test
-  void ctorShouldThrowExceptionForNullKey() {
-    final String nullKey = null;
-    final Object defaultInput = "defaultInput";
-    final Object defaultOutput = "defaultOutput";
-    final ThrowingFunction<Object, Object, ?> extractInput = v -> v;
-    final ThrowingFunction<Object, Object, ?> extractOutput = v -> v;
-
-    assertThatCode(() -> new StepAttribute.Of<>(
-      nullKey, defaultInput, extractInput, defaultOutput, extractOutput
-    )).isInstanceOf(NullPointerException.class);
-  }
-
-  @Test
-  void ctorShouldThrowExceptionForNullExtractInputFunction() {
-    final String key = "test:key";
-    final Object defaultInput = "defaultInput";
-    final Object defaultOutput = "defaultOutput";
-    final ThrowingFunction<Object, Object, ?> extractOutput = v -> v;
-
-    assertThatCode(() -> new StepAttribute.Of<>(
-      key, defaultInput, null, defaultOutput, extractOutput
-    ))
+  void attributeOfShouldThrowExceptionForNullArgs() {
+    assertThatThrownBy(() -> new StepAttribute.Of<>(null, "default", v -> v, "default", v -> v))
+      .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> new StepAttribute.Of<>("test:key", "default", null, "default", v -> v))
+      .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> new StepAttribute.Of<>("test:key", "default", v -> v, "default", null))
       .isInstanceOf(NullPointerException.class);
   }
 
   @Test
-  void ctorShouldThrowExceptionForNullExtractOutputFunction() {
-    final String key = "test:key";
-    final Object defaultInput = "defaultInput";
-    final Object defaultOutput = "defaultOutput";
-    final ThrowingFunction<Object, Object, ?> extractInput = v -> v;
+  void extractInputValueShouldApplyFunction() {
+    final StepAttribute<Integer, String, String> attribute =
+      new StepAttribute.Of<>("test:key", 0, String::valueOf, "", v -> v);
 
-    assertThatCode(() -> new StepAttribute.Of<>(
-      key, defaultInput, extractInput, defaultOutput, null
-    ))
-      .isInstanceOf(NullPointerException.class);
+    assertThat(attribute.extractInputValue(42)).isEqualTo("42");
   }
 
   @Test
-  void extractInputValueMethodShouldApplyFunction() {
-    final StepAttribute<Integer, String, String> attribute = new StepAttribute.Of<>(
-      "test:key", 0, String::valueOf, "", v -> v
-    );
+  void extractOutputValueShouldApplyFunction() {
+    final StepAttribute<String, String, Integer> attribute =
+      new StepAttribute.Of<>("test:key", "", v -> v, 0, String::length);
 
-    final String result = attribute.extractInputValue(42);
-
-    assertThat(result)
-      .isEqualTo("42");
+    assertThat(attribute.extractOutputValue("hello")).isEqualTo(5);
   }
 
   @Test
-  void extractOutputValueMethodShouldApplyFunction() {
-    final StepAttribute<String, String, Integer> attribute = new StepAttribute.Of<>(
-      "test:key", "", v -> v, 0, String::length
-    );
-
-    final Integer result = attribute.extractOutputValue("hello");
-
-    assertThat(result)
-      .isEqualTo(5);
+  void equalsShouldBeBasedOnKey() {
+    assertThat(attribute("test:key"))
+      .isEqualTo(attribute("test:key"))
+      .isNotEqualTo(attribute("test:key2"))
+      .isNotEqualTo("not an attribute");
   }
 
   @Test
-  void equalsMethodShouldReturnTrueForSameInstance() {
-    final StepAttribute<Object, Object, Object> attribute = new StepAttribute.Of<>(
-      "test:key", null, v -> v, null, v -> v
-    );
-
-    assertThat(attribute)
-      .isEqualTo(attribute);
+  void hashCodeShouldBeBasedOnKey() {
+    assertThat(attribute("test:key"))
+      .hasSameHashCodeAs(attribute("test:key"))
+      .doesNotHaveSameHashCodeAs(attribute("test:key2"));
   }
 
   @Test
-  void equalsMethodShouldReturnTrueForAttributesWithSameKey() {
-    final String key = "test:key";
-    final StepAttribute<Object, Object, Object> attribute1 = new StepAttribute.Of<>(
-      key, "value1", v -> v, "value1", v -> v
-    );
-    final StepAttribute<Object, Object, Object> attribute2 = new StepAttribute.Of<>(
-      key, "value2", v -> v, "value2", v -> v
-    );
-
-    assertThat(attribute1)
-      .isEqualTo(attribute2);
+  void toStringShouldContainKey() {
+    assertThat(attribute("test:key")).hasToString("Attribute[test:key]");
   }
 
-  @Test
-  void equalsMethodShouldReturnFalseForAttributesWithDifferentKeys() {
-    final StepAttribute<Object, Object, Object> attribute1 = new StepAttribute.Of<>(
-      "test:key1", null, v -> v, null, v -> v
-    );
-    final StepAttribute<Object, Object, Object> attribute2 = new StepAttribute.Of<>(
-      "test:key2", null, v -> v, null, v -> v
-    );
-
-    assertThat(attribute1)
-      .isNotEqualTo(attribute2);
-  }
-
-  @Test
-  void hashCodeMethodShouldReturnSameValueForAttributesWithSameKey() {
-    final String key = "test:key";
-    final StepAttribute<Object, Object, Object> attribute1 = new StepAttribute.Of<>(
-      key, null, v -> v, null, v -> v
-    );
-    final StepAttribute<Object, Object, Object> attribute2 = new StepAttribute.Of<>(
-      key, null, v -> v, null, v -> v
-    );
-
-    assertThat(attribute1)
-      .hasSameHashCodeAs(attribute2);
-  }
-
-  @Test
-  void hashCodeMethodShouldReturnDifferentValueForAttributesWithDifferentKeys() {
-    final StepAttribute<Object, Object, Object> attribute1 = new StepAttribute.Of<>(
-      "test:key1", null, v -> v, null, v -> v
-    );
-    final StepAttribute<Object, Object, Object> attribute2 = new StepAttribute.Of<>(
-      "test:key2", null, v -> v, null, v -> v
-    );
-
-    assertThat(attribute1.hashCode())
-      .isNotEqualTo(attribute2.hashCode());
+  private static StepAttribute<Object, Object, Object> attribute(final String key) {
+    return new StepAttribute.Of<>(key, null, v -> v, null, v -> v);
   }
 }
-

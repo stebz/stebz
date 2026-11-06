@@ -39,6 +39,8 @@ import static org.stebz.core.attribute.StepAttribute.PARAMS;
 
 /**
  * Consumer step.
+ * <p>Exception handling methods ({@code withIgnored}, {@code withRethrown}) catch {@code Throwable},
+ * including {@code Error} subclasses such as {@code OutOfMemoryError}.
  *
  * @param <T> the type of the step input value
  */
@@ -63,10 +65,10 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * {@code ConsumerStep} with body that ignores given exception.
+   * {@code ConsumerStep} with a body that ignores the specified exception.
    *
    * @param exceptionType the exception type
-   * @return {@code ConsumerStep} with body that ignores given exception
+   * @return {@code ConsumerStep} with body that ignores specified exception
    * @throws NullPointerException if {@code exceptionType} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -86,11 +88,11 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * {@code ConsumerStep} with body that ignores given exceptions.
+   * {@code ConsumerStep} with a body that ignores the specified exceptions.
    *
    * @param exceptionType1 the first exception type
    * @param exceptionType2 the second exception type
-   * @return {@code ConsumerStep} with body that ignores given exceptions
+   * @return {@code ConsumerStep} with body that ignores specified exceptions
    * @throws NullPointerException if {@code exceptionType} arg or {@code exceptionType2} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -113,12 +115,12 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * {@code ConsumerStep} with body that ignores given exceptions.
+   * {@code ConsumerStep} with a body that ignores the specified exceptions.
    *
    * @param exceptionType1 the first exception type
    * @param exceptionType2 the second exception type
    * @param exceptionType3 the third exception type
-   * @return {@code ConsumerStep} with body that ignores given exceptions
+   * @return {@code ConsumerStep} with body that ignores specified exceptions
    * @throws NullPointerException if {@code exceptionType} arg or {@code exceptionType2} arg or {@code exceptionType3}
    *                              arg is null
    * @see #withBody(Object)
@@ -145,7 +147,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * {@code ConsumerStep} with body that rethrow any exception.
+   * {@code ConsumerStep} with a body that rethrows any exception.
    *
    * @param generator the exception generator
    * @return {@code ConsumerStep} with body that rethrow any exception
@@ -166,7 +168,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * {@code ConsumerStep} with body that rethrow exception.
+   * {@code ConsumerStep} with a body that rethrows the specified exception.
    *
    * @param exceptionType the exception type
    * @param generator     the exception generator
@@ -195,7 +197,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * {@code ConsumerStep} with body that rethrow exception.
+   * {@code ConsumerStep} with a body that rethrows the specified exception.
    *
    * @param exceptionType1 the first exception type
    * @param exceptionType2 the second exception type
@@ -229,7 +231,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * {@code ConsumerStep} with body that rethrow exception.
+   * {@code ConsumerStep} with a body that rethrows the specified exception.
    *
    * @param exceptionType1 the first exception type
    * @param exceptionType2 the second exception type
@@ -267,10 +269,10 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * Returns {@code ConsumerStep} with given block before body.
+   * Returns {@code ConsumerStep} with provided block before body.
    *
    * @param block the before block
-   * @return {@code ConsumerStep} with given block before body
+   * @return {@code ConsumerStep} with provided block before body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -285,10 +287,10 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * Returns {@code ConsumerStep} with given block after step body.
+   * Returns {@code ConsumerStep} with provided block after step body.
    *
    * @param block the after block
-   * @return {@code ConsumerStep} with given block after step body
+   * @return {@code ConsumerStep} with provided block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -303,11 +305,11 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * Returns {@code ConsumerStep} with given block after step body. Alias for {@link #withAfter(ThrowingConsumer)}
+   * Returns {@code ConsumerStep} with provided block after step body. Alias for {@link #withAfter(ThrowingConsumer)}
    * methods.
    *
    * @param block the after block
-   * @return {@code ConsumerStep} with given block after step body
+   * @return {@code ConsumerStep} with provided block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -317,10 +319,10 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * Returns {@code ConsumerStep} with given block that be executed after step body in case of step failure.
+   * Returns {@code ConsumerStep} with provided block that be executed after step body in case of step failure.
    *
    * @param block the on failure block
-   * @return {@code ConsumerStep} with given block that be executed after step body in case of step failure
+   * @return {@code ConsumerStep} with provided block that be executed after step body in case of step failure
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -344,10 +346,10 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * Returns {@code ConsumerStep} with given finally block after step body.
+   * Returns {@code ConsumerStep} with specified finally block after step body.
    *
    * @param block the finally block
-   * @return {@code ConsumerStep} with given finally block after step body
+   * @return {@code ConsumerStep} with specified finally block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -363,7 +365,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
         mainEx = ex;
       }
       try {
-        body.accept(context);
+        block.accept(context);
       } catch (final Throwable ex) {
         if (mainEx != null) {
           ex.addSuppressed(mainEx);
@@ -377,10 +379,11 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * Returns this step as {@code RunnableStep} with given context.
+   * Returns new {@code RunnableStep} with this step attributes, this step body as contextual body and specified
+   * context.
    *
    * @param context the context
-   * @return this step as {@code RunnableStep} with given context
+   * @return new {@code RunnableStep} with specified context
    */
   default RStep withContext(final T context) {
     return new RunnableStep.Of(this.getAttributes(), context, this.getBody());
@@ -431,11 +434,11 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * Returns {@code ConsumerStep} with given body.
+   * Returns a {@code ConsumerStep} with the specified body.
    *
    * @param body the step body
    * @param <T>  the type of the step input value
-   * @return {@code ConsumerStep} with given body
+   * @return {@code ConsumerStep} with specified body
    * @throws NullPointerException if {@code body} arg is null
    */
   static <T> CStep<T> of(final ThrowingConsumer<T, ?> body) {
@@ -443,12 +446,12 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * Returns {@code ConsumerStep} with given attributes and body.
+   * Returns {@code ConsumerStep} with specified attributes and body.
    *
    * @param name the step name
    * @param body the step body
    * @param <T>  the type of the step input value
-   * @return {@code ConsumerStep} with given name and body
+   * @return {@code ConsumerStep} with the specified name and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   static <T> CStep<T> of(final String name,
@@ -457,13 +460,13 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * Returns {@code ConsumerStep} with given attributes and body.
+   * Returns {@code ConsumerStep} with specified attributes and body.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <T>            the type of the step input value
-   * @return {@code ConsumerStep} with given name and body
+   * @return {@code ConsumerStep} with the specified name and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   static <T> CStep<T> of(final String name,
@@ -473,13 +476,13 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * Returns {@code ConsumerStep} with given attributes and body.
+   * Returns {@code ConsumerStep} with specified attributes and body.
    *
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
    * @param <T>    the type of the step input value
-   * @return {@code ConsumerStep} with given name, params and body
+   * @return {@code ConsumerStep} with the specified name, params, and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   static <T> CStep<T> of(final String name,
@@ -489,14 +492,14 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * Returns {@code ConsumerStep} with given attributes and body.
+   * Returns {@code ConsumerStep} with specified attributes and body.
    *
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <T>            the type of the step input value
-   * @return {@code ConsumerStep} with given name, params and body
+   * @return {@code ConsumerStep} with the specified name, params, and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
@@ -508,11 +511,11 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * Returns {@code ConsumerStep} of given step attributes and body.
+   * Returns {@code ConsumerStep} of specified step attributes and body.
    *
    * @param origin the origin step
    * @param <T>    the type of the step input value
-   * @return {@code ConsumerStep} of given step attributes and body
+   * @return {@code ConsumerStep} of specified step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
   static <T> CStep<T> of(final ConsumerStep<T> origin) {
@@ -520,12 +523,12 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
-   * Returns {@code ConsumerStep} with given attributes and body.
+   * Returns {@code ConsumerStep} with specified attributes and body.
    *
    * @param attributes the step attributes
    * @param body       the step body
    * @param <T>        the type of the step input value
-   * @return {@code ConsumerStep} with given attributes and body
+   * @return {@code ConsumerStep} with specified attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
   static <T> CStep<T> of(final StepAttributes attributes,
@@ -660,6 +663,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
 
     @Override
     public CStep<T> withAttributes(final StepAttributes attributes) {
+      if (attributes == null) { throw new NullPointerException("attributes arg is null"); }
       return new Of<>(attributes, this.body);
     }
 
@@ -670,6 +674,7 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
 
     @Override
     public CStep<T> withBody(final ThrowingConsumer<T, ?> body) {
+      if (body == null) { throw new NullPointerException("body arg is null"); }
       return new Of<>(this.attributes, body);
     }
 

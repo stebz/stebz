@@ -81,7 +81,7 @@ public interface StebzExtension {
   int LATE_ORDER = 20000;
 
   /**
-   * Configures this extension using the given {@code PropertiesReader}. Called once during the Stebz startup.
+   * Configures this extension using the provided {@code PropertiesReader}. Called once during startup.
    *
    * @param properties the startup properties reader
    */
@@ -89,7 +89,7 @@ public interface StebzExtension {
   }
 
   /**
-   * Returns this extension order.
+   * Returns the extension order.
    *
    * @return this extension order
    */

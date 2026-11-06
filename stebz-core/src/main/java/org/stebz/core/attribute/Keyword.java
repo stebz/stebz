@@ -64,10 +64,10 @@ public interface Keyword {
   }
 
   /**
-   * Returns keyword of given value.
+   * Returns a keyword for the specified value.
    *
    * @param value the keyword value
-   * @return keyword of given value
+   * @return keyword for the specified value
    * @throws NullPointerException if {@code value} arg is null
    */
   static Keyword of(final String value) {

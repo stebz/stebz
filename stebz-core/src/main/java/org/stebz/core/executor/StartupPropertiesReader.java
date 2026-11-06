@@ -41,12 +41,12 @@ public final class StartupPropertiesReader {
    * Returns Stebz framework initialization {@code PropertiesReader}.
    *
    * @return Stebz framework initialization {@code PropertiesReader}
-   * @throws IllegalStateException if the Stebz framework startup process has not started or has been completed
+   * @throws IllegalStateException if the Stebz framework startup process has not started yet or is already complete
    */
   public static PropertiesReader get() {
     final PropertiesReader propertiesReader = instance;
     if (propertiesReader == null) {
-      throw new IllegalStateException("The Stebz framework startup process has not started or has been completed");
+      throw new IllegalStateException("The Stebz framework startup process has not started yet or is already complete");
     }
     return propertiesReader;
   }

@@ -64,7 +64,7 @@ import static org.stebz.util.Throw.unchecked;
 public interface StepExecutor {
 
   /**
-   * Executes given step.
+   * Executes specified step.
    *
    * @param step the step
    * @throws NullPointerException if {@code step} arg is null
@@ -72,7 +72,7 @@ public interface StepExecutor {
   void execute(RunnableStep step);
 
   /**
-   * Executes given step and returns step result.
+   * Executes specified step and returns step result.
    *
    * @param step the step
    * @param <R>  the type of the step result
@@ -82,7 +82,7 @@ public interface StepExecutor {
   <R> R execute(SupplierStep<? extends R> step);
 
   /**
-   * Executes given step
+   * Executes specified step
    *
    * @param step         the step
    * @param contextValue the input step argument
@@ -93,7 +93,7 @@ public interface StepExecutor {
                    T contextValue);
 
   /**
-   * Executes given step and returns step result.
+   * Executes specified step and returns step result.
    *
    * @param step         the step
    * @param contextValue the input step argument

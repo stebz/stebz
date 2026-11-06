@@ -43,6 +43,8 @@ import static org.stebz.core.attribute.StepAttribute.PARAMS;
 
 /**
  * Supplier step.
+ * <p>Exception handling methods ({@code withIgnored}, {@code withRethrown}) catch {@code Throwable},
+ * including {@code Error} subclasses such as {@code OutOfMemoryError}.
  *
  * @param <R> the type of the step result
  */
@@ -59,10 +61,10 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} with empty body that returns given result.
+   * Returns {@code SupplierStep} with empty body that returns specified result.
    *
    * @param result the step result
-   * @return {@code SupplierStep} with empty body that returns given result
+   * @return {@code SupplierStep} with empty body that returns specified result
    */
   default SStep<R> withEmptyBodyReturning(final R result) {
     return this.withBody(emptyBodyReturning(result));
@@ -78,10 +80,11 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * {@code SupplierStep} with body that ignores given exception.
+   * {@code SupplierStep} with a body that ignores the specified exception.
+   * <p>If the exception is ignored, the step body returns {@code null} result.
    *
    * @param exceptionType the exception type
-   * @return {@code SupplierStep} with body that ignores given exception
+   * @return {@code SupplierStep} with body that ignores specified exception
    * @throws NullPointerException if {@code exceptionType} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -102,11 +105,12 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * {@code SupplierStep} with body that ignores given exceptions.
+   * {@code SupplierStep} with a body that ignores the specified exceptions.
+   * <p>If the exception is ignored, the step body returns {@code null} result.
    *
    * @param exceptionType1 the first exception type
    * @param exceptionType2 the second exception type
-   * @return {@code SupplierStep} with body that ignores given exceptions
+   * @return {@code SupplierStep} with body that ignores specified exceptions
    * @throws NullPointerException if {@code exceptionType} arg or {@code exceptionType2} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -130,12 +134,13 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * {@code SupplierStep} with body that ignores given exceptions.
+   * {@code SupplierStep} with a body that ignores the specified exceptions.
+   * <p>If the exception is ignored, the step body returns {@code null} result.
    *
    * @param exceptionType1 the first exception type
    * @param exceptionType2 the second exception type
    * @param exceptionType3 the third exception type
-   * @return {@code SupplierStep} with body that ignores given exceptions
+   * @return {@code SupplierStep} with body that ignores specified exceptions
    * @throws NullPointerException if {@code exceptionType} arg or {@code exceptionType2} arg or {@code exceptionType3}
    *                              arg is null
    * @see #withBody(Object)
@@ -163,7 +168,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * {@code SupplierStep} with body that rethrow any exception.
+   * {@code SupplierStep} with a body that rethrows any exception.
    *
    * @param generator the exception generator
    * @return {@code SupplierStep} with body that rethrow any exception
@@ -184,7 +189,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * {@code SupplierStep} with body that rethrow exception.
+   * {@code SupplierStep} with a body that rethrows the specified exception.
    *
    * @param exceptionType the exception type
    * @param generator     the exception generator
@@ -213,7 +218,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * {@code SupplierStep} with body that rethrow exception.
+   * {@code SupplierStep} with a body that rethrows the specified exception.
    *
    * @param exceptionType1 the first exception type
    * @param exceptionType2 the second exception type
@@ -247,7 +252,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * {@code SupplierStep} with body that rethrow exception.
+   * {@code SupplierStep} with a body that rethrows the specified exception.
    *
    * @param exceptionType1 the first exception type
    * @param exceptionType2 the second exception type
@@ -285,10 +290,10 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} with given block before step body.
+   * Returns {@code SupplierStep} with provided block before step body.
    *
    * @param block the before block
-   * @return {@code SupplierStep} with given block before step body
+   * @return {@code SupplierStep} with provided block before step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -303,10 +308,10 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} with given block after step body.
+   * Returns {@code SupplierStep} with provided block after step body.
    *
    * @param block the after block
-   * @return {@code SupplierStep} with given block after step body
+   * @return {@code SupplierStep} with provided block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -322,10 +327,10 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} with given block after step body.
+   * Returns {@code SupplierStep} with provided block after step body.
    *
    * @param block the after block
-   * @return {@code SupplierStep} with given block after step body
+   * @return {@code SupplierStep} with provided block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -339,11 +344,11 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} with given block after step body. Alias for {@link #withAfter(ThrowingConsumer)}
+   * Returns {@code SupplierStep} with provided block after step body. Alias for {@link #withAfter(ThrowingConsumer)}
    * method.
    *
    * @param block the after block
-   * @return {@code SupplierStep} with given block after step body
+   * @return {@code SupplierStep} with provided block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -359,11 +364,11 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} with given block after step body. Alias for {@link #withAfter(ThrowingFunction)}
+   * Returns {@code SupplierStep} with provided block after step body. Alias for {@link #withAfter(ThrowingFunction)}
    * methods.
    *
    * @param block the after block
-   * @return {@code SupplierStep} with given block after step body
+   * @return {@code SupplierStep} with provided block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -373,10 +378,10 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} with given block that be executed after step body in case of step failure.
+   * Returns {@code SupplierStep} with provided block that be executed after step body in case of step failure.
    *
    * @param block the on failure block
-   * @return {@code SupplierStep} with given block that be executed after step body in case of step failure
+   * @return {@code SupplierStep} with provided block that be executed after step body in case of step failure
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -400,10 +405,10 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} with given finally block after step body.
+   * Returns {@code SupplierStep} with specified finally block after step body.
    *
    * @param block the finally block
-   * @return {@code SupplierStep} with given finally block after step body
+   * @return {@code SupplierStep} with specified finally block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -455,11 +460,11 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} with empty body that returns given result.
+   * Returns {@code SupplierStep} with empty body that returns specified result.
    *
    * @param result the step result
    * @param <R>    the type of the step result
-   * @return {@code SupplierStep} with empty body that returns given result
+   * @return {@code SupplierStep} with empty body that returns specified result
    */
   static <R> SStep<R> emptyReturning(final R result) {
     return new Of<>(emptyBodyReturning(result));
@@ -488,11 +493,11 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code ThrowingSupplier} that returns given result.
+   * Returns {@code ThrowingSupplier} that returns specified result.
    *
    * @param result the step result
    * @param <R>    the type of the result
-   * @return {@code ThrowingSupplier} that returns given result
+   * @return {@code ThrowingSupplier} that returns specified result
    */
   static <R> ThrowingSupplier<R, Error> emptyBodyReturning(final R result) {
     return () -> result;
@@ -510,11 +515,11 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} with given body.
+   * Returns a {@code SupplierStep} with the specified body.
    *
    * @param body the step body
    * @param <R>  the type of the step result
-   * @return {@code SupplierStep} with given body
+   * @return {@code SupplierStep} with specified body
    * @throws NullPointerException if {@code body} arg is null
    */
   static <R> SStep<R> of(final ThrowingSupplier<R, ?> body) {
@@ -522,12 +527,12 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} with given attributes and body.
+   * Returns {@code SupplierStep} with specified attributes and body.
    *
    * @param name the step name
    * @param body the step body
    * @param <R>  the type of the step result
-   * @return {@code SupplierStep} with given name and body
+   * @return {@code SupplierStep} with the specified name and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   static <R> SStep<R> of(final String name,
@@ -536,13 +541,13 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} with given attributes and body.
+   * Returns {@code SupplierStep} with specified attributes and body.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <R>            the type of the step result
-   * @return {@code SupplierStep} with given name and body
+   * @return {@code SupplierStep} with the specified name and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   static <R> SStep<R> of(final String name,
@@ -552,14 +557,14 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} with given attributes and body.
+   * Returns {@code SupplierStep} with specified attributes and body.
    *
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <R>            the type of the step result
-   * @return {@code SupplierStep} with given name, params and body
+   * @return {@code SupplierStep} with the specified name, params, and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
@@ -571,13 +576,13 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} with given attributes and body.
+   * Returns {@code SupplierStep} with specified attributes and body.
    *
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
    * @param <R>    the type of the step result
-   * @return {@code SupplierStep} with given name, params and body
+   * @return {@code SupplierStep} with the specified name, params, and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   static <R> SStep<R> of(final String name,
@@ -587,11 +592,11 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} of given step attributes and body.
+   * Returns {@code SupplierStep} of specified step attributes and body.
    *
    * @param origin the origin step
    * @param <R>    the type of the step result
-   * @return {@code SupplierStep} of given step attributes and body
+   * @return {@code SupplierStep} of specified step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
   static <R> SStep<R> of(final SupplierStep<R> origin) {
@@ -599,12 +604,12 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} with given attributes and body.
+   * Returns {@code SupplierStep} with specified attributes and body.
    *
    * @param attributes the step attributes
    * @param body       the step body
    * @param <R>        the type of the step result
-   * @return {@code SupplierStep} with given attributes and body
+   * @return {@code SupplierStep} with specified attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
   static <R> SStep<R> of(final StepAttributes attributes,
@@ -756,6 +761,16 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
       this.contextualBody = contextualBody;
     }
 
+    private Of(final StepAttributes attributes,
+               final ThrowingSupplier<R, ?> body,
+               final Object context,
+               final ThrowingFunction<?, R, ?> contextualBody) {
+      this.attributes = attributes;
+      this.body = body;
+      this.context = context;
+      this.contextualBody = contextualBody;
+    }
+
     @Override
     public StepAttributes getAttributes() {
       return this.attributes;
@@ -763,7 +778,8 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
 
     @Override
     public SStep<R> withAttributes(final StepAttributes attributes) {
-      return new Of<>(attributes, this.body);
+      if (attributes == null) { throw new NullPointerException("attributes arg is null"); }
+      return new Of<>(attributes, this.body, this.context, this.contextualBody);
     }
 
     @Override
@@ -779,7 +795,8 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
 
     @Override
     public SStep<R> withBody(final ThrowingSupplier<R, ?> body) {
-      return new Of<>(this.attributes, body);
+      if (body == null) { throw new NullPointerException("body arg is null"); }
+      return new Of<>(this.attributes, body, null, null);
     }
 
     @Override

@@ -61,7 +61,7 @@ public interface StepListener {
   int LATE_ORDER = 20000;
 
   /**
-   * Configures this listener using the given {@code PropertiesReader}. Called once during the Stebz startup.
+   * Configures this listener using the provided {@code PropertiesReader}. Called once during startup.
    *
    * @param properties the startup properties reader
    */
@@ -69,7 +69,7 @@ public interface StepListener {
   }
 
   /**
-   * Returns this listener order.
+   * Returns the listener order.
    *
    * @return this listener order
    */

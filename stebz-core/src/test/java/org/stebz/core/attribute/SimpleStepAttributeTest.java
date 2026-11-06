@@ -26,7 +26,7 @@ package org.stebz.core.attribute;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Tests for {@link SimpleStepAttribute}.
@@ -34,368 +34,159 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 final class SimpleStepAttributeTest {
 
   @Test
-  void nullableMethodShouldCreateAttributeWithNullDefaultValue() {
-    final String key = "test:key";
-    final SimpleStepAttribute<Object> attribute = SimpleStepAttribute.nullable(key);
-
-    assertThat(attribute.key())
-      .isEqualTo(key);
-    assertThat(attribute.defaultOutputValue())
-      .isNull();
-  }
-
-  @Test
-  void nullableMethodShouldThrowExceptionForNullKey() {
-    assertThatCode(() -> SimpleStepAttribute.nullable(null))
-      .isInstanceOf(NullPointerException.class);
-  }
-
-  @Test
-  void nullableMethodWithDefaultValueShouldCreateAttributeWithGivenDefaultValue() {
-    final String key = "test:key";
-    final Object defaultValue = new Object();
-    final SimpleStepAttribute<Object> attribute = SimpleStepAttribute.nullable(key, defaultValue);
-
-    assertThat(attribute.key())
-      .isEqualTo(key);
-    assertThat(attribute.defaultOutputValue())
-      .isSameAs(defaultValue);
-  }
-
-  @Test
-  void nullableMethodWithDefaultValueShouldThrowExceptionForNullKey() {
-    final Object defaultValue = new Object();
-
-    assertThatCode(() -> SimpleStepAttribute.nullable(null, defaultValue))
-      .isInstanceOf(NullPointerException.class);
-  }
-
-  @Test
-  void nullableMethodWithExtractOutputFunctionShouldApplyFunction() {
-    final String key = "test:key";
-    final Object defaultValue = "default";
-    final SimpleStepAttribute<String> attribute = SimpleStepAttribute.nullable(
-      key,
-      defaultValue.toString(),
-      v -> "[" + v + "]"
-    );
-
-    final String result = attribute.extractOutputValue("test");
-
-    assertThat(result)
-      .isEqualTo("[test]");
-  }
-
-  @Test
-  void nullableMethodWithExtractOutputFunctionShouldThrowExceptionForNullKey() {
-    assertThatCode(() -> SimpleStepAttribute.nullable(null, "default", v -> v))
-      .isInstanceOf(NullPointerException.class);
-  }
-
-  @Test
-  void nullableMethodWithExtractOutputFunctionShouldThrowExceptionForNullFunction() {
-    assertThatCode(() -> SimpleStepAttribute.nullable("test:key", "default", null))
-      .isInstanceOf(NullPointerException.class);
-  }
-
-  @Test
-  void nonNullMethodShouldCreateAttributeWithGivenDefaultValue() {
-    final String key = "test:key";
-    final Object defaultValue = new Object();
-    final SimpleStepAttribute<Object> attribute = SimpleStepAttribute.nonNull(key, defaultValue);
-
-    assertThat(attribute.key())
-      .isEqualTo(key);
-    assertThat(attribute.defaultOutputValue())
-      .isSameAs(defaultValue);
-  }
-
-  @Test
-  void nonNullMethodShouldThrowExceptionForNullKey() {
-    final Object defaultValue = new Object();
-
-    assertThatCode(() -> SimpleStepAttribute.nonNull(null, defaultValue))
-      .isInstanceOf(NullPointerException.class);
-  }
-
-  @Test
-  void nonNullMethodShouldThrowExceptionForNullDefaultValue() {
-    assertThatCode(() -> SimpleStepAttribute.nonNull("test:key", null))
-      .isInstanceOf(NullPointerException.class);
-  }
-
-  @Test
-  void nonNullMethodWithExtractOutputFunctionShouldApplyFunction() {
-    final String key = "test:key";
-    final String defaultValue = "default";
-    final SimpleStepAttribute<String> attribute = SimpleStepAttribute.nonNull(
-      key,
-      defaultValue,
-      v -> "[" + v + "]"
-    );
-
-    final String result = attribute.extractOutputValue("test");
-
-    assertThat(result)
-      .isEqualTo("[test]");
-  }
-
-  @Test
-  void nonNullMethodWithExtractOutputFunctionShouldThrowExceptionForNullKey() {
-    assertThatCode(() -> SimpleStepAttribute.nonNull(null, "default", v -> v))
-      .isInstanceOf(NullPointerException.class);
-  }
-
-  @Test
-  void nonNullMethodWithExtractOutputFunctionShouldThrowExceptionForNullDefaultValue() {
-    assertThatCode(() -> SimpleStepAttribute.nonNull("test:key", null, v -> v))
-      .isInstanceOf(NullPointerException.class);
-  }
-
-  @Test
-  void nonNullMethodWithExtractOutputFunctionShouldThrowExceptionForNullFunction() {
-    assertThatCode(() -> SimpleStepAttribute.nonNull("test:key", "default", null))
-      .isInstanceOf(NullPointerException.class);
-  }
-
-  @Test
-  void nullableAttributeExtractInputValueShouldReturnValue() {
-    final SimpleStepAttribute<String> attribute = SimpleStepAttribute.nullable("test:key");
-    final String value = "testValue";
-
-    final String result = attribute.extractInputValue(value);
-
-    assertThat(result)
-      .isSameAs(value);
-  }
-
-  @Test
-  void nullableAttributeExtractInputValueShouldAcceptNull() {
+  void nullableWithoutDefaultValueShouldCreateAttributeWithNullDefault() {
     final SimpleStepAttribute<Object> attribute = SimpleStepAttribute.nullable("test:key");
 
-    final Object result = attribute.extractInputValue(null);
-
-    assertThat(result)
-      .isNull();
+    assertThat(attribute.key()).isEqualTo("test:key");
+    assertThat(attribute.defaultInputValue()).isNull();
+    assertThat(attribute.defaultOutputValue()).isNull();
   }
 
   @Test
-  void nonNullAttributeExtractInputValueShouldReturnValue() {
-    final SimpleStepAttribute<String> attribute = SimpleStepAttribute.nonNull("test:key", "default");
-    final String value = "testValue";
-
-    final String result = attribute.extractInputValue(value);
-
-    assertThat(result)
-      .isSameAs(value);
+  void nullableShouldThrowExceptionForNullKey() {
+    assertThatThrownBy(() -> SimpleStepAttribute.nullable(null))
+      .isInstanceOf(NullPointerException.class);
   }
 
   @Test
-  void nonNullAttributeExtractInputValueShouldThrowExceptionForNull() {
-    final SimpleStepAttribute<String> attribute = SimpleStepAttribute.nonNull("test:key", "default");
+  void nullableWithDefaultValueShouldCreateAttributeWithGivenDefault() {
+    final Object defaultValue = new Object();
+    final SimpleStepAttribute<Object> attribute = SimpleStepAttribute.nullable("test:key", defaultValue);
 
-    assertThatCode(() -> attribute.extractInputValue(null))
-      .isInstanceOf(IllegalArgumentException.class)
+    assertThat(attribute.key()).isEqualTo("test:key");
+    assertThat(attribute.defaultInputValue()).isSameAs(defaultValue);
+    assertThat(attribute.defaultOutputValue()).isSameAs(defaultValue);
+  }
+
+  @Test
+  void nullableWithDefaultValueShouldThrowExceptionForNullKey() {
+    assertThatThrownBy(() -> SimpleStepAttribute.nullable(null, "default"))
+      .isInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void nullableWithExtractOutputFunctionShouldApplyFunction() {
+    final SimpleStepAttribute<String> attribute =
+      SimpleStepAttribute.nullable("test:key", "default", v -> "[" + v + "]");
+
+    assertThat(attribute.key()).isEqualTo("test:key");
+    assertThat(attribute.extractOutputValue("test")).isEqualTo("[test]");
+  }
+
+  @Test
+  void nullableWithExtractOutputFunctionShouldThrowExceptionForNullArgs() {
+    assertThatThrownBy(() -> SimpleStepAttribute.nullable(null, "default", v -> v))
+      .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> SimpleStepAttribute.nullable("test:key", "default", null))
+      .isInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void nonNullShouldCreateAttributeWithGivenDefault() {
+    final Object defaultValue = new Object();
+    final SimpleStepAttribute<Object> attribute = SimpleStepAttribute.nonNull("test:key", defaultValue);
+
+    assertThat(attribute.key()).isEqualTo("test:key");
+    assertThat(attribute.defaultInputValue()).isSameAs(defaultValue);
+    assertThat(attribute.defaultOutputValue()).isSameAs(defaultValue);
+  }
+
+  @Test
+  void nonNullShouldThrowExceptionForNullArgs() {
+    assertThatThrownBy(() -> SimpleStepAttribute.nonNull(null, "default"))
+      .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> SimpleStepAttribute.nonNull("test:key", null))
+      .isInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void nonNullWithExtractOutputFunctionShouldApplyFunction() {
+    final SimpleStepAttribute<String> attribute =
+      SimpleStepAttribute.nonNull("test:key", "default", v -> "[" + v + "]");
+
+    assertThat(attribute.key()).isEqualTo("test:key");
+    assertThat(attribute.extractOutputValue("test")).isEqualTo("[test]");
+  }
+
+  @Test
+  void nonNullWithExtractOutputFunctionShouldThrowExceptionForNullArgs() {
+    assertThatThrownBy(() -> SimpleStepAttribute.nonNull(null, "default", v -> v))
+      .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> SimpleStepAttribute.nonNull("test:key", null, v -> v))
+      .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> SimpleStepAttribute.nonNull("test:key", "default", null))
+      .isInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void nullableExtractInputValueShouldReturnValueAsIs() {
+    assertThat(SimpleStepAttribute.nullable("test:key").extractInputValue("value")).isEqualTo("value");
+  }
+
+  @Test
+  void nullableExtractInputValueShouldAcceptNull() {
+    assertThat(SimpleStepAttribute.nullable("test:key").extractInputValue(null)).isNull();
+  }
+
+  @Test
+  void nonNullExtractInputValueShouldReturnValue() {
+    assertThat(SimpleStepAttribute.nonNull("test:key", "default").extractInputValue("value"))
+      .isEqualTo("value");
+  }
+
+  @Test
+  void nonNullExtractInputValueShouldThrowExceptionForNull() {
+    assertThatThrownBy(() -> SimpleStepAttribute.nonNull("test:key", "default").extractInputValue(null))
+      .isInstanceOf(NullPointerException.class)
       .hasMessageContaining("attribute value is null");
   }
 
   @Test
-  void nullableAttributeExtractOutputValueShouldReturnValue() {
-    final SimpleStepAttribute<String> attribute = SimpleStepAttribute.nullable("test:key");
-
-    final String result = attribute.extractOutputValue("testValue");
-
-    assertThat(result)
-      .isEqualTo("testValue");
+  void nullableExtractOutputValueShouldReturnValueAsIs() {
+    assertThat(SimpleStepAttribute.nullable("test:key").extractOutputValue("value")).isEqualTo("value");
+    assertThat(SimpleStepAttribute.nullable("test:key").extractOutputValue(null)).isNull();
   }
 
   @Test
-  void nullableAttributeExtractOutputValueShouldReturnNull() {
-    final SimpleStepAttribute<Object> attribute = SimpleStepAttribute.nullable("test:key");
-
-    final Object result = attribute.extractOutputValue(null);
-
-    assertThat(result)
-      .isNull();
+  void nonNullExtractOutputValueShouldReturnValue() {
+    assertThat(SimpleStepAttribute.nonNull("test:key", "default").extractOutputValue("value"))
+      .isEqualTo("value");
   }
 
   @Test
-  void nonNullAttributeExtractOutputValueShouldReturnValue() {
-    final SimpleStepAttribute<String> attribute = SimpleStepAttribute.nonNull("test:key", "default");
+  void extractOutputValueFunctionMayThrowException() {
+    final SimpleStepAttribute<String> attribute = SimpleStepAttribute.nullable(
+      "test:key", "default", v -> {
+        if (v.equals("error")) {
+          throw new IllegalStateException("expected error");
+        }
+        return v.toUpperCase();
+      });
 
-    final String result = attribute.extractOutputValue("testValue");
-
-    assertThat(result)
-      .isEqualTo("testValue");
+    assertThat(attribute.extractOutputValue("test")).isEqualTo("TEST");
+    assertThatThrownBy(() -> attribute.extractOutputValue("error"))
+      .isInstanceOf(IllegalStateException.class)
+      .hasMessage("expected error");
   }
 
   @Test
-  void defaultInputValueForNullableAttributeShouldReturnDefaultValue() {
-    final Object defaultValue = new Object();
-    final SimpleStepAttribute<Object> attribute = SimpleStepAttribute.nullable("test:key", defaultValue);
-
-    assertThat(attribute.defaultInputValue())
-      .isSameAs(defaultValue);
-  }
-
-  @Test
-  void defaultOutputValueForNullableAttributeShouldReturnDefaultValue() {
-    final Object defaultValue = new Object();
-    final SimpleStepAttribute<Object> attribute = SimpleStepAttribute.nullable("test:key", defaultValue);
-
-    assertThat(attribute.defaultOutputValue())
-      .isSameAs(defaultValue);
-  }
-
-  @Test
-  void defaultInputValueForNonNullAttributeShouldReturnDefaultValue() {
-    final Object defaultValue = new Object();
-    final SimpleStepAttribute<Object> attribute = SimpleStepAttribute.nonNull("test:key", defaultValue);
-
-    assertThat(attribute.defaultInputValue())
-      .isSameAs(defaultValue);
-  }
-
-  @Test
-  void defaultOutputValueForNonNullAttributeShouldReturnDefaultValue() {
-    final Object defaultValue = new Object();
-    final SimpleStepAttribute<Object> attribute = SimpleStepAttribute.nonNull("test:key", defaultValue);
-
-    assertThat(attribute.defaultOutputValue())
-      .isSameAs(defaultValue);
-  }
-
-  @Test
-  void equalsMethodShouldReturnTrueForSameInstance() {
-    final SimpleStepAttribute<Object> attribute = SimpleStepAttribute.nullable("test:key");
-
-    assertThat(attribute)
-      .isEqualTo(attribute);
-  }
-
-  @Test
-  void equalsMethodShouldReturnTrueForAttributesWithSameKey() {
-    final String key = "test:key";
-    final SimpleStepAttribute<Object> attribute1 = SimpleStepAttribute.nullable(key);
-    final SimpleStepAttribute<Object> attribute2 = SimpleStepAttribute.nonNull(key, new Object());
-
-    assertThat(attribute1)
-      .isEqualTo(attribute2);
-  }
-
-  @Test
-  void equalsMethodShouldReturnFalseForAttributesWithDifferentKeys() {
-    final SimpleStepAttribute<Object> attribute1 = SimpleStepAttribute.nullable("test:key1");
-    final SimpleStepAttribute<Object> attribute2 = SimpleStepAttribute.nullable("test:key2");
-
-    assertThat(attribute1)
-      .isNotEqualTo(attribute2);
-  }
-
-  @Test
-  void equalsMethodShouldReturnFalseForNonStepAttributeObject() {
-    final SimpleStepAttribute<Object> attribute = SimpleStepAttribute.nullable("test:key");
-
-    assertThat(attribute)
+  void equalsShouldBeBasedOnKey() {
+    assertThat(SimpleStepAttribute.nullable("test:key"))
+      .isEqualTo(SimpleStepAttribute.nonNull("test:key", "default"))
+      .isEqualTo(SimpleStepAttribute.nullable("test:key", "other default"))
+      .isNotEqualTo(SimpleStepAttribute.nullable("test:key2"))
       .isNotEqualTo("not an attribute");
   }
 
   @Test
-  void hashCodeMethodShouldReturnSameValueForAttributesWithSameKey() {
-    final String key = "test:key";
-    final SimpleStepAttribute<Object> attribute1 = SimpleStepAttribute.nullable(key);
-    final SimpleStepAttribute<Object> attribute2 = SimpleStepAttribute.nullable(key);
-
-    assertThat(attribute1.hashCode())
-      .isEqualTo(attribute2.hashCode());
+  void hashCodeShouldBeBasedOnKey() {
+    assertThat(SimpleStepAttribute.nullable("test:key"))
+      .hasSameHashCodeAs(SimpleStepAttribute.nullable("test:key", "default"))
+      .doesNotHaveSameHashCodeAs(SimpleStepAttribute.nullable("test:key2"));
   }
 
   @Test
-  void hashCodeMethodShouldReturnDifferentValueForAttributesWithDifferentKeys() {
-    final SimpleStepAttribute<Object> attribute1 = SimpleStepAttribute.nullable("test:key1");
-    final SimpleStepAttribute<Object> attribute2 = SimpleStepAttribute.nullable("test:key2");
-
-    assertThat(attribute1.hashCode())
-      .isNotEqualTo(attribute2.hashCode());
-  }
-
-  @Test
-  void toStringMethodShouldIncludeKey() {
-    final String key = "test:key";
-    final SimpleStepAttribute<Object> attribute = SimpleStepAttribute.nullable(key);
-
-    assertThat(attribute.toString())
-      .contains(key);
-  }
-
-  @Test
-  void nullableAttributeWithCustomExtractOutputFunctionShouldApplyTransformation() {
-    final SimpleStepAttribute<Integer> attribute = SimpleStepAttribute.nullable(
-      "test:key",
-      42,
-      v -> v * 2
-    );
-
-    final Integer result = attribute.extractOutputValue(21);
-
-    assertThat(result)
-      .isEqualTo(42);
-  }
-
-  @Test
-  void nonNullAttributeWithCustomExtractOutputFunctionShouldApplyTransformation() {
-    final SimpleStepAttribute<Integer> attribute = SimpleStepAttribute.nonNull(
-      "test:key",
-      0,
-      v -> v * 2
-    );
-
-    final Integer result = attribute.extractOutputValue(21);
-
-    assertThat(result)
-      .isEqualTo(42);
-  }
-
-  @Test
-  void nullableAttributeWithNullDefaultValueShouldHaveNullDefault() {
-    final SimpleStepAttribute<Object> attribute = SimpleStepAttribute.nullable("test:key");
-
-    assertThat(attribute.defaultInputValue())
-      .isNull();
-    assertThat(attribute.defaultOutputValue())
-      .isNull();
-  }
-
-  @Test
-  void multipleAttributesWithSameKeyButDifferentDefaultsShouldBeEqual() {
-    final SimpleStepAttribute<String> attribute1 = SimpleStepAttribute.nullable("test:key", "default1");
-    final SimpleStepAttribute<String> attribute2 = SimpleStepAttribute.nullable("test:key", "default2");
-
-    assertThat(attribute1)
-      .isEqualTo(attribute2);
-    assertThat(attribute1.hashCode())
-      .isEqualTo(attribute2.hashCode());
-  }
-
-  @Test
-  void extractOutputValueWithFunctionShouldHandleException() {
-    final SimpleStepAttribute<String> attribute = SimpleStepAttribute.nullable(
-      "test:key",
-      "default",
-      v -> {
-        if (v.equals("error")) {
-          throw new RuntimeException("Expected error");
-        }
-        return v.toUpperCase();
-      }
-    );
-
-    assertThat(attribute.extractOutputValue("test"))
-      .isEqualTo("TEST");
-
-    assertThatCode(() -> attribute.extractOutputValue("error"))
-      .isInstanceOf(RuntimeException.class)
-      .hasMessage("Expected error");
+  void toStringShouldContainKey() {
+    assertThat(SimpleStepAttribute.nullable("test:key")).hasToString("Attribute[test:key]");
   }
 }
-

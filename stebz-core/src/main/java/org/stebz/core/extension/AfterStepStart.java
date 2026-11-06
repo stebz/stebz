@@ -34,7 +34,7 @@ import org.stebz.util.container.NullableOptional;
 public interface AfterStepStart extends StebzExtension {
 
   /**
-   * Calling before step start.
+   * Calling after step start.
    *
    * @param step    the step
    * @param context the step context

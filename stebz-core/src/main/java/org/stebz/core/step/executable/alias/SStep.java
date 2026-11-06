@@ -47,11 +47,11 @@ public interface SStep<R> extends SupplierStep<R> {
   }
 
   /**
-   * Returns {@code SupplierStep} with empty body that returns given result.
+   * Returns {@code SupplierStep} with empty body that returns specified result.
    *
    * @param result the step result
    * @param <R>    the type of the step result
-   * @return {@code SupplierStep} with empty body that returns given result
+   * @return {@code SupplierStep} with empty body that returns specified result
    */
   static <R> SStep<R> emptyReturning(final R result) {
     return SupplierStep.emptyReturning(result);
@@ -78,11 +78,11 @@ public interface SStep<R> extends SupplierStep<R> {
   }
 
   /**
-   * Returns {@code ThrowingSupplier} that returns given result.
+   * Returns {@code ThrowingSupplier} that returns specified result.
    *
    * @param result the step result
    * @param <R>    the type of the result
-   * @return {@code ThrowingSupplier} that returns given result
+   * @return {@code ThrowingSupplier} that returns specified result
    */
   static <R> ThrowingSupplier<R, Error> emptyBodyReturning(final R result) {
     return SupplierStep.emptyBodyReturning(result);
@@ -99,11 +99,11 @@ public interface SStep<R> extends SupplierStep<R> {
   }
 
   /**
-   * Returns {@code SupplierStep} with given body.
+   * Returns a {@code SupplierStep} with the specified body.
    *
    * @param body the step body
    * @param <R>  the type of the step result
-   * @return {@code SupplierStep} with given body
+   * @return {@code SupplierStep} with specified body
    * @throws NullPointerException if {@code body} arg is null
    */
   static <R> SStep<R> of(final ThrowingSupplier<R, ?> body) {
@@ -111,12 +111,12 @@ public interface SStep<R> extends SupplierStep<R> {
   }
 
   /**
-   * Returns {@code SupplierStep} with given attributes and body.
+   * Returns {@code SupplierStep} with specified attributes and body.
    *
    * @param name the step name
    * @param body the step body
    * @param <R>  the type of the step result
-   * @return {@code SupplierStep} with given name and body
+   * @return {@code SupplierStep} with the specified name and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   static <R> SStep<R> of(final String name,
@@ -125,13 +125,13 @@ public interface SStep<R> extends SupplierStep<R> {
   }
 
   /**
-   * Returns {@code SupplierStep} with given attributes and body.
+   * Returns {@code SupplierStep} with specified attributes and body.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <R>            the type of the step result
-   * @return {@code SupplierStep} with given name and body
+   * @return {@code SupplierStep} with the specified name and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   static <R> SStep<R> of(final String name,
@@ -141,14 +141,14 @@ public interface SStep<R> extends SupplierStep<R> {
   }
 
   /**
-   * Returns {@code SupplierStep} with given attributes and body.
+   * Returns {@code SupplierStep} with specified attributes and body.
    *
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <R>            the type of the step result
-   * @return {@code SupplierStep} with given name, params and body
+   * @return {@code SupplierStep} with the specified name, params, and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
@@ -160,13 +160,13 @@ public interface SStep<R> extends SupplierStep<R> {
   }
 
   /**
-   * Returns {@code SupplierStep} with given attributes and body.
+   * Returns {@code SupplierStep} with specified attributes and body.
    *
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
    * @param <R>    the type of the step result
-   * @return {@code SupplierStep} with given name, params and body
+   * @return {@code SupplierStep} with the specified name, params, and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   static <R> SStep<R> of(final String name,
@@ -176,11 +176,11 @@ public interface SStep<R> extends SupplierStep<R> {
   }
 
   /**
-   * Returns {@code SupplierStep} of given step attributes and body.
+   * Returns {@code SupplierStep} of specified step attributes and body.
    *
    * @param origin the origin step
    * @param <R>    the type of the step result
-   * @return {@code SupplierStep} of given step attributes and body
+   * @return {@code SupplierStep} of specified step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
   static <R> SStep<R> of(final SupplierStep<R> origin) {
@@ -188,12 +188,12 @@ public interface SStep<R> extends SupplierStep<R> {
   }
 
   /**
-   * Returns {@code SupplierStep} with given attributes and body.
+   * Returns {@code SupplierStep} with specified attributes and body.
    *
    * @param attributes the step attributes
    * @param body       the step body
    * @param <R>        the type of the step result
-   * @return {@code SupplierStep} with given attributes and body
+   * @return {@code SupplierStep} with specified attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
   static <R> SStep<R> of(final StepAttributes attributes,
