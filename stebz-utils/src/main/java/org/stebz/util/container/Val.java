@@ -43,7 +43,7 @@ import static org.stebz.util.Throw.unchecked;
 public interface Val<V> extends NullableValueContainer<V> {
 
   /**
-   * Sets given value.
+   * Sets the given value. Invocation is atomic: the value is set only if no value has been set before.
    *
    * @param value the value to set
    * @return given value
@@ -104,7 +104,7 @@ public interface Val<V> extends NullableValueContainer<V> {
   }
 
   /**
-   * Default {@code Val} implementation.
+   * Default {@code Val} implementation. Implementation is thread-safe: the value is set at most once (CAS is used).
    *
    * @param <V> the type of the value
    */
@@ -177,7 +177,7 @@ public interface Val<V> extends NullableValueContainer<V> {
     @Override
     public Val<V> ifEmpty(final ThrowingRunnable<?> runnable) {
       if (runnable == null) { throw new NullPointerException("runnable arg is null"); }
-      if (this.value != UNINITIALIZED_VALUE) {
+      if (this.value == UNINITIALIZED_VALUE) {
         ThrowingRunnable.unchecked(runnable).run();
       }
       return this;
@@ -200,7 +200,7 @@ public interface Val<V> extends NullableValueContainer<V> {
     public V get() {
       final Object v = this.value;
       if (v == UNINITIALIZED_VALUE) {
-        throw new NoSuchElementException("Var has no value");
+        throw new NoSuchElementException("Val has no value");
       }
       return (V) v;
     }
