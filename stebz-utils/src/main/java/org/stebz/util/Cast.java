@@ -35,7 +35,7 @@ public final class Cast {
   }
 
   /**
-   * Returns given object of type {@code R}.
+   * Returns the given object cast to type {@code R}.
    *
    * <pre>{@code
    * Object value = 1;
@@ -46,7 +46,9 @@ public final class Cast {
    * @param obj the object
    * @param <R> return object type
    * @return given object of type {@code R}
-   * @throws ClassCastException if given object is not an instance of type {@code R}
+   * @throws ClassCastException the method itself does not throw it, but a {@code ClassCastException} may be thrown
+   *                            later at the point of the returned value usage if the given object is not an instance of
+   *                            type {@code R}
    */
   @SuppressWarnings("unchecked")
   public static <R> R unsafe(final Object obj) {

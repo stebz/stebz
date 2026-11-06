@@ -42,45 +42,45 @@ import static org.stebz.util.Throw.unchecked;
 public interface NullableOptional<V> extends NullableValueContainer<V> {
 
   /**
-   * Return an {@code NullableOptional} describing the value if value is present and the value is not null, otherwise
-   * return an empty {@code NullableOptional}.
+   * Returns a {@code NullableOptional} describing the value if value is present and the value is not null, otherwise
+   * returns an empty {@code NullableOptional}.
    *
-   * @return an {@code NullableOptional} describing the value if value is present and the value is not null, otherwise
-   * an empty {@code NullableOptional}
+   * @return a {@code NullableOptional} describing the value if value is present and the value is not null, otherwise an
+   * empty {@code NullableOptional}
    */
   NullableOptional<V> nonNull();
 
   /**
-   * Return an {@code NullableOptional} describing the value if value is present and the value matches the given
-   * predicate, otherwise return an empty {@code NullableOptional}.
+   * Returns a {@code NullableOptional} describing the value if value is present and the value matches the given
+   * predicate, otherwise returns an empty {@code NullableOptional}.
    *
    * @param predicate the predicate
-   * @return an {@code NullableOptional} describing the value if value is present and the value matches the given
+   * @return a {@code NullableOptional} describing the value if value is present and the value matches the given
    * predicate, otherwise an empty {@code NullableOptional}
    * @throws NullPointerException if {@code predicate} arg is null
    */
   NullableOptional<V> filter(final ThrowingPredicate<? super V, ?> predicate);
 
   /**
-   * If a value is present, apply the provided mapping function to it and return an {@code NullableOptional} describing
-   * the result, otherwise return an empty {@code NullableOptional}.
+   * If a value is present, applies the provided mapping function to it and returns a {@code NullableOptional}
+   * describing the result, otherwise returns an empty {@code NullableOptional}.
    *
    * @param mapper the mapper
    * @param <U>    the type of the result of {@code mapper}
-   * @return an {@code NullableOptional} describing the result of mapping function if value is present, otherwise an
+   * @return a {@code NullableOptional} describing the result of mapping function if value is present, otherwise an
    * empty {@code NullableOptional}
    * @throws NullPointerException if {@code mapper} arg is null
    */
   <U> NullableOptional<U> map(ThrowingFunction<? super V, ? extends U, ?> mapper);
 
   /**
-   * If a value is present, apply the provided {@code NullableOptional}-bearing mapping function to it, return that
-   * result, otherwise return an empty {@code NullableOptional}.
+   * If a value is present, applies the provided {@code NullableOptional}-bearing mapping function to it and returns
+   * that result, otherwise returns an empty {@code NullableOptional}.
    *
    * @param mapper the mapper
    * @param <U>    the type of the {@code NullableOptional} value of mapping function result
    * @return result of mapping function if value is present, otherwise an empty {@code NullableOptional}
-   * @throws NullPointerException if {@code mapper} arg is null
+   * @throws NullPointerException if {@code mapper} arg is null or if the mapper returns {@code null}
    */
   <U> NullableOptional<U> flatMap(ThrowingFunction<? super V, ? extends NullableOptional<U>, ?> mapper);
 
@@ -119,10 +119,10 @@ public interface NullableOptional<V> extends NullableValueContainer<V> {
   int hashCode();
 
   /**
-   * Returns empty OptionalValue.
+   * Returns an empty {@code NullableOptional}.
    *
    * @param <V> the type of the value
-   * @return empty OptionalValue
+   * @return an empty {@code NullableOptional}
    */
   @SuppressWarnings("unchecked")
   static <V> NullableOptional<V> empty() {
@@ -130,18 +130,18 @@ public interface NullableOptional<V> extends NullableValueContainer<V> {
   }
 
   /**
-   * Returns OptionalValue of given value.
+   * Returns a {@code NullableOptional} of the given value.
    *
    * @param value the value
    * @param <V>   the type of the value
-   * @return OptionalValue of given value
+   * @return a {@code NullableOptional} of the given value
    */
   static <V> NullableOptional<V> of(final V value) {
     return new Of<>(value);
   }
 
   /**
-   * Default empty {@code OptionalValue} implementation.
+   * Default empty {@code NullableOptional} implementation.
    *
    * @param <V> the type of the value
    */
@@ -255,12 +255,12 @@ public interface NullableOptional<V> extends NullableValueContainer<V> {
 
     @Override
     public String toString() {
-      return "OptionalValue[<no value>]";
+      return "NullableOptional[<no value>]";
     }
   }
 
   /**
-   * Default empty {@code OptionalValue} implementation.
+   * Default {@code NullableOptional} implementation.
    *
    * @param <V> the type of the value
    */
@@ -337,7 +337,9 @@ public interface NullableOptional<V> extends NullableValueContainer<V> {
     @Override
     public <U> NullableOptional<U> flatMap(final ThrowingFunction<? super V, ? extends NullableOptional<U>, ?> mapper) {
       if (mapper == null) { throw new NullPointerException("mapper arg is null"); }
-      return ThrowingFunction.unchecked(mapper).apply(this.value);
+      final NullableOptional<U> mapperResult = ThrowingFunction.unchecked(mapper).apply(this.value);
+      if (mapperResult == null) { throw new NullPointerException("mapper result is null"); }
+      return mapperResult;
     }
 
     @Override
@@ -380,7 +382,7 @@ public interface NullableOptional<V> extends NullableValueContainer<V> {
 
     @Override
     public String toString() {
-      return "OptionalValue[" + this.value + "]";
+      return "NullableOptional[" + this.value + "]";
     }
   }
 }

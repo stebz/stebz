@@ -41,7 +41,7 @@ import static org.stebz.util.Throw.unchecked;
 public interface Var<V> extends NullableValueContainer<V> {
 
   /**
-   * Sets given value.
+   * Sets the given value.
    *
    * @param value the value to set
    * @return given value
@@ -54,9 +54,10 @@ public interface Var<V> extends NullableValueContainer<V> {
   void clear();
 
   /**
-   * Returns current value and then removes it.
+   * Returns the current value and then removes it.
    *
    * @return current value
+   * @throws NoSuchElementException if no value present
    */
   V take();
 
@@ -239,7 +240,7 @@ public interface Var<V> extends NullableValueContainer<V> {
     @Override
     public Var<V> ifEmpty(final ThrowingRunnable<?> runnable) {
       if (runnable == null) { throw new NullPointerException("runnable arg is null"); }
-      if (this.value != UNINITIALIZED_VALUE) {
+      if (this.value == UNINITIALIZED_VALUE) {
         ThrowingRunnable.unchecked(runnable).run();
       }
       return this;

@@ -26,7 +26,14 @@ package org.stebz.util;
 import dev.jlet.function.ThrowingSupplier;
 
 /**
- * ThrowingSupplier that stores the first result value.
+ * ThrowingSupplier that stores the first result value. The origin supplier is called only once, on the first
+ * {@link #get()} call; all subsequent {@code get()} calls return the stored value.
+ * <p>
+ * Implementation is thread-safe: the value is initialized at most once even when {@code get()} is called from multiple
+ * threads.
+ * <p>
+ * If the origin supplier throws an exception, the exception is propagated to the {@code get()} caller and the value
+ * remains uninitialized, so the origin supplier will be called again on the next {@code get()} call.
  *
  * @param <T> the type of the value
  */
@@ -52,7 +59,7 @@ public final class Cached<T> implements ThrowingSupplier<T, Error> {
   /**
    * Ctor.
    *
-   * @param lock   the lock
+   * @param lock   the lock object to synchronize value initialization on
    * @param origin the origin supplier
    * @throws NullPointerException if {@code lock} or {@code origin} arg is {@code null}
    */

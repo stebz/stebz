@@ -35,16 +35,17 @@ public final class Throw {
   }
 
   /**
-   * Throws given exception.
+   * Throws given exception as if it was unchecked (the exception is rethrown as is, no wrapping is performed).
    *
    * <pre>{@code
    * Throw.unchecked(new Throwable());
-   * throw unchecked(new Throwable());
+   *
+   * throw Throw.unchecked(new Throwable());
    * }</pre>
    *
    * @param exception the exception
    * @param <E>       the type of the exception
-   * @return fake RuntimeException instance
+   * @return never returns normally; the return type exists to allow usage as {@code throw} expression
    * @throws E given exception
    */
   @SuppressWarnings("unchecked")

@@ -47,12 +47,12 @@ public interface NullableValueContainer<V> {
   /**
    * Return {@code true} if there is no value present, otherwise {@code false}.
    *
-   * @return Returns {@code true} if there is no value present, otherwise {@code false}
+   * @return {@code true} if there is no value present, otherwise {@code false}
    */
   boolean isEmpty();
 
   /**
-   * Return value.
+   * Returns the value.
    *
    * @return value
    * @throws NoSuchElementException if no value present
@@ -60,7 +60,7 @@ public interface NullableValueContainer<V> {
   V get();
 
   /**
-   * If a value is present, invoke the specified consumer with the value, otherwise do nothing.
+   * If a value is present, invokes the specified consumer with the value, otherwise does nothing.
    *
    * @param consumer the consumer
    * @return this object
@@ -69,7 +69,7 @@ public interface NullableValueContainer<V> {
   NullableValueContainer<V> ifPresent(ThrowingConsumer<? super V, ?> consumer);
 
   /**
-   * If a value is not present, invoke the specified runnable, otherwise do nothing.
+   * If a value is not present, invokes the specified runnable, otherwise does nothing.
    *
    * @param runnable the runnable
    * @return this object
@@ -78,19 +78,20 @@ public interface NullableValueContainer<V> {
   NullableValueContainer<V> ifEmpty(ThrowingRunnable<?> runnable);
 
   /**
-   * If a value is present, return result of the {@code ifPresent} function, otherwise return result of {@code ifEmpty}
-   * supplier.
+   * If a value is present, returns result of the {@code ifPresent} function, otherwise returns result of
+   * {@code ifEmpty} supplier.
    *
    * @param ifPresent the function
    * @param ifEmpty   the supplier
    * @param <R>       the type of the result
    * @return result of the {@code ifPresent} function, otherwise result of {@code ifEmpty} supplier
+   * @throws NullPointerException if {@code ifPresent} arg or {@code ifEmpty} arg is null
    */
   <R> R fold(ThrowingFunction<? super V, ? extends R, ?> ifPresent,
              ThrowingSupplier<? extends R, ?> ifEmpty);
 
   /**
-   * Return the value if present, otherwise returns {@code other} value.
+   * Returns the value if present, otherwise returns {@code other} value.
    *
    * @param other the other value
    * @return value if present, otherwise {@code other} value
@@ -98,7 +99,7 @@ public interface NullableValueContainer<V> {
   V orElse(V other);
 
   /**
-   * Return the value if present, otherwise invoke {@code other} and return the result of that invocation.
+   * Returns the value if present, otherwise invokes {@code other} and returns the result of that invocation.
    *
    * @param other the other value supplier
    * @return value if present otherwise the result of supplier
@@ -110,11 +111,13 @@ public interface NullableValueContainer<V> {
    * If a value is present, returns the value, otherwise throws {@code NoSuchElementException}.
    *
    * @return value
+   * @throws NoSuchElementException if no value is present
    */
   V orElseThrow();
 
   /**
-   * If a value is present, returns the value, otherwise throws an exception to be created by the provided supplier.
+   * If a value is present, returns the value, otherwise throws the exception produced by the provided supplier (the
+   * exception is rethrown as is, no wrapping is performed).
    *
    * @param exceptionSupplier the exception supplier
    * @return value
