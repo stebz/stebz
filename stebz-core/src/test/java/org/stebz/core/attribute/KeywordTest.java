@@ -26,7 +26,7 @@ package org.stebz.core.attribute;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Tests for {@link Keyword}.
@@ -34,65 +34,55 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 final class KeywordTest {
 
   @Test
-  void ctorShouldThrowExceptionForNullValue() {
-    assertThatCode(() -> new Keyword.Of(null))
+  void ofShouldCreateKeywordWithGivenValue() {
+    assertThat(Keyword.of("abc").value()).isEqualTo("abc");
+  }
+
+  @Test
+  void ofShouldThrowExceptionForNullValue() {
+    assertThatThrownBy(() -> Keyword.of(null))
       .isInstanceOf(NullPointerException.class);
   }
 
   @Test
-  void valueMethodShouldReturnValueFromCtor() {
-    final String value = "abc";
-    final Keyword keyword = new Keyword.Of(value);
-
-    assertThat(keyword.value())
-      .isEqualTo(value);
+  void ctorShouldCreateKeywordWithGivenValue() {
+    assertThat(new Keyword.Of("abc").value()).isEqualTo("abc");
   }
 
   @Test
-  void equalsMethodShouldBeCorrect() {
-    final Keyword keyword1 = new Keyword.Of("abc");
-    final Keyword keyword2 = customKeyword("abc");
-    final Keyword keyword3 = customKeyword("def");
-
-    assertThat(keyword1)
-      .isEqualTo(keyword1)
-      .isEqualTo(keyword2)
-      .isNotEqualTo(keyword3);
+  void ctorShouldThrowExceptionForNullValue() {
+    assertThatThrownBy(() -> new Keyword.Of(null))
+      .isInstanceOf(NullPointerException.class);
   }
 
   @Test
-  void hashCodeMethodShouldBeCorrect() {
-    final Keyword keyword1 = new Keyword.Of("abc");
-    final Keyword keyword2 = new Keyword.Of("abc");
-    final Keyword keyword3 = new Keyword.Of("def");
-
-    assertThat(keyword1)
-      .hasSameHashCodeAs(keyword1)
-      .hasSameHashCodeAs(keyword2)
-      .doesNotHaveSameHashCodeAs(keyword3);
+  void emptyShouldReturnKeywordWithEmptyValue() {
+    assertThat(Keyword.empty().value()).isEmpty();
   }
 
   @Test
-  void emptyStaticMethodValueIsEmptyString() {
-    assertThat(Keyword.empty().value())
-      .isEmpty();
-  }
-
-  @Test
-  void toStringMethodReturnCorrectValueForNonEmptyValue() {
-    final String value = "abc";
-    final Keyword keyword = new Keyword.Of(value);
+  void equalsShouldBeBasedOnValueForAnyKeywordImplementation() {
+    final Keyword keyword = new Keyword.Of("abc");
+    final Keyword sameValueKeyword = customKeyword("abc");
+    final Keyword otherValueKeyword = customKeyword("def");
 
     assertThat(keyword)
-      .hasToString("Keyword[" + value + "]");
+      .isEqualTo(sameValueKeyword)
+      .isNotEqualTo(otherValueKeyword)
+      .isNotEqualTo("not a keyword");
   }
 
   @Test
-  void toStringMethodReturnCorrectValueForEmptyValue() {
-    final Keyword keyword = new Keyword.Of("");
+  void hashCodeShouldBeBasedOnValue() {
+    assertThat(new Keyword.Of("abc"))
+      .hasSameHashCodeAs(new Keyword.Of("abc"))
+      .doesNotHaveSameHashCodeAs(new Keyword.Of("def"));
+  }
 
-    assertThat(keyword)
-      .hasToString("Keyword[]");
+  @Test
+  void toStringShouldContainValue() {
+    assertThat(new Keyword.Of("abc")).hasToString("Keyword[abc]");
+    assertThat(new Keyword.Of("")).hasToString("Keyword[]");
   }
 
   private static Keyword customKeyword(final String value) {

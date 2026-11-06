@@ -41,6 +41,8 @@ import static org.stebz.core.attribute.StepAttribute.PARAMS;
 
 /**
  * Runnable step.
+ * <p>Exception handling methods ({@code withIgnored}, {@code withRethrown}) catch {@code Throwable},
+ * including {@code Error} subclasses such as {@code OutOfMemoryError}.
  */
 public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>,
   ContextContainerStep<Object, ThrowingConsumer<?, ?>> {
@@ -64,10 +66,10 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * {@code RunnableStep} with body that ignores given exception.
+   * {@code RunnableStep} with a body that ignores the specified exception.
    *
    * @param exceptionType the exception type
-   * @return {@code RunnableStep} with body that ignores given exception
+   * @return {@code RunnableStep} with body that ignores specified exception
    * @throws NullPointerException if {@code exceptionType} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -87,11 +89,11 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * {@code RunnableStep} with body that ignores given exceptions.
+   * {@code RunnableStep} with a body that ignores the specified exceptions.
    *
    * @param exceptionType1 the first exception type
    * @param exceptionType2 the second exception type
-   * @return {@code RunnableStep} with body that ignores given exceptions
+   * @return {@code RunnableStep} with body that ignores specified exceptions
    * @throws NullPointerException if {@code exceptionType} arg or {@code exceptionType2} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -114,12 +116,12 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * {@code RunnableStep} with body that ignores given exceptions.
+   * {@code RunnableStep} with a body that ignores the specified exceptions.
    *
    * @param exceptionType1 the first exception type
    * @param exceptionType2 the second exception type
    * @param exceptionType3 the third exception type
-   * @return {@code RunnableStep} with body that ignores given exceptions
+   * @return {@code RunnableStep} with body that ignores specified exceptions
    * @throws NullPointerException if {@code exceptionType} arg or {@code exceptionType2} arg or {@code exceptionType3}
    *                              arg is null
    * @see #withBody(Object)
@@ -146,7 +148,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * {@code RunnableStep} with body that rethrow any exception.
+   * {@code RunnableStep} with a body that rethrows any exception.
    *
    * @param generator the exception generator
    * @return {@code RunnableStep} with body that rethrow any exception
@@ -167,7 +169,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * {@code RunnableStep} with body that rethrow exception.
+   * {@code RunnableStep} with a body that rethrows the specified exception.
    *
    * @param exceptionType the exception type
    * @param generator     the exception generator
@@ -196,7 +198,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * {@code RunnableStep} with body that rethrow exception.
+   * {@code RunnableStep} with a body that rethrows the specified exception.
    *
    * @param exceptionType1 the first exception type
    * @param exceptionType2 the second exception type
@@ -230,7 +232,7 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * {@code RunnableStep} with body that rethrow exception.
+   * {@code RunnableStep} with a body that rethrows the specified exception.
    *
    * @param exceptionType1 the first exception type
    * @param exceptionType2 the second exception type
@@ -268,10 +270,10 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * Returns {@code RunnableStep} with given block before step body.
+   * Returns {@code RunnableStep} with provided block before step body.
    *
    * @param block the before block
-   * @return {@code RunnableStep} with given block before step body
+   * @return {@code RunnableStep} with provided block before step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -286,10 +288,10 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * Returns {@code RunnableStep} with given block after step body.
+   * Returns {@code RunnableStep} with provided block after step body.
    *
    * @param block the after block
-   * @return {@code RunnableStep} with given block after step body
+   * @return {@code RunnableStep} with provided block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -304,11 +306,11 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * Returns {@code RunnableStep} with given block after step body. Alias for {@link #withAfter(ThrowingRunnable)}
+   * Returns {@code RunnableStep} with provided block after step body. Alias for {@link #withAfter(ThrowingRunnable)}
    * method.
    *
    * @param block the after block
-   * @return {@code RunnableStep} with given block after step body
+   * @return {@code RunnableStep} with provided block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -318,10 +320,10 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * Returns {@code RunnableStep} with given block that be executed after step body in case of step failure.
+   * Returns {@code RunnableStep} with provided block that be executed after step body in case of step failure.
    *
    * @param block the on failure block
-   * @return {@code RunnableStep} with given block that be executed after step body in case of step failure
+   * @return {@code RunnableStep} with provided block that be executed after step body in case of step failure
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -345,10 +347,10 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * Returns {@code RunnableStep} with given finally block after step body.
+   * Returns {@code RunnableStep} with specified finally block after step body.
    *
    * @param block the finally block
-   * @return {@code RunnableStep} with given finally block after step body
+   * @return {@code RunnableStep} with specified finally block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -414,10 +416,10 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * Returns {@code RunnableStep} with given body.
+   * Returns a {@code RunnableStep} with the specified body.
    *
    * @param body the step body
-   * @return {@code RunnableStep} with given body
+   * @return {@code RunnableStep} with specified body
    * @throws NullPointerException if {@code body} arg is null
    */
   static RStep of(final ThrowingRunnable<?> body) {
@@ -425,11 +427,11 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * Returns {@code RunnableStep} with given attributes and body.
+   * Returns {@code RunnableStep} with specified attributes and body.
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code RunnableStep} with given name and body
+   * @return {@code RunnableStep} with the specified name and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   static RStep of(final String name,
@@ -438,12 +440,12 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * Returns {@code RunnableStep} with given attributes and body.
+   * Returns {@code RunnableStep} with specified attributes and body.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code RunnableStep} with given name and body
+   * @return {@code RunnableStep} with the specified name and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   static RStep of(final String name,
@@ -453,12 +455,12 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * Returns {@code RunnableStep} with given attributes and body.
+   * Returns {@code RunnableStep} with specified attributes and body.
    *
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code RunnableStep} with given name, params and body
+   * @return {@code RunnableStep} with the specified name, params, and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   static RStep of(final String name,
@@ -468,13 +470,13 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * Returns {@code RunnableStep} with given attributes and body.
+   * Returns {@code RunnableStep} with specified attributes and body.
    *
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code RunnableStep} with given name, params and body
+   * @return {@code RunnableStep} with the specified name, params, and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
@@ -486,10 +488,10 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * Returns {@code RunnableStep} of given step attributes and body.
+   * Returns {@code RunnableStep} of specified step attributes and body.
    *
    * @param origin the origin step
-   * @return {@code RunnableStep} of given step attributes and body
+   * @return {@code RunnableStep} of specified step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
   static RStep of(final RunnableStep origin) {
@@ -497,11 +499,11 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
   }
 
   /**
-   * Returns {@code RunnableStep} with given attributes and body.
+   * Returns {@code RunnableStep} with specified attributes and body.
    *
    * @param attributes the step attributes
    * @param body       the step body
-   * @return {@code RunnableStep} with given attributes and body
+   * @return {@code RunnableStep} with specified attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
   static RStep of(final StepAttributes attributes,
@@ -651,6 +653,16 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
       this.contextualBody = contextualBody;
     }
 
+    private Of(final StepAttributes attributes,
+               final ThrowingRunnable<?> body,
+               final Object context,
+               final ThrowingConsumer<?, ?> contextualBody) {
+      this.attributes = attributes;
+      this.body = body;
+      this.context = context;
+      this.contextualBody = contextualBody;
+    }
+
     @Override
     public StepAttributes getAttributes() {
       return this.attributes;
@@ -658,7 +670,8 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
 
     @Override
     public RStep withAttributes(final StepAttributes attributes) {
-      return new Of(attributes, this.body);
+      if (attributes == null) { throw new NullPointerException("attributes arg is null"); }
+      return new Of(attributes, this.body, this.context, this.contextualBody);
     }
 
     @Override
@@ -674,7 +687,8 @@ public interface RunnableStep extends ExecutableStep<ThrowingRunnable<?>, RStep>
 
     @Override
     public RStep withBody(final ThrowingRunnable<?> body) {
-      return new Of(this.attributes, body);
+      if (body == null) { throw new NullPointerException("body arg is null"); }
+      return new Of(this.attributes, body, null, null);
     }
 
     @Override

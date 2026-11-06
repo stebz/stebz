@@ -35,7 +35,7 @@ import java.util.Objects;
 public interface SimpleStepAttribute<V> extends StepAttribute<V, V, V> {
 
   /**
-   * Returns simple nullable attribute with given key and {@code null} default value.
+   * Returns a simple nullable attribute with the specified key and a {@code null} default value.
    *
    * @param key the attribute key
    * @param <V> the type of the attribute value
@@ -47,7 +47,7 @@ public interface SimpleStepAttribute<V> extends StepAttribute<V, V, V> {
   }
 
   /**
-   * Returns simple nullable attribute with given key and default value.
+   * Returns simple nullable attribute with the specified key and default value.
    *
    * @param key          the attribute key
    * @param defaultValue the attribute default value
@@ -61,7 +61,7 @@ public interface SimpleStepAttribute<V> extends StepAttribute<V, V, V> {
   }
 
   /**
-   * Returns simple nullable attribute with given key, default value and extract output value function.
+   * Returns simple nullable attribute with the specified key, default value, and output-value extraction function.
    *
    * @param key                the attribute key
    * @param defaultValue       the attribute default value
@@ -77,7 +77,7 @@ public interface SimpleStepAttribute<V> extends StepAttribute<V, V, V> {
   }
 
   /**
-   * Returns simple non-null attribute with given key and default value.
+   * Returns simple non-null attribute with the specified key and default value.
    *
    * @param key          the attribute key
    * @param defaultValue the attribute default value
@@ -91,7 +91,7 @@ public interface SimpleStepAttribute<V> extends StepAttribute<V, V, V> {
   }
 
   /**
-   * Returns simple non-null attribute with given key, default value and extract output value function.
+   * Returns simple non-null attribute with the specified key, default value, and output-value extraction function.
    *
    * @param key                the attribute key
    * @param defaultValue       the attribute default value
@@ -263,7 +263,7 @@ public interface SimpleStepAttribute<V> extends StepAttribute<V, V, V> {
 
     @Override
     public V extractInputValue(final V value) {
-      if (value == null) { throw new IllegalArgumentException("attribute value is null"); }
+      if (value == null) { throw new NullPointerException("attribute value is null"); }
       return value;
     }
 

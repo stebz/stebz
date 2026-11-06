@@ -71,10 +71,10 @@ public interface RStep extends RunnableStep {
   }
 
   /**
-   * Returns {@code RunnableStep} with given body.
+   * Returns a {@code RunnableStep} with the specified body.
    *
    * @param body the step body
-   * @return {@code RunnableStep} with given body
+   * @return {@code RunnableStep} with specified body
    * @throws NullPointerException if {@code body} arg is null
    */
   static RStep of(final ThrowingRunnable<?> body) {
@@ -82,11 +82,11 @@ public interface RStep extends RunnableStep {
   }
 
   /**
-   * Returns {@code RunnableStep} with given attributes and body.
+   * Returns {@code RunnableStep} with specified attributes and body.
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code RunnableStep} with given name and body
+   * @return {@code RunnableStep} with the specified name and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   static RStep of(final String name,
@@ -95,12 +95,12 @@ public interface RStep extends RunnableStep {
   }
 
   /**
-   * Returns {@code RunnableStep} with given attributes and body.
+   * Returns {@code RunnableStep} with specified attributes and body.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code RunnableStep} with given name and body
+   * @return {@code RunnableStep} with the specified name and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   static RStep of(final String name,
@@ -110,12 +110,12 @@ public interface RStep extends RunnableStep {
   }
 
   /**
-   * Returns {@code RunnableStep} with given attributes and body.
+   * Returns {@code RunnableStep} with specified attributes and body.
    *
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code RunnableStep} with given name, params and body
+   * @return {@code RunnableStep} with the specified name, params, and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   static RStep of(final String name,
@@ -125,13 +125,13 @@ public interface RStep extends RunnableStep {
   }
 
   /**
-   * Returns {@code RunnableStep} with given attributes and body.
+   * Returns {@code RunnableStep} with specified attributes and body.
    *
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code RunnableStep} with given name, params and body
+   * @return {@code RunnableStep} with the specified name, params, and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
@@ -143,10 +143,10 @@ public interface RStep extends RunnableStep {
   }
 
   /**
-   * Returns {@code RunnableStep} of given step attributes and body.
+   * Returns {@code RunnableStep} of specified step attributes and body.
    *
    * @param origin the origin step
-   * @return {@code RunnableStep} of given step attributes and body
+   * @return {@code RunnableStep} of specified step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
   static RStep of(final RunnableStep origin) {
@@ -154,11 +154,11 @@ public interface RStep extends RunnableStep {
   }
 
   /**
-   * Returns {@code RunnableStep} with given attributes and body.
+   * Returns {@code RunnableStep} with specified attributes and body.
    *
    * @param attributes the step attributes
    * @param body       the step body
-   * @return {@code RunnableStep} with given attributes and body
+   * @return {@code RunnableStep} with specified attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
   static RStep of(final StepAttributes attributes,

@@ -27,7 +27,7 @@ import org.stebz.core.step.StepObj;
 import org.stebz.util.container.NullableOptional;
 
 /**
- * After step success exception.
+ * After step success extension.
  *
  * @see StebzExtension
  */

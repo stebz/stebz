@@ -65,19 +65,19 @@ public interface StepObj<S extends StepObj<S>> {
   StepAttributes getAttributes();
 
   /**
-   * Returns {@code StepObj} with given attributes.
+   * Returns {@code StepObj} with specified attributes.
    *
    * @param attributes the step attributes
-   * @return {@code StepObj} with given attributes
+   * @return {@code StepObj} with specified attributes
    * @throws NullPointerException if {@code attributes} arg is null
    */
   S withAttributes(StepAttributes attributes);
 
   /**
-   * Returns {@code true} if given attribute value is present, otherwise returns {@code false}.
+   * Returns {@code true} if specified attribute value is present, otherwise returns {@code false}.
    *
    * @param attribute the attribute
-   * @return {@code true} if given attribute value is present, otherwise {@code false}
+   * @return {@code true} if specified attribute value is present, otherwise {@code false}
    * @throws NullPointerException if {@code attribute} arg is null
    */
   default boolean contains(final StepAttribute<?, ?, ?> attribute) {
@@ -85,11 +85,11 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns value of given attribute or default value if attribute is not present.
+   * Returns value of specified attribute or default value if attribute is not present.
    *
    * @param attribute the attribute
    * @param <O>       the type of the attribute
-   * @return value of given attribute or default value if attribute is not present
+   * @return value of specified attribute or default value if attribute is not present
    * @throws NullPointerException if {@code attribute} arg is null
    */
   default <O> O get(final StepAttribute<?, ?, O> attribute) {
@@ -97,10 +97,10 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code Boolean} value of given attribute or default value if attribute is not present.
+   * Returns {@code Boolean} value of specified attribute or default value if attribute is not present.
    *
    * @param attribute the attribute
-   * @return {@code Boolean} value of given attribute or default value if attribute is not present
+   * @return {@code Boolean} value of specified attribute or default value if attribute is not present
    * @throws NullPointerException if {@code attribute} arg is null
    */
   default Boolean is(final StepAttribute<?, ?, Boolean> attribute) {
@@ -108,12 +108,12 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with given attribute value created by {@code generator}.
+   * Returns {@code StepObj} with specified attribute value created by {@code generator}.
    *
    * @param attribute the attribute
    * @param generator the generator
    * @param <I>       the type of the attribute
-   * @return {@code StepObj} with given attribute value
+   * @return {@code StepObj} with specified attribute value
    * @throws NullPointerException if {@code attribute} arg or {@code generator} arg is null
    */
   default <I, O> S withOf(final StepAttribute<I, ?, O> attribute,
@@ -130,18 +130,16 @@ public interface StepObj<S extends StepObj<S>> {
    * @throws NullPointerException if {@code attribute} arg is null
    */
   default <I> S with(final StepAttribute<I, ?, ?> attribute) {
-    return this.withAttributes(this.getAttributes().with(
-      attribute
-    ));
+    return this.withAttributes(this.getAttributes().with(attribute));
   }
 
   /**
-   * Returns {@code StepObj} with given attribute value.
+   * Returns {@code StepObj} with specified attribute value.
    *
    * @param attribute the attribute
    * @param value     the attribute value
    * @param <I>       the type of the attribute
-   * @return {@code StepObj} with given attribute value
+   * @return {@code StepObj} with specified attribute value
    * @throws NullPointerException if {@code attribute} arg is null
    */
   default <I> S with(final StepAttribute<I, ?, ?> attribute,
@@ -152,7 +150,7 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with given attributes values.
+   * Returns {@code StepObj} with specified attributes values.
    *
    * @param attribute1 the first attribute
    * @param value1     the first attribute value
@@ -160,7 +158,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @param value2     the second attribute value
    * @param <I1>       the type of the first attribute
    * @param <I2>       the type of the second attribute
-   * @return {@code StepObj} with given attributes values
+   * @return {@code StepObj} with specified attributes values
    * @throws NullPointerException if {@code attribute1} arg or {@code attribute2} arg is null
    */
   default <I1, I2> S with(final StepAttribute<I1, ?, ?> attribute1,
@@ -174,7 +172,7 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with given attributes values.
+   * Returns {@code StepObj} with specified attributes values.
    *
    * @param attribute1 the first attribute
    * @param value1     the first attribute value
@@ -185,7 +183,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @param <I1>       the type of the first attribute
    * @param <I2>       the type of the second attribute
    * @param <I3>       the type of the third attribute
-   * @return {@code StepObj} with given attributes values
+   * @return {@code StepObj} with specified attributes values
    * @throws NullPointerException if {@code attribute1} arg or {@code attribute2} arg or {@code attribute3} arg is null
    */
   default <I1, I2, I3> S with(final StepAttribute<I1, ?, ?> attribute1,
@@ -202,10 +200,10 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} without given attribute.
+   * Returns {@code StepObj} without specified attribute.
    *
    * @param attribute the attribute
-   * @return {@code StepObj} without given attribute
+   * @return {@code StepObj} without specified attribute
    * @throws NullPointerException if {@code attribute} arg is null
    */
   default S without(final StepAttribute<?, ?, ?> attribute) {
@@ -279,10 +277,10 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with given keyword attribute value.
+   * Returns {@code StepObj} with specified keyword attribute value.
    *
    * @param keyword the keyword attribute value
-   * @return {@code StepObj} with given keyword attribute value
+   * @return {@code StepObj} with specified keyword attribute value
    * @throws NullPointerException if {@code keyword} arg is null
    * @see #with(StepAttribute, Object)
    * @see StepAttribute#KEYWORD
@@ -292,11 +290,11 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with given keyword attribute value created by {@code generator}.
+   * Returns {@code StepObj} with specified keyword attribute value created by {@code generator}.
    *
    * @param generator the generator
-   * @return {@code StepObj} with given keyword attribute value
-   * @throws NullPointerException {@code generator} arg is null
+   * @return {@code StepObj} with specified keyword attribute value
+   * @throws NullPointerException if {@code generator} arg is null
    * @see #with(StepAttribute, Object)
    * @see StepAttribute#KEYWORD
    */
@@ -305,10 +303,10 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with given name attribute value.
+   * Returns {@code StepObj} with specified name attribute value.
    *
    * @param name the name attribute value
-   * @return {@code StepObj} with given name attribute value
+   * @return {@code StepObj} with specified name attribute value
    * @throws NullPointerException if {@code name} arg is null
    * @see #with(StepAttribute, Object)
    * @see StepAttribute#NAME
@@ -318,11 +316,11 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with given name attribute value created by {@code generator}.
+   * Returns {@code StepObj} with specified name attribute value created by {@code generator}.
    *
    * @param generator the generator
-   * @return {@code StepObj} with given name attribute value
-   * @throws NullPointerException {@code generator} arg is null
+   * @return {@code StepObj} with specified name attribute value
+   * @throws NullPointerException if {@code generator} arg is null
    * @see #with(StepAttribute, Object)
    * @see StepAttribute#NAME
    */
@@ -331,10 +329,10 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with given params attribute value.
+   * Returns {@code StepObj} with specified params attribute value.
    *
    * @param params the params attribute value
-   * @return {@code StepObj} with given params attribute value
+   * @return {@code StepObj} with specified params attribute value
    * @throws NullPointerException if {@code params} arg is null
    * @see #with(StepAttribute, Object)
    * @see StepAttribute#PARAMS
@@ -344,10 +342,10 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with given params attribute value updated by {@code updater}.
+   * Returns {@code StepObj} with specified params attribute value updated by {@code updater}.
    *
    * @param updater the updater
-   * @return {@code StepObj} with given params attribute value
+   * @return {@code StepObj} with specified params attribute value
    * @throws NullPointerException if {@code updater} arg is null
    * @see #withOf(StepAttribute, ThrowingFunction)
    * @see StepAttribute#PARAMS
@@ -361,26 +359,26 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with added to params attribute value param. Alias for
-   * {@link #withAddedParam(String, Object)} method.
+   * Returns {@code StepObj} with the specified param added to the params attribute. Alias for
+   * {@link #withAddedParam(String, Object)}.
    *
    * @param paramName  the param name
    * @param paramValue the param value
-   * @return {@code StepObj} with added param
+   * @return {@code StepObj} with the added param
    * @see #withParams(ThrowingConsumer)
    * @see StepAttribute#PARAMS
    */
   default S withParam(final String paramName,
                       final Object paramValue) {
-    return this.withParams(p -> p.put(paramName, paramValue));
+    return this.withAddedParam(paramName, paramValue);
   }
 
   /**
-   * Returns {@code StepObj} with added to params attribute value param.
+   * Returns {@code StepObj} with the specified param added to the params attribute.
    *
    * @param paramName  the param name
    * @param paramValue the param value
-   * @return {@code StepObj} with added param
+   * @return {@code StepObj} with the added param
    * @see #withParams(ThrowingConsumer)
    * @see StepAttribute#PARAMS
    */
@@ -390,10 +388,10 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with added to params attribute value params.
+   * Returns {@code StepObj} with the specified params added to the params attribute.
    *
-   * @param params the params
-   * @return {@code StepObj} with added params
+   * @param params the params to add
+   * @return {@code StepObj} with the added params
    * @throws NullPointerException if {@code params} arg is null
    * @see #withParams(ThrowingConsumer)
    * @see StepAttribute#PARAMS
@@ -403,10 +401,10 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with added to params attribute value masked param.
+   * Returns {@code StepObj} with the specified param masked in the params attribute.
    *
    * @param paramName the param name
-   * @return {@code StepObj} with added masked param
+   * @return {@code StepObj} with the masked param
    * @see #withParams(ThrowingConsumer)
    * @see StepAttribute#PARAMS
    */
@@ -415,11 +413,11 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with added to params attribute value masked params.
+   * Returns {@code StepObj} with the specified params masked in the params attribute.
    *
    * @param paramNames the param names
-   * @return {@code StepObj} with added masked params
-   * @throws NullPointerException if {@code params} arg is null
+   * @return {@code StepObj} with the masked params
+   * @throws NullPointerException if {@code paramNames} arg is null
    * @see #withParams(ThrowingConsumer)
    * @see StepAttribute#PARAMS
    */
@@ -432,10 +430,10 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with added to params attribute value masked params.
+   * Returns {@code StepObj} with the specified params masked in the params attribute.
    *
-   * @param params the params
-   * @return {@code StepObj} with added masked params
+   * @param params the params to mask
+   * @return {@code StepObj} with the masked params
    * @throws NullPointerException if {@code params} arg is null
    * @see #withParams(ThrowingConsumer)
    * @see StepAttribute#PARAMS
@@ -461,10 +459,10 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with given expected result attribute value.
+   * Returns {@code StepObj} with specified expected result attribute value.
    *
    * @param expectedResult the expected result attribute value
-   * @return {@code StepObj} with given expected result attribute value
+   * @return {@code StepObj} with specified expected result attribute value
    * @throws NullPointerException if {@code expectedResult} arg is null
    * @see #with(StepAttribute, Object)
    * @see StepAttribute#EXPECTED_RESULT
@@ -474,11 +472,11 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with given expected result attribute value created by {@code generator}.
+   * Returns {@code StepObj} with specified expected result attribute value created by {@code generator}.
    *
    * @param generator the generator
-   * @return {@code StepObj} with given expected result attribute value
-   * @throws NullPointerException {@code generator} arg is null
+   * @return {@code StepObj} with specified expected result attribute value
+   * @throws NullPointerException if {@code generator} arg is null
    * @see #with(StepAttribute, Object)
    * @see StepAttribute#EXPECTED_RESULT
    */
@@ -487,10 +485,10 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with given comment attribute value.
+   * Returns {@code StepObj} with specified comment attribute value.
    *
    * @param comment the comment attribute value
-   * @return {@code StepObj} with given comment attribute value
+   * @return {@code StepObj} with specified comment attribute value
    * @throws NullPointerException if {@code comment} arg is null
    * @see #with(StepAttribute, Object)
    * @see StepAttribute#COMMENT
@@ -500,11 +498,11 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with given comment attribute value created by {@code generator}.
+   * Returns {@code StepObj} with specified comment attribute value created by {@code generator}.
    *
    * @param generator the generator
-   * @return {@code StepObj} with given comment attribute value
-   * @throws NullPointerException {@code generator} arg is null
+   * @return {@code StepObj} with specified comment attribute value
+   * @throws NullPointerException if {@code generator} arg is null
    * @see #with(StepAttribute, Object)
    * @see StepAttribute#COMMENT
    */
@@ -524,10 +522,10 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} with given hidden attribute value.
+   * Returns {@code StepObj} with specified hidden attribute value.
    *
    * @param value the hidden attribute value
-   * @return {@code StepObj} with given hidden attribute value
+   * @return {@code StepObj} with specified hidden attribute value
    * @see #with(StepAttribute, Object)
    * @see StepAttribute#HIDING
    */
@@ -569,10 +567,10 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} without given params.
+   * Returns {@code StepObj} without specified params.
    *
    * @param paramNames the param names
-   * @return {@code StepObj} without given params
+   * @return {@code StepObj} without specified params
    * @throws NullPointerException if {@code paramNames} arg is null
    * @see #withParams(ThrowingConsumer)
    * @see StepAttribute#PARAMS
@@ -586,10 +584,10 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code StepObj} without given param.
+   * Returns {@code StepObj} without specified param.
    *
    * @param paramName the param name
-   * @return {@code StepObj} without given param
+   * @return {@code StepObj} without specified param
    * @see #withParams(ThrowingConsumer)
    * @see StepAttribute#PARAMS
    */
@@ -602,7 +600,7 @@ public interface StepObj<S extends StepObj<S>> {
    *
    * @return {@code StepObj} without expected result attribute
    * @see #without(StepAttribute)
-   * @see StepAttribute#COMMENT
+   * @see StepAttribute#EXPECTED_RESULT
    */
   default S withoutExpectedResult() {
     return this.without(EXPECTED_RESULT);
@@ -631,10 +629,10 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code RunnableStep} with given body. Alias for {@link RStep#of(ThrowingRunnable)} method.
+   * Returns a {@code RunnableStep} with the specified body. Alias for {@link RStep#of(ThrowingRunnable)} method.
    *
    * @param body the step body
-   * @return {@code RunnableStep} with given body
+   * @return {@code RunnableStep} with specified body
    * @throws NullPointerException if {@code body} arg is null
    */
   static RStep stepOf(final ThrowingRunnable<?> body) {
@@ -642,12 +640,12 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code RunnableStep} with given attributes and body. Alias for {@link RStep#of(String, ThrowingRunnable)}
-   * method.
+   * Returns {@code RunnableStep} with specified attributes and body. Alias for
+   * {@link RStep#of(String, ThrowingRunnable)} method.
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code RunnableStep} with given name and body
+   * @return {@code RunnableStep} with the specified name and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   static RStep stepOf(final String name,
@@ -656,13 +654,13 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code RunnableStep} with given attributes and body. Alias for
+   * Returns {@code RunnableStep} with specified attributes and body. Alias for
    * {@link RStep#of(String, String, ThrowingRunnable)} method.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code RunnableStep} with given name and body
+   * @return {@code RunnableStep} with the specified name and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   static RStep stepOf(final String name,
@@ -672,13 +670,13 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code RunnableStep} with given attributes and body. Alias for
+   * Returns {@code RunnableStep} with specified attributes and body. Alias for
    * {@link RStep#of(String, Map, ThrowingRunnable)} method.
    *
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code RunnableStep} with given name, params and body
+   * @return {@code RunnableStep} with the specified name, params, and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   static RStep stepOf(final String name,
@@ -688,14 +686,14 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code RunnableStep} with given attributes and body. Alias for
+   * Returns {@code RunnableStep} with specified attributes and body. Alias for
    * {@link RStep#of(String, Map, String, ThrowingRunnable)} method.
    *
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code RunnableStep} with given name, params and body
+   * @return {@code RunnableStep} with the specified name, params, and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
@@ -707,10 +705,11 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code RunnableStep} of given step attributes and body. Alias for {@link RStep#of(RunnableStep)} method.
+   * Returns {@code RunnableStep} of specified step attributes and body. Alias for {@link RStep#of(RunnableStep)}
+   * method.
    *
    * @param origin the origin step
-   * @return {@code RunnableStep} of given step attributes and body
+   * @return {@code RunnableStep} of specified step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
   static RStep stepOf(final RunnableStep origin) {
@@ -718,12 +717,12 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code RunnableStep} with given attributes and body. Alias for
+   * Returns {@code RunnableStep} with specified attributes and body. Alias for
    * {@link RStep#of(StepAttributes, ThrowingRunnable)} method.
    *
    * @param attributes the step attributes
    * @param body       the step body
-   * @return {@code RunnableStep} with given attributes and body
+   * @return {@code RunnableStep} with specified attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
   static RStep stepOf(final StepAttributes attributes,
@@ -732,11 +731,11 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code ConsumerStep} with given body. Alias for {@link CStep#of(ThrowingConsumer)} method.
+   * Returns a {@code ConsumerStep} with the specified body. Alias for {@link CStep#of(ThrowingConsumer)} method.
    *
    * @param body the step body
    * @param <T>  the type of the step input value
-   * @return {@code ConsumerStep} with given body
+   * @return {@code ConsumerStep} with specified body
    * @throws NullPointerException if {@code body} arg is null
    */
   static <T> CStep<T> stepOf(final ThrowingConsumer<T, ?> body) {
@@ -744,13 +743,13 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code ConsumerStep} with given attributes and body. Alias for {@link CStep#of(String, ThrowingConsumer)}
-   * method.
+   * Returns {@code ConsumerStep} with specified attributes and body. Alias for
+   * {@link CStep#of(String, ThrowingConsumer)} method.
    *
    * @param name the step name
    * @param body the step body
    * @param <T>  the type of the step input value
-   * @return {@code ConsumerStep} with given name and body
+   * @return {@code ConsumerStep} with the specified name and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   static <T> CStep<T> stepOf(final String name,
@@ -759,14 +758,14 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code ConsumerStep} with given attributes and body. Alias for
+   * Returns {@code ConsumerStep} with specified attributes and body. Alias for
    * {@link CStep#of(String, String, ThrowingConsumer)} method.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <T>            the type of the step input value
-   * @return {@code ConsumerStep} with given name and body
+   * @return {@code ConsumerStep} with the specified name and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   static <T> CStep<T> stepOf(final String name,
@@ -776,14 +775,14 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code ConsumerStep} with given attributes and body. Alias for
+   * Returns {@code ConsumerStep} with specified attributes and body. Alias for
    * {@link CStep#of(String, Map, ThrowingConsumer)} method.
    *
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
    * @param <T>    the type of the step input value
-   * @return {@code ConsumerStep} with given name, params and body
+   * @return {@code ConsumerStep} with the specified name, params, and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   static <T> CStep<T> stepOf(final String name,
@@ -793,7 +792,7 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code ConsumerStep} with given attributes and body. Alias for
+   * Returns {@code ConsumerStep} with specified attributes and body. Alias for
    * {@link CStep#of(String, Map, String, ThrowingConsumer)} method.
    *
    * @param name           the step name
@@ -801,7 +800,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <T>            the type of the step input value
-   * @return {@code ConsumerStep} with given name, params and body
+   * @return {@code ConsumerStep} with the specified name, params, and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
@@ -813,11 +812,12 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code ConsumerStep} of given step attributes and body. Alias for {@link CStep#of(ConsumerStep)} method.
+   * Returns {@code ConsumerStep} of specified step attributes and body. Alias for {@link CStep#of(ConsumerStep)}
+   * method.
    *
    * @param origin the origin step
    * @param <T>    the type of the step input value
-   * @return {@code ConsumerStep} of given step attributes and body
+   * @return {@code ConsumerStep} of specified step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
   static <T> CStep<T> stepOf(final ConsumerStep<T> origin) {
@@ -825,13 +825,13 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code ConsumerStep} with given attributes and body. Alias for
+   * Returns {@code ConsumerStep} with specified attributes and body. Alias for
    * {@link CStep#of(StepAttributes, ThrowingConsumer)} method.
    *
    * @param attributes the step attributes
    * @param body       the step body
    * @param <T>        the type of the step input value
-   * @return {@code ConsumerStep} with given attributes and body
+   * @return {@code ConsumerStep} with specified attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
   static <T> CStep<T> stepOf(final StepAttributes attributes,
@@ -840,11 +840,11 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code SupplierStep} with given body. Alias for {@link SStep#of(ThrowingSupplier)} method.
+   * Returns a {@code SupplierStep} with the specified body. Alias for {@link SStep#of(ThrowingSupplier)} method.
    *
    * @param body the step body
    * @param <R>  the type of the step result
-   * @return {@code SupplierStep} with given body
+   * @return {@code SupplierStep} with specified body
    * @throws NullPointerException if {@code body} arg is null
    */
   static <R> SStep<R> stepOf(final ThrowingSupplier<R, ?> body) {
@@ -852,13 +852,13 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code SupplierStep} with given attributes and body. Alias for {@link SStep#of(String, ThrowingSupplier)}
-   * method.
+   * Returns {@code SupplierStep} with specified attributes and body. Alias for
+   * {@link SStep#of(String, ThrowingSupplier)} method.
    *
    * @param name the step name
    * @param body the step body
    * @param <R>  the type of the step result
-   * @return {@code SupplierStep} with given name and body
+   * @return {@code SupplierStep} with the specified name and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   static <R> SStep<R> stepOf(final String name,
@@ -867,14 +867,14 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code SupplierStep} with given attributes and body. Alias for
+   * Returns {@code SupplierStep} with specified attributes and body. Alias for
    * {@link SStep#of(String, String, ThrowingSupplier)} method.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <R>            the type of the step result
-   * @return {@code SupplierStep} with given name and body
+   * @return {@code SupplierStep} with the specified name and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   static <R> SStep<R> stepOf(final String name,
@@ -884,7 +884,7 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code SupplierStep} with given attributes and body. Alias for
+   * Returns {@code SupplierStep} with specified attributes and body. Alias for
    * {@link SStep#of(String, Map, String, ThrowingSupplier)} method.
    *
    * @param name           the step name
@@ -892,7 +892,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <R>            the type of the step result
-   * @return {@code SupplierStep} with given name, params and body
+   * @return {@code SupplierStep} with the specified name, params, and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
@@ -904,14 +904,14 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code SupplierStep} with given attributes and body. Alias for
+   * Returns {@code SupplierStep} with specified attributes and body. Alias for
    * {@link SStep#of(String, Map, ThrowingSupplier)} method.
    *
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
    * @param <R>    the type of the step result
-   * @return {@code SupplierStep} with given name, params and body
+   * @return {@code SupplierStep} with the specified name, params, and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   static <R> SStep<R> stepOf(final String name,
@@ -921,11 +921,12 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code SupplierStep} of given step attributes and body. Alias for {@link SStep#of(SupplierStep)} method.
+   * Returns {@code SupplierStep} of specified step attributes and body. Alias for {@link SStep#of(SupplierStep)}
+   * method.
    *
    * @param origin the origin step
    * @param <R>    the type of the step result
-   * @return {@code SupplierStep} of given step attributes and body
+   * @return {@code SupplierStep} of specified step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
   static <R> SStep<R> stepOf(final SupplierStep<R> origin) {
@@ -933,13 +934,13 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code SupplierStep} with given attributes and body. Alias for
+   * Returns {@code SupplierStep} with specified attributes and body. Alias for
    * {@link SStep#of(StepAttributes, ThrowingSupplier)} method.
    *
    * @param attributes the step attributes
    * @param body       the step body
    * @param <R>        the type of the step result
-   * @return {@code SupplierStep} with given attributes and body
+   * @return {@code SupplierStep} with specified attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
   static <R> SStep<R> stepOf(final StepAttributes attributes,
@@ -948,12 +949,12 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code FunctionStep} with given body. Alias for {@link FStep#of(ThrowingFunction)} method.
+   * Returns a {@code FunctionStep} with the specified body. Alias for {@link FStep#of(ThrowingFunction)} method.
    *
    * @param body the step body
    * @param <T>  the type of the step input value
    * @param <R>  the type of the step result
-   * @return {@code FunctionStep} with given body
+   * @return {@code FunctionStep} with specified body
    * @throws NullPointerException if {@code body} arg is null
    */
   static <T, R> FStep<T, R> stepOf(final ThrowingFunction<T, R, ?> body) {
@@ -961,14 +962,14 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code FunctionStep} with given attributes and body. Alias for {@link FStep#of(String, ThrowingFunction)}
-   * method.
+   * Returns {@code FunctionStep} with specified attributes and body. Alias for
+   * {@link FStep#of(String, ThrowingFunction)} method.
    *
    * @param name the step name
    * @param body the step body
    * @param <T>  the type of the step input value
    * @param <R>  the type of the step result
-   * @return {@code FunctionStep} with given attributes and body
+   * @return {@code FunctionStep} with specified attributes and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   static <T, R> FStep<T, R> stepOf(final String name,
@@ -977,7 +978,7 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code FunctionStep} with given attributes and body. Alias for
+   * Returns {@code FunctionStep} with specified attributes and body. Alias for
    * {@link FStep#of(String, String, ThrowingFunction)} method.
    *
    * @param name           the step name
@@ -985,7 +986,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @param body           the step body
    * @param <T>            the type of the step input value
    * @param <R>            the type of the step result
-   * @return {@code FunctionStep} with given attributes and body
+   * @return {@code FunctionStep} with specified attributes and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   static <T, R> FStep<T, R> stepOf(final String name,
@@ -995,7 +996,7 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code FunctionStep} with given attributes and body. Alias for
+   * Returns {@code FunctionStep} with specified attributes and body. Alias for
    * {@link FStep#of(String, Map, ThrowingFunction)} method.
    *
    * @param name   the step name
@@ -1003,7 +1004,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @param body   the step body
    * @param <T>    the type of the step input value
    * @param <R>    the type of the step result
-   * @return {@code FunctionStep} with given attributes and body
+   * @return {@code FunctionStep} with specified attributes and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   static <T, R> FStep<T, R> stepOf(final String name,
@@ -1013,7 +1014,7 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code FunctionStep} with given attributes and body. Alias for
+   * Returns {@code FunctionStep} with specified attributes and body. Alias for
    * {@link FStep#of(String, Map, String, ThrowingFunction)} method.
    *
    * @param name           the step name
@@ -1022,7 +1023,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @param body           the step body
    * @param <T>            the type of the step input value
    * @param <R>            the type of the step result
-   * @return {@code FunctionStep} with given attributes and body
+   * @return {@code FunctionStep} with specified attributes and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
@@ -1034,12 +1035,13 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code FunctionStep} of given step attributes and body. Alias for {@link FStep#of(FunctionStep)} method.
+   * Returns {@code FunctionStep} of specified step attributes and body. Alias for {@link FStep#of(FunctionStep)}
+   * method.
    *
    * @param origin the origin step
    * @param <T>    the type of the step input value
    * @param <R>    the type of the step result
-   * @return {@code FunctionStep} of given step attributes and body
+   * @return {@code FunctionStep} of specified step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
   static <T, R> FStep<T, R> stepOf(final FunctionStep<T, R> origin) {
@@ -1047,14 +1049,14 @@ public interface StepObj<S extends StepObj<S>> {
   }
 
   /**
-   * Returns {@code FunctionStep} with given attributes and body. Alias for
+   * Returns {@code FunctionStep} with specified attributes and body. Alias for
    * {@link FStep#of(StepAttributes, ThrowingFunction)} method.
    *
    * @param attributes the step attributes
    * @param body       the step body
    * @param <T>        the type of the step input value
    * @param <R>        the type of the step result
-   * @return {@code FunctionStep} with given attributes and body
+   * @return {@code FunctionStep} with specified attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
   static <T, R> FStep<T, R> stepOf(final StepAttributes attributes,

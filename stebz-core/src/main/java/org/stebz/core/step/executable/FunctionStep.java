@@ -42,6 +42,8 @@ import static org.stebz.core.attribute.StepAttribute.PARAMS;
 
 /**
  * Function step.
+ * <p>Exception handling methods ({@code withIgnored}, {@code withRethrown}) catch {@code Throwable},
+ * including {@code Error} subclasses such as {@code OutOfMemoryError}.
  *
  * @param <T> the type of the step input value
  * @param <R> the type of the step result
@@ -58,10 +60,10 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} with empty body that returns given result.
+   * Returns {@code FunctionStep} with empty body that returns specified result.
    *
    * @param result the step result
-   * @return {@code FunctionStep} with empty body that returns given result
+   * @return {@code FunctionStep} with empty body that returns specified result
    */
   default FStep<T, R> withEmptyBodyReturning(final R result) {
     return this.withBody(emptyBodyReturning(result));
@@ -77,10 +79,11 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * {@code FunctionStep} with body that ignores given exception.
+   * {@code FunctionStep} with a body that ignores the specified exception.
+   * <p>If the exception is ignored, the step body returns {@code null} result.
    *
    * @param exceptionType the exception type
-   * @return {@code FunctionStep} with body that ignores given exception
+   * @return {@code FunctionStep} with body that ignores specified exception
    * @throws NullPointerException if {@code exceptionType} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -101,11 +104,12 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * {@code FunctionStep} with body that ignores given exceptions.
+   * {@code FunctionStep} with a body that ignores the specified exceptions.
+   * <p>If the exception is ignored, the step body returns {@code null} result.
    *
    * @param exceptionType1 the first exception type
    * @param exceptionType2 the second exception type
-   * @return {@code FunctionStep} with body that ignores given exceptions
+   * @return {@code FunctionStep} with body that ignores specified exceptions
    * @throws NullPointerException if {@code exceptionType} arg or {@code exceptionType2} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -129,12 +133,13 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * {@code FunctionStep} with body that ignores given exceptions.
+   * {@code FunctionStep} with a body that ignores the specified exceptions.
+   * <p>If the exception is ignored, the step body returns {@code null} result.
    *
    * @param exceptionType1 the first exception type
    * @param exceptionType2 the second exception type
    * @param exceptionType3 the third exception type
-   * @return {@code FunctionStep} with body that ignores given exceptions
+   * @return {@code FunctionStep} with body that ignores specified exceptions
    * @throws NullPointerException if {@code exceptionType} arg or {@code exceptionType2} arg or {@code exceptionType3}
    *                              arg is null
    * @see #withBody(Object)
@@ -162,7 +167,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * {@code FunctionStep} with body that rethrow any exception.
+   * {@code FunctionStep} with a body that rethrows any exception.
    *
    * @param generator the exception generator
    * @return {@code FunctionStep} with body that rethrow any exception
@@ -183,7 +188,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * {@code FunctionStep} with body that rethrow exception.
+   * {@code FunctionStep} with a body that rethrows the specified exception.
    *
    * @param exceptionType the exception type
    * @param generator     the exception generator
@@ -212,7 +217,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * {@code FunctionStep} with body that rethrow exception.
+   * {@code FunctionStep} with a body that rethrows the specified exception.
    *
    * @param exceptionType1 the first exception type
    * @param exceptionType2 the second exception type
@@ -246,7 +251,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * {@code FunctionStep} with body that rethrow exception.
+   * {@code FunctionStep} with a body that rethrows the specified exception.
    *
    * @param exceptionType1 the first exception type
    * @param exceptionType2 the second exception type
@@ -284,10 +289,10 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} with given block before body.
+   * Returns {@code FunctionStep} with provided block before body.
    *
    * @param block the before block
-   * @return {@code FunctionStep} with given block before body
+   * @return {@code FunctionStep} with provided block before body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -302,10 +307,10 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} with given block after step body.
+   * Returns {@code FunctionStep} with provided block after step body.
    *
    * @param block the after block
-   * @return {@code FunctionStep} with given block after step body
+   * @return {@code FunctionStep} with provided block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -321,10 +326,10 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} with given block after step body.
+   * Returns {@code FunctionStep} with provided block after step body.
    *
    * @param block the after block
-   * @return {@code FunctionStep} with given block after step body
+   * @return {@code FunctionStep} with provided block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -338,11 +343,11 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} with given block after step body. Alias for {@link #withAfter(ThrowingConsumer2)}
+   * Returns {@code FunctionStep} with provided block after step body. Alias for {@link #withAfter(ThrowingConsumer2)}
    * methods.
    *
    * @param block the after block
-   * @return {@code FunctionStep} with given block after step body
+   * @return {@code FunctionStep} with provided block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -352,11 +357,11 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} with given block after step body. Alias for {@link #withAfter(ThrowingFunction2)}
+   * Returns {@code FunctionStep} with provided block after step body. Alias for {@link #withAfter(ThrowingFunction2)}
    * methods.
    *
    * @param block the after block
-   * @return {@code FunctionStep} with given block after step body
+   * @return {@code FunctionStep} with provided block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -366,10 +371,10 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} with given block that be executed after step body in case of step failure.
+   * Returns {@code FunctionStep} with provided block that be executed after step body in case of step failure.
    *
    * @param block the on failure block
-   * @return {@code FunctionStep} with given block that be executed after step body in case of step failure
+   * @return {@code FunctionStep} with provided block that be executed after step body in case of step failure
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -393,10 +398,10 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} with given finally block after step body.
+   * Returns {@code FunctionStep} with specified finally block after step body.
    *
    * @param block the finally block
-   * @return {@code FunctionStep} with given finally block after step body
+   * @return {@code FunctionStep} with specified finally block after step body
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -428,10 +433,11 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns this step as {@code SupplierStep} with given context.
+   * Returns new {@code SupplierStep} with this step attributes, this step body as contextual body and specified
+   * context.
    *
    * @param context the context
-   * @return this step as {@code SupplierStep} with given context
+   * @return new {@code SupplierStep} with specified context
    */
   default SStep<R> withContext(final T context) {
     return new SupplierStep.Of<>(this.getAttributes(), context, this.getBody());
@@ -459,12 +465,12 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} with empty body that returns given result.
+   * Returns {@code FunctionStep} with empty body that returns specified result.
    *
    * @param result the step result
    * @param <T>    the type of the step input value
    * @param <R>    the type of the step result
-   * @return {@code FunctionStep} with empty body that returns given result
+   * @return {@code FunctionStep} with empty body that returns specified result
    */
   static <T, R> FStep<T, R> emptyReturning(final R result) {
     return new FunctionStep.Of<>(emptyBodyReturning(result));
@@ -495,12 +501,12 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code ThrowingFunction} that returns given result.
+   * Returns {@code ThrowingFunction} that returns specified result.
    *
    * @param result the step result
    * @param <T>    the type of the input value
    * @param <R>    the type of the result
-   * @return {@code ThrowingFunction} that returns given result
+   * @return {@code ThrowingFunction} that returns specified result
    */
   static <T, R> ThrowingFunction<T, R, Error> emptyBodyReturning(final R result) {
     return t -> result;
@@ -519,12 +525,12 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} with given body.
+   * Returns a {@code FunctionStep} with the specified body.
    *
    * @param body the step body
    * @param <T>  the type of the step input value
    * @param <R>  the type of the step result
-   * @return {@code FunctionStep} with given body
+   * @return {@code FunctionStep} with specified body
    * @throws NullPointerException if {@code body} arg is null
    */
   static <T, R> FStep<T, R> of(final ThrowingFunction<T, R, ?> body) {
@@ -532,13 +538,13 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} with given attributes and body.
+   * Returns {@code FunctionStep} with specified attributes and body.
    *
    * @param name the step name
    * @param body the step body
    * @param <T>  the type of the step input value
    * @param <R>  the type of the step result
-   * @return {@code FunctionStep} with given attributes and body
+   * @return {@code FunctionStep} with specified attributes and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   static <T, R> FStep<T, R> of(final String name,
@@ -547,14 +553,14 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} with given attributes and body.
+   * Returns {@code FunctionStep} with specified attributes and body.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <T>            the type of the step input value
    * @param <R>            the type of the step result
-   * @return {@code FunctionStep} with given attributes and body
+   * @return {@code FunctionStep} with specified attributes and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   static <T, R> FStep<T, R> of(final String name,
@@ -564,14 +570,14 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} with given attributes and body.
+   * Returns {@code FunctionStep} with specified attributes and body.
    *
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
    * @param <T>    the type of the step input value
    * @param <R>    the type of the step result
-   * @return {@code FunctionStep} with given attributes and body
+   * @return {@code FunctionStep} with specified attributes and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   static <T, R> FStep<T, R> of(final String name,
@@ -581,7 +587,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} with given attributes and body.
+   * Returns {@code FunctionStep} with specified attributes and body.
    *
    * @param name           the step name
    * @param params         the step params
@@ -589,7 +595,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @param body           the step body
    * @param <T>            the type of the step input value
    * @param <R>            the type of the step result
-   * @return {@code FunctionStep} with given attributes and body
+   * @return {@code FunctionStep} with specified attributes and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
@@ -601,12 +607,12 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} of given step attributes and body.
+   * Returns {@code FunctionStep} of specified step attributes and body.
    *
    * @param origin the origin step
    * @param <T>    the type of the step input value
    * @param <R>    the type of the step result
-   * @return {@code FunctionStep} of given step attributes and body
+   * @return {@code FunctionStep} of specified step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
   static <T, R> FStep<T, R> of(final FunctionStep<T, R> origin) {
@@ -614,13 +620,13 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} with given attributes and body.
+   * Returns {@code FunctionStep} with specified attributes and body.
    *
    * @param attributes the step attributes
    * @param body       the step body
    * @param <T>        the type of the step input value
    * @param <R>        the type of the step result
-   * @return {@code FunctionStep} with given attributes and body
+   * @return {@code FunctionStep} with specified attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
   static <T, R> FStep<T, R> of(final StepAttributes attributes,
@@ -756,6 +762,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
 
     @Override
     public FStep<T, R> withAttributes(final StepAttributes attributes) {
+      if (attributes == null) { throw new NullPointerException("attributes arg is null"); }
       return new Of<>(attributes, this.body);
     }
 
@@ -766,6 +773,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
 
     @Override
     public FStep<T, R> withBody(final ThrowingFunction<T, R, ?> body) {
+      if (body == null) { throw new NullPointerException("body arg is null"); }
       return new Of<>(this.attributes, body);
     }
 

@@ -41,19 +41,19 @@ public interface ExecutableStep<B, S extends ExecutableStep<B, S>> extends StepO
   B getBody();
 
   /**
-   * Returns {@code ExecutableStep} with given step body.
+   * Returns {@code ExecutableStep} with specified step body.
    *
    * @param body the step body
-   * @return {@code ExecutableStep} with given step body
+   * @return {@code ExecutableStep} with specified step body
    * @throws NullPointerException if {@code body} arg is null
    */
   S withBody(B body);
 
   /**
-   * Returns {@code ExecutableStep} with given step body created by {@code generator}.
+   * Returns {@code ExecutableStep} with specified step body created by {@code generator}.
    *
    * @param generator the step body generator
-   * @return {@code ExecutableStep} with given step body
+   * @return {@code ExecutableStep} with specified step body
    * @throws NullPointerException if {@code generator} arg is null
    */
   default S withBodyOf(final ThrowingFunction<? super B, ? extends B, ?> generator) {

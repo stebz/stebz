@@ -49,12 +49,12 @@ public interface FStep<T, R> extends FunctionStep<T, R> {
   }
 
   /**
-   * Returns {@code FunctionStep} with empty body that returns given result.
+   * Returns {@code FunctionStep} with empty body that returns specified result.
    *
    * @param result the step result
    * @param <T>    the type of the step input value
    * @param <R>    the type of the step result
-   * @return {@code FunctionStep} with empty body that returns given result
+   * @return {@code FunctionStep} with empty body that returns specified result
    */
   static <T, R> FStep<T, R> emptyReturning(final R result) {
     return FunctionStep.emptyReturning(result);
@@ -83,12 +83,12 @@ public interface FStep<T, R> extends FunctionStep<T, R> {
   }
 
   /**
-   * Returns {@code ThrowingFunction} that returns given result.
+   * Returns {@code ThrowingFunction} that returns specified result.
    *
    * @param result the step result
    * @param <T>    the type of the input value
    * @param <R>    the type of the result
-   * @return {@code ThrowingFunction} that returns given result
+   * @return {@code ThrowingFunction} that returns specified result
    */
   static <T, R> ThrowingFunction<T, R, Error> emptyBodyReturning(final R result) {
     return FunctionStep.emptyBodyReturning(result);
@@ -106,12 +106,12 @@ public interface FStep<T, R> extends FunctionStep<T, R> {
   }
 
   /**
-   * Returns {@code FunctionStep} with given body.
+   * Returns a {@code FunctionStep} with the specified body.
    *
    * @param body the step body
    * @param <T>  the type of the step input value
    * @param <R>  the type of the step result
-   * @return {@code FunctionStep} with given body
+   * @return {@code FunctionStep} with specified body
    * @throws NullPointerException if {@code body} arg is null
    */
   static <T, R> FStep<T, R> of(final ThrowingFunction<T, R, ?> body) {
@@ -119,13 +119,13 @@ public interface FStep<T, R> extends FunctionStep<T, R> {
   }
 
   /**
-   * Returns {@code FunctionStep} with given attributes and body.
+   * Returns {@code FunctionStep} with specified attributes and body.
    *
    * @param name the step name
    * @param body the step body
    * @param <T>  the type of the step input value
    * @param <R>  the type of the step result
-   * @return {@code FunctionStep} with given attributes and body
+   * @return {@code FunctionStep} with specified attributes and body
    * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   static <T, R> FStep<T, R> of(final String name,
@@ -134,14 +134,14 @@ public interface FStep<T, R> extends FunctionStep<T, R> {
   }
 
   /**
-   * Returns {@code FunctionStep} with given attributes and body.
+   * Returns {@code FunctionStep} with specified attributes and body.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <T>            the type of the step input value
    * @param <R>            the type of the step result
-   * @return {@code FunctionStep} with given attributes and body
+   * @return {@code FunctionStep} with specified attributes and body
    * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   static <T, R> FStep<T, R> of(final String name,
@@ -151,14 +151,14 @@ public interface FStep<T, R> extends FunctionStep<T, R> {
   }
 
   /**
-   * Returns {@code FunctionStep} with given attributes and body.
+   * Returns {@code FunctionStep} with specified attributes and body.
    *
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
    * @param <T>    the type of the step input value
    * @param <R>    the type of the step result
-   * @return {@code FunctionStep} with given attributes and body
+   * @return {@code FunctionStep} with specified attributes and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   static <T, R> FStep<T, R> of(final String name,
@@ -168,7 +168,7 @@ public interface FStep<T, R> extends FunctionStep<T, R> {
   }
 
   /**
-   * Returns {@code FunctionStep} with given attributes and body.
+   * Returns {@code FunctionStep} with specified attributes and body.
    *
    * @param name           the step name
    * @param params         the step params
@@ -176,7 +176,7 @@ public interface FStep<T, R> extends FunctionStep<T, R> {
    * @param body           the step body
    * @param <T>            the type of the step input value
    * @param <R>            the type of the step result
-   * @return {@code FunctionStep} with given attributes and body
+   * @return {@code FunctionStep} with specified attributes and body
    * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
    *                              {@code body} arg is null
    */
@@ -188,12 +188,12 @@ public interface FStep<T, R> extends FunctionStep<T, R> {
   }
 
   /**
-   * Returns {@code FunctionStep} of given step attributes and body.
+   * Returns {@code FunctionStep} of specified step attributes and body.
    *
    * @param origin the origin step
    * @param <T>    the type of the step input value
    * @param <R>    the type of the step result
-   * @return {@code FunctionStep} of given step attributes and body
+   * @return {@code FunctionStep} of specified step attributes and body
    * @throws NullPointerException if {@code origin} arg is null
    */
   static <T, R> FStep<T, R> of(final FunctionStep<T, R> origin) {
@@ -201,13 +201,13 @@ public interface FStep<T, R> extends FunctionStep<T, R> {
   }
 
   /**
-   * Returns {@code FunctionStep} with given attributes and body.
+   * Returns {@code FunctionStep} with specified attributes and body.
    *
    * @param attributes the step attributes
    * @param body       the step body
    * @param <T>        the type of the step input value
    * @param <R>        the type of the step result
-   * @return {@code FunctionStep} with given attributes and body
+   * @return {@code FunctionStep} with specified attributes and body
    * @throws NullPointerException if {@code attributes} arg or {@code body} arg is null
    */
   static <T, R> FStep<T, R> of(final StepAttributes attributes,

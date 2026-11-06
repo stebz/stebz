@@ -213,12 +213,12 @@ public final class Context {
   }
 
   /**
-   * Returns a tupled version of given block.
+   * Returns a tupled version of provided block.
    *
    * @param block the block
    * @param <T1>  the type of the first block value
    * @param <T2>  the type of the second block value
-   * @return tupled version of given block
+   * @return tupled version of provided block
    * @throws NullPointerException if {@code block} arg is null
    */
   public static <T1, T2> ThrowingConsumer<Of2<T1, T2>, Error> context(
@@ -229,13 +229,13 @@ public final class Context {
   }
 
   /**
-   * Returns a tupled version of given block.
+   * Returns a tupled version of provided block.
    *
    * @param block the block
    * @param <T1>  the type of the first block value
    * @param <T2>  the type of the second block value
    * @param <T3>  the type of the third block value
-   * @return tupled version of given block
+   * @return tupled version of provided block
    * @throws NullPointerException if {@code block} arg is null
    */
   public static <T1, T2, T3> ThrowingConsumer<Of3<T1, T2, T3>, Error> context(
@@ -246,14 +246,14 @@ public final class Context {
   }
 
   /**
-   * Returns a tupled version of given block.
+   * Returns a tupled version of provided block.
    *
    * @param block the block
    * @param <T1>  the type of the first block value
    * @param <T2>  the type of the second block value
    * @param <T3>  the type of the third block value
    * @param <T4>  the type of the fourth block value
-   * @return tupled version of given block
+   * @return tupled version of provided block
    * @throws NullPointerException if {@code block} arg is null
    */
   public static <T1, T2, T3, T4> ThrowingConsumer<Of4<T1, T2, T3, T4>, Error> context(
@@ -264,7 +264,7 @@ public final class Context {
   }
 
   /**
-   * Returns a tupled version of given block.
+   * Returns a tupled version of provided block.
    *
    * @param block the block
    * @param <T1>  the type of the first block value
@@ -272,7 +272,7 @@ public final class Context {
    * @param <T3>  the type of the third block value
    * @param <T4>  the type of the fourth block value
    * @param <T5>  the type of the fifth block value
-   * @return tupled version of given block
+   * @return tupled version of provided block
    * @throws NullPointerException if {@code block} arg is null
    */
   public static <T1, T2, T3, T4, T5> ThrowingConsumer<Of5<T1, T2, T3, T4, T5>, Error> context(
@@ -283,7 +283,7 @@ public final class Context {
   }
 
   /**
-   * Returns a tupled version of given block.
+   * Returns a tupled version of provided block.
    *
    * @param block the block
    * @param <T1>  the type of the first block value
@@ -292,7 +292,7 @@ public final class Context {
    * @param <T4>  the type of the fourth block value
    * @param <T5>  the type of the fifth block value
    * @param <T6>  the type of the sixth block value
-   * @return tupled version of given block
+   * @return tupled version of provided block
    * @throws NullPointerException if {@code block} arg is null
    */
   public static <T1, T2, T3, T4, T5, T6> ThrowingConsumer<Of6<T1, T2, T3, T4, T5, T6>, Error> context(
@@ -303,7 +303,7 @@ public final class Context {
   }
 
   /**
-   * Returns a tupled version of given block.
+   * Returns a tupled version of provided block.
    *
    * @param block the block
    * @param <T1>  the type of the first block value
@@ -313,7 +313,7 @@ public final class Context {
    * @param <T5>  the type of the fifth block value
    * @param <T6>  the type of the sixth block value
    * @param <T7>  the type of the seventh block value
-   * @return tupled version of given block
+   * @return tupled version of provided block
    * @throws NullPointerException if {@code block} arg is null
    */
   public static <T1, T2, T3, T4, T5, T6, T7> ThrowingConsumer<Of7<T1, T2, T3, T4, T5, T6, T7>, Error> context(
@@ -324,7 +324,7 @@ public final class Context {
   }
 
   /**
-   * Returns a tupled version of given block.
+   * Returns a tupled version of provided block.
    *
    * @param block the block
    * @param <T1>  the type of the first block value
@@ -335,7 +335,7 @@ public final class Context {
    * @param <T6>  the type of the sixth block value
    * @param <T7>  the type of the seventh block value
    * @param <T8>  the type of the eighth block value
-   * @return tupled version of given block
+   * @return tupled version of provided block
    * @throws NullPointerException if {@code block} arg is null
    */
   public static <T1, T2, T3, T4, T5, T6, T7, T8> ThrowingConsumer<Of8<T1, T2, T3, T4, T5, T6, T7, T8>, Error> context(
@@ -346,13 +346,13 @@ public final class Context {
   }
 
   /**
-   * Returns a tupled version of given block.
+   * Returns a tupled version of provided block.
    *
    * @param block the block
    * @param <T1>  the type of the first block value
    * @param <T2>  the type of the second block value
    * @param <R>   the type of the block result
-   * @return tupled version of given block
+   * @return tupled version of provided block
    * @throws NullPointerException if {@code block} arg is null
    */
   public static <T1, T2, R> ThrowingFunction<Of2<T1, T2>, R, Error> context(
@@ -363,14 +363,14 @@ public final class Context {
   }
 
   /**
-   * Returns a tupled version of given block.
+   * Returns a tupled version of provided block.
    *
    * @param block the block
    * @param <T1>  the type of the first block value
    * @param <T2>  the type of the second block value
    * @param <T3>  the type of the third block value
    * @param <R>   the type of the block result
-   * @return tupled version of given block
+   * @return tupled version of provided block
    * @throws NullPointerException if {@code block} arg is null
    */
   public static <T1, T2, T3, R> ThrowingFunction<Of3<T1, T2, T3>, R, Error> context(
@@ -381,7 +381,7 @@ public final class Context {
   }
 
   /**
-   * Returns a tupled version of given block.
+   * Returns a tupled version of provided block.
    *
    * @param block the block
    * @param <T1>  the type of the first block value
@@ -389,7 +389,7 @@ public final class Context {
    * @param <T3>  the type of the third block value
    * @param <T4>  the type of the fourth block value
    * @param <R>   the type of the block result
-   * @return tupled version of given block
+   * @return tupled version of provided block
    * @throws NullPointerException if {@code block} arg is null
    */
   public static <T1, T2, T3, T4, R> ThrowingFunction<Of4<T1, T2, T3, T4>, R, Error> context(
@@ -400,7 +400,7 @@ public final class Context {
   }
 
   /**
-   * Returns a tupled version of given block.
+   * Returns a tupled version of provided block.
    *
    * @param block the block
    * @param <T1>  the type of the first block value
@@ -409,7 +409,7 @@ public final class Context {
    * @param <T4>  the type of the fourth block value
    * @param <T5>  the type of the fifth block value
    * @param <R>   the type of the block result
-   * @return tupled version of given block
+   * @return tupled version of provided block
    * @throws NullPointerException if {@code block} arg is null
    */
   public static <T1, T2, T3, T4, T5, R> ThrowingFunction<Of5<T1, T2, T3, T4, T5>, R, Error> context(
@@ -420,7 +420,7 @@ public final class Context {
   }
 
   /**
-   * Returns a tupled version of given block.
+   * Returns a tupled version of provided block.
    *
    * @param block the block
    * @param <T1>  the type of the first block value
@@ -430,7 +430,7 @@ public final class Context {
    * @param <T5>  the type of the fifth block value
    * @param <T6>  the type of the sixth block value
    * @param <R>   the type of the block result
-   * @return tupled version of given block
+   * @return tupled version of provided block
    * @throws NullPointerException if {@code block} arg is null
    */
   public static <T1, T2, T3, T4, T5, T6, R> ThrowingFunction<Of6<T1, T2, T3, T4, T5, T6>, R, Error> context(
@@ -441,7 +441,7 @@ public final class Context {
   }
 
   /**
-   * Returns a tupled version of given block.
+   * Returns a tupled version of provided block.
    *
    * @param block the block
    * @param <T1>  the type of the first block value
@@ -452,7 +452,7 @@ public final class Context {
    * @param <T6>  the type of the sixth block value
    * @param <T7>  the type of the seventh block value
    * @param <R>   the type of the block result
-   * @return tupled version of given block
+   * @return tupled version of provided block
    * @throws NullPointerException if {@code block} arg is null
    */
   public static <T1, T2, T3, T4, T5, T6, T7, R> ThrowingFunction<Of7<T1, T2, T3, T4, T5, T6, T7>, R, Error> context(
@@ -463,7 +463,7 @@ public final class Context {
   }
 
   /**
-   * Returns a tupled version of given block.
+   * Returns a tupled version of provided block.
    *
    * @param block the block
    * @param <T1>  the type of the first block value
@@ -475,7 +475,7 @@ public final class Context {
    * @param <T7>  the type of the seventh block value
    * @param <T8>  the type of the eighth block value
    * @param <R>   the type of the block result
-   * @return tupled version of given block
+   * @return tupled version of provided block
    * @throws NullPointerException if {@code block} arg is null
    */
   public static <T1, T2, T3, T4, T5, T6, T7, T8, R> ThrowingFunction<Of8<T1, T2, T3, T4, T5, T6, T7, T8>, R, Error> context(

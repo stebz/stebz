@@ -35,6 +35,8 @@ import static java.util.Collections.emptyMap;
 
 /**
  * Step attribute.
+ * <p>Attribute equality is based on {@link #key()} only: two attributes with the same key are equal regardless
+ * of their value types, default values or extract functions.
  *
  * @param <I> the type of input attribute value
  * @param <S> the type of stored attribute value
@@ -132,18 +134,21 @@ public interface StepAttribute<I, S, O> {
   O defaultOutputValue();
 
   /**
-   * Returns the processed given input value.
+   * Returns the processed input value.
+   * <p>May throw a {@code RuntimeException} if the specified value is inappropriate for this attribute (for example,
+   * a {@code NullPointerException} for a {@code null} value of a non-null attribute).
    *
    * @param value the value
-   * @return processed given input value
+   * @return processed input value
+   * @throws RuntimeException if the specified value is inappropriate for this attribute
    */
   S extractInputValue(I value);
 
   /**
-   * Returns the processed given output value.
+   * Returns the processed output value.
    *
    * @param value the value
-   * @return processed given output value
+   * @return processed output value
    */
   O extractOutputValue(S value);
 
@@ -168,10 +173,10 @@ public interface StepAttribute<I, S, O> {
   int hashCode();
 
   /**
-   * Returns keyword of given value.
+   * Returns a keyword for the specified value.
    *
    * @param value the keyword value
-   * @return keyword of given value
+   * @return keyword for the specified value
    * @throws NullPointerException if {@code value} arg is null
    */
   static Keyword keyword(final String value) {
@@ -188,11 +193,11 @@ public interface StepAttribute<I, S, O> {
   }
 
   /**
-   * Returns params of given values.
+   * Returns params for the specified values.
    *
    * @param paramName  the param name
    * @param paramValue the param value
-   * @return params of given values
+   * @return params for the specified values
    */
   static Map<String, Object> params(final String paramName, final Object paramValue) {
     final Map<String, Object> map = new LinkedHashMap<>();
@@ -201,13 +206,13 @@ public interface StepAttribute<I, S, O> {
   }
 
   /**
-   * Returns params of given values.
+   * Returns params for the specified values.
    *
    * @param paramName1  the first param name
    * @param paramValue1 the first param value
    * @param paramName2  the second param name
    * @param paramValue2 the second param value
-   * @return params of given values
+   * @return params for the specified values
    */
   static Map<String, Object> params(final String paramName1, final Object paramValue1,
                                     final String paramName2, final Object paramValue2) {
@@ -218,7 +223,7 @@ public interface StepAttribute<I, S, O> {
   }
 
   /**
-   * Returns params of given values.
+   * Returns params for the specified values.
    *
    * @param paramName1  the first param name
    * @param paramValue1 the first param value
@@ -226,7 +231,7 @@ public interface StepAttribute<I, S, O> {
    * @param paramValue2 the second param value
    * @param paramName3  the third param name
    * @param paramValue3 the third param value
-   * @return params of given values
+   * @return params for the specified values
    */
   static Map<String, Object> params(final String paramName1, final Object paramValue1,
                                     final String paramName2, final Object paramValue2,
@@ -239,7 +244,7 @@ public interface StepAttribute<I, S, O> {
   }
 
   /**
-   * Returns params of given values.
+   * Returns params for the specified values.
    *
    * @param paramName1  the first param name
    * @param paramValue1 the first param value
@@ -249,7 +254,7 @@ public interface StepAttribute<I, S, O> {
    * @param paramValue3 the third param value
    * @param paramName4  the fourth param name
    * @param paramValue4 the fourth param value
-   * @return params of given values
+   * @return params for the specified values
    */
   static Map<String, Object> params(final String paramName1, final Object paramValue1,
                                     final String paramName2, final Object paramValue2,
@@ -264,7 +269,7 @@ public interface StepAttribute<I, S, O> {
   }
 
   /**
-   * Returns params of given values.
+   * Returns params for the specified values.
    *
    * @param paramName1  the first param name
    * @param paramValue1 the first param value
@@ -276,7 +281,7 @@ public interface StepAttribute<I, S, O> {
    * @param paramValue4 the fourth param value
    * @param paramName5  the fifth param name
    * @param paramValue5 the fifth param value
-   * @return params of given values
+   * @return params for the specified values
    */
   static Map<String, Object> params(final String paramName1, final Object paramValue1,
                                     final String paramName2, final Object paramValue2,
@@ -293,10 +298,10 @@ public interface StepAttribute<I, S, O> {
   }
 
   /**
-   * Returns params of given values.
+   * Returns params for the specified values.
    *
    * @param entries params values
-   * @return params of given values
+   * @return params for the specified values
    * @throws NullPointerException if {@code entries} arg is null
    * @see #param(String, Object)
    */

@@ -34,41 +34,31 @@ final class StepNotImplementedErrorTest {
 
   @Test
   void ctorOf0ArgsShouldReturnCorrectError() {
-    final Error error = new StepNotImplementedError();
-
-    assertThat(error)
-      .hasNoCause()
-      .hasMessage(null);
+    assertThat(new StepNotImplementedError())
+      .hasMessage(null)
+      .hasNoCause();
   }
 
   @Test
   void ctorOfMessageArgShouldReturnCorrectError() {
-    final String message = "abc";
-    final Error error = new StepNotImplementedError(message);
-
-    assertThat(error)
-      .hasNoCause()
-      .hasMessage(message);
+    assertThat(new StepNotImplementedError("message"))
+      .hasMessage("message")
+      .hasNoCause();
   }
 
   @Test
   void ctorOfCauseArgShouldReturnCorrectError() {
     final Exception cause = new Exception();
-    final Error error = new StepNotImplementedError(cause);
-
-    assertThat(error)
-      .hasCause(cause)
-      .hasMessage(cause.toString());
+    assertThat(new StepNotImplementedError(cause))
+      .hasMessage(cause.toString())
+      .hasCause(cause);
   }
 
   @Test
   void ctorOfMessageAndCauseArgsShouldReturnCorrectError() {
-    final String message = "abc";
     final Exception cause = new Exception();
-    final Error error = new StepNotImplementedError(message, cause);
-
-    assertThat(error)
-      .hasCause(cause)
-      .hasMessage(message);
+    assertThat(new StepNotImplementedError("message", cause))
+      .hasMessage("message")
+      .hasCause(cause);
   }
 }

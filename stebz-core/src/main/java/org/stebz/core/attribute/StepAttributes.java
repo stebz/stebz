@@ -34,68 +34,68 @@ import java.util.Map;
 public interface StepAttributes {
 
   /**
-   * Returns value of given attribute or default value if attribute is not present.
+   * Returns the value of the specified attribute or its default value if the attribute is not present.
    *
    * @param attribute the attribute
    * @param <O>       the type of the attribute
-   * @return value of given attribute or default value if attribute is not present
+   * @return the value of the specified attribute or its default value if the attribute is not present
    * @throws NullPointerException if {@code attribute} arg is null
    */
   <O> O get(StepAttribute<?, ?, O> attribute);
 
   /**
-   * Returns {@code true} if given attribute value is present, otherwise returns {@code false}.
+   * Returns {@code true} if the specified attribute is present; otherwise returns {@code false}.
    *
    * @param attribute the attribute
-   * @return {@code true} if given attribute value is present, otherwise {@code false}
+   * @return {@code true} if the specified attribute is present; otherwise {@code false}
    * @throws NullPointerException if {@code attribute} arg is null
    */
   boolean contains(StepAttribute<?, ?, ?> attribute);
 
   /**
-   * Returns {@code StepAttributes} without given attribute.
+   * Returns a {@code StepAttributes} instance without the specified attribute.
    *
    * @param attribute the attribute
-   * @return {@code StepAttributes} without given attribute
+   * @return a {@code StepAttributes} instance without the specified attribute
    * @throws NullPointerException if {@code attribute} arg is null
    */
   StepAttributes without(StepAttribute<?, ?, ?> attribute);
 
   /**
-   * Returns {@code StepAttributes} with default attribute value.
+   * Returns a {@code StepAttributes} instance with the default value of the specified attribute.
    *
    * @param attribute the attribute
-   * @return {@code StepAttributes} with default attribute value
+   * @return a {@code StepAttributes} instance with the default value of the specified attribute
    * @throws NullPointerException if {@code attribute} arg is null
    */
   StepAttributes with(StepAttribute<?, ?, ?> attribute);
 
   /**
-   * Returns {@code StepAttributes} with given attribute value created by {@code generator}.
+   * Returns a {@code StepAttributes} instance with the value produced by the specified generator.
    *
    * @param attribute the attribute
    * @param generator the generator
    * @param <I>       the type of the attribute
-   * @return {@code StepAttributes} with given attribute value
+   * @return a {@code StepAttributes} instance with the generated value
    * @throws NullPointerException if {@code attribute} arg or {@code generator} arg is null
    */
   <I, O> StepAttributes withOf(StepAttribute<I, ?, O> attribute,
                                ThrowingFunction<? super O, ? extends I, ?> generator);
 
   /**
-   * Returns {@code StepAttributes} with given attribute value.
+   * Returns a {@code StepAttributes} instance with the specified attribute value.
    *
    * @param attribute the attribute
    * @param value     the attribute value
    * @param <I>       the type of the attribute
-   * @return {@code StepAttributes} with given attribute value
+   * @return a {@code StepAttributes} instance with the specified attribute value
    * @throws NullPointerException if {@code attribute} arg is null
    */
   <I> StepAttributes with(StepAttribute<I, ?, ?> attribute,
                           I value);
 
   /**
-   * Returns {@code StepAttributes} with given attributes values.
+   * Returns a {@code StepAttributes} instance containing the specified attribute-value pairs.
    *
    * @param attribute1 the first attribute
    * @param value1     the first attribute value
@@ -103,7 +103,7 @@ public interface StepAttributes {
    * @param value2     the second attribute value
    * @param <I1>       the type of the first attribute
    * @param <I2>       the type of the second attribute
-   * @return {@code StepAttributes} with given attributes values
+   * @return a {@code StepAttributes} instance containing the specified attribute-value pairs
    * @throws NullPointerException if {@code attribute1} arg or {@code attribute2} arg is null
    */
   <I1, I2> StepAttributes with(StepAttribute<I1, ?, ?> attribute1,
@@ -112,7 +112,7 @@ public interface StepAttributes {
                                I2 value2);
 
   /**
-   * Returns {@code StepAttributes} with given attributes values.
+   * Returns a {@code StepAttributes} instance containing the specified attribute-value triples.
    *
    * @param attribute1 the first attribute
    * @param value1     the first attribute value
@@ -123,7 +123,7 @@ public interface StepAttributes {
    * @param <I1>       the type of the first attribute
    * @param <I2>       the type of the second attribute
    * @param <I3>       the type of the third attribute
-   * @return {@code StepAttributes} with given attributes values
+   * @return a {@code StepAttributes} instance containing the specified attribute-value triples
    * @throws NullPointerException if {@code attribute1} arg or {@code attribute2} arg or {@code attribute3} arg is null
    */
   <I1, I2, I3> StepAttributes with(StepAttribute<I1, ?, ?> attribute1,
@@ -150,12 +150,12 @@ public interface StepAttributes {
   }
 
   /**
-   * Returns {@code StepAttributes} with given attribute value.
+   * Returns {@code StepAttributes} with specified attribute value.
    *
    * @param attribute the attribute
    * @param value     the attribute value
    * @param <I>       the type of the attribute
-   * @return {@code StepAttributes} with given attribute value
+   * @return {@code StepAttributes} with specified attribute value
    * @throws NullPointerException if {@code attribute} arg is null or if {@code attribute} is not nullable and
    *                              {@code value} is null
    */
@@ -165,7 +165,7 @@ public interface StepAttributes {
   }
 
   /**
-   * Returns {@code StepAttributes} with given attributes values.
+   * Returns {@code StepAttributes} with specified attributes values.
    *
    * @param attribute1 the first attribute
    * @param value1     the first attribute value
@@ -173,8 +173,8 @@ public interface StepAttributes {
    * @param value2     the second attribute value
    * @param <I1>       the type of the first attribute
    * @param <I2>       the type of the second attribute
-   * @return {@code StepAttributes} with given attributes values
-   * @throws NullPointerException if {@code attribute1} arg or {@code attribute2} arg is nul
+   * @return {@code StepAttributes} with specified attributes values
+   * @throws NullPointerException if {@code attribute1} arg or {@code attribute2} arg is null
    */
   static <I1, I2> StepAttributes of(final StepAttribute<I1, ?, ?> attribute1,
                                     final I1 value1,
@@ -184,7 +184,7 @@ public interface StepAttributes {
   }
 
   /**
-   * Returns {@code StepAttributes} with given attributes values.
+   * Returns {@code StepAttributes} with specified attributes values.
    *
    * @param attribute1 the first attribute
    * @param value1     the first attribute value
@@ -195,7 +195,7 @@ public interface StepAttributes {
    * @param <I1>       the type of the first attribute
    * @param <I2>       the type of the second attribute
    * @param <I3>       the type of the third attribute
-   * @return {@code StepAttributes} with given attributes values
+   * @return {@code StepAttributes} with specified attributes values
    * @throws NullPointerException if {@code attribute1} arg or {@code attribute2} arg or {@code attribute3} arg is null
    */
   static <I1, I2, I3> StepAttributes of(final StepAttribute<I1, ?, ?> attribute1,
@@ -208,7 +208,7 @@ public interface StepAttributes {
   }
 
   /**
-   * Returns {@code StepAttributes} with given attributes values.
+   * Returns {@code StepAttributes} with specified attributes values.
    *
    * @param attribute1 the first attribute
    * @param value1     the first attribute value
@@ -222,7 +222,7 @@ public interface StepAttributes {
    * @param <I2>       the type of the second attribute
    * @param <I3>       the type of the third attribute
    * @param <I4>       the type of the fourth attribute
-   * @return {@code StepAttributes} with given attributes values
+   * @return {@code StepAttributes} with specified attributes values
    * @throws NullPointerException if {@code attribute1} arg or {@code attribute2} arg or {@code attribute3} arg or
    *                              {@code attribute4} arg is null
    */
@@ -252,31 +252,31 @@ public interface StepAttributes {
   interface Builder {
 
     /**
-     * Appends given attribute with default attribute value.
+     * Adds the specified attribute with its default value.
      *
      * @param attribute the attribute
-     * @return {@code StepAttributes.Builder} with given attribute value
+     * @return a {@code StepAttributes.Builder} with the attribute added
      * @throws NullPointerException if {@code attribute} arg is null
      */
     Builder add(StepAttribute<?, ?, ?> attribute);
 
     /**
-     * Appends given attribute value.
+     * Adds the specified attribute with the specified value.
      *
      * @param attribute the attribute
      * @param value     the attribute value
      * @param <I>       the type of the attribute
-     * @return {@code StepAttributes.Builder} with given attribute value
+     * @return a {@code StepAttributes.Builder} with the attribute added
      * @throws NullPointerException if {@code attribute} arg is null
      */
     <I> Builder add(StepAttribute<I, ?, ?> attribute,
                     I value);
 
     /**
-     * Appends given attribute.
+     * Removes the specified attribute.
      *
      * @param attribute the attribute
-     * @return {@code StepAttributes.Builder} without given attribute
+     * @return {@code StepAttributes.Builder} without the specified attribute
      * @throws NullPointerException if {@code attribute} arg is null
      */
     Builder remove(StepAttribute<?, ?, ?> attribute);
@@ -523,9 +523,13 @@ public interface StepAttributes {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Builder add(final StepAttribute<?, ?, ?> attribute) {
       if (attribute == null) { throw new NullPointerException("attribute arg is null"); }
-      this.map.put(attribute, attribute.defaultInputValue());
+      this.map.put(
+        attribute,
+        ((StepAttribute<Object, Object, Object>) attribute).extractInputValue(attribute.defaultInputValue())
+      );
       return this;
     }
 
