@@ -129,11 +129,38 @@ final class StepAttributeTest {
 
   @Test
   void attributeOfShouldThrowExceptionForNullArgs() {
-    assertThatThrownBy(() -> new StepAttribute.Of<>(null, "default", v -> v, "default", v -> v))
+    assertThatThrownBy(() -> new StepAttribute.Of<>((String) null, "default", v -> v, "default", v -> v))
       .isInstanceOf(NullPointerException.class);
     assertThatThrownBy(() -> new StepAttribute.Of<>("test:key", "default", null, "default", v -> v))
       .isInstanceOf(NullPointerException.class);
     assertThatThrownBy(() -> new StepAttribute.Of<>("test:key", "default", v -> v, "default", null))
+      .isInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void attributeOfWithClassKeyShouldUseClassNameAsKey() {
+    final StepAttribute<Object, Object, Object> attribute =
+      new StepAttribute.Of<>(StepAttribute.class, "defaultInput", v -> v, "defaultOutput", v -> v);
+
+    assertThat(attribute.key()).isEqualTo("org.stebz.core.attribute.StepAttribute");
+    assertThat(attribute.defaultInputValue()).isEqualTo("defaultInput");
+    assertThat(attribute.defaultOutputValue()).isEqualTo("defaultOutput");
+  }
+
+  @Test
+  void attributeOfWithClassKeyShouldBeEqualToAttributeCreatedWithSameClassName() {
+    assertThat(new StepAttribute.Of<>(String.class, "default", v -> v, "default", v -> v))
+      .isEqualTo(new StepAttribute.Of<>("java.lang.String", "default", v -> v, "default", v -> v))
+      .hasSameHashCodeAs(new StepAttribute.Of<>("java.lang.String", "default", v -> v, "default", v -> v));
+  }
+
+  @Test
+  void attributeOfWithClassKeyShouldThrowExceptionForNullArgs() {
+    assertThatThrownBy(() -> new StepAttribute.Of<>((Class<?>) null, "default", v -> v, "default", v -> v))
+      .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> new StepAttribute.Of<>(String.class, "default", null, "default", v -> v))
+      .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> new StepAttribute.Of<>(String.class, "default", v -> v, "default", null))
       .isInstanceOf(NullPointerException.class);
   }
 

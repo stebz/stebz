@@ -37,6 +37,18 @@ public interface SimpleStepAttribute<V> extends StepAttribute<V, V, V> {
   /**
    * Returns a simple nullable attribute with the specified key and a {@code null} default value.
    *
+   * @param classKey the attribute key
+   * @param <V>      the type of the attribute value
+   * @return simple nullable attribute
+   * @throws NullPointerException if {@code classKey} arg is null
+   */
+  static <V> SimpleStepAttribute<V> nullable(final Class<?> classKey) {
+    return new Nullable<>(classKey);
+  }
+
+  /**
+   * Returns a simple nullable attribute with the specified key and a {@code null} default value.
+   *
    * @param key the attribute key
    * @param <V> the type of the attribute value
    * @return simple nullable attribute
@@ -47,7 +59,21 @@ public interface SimpleStepAttribute<V> extends StepAttribute<V, V, V> {
   }
 
   /**
-   * Returns simple nullable attribute with the specified key and default value.
+   * Returns a simple nullable attribute with the specified key and default value.
+   *
+   * @param classKey     the attribute key
+   * @param defaultValue the attribute default value
+   * @param <V>          the type of the attribute value
+   * @return simple nullable attribute
+   * @throws NullPointerException if {@code classKey} arg is null
+   */
+  static <V> SimpleStepAttribute<V> nullable(final Class<?> classKey,
+                                             final V defaultValue) {
+    return new Nullable<>(classKey, defaultValue);
+  }
+
+  /**
+   * Returns a simple nullable attribute with the specified key and default value.
    *
    * @param key          the attribute key
    * @param defaultValue the attribute default value
@@ -61,7 +87,23 @@ public interface SimpleStepAttribute<V> extends StepAttribute<V, V, V> {
   }
 
   /**
-   * Returns simple nullable attribute with the specified key, default value, and output-value extraction function.
+   * Returns a simple nullable attribute with the specified key, default value, and output-value extraction function.
+   *
+   * @param classKey           the attribute key
+   * @param defaultValue       the attribute default value
+   * @param extractOutputValue extract output value function
+   * @param <V>                the type of the attribute value
+   * @return simple nullable attribute
+   * @throws NullPointerException if {@code classKey} arg or {@code extractOutputValue} arg is null
+   */
+  static <V> SimpleStepAttribute<V> nullable(final Class<?> classKey,
+                                             final V defaultValue,
+                                             final ThrowingFunction<? super V, ? extends V, ?> extractOutputValue) {
+    return new Nullable<>(classKey, defaultValue, extractOutputValue);
+  }
+
+  /**
+   * Returns a simple nullable attribute with the specified key, default value, and output-value extraction function.
    *
    * @param key                the attribute key
    * @param defaultValue       the attribute default value
@@ -77,7 +119,21 @@ public interface SimpleStepAttribute<V> extends StepAttribute<V, V, V> {
   }
 
   /**
-   * Returns simple non-null attribute with the specified key and default value.
+   * Returns a simple non-null attribute with the specified key and default value.
+   *
+   * @param classKey     the attribute key
+   * @param defaultValue the attribute default value
+   * @param <V>          the type of the attribute value
+   * @return simple non-null attribute
+   * @throws NullPointerException if {@code classKey} arg or {@code defaultValue} arg is null
+   */
+  static <V> SimpleStepAttribute<V> nonNull(final Class<?> classKey,
+                                            final V defaultValue) {
+    return new NonNull<>(classKey, defaultValue);
+  }
+
+  /**
+   * Returns a simple non-null attribute with the specified key and default value.
    *
    * @param key          the attribute key
    * @param defaultValue the attribute default value
@@ -91,7 +147,24 @@ public interface SimpleStepAttribute<V> extends StepAttribute<V, V, V> {
   }
 
   /**
-   * Returns simple non-null attribute with the specified key, default value, and output-value extraction function.
+   * Returns a simple non-null attribute with the specified key, default value, and output-value extraction function.
+   *
+   * @param classKey           the attribute key
+   * @param defaultValue       the attribute default value
+   * @param extractOutputValue extract output value function
+   * @param <V>                the type of the attribute value
+   * @return simple non-null attribute
+   * @throws NullPointerException if {@code classKey} arg or {@code defaultValue} arg or {@code extractOutputValue} arg
+   *                              is null
+   */
+  static <V> SimpleStepAttribute<V> nonNull(final Class<?> classKey,
+                                            final V defaultValue,
+                                            final ThrowingFunction<? super V, ? extends V, ?> extractOutputValue) {
+    return new NonNull<>(classKey, defaultValue, extractOutputValue);
+  }
+
+  /**
+   * Returns a simple non-null attribute with the specified key, default value, and output-value extraction function.
    *
    * @param key                the attribute key
    * @param defaultValue       the attribute default value
@@ -120,11 +193,33 @@ public interface SimpleStepAttribute<V> extends StepAttribute<V, V, V> {
     /**
      * Ctor.
      *
+     * @param classKey the attribute key
+     * @throws NullPointerException if {@code classKey} arg is null
+     */
+    public Nullable(final Class<?> classKey) {
+      this(keyOf(classKey), null, v -> v);
+    }
+
+    /**
+     * Ctor.
+     *
      * @param key the attribute key
      * @throws NullPointerException if {@code key} arg is null
      */
     public Nullable(final String key) {
       this(key, null, v -> v);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param classKey     the attribute key
+     * @param defaultValue the default value
+     * @throws NullPointerException if {@code classKey} arg is null
+     */
+    public Nullable(final Class<?> classKey,
+                    final V defaultValue) {
+      this(keyOf(classKey), defaultValue, v -> v);
     }
 
     /**
@@ -137,6 +232,20 @@ public interface SimpleStepAttribute<V> extends StepAttribute<V, V, V> {
     public Nullable(final String key,
                     final V defaultValue) {
       this(key, defaultValue, v -> v);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param classKey           the attribute key
+     * @param defaultValue       the default value
+     * @param extractOutputValue the extract output value function
+     * @throws NullPointerException if {@code classKey} arg or {@code extractOutputValue} arg is null
+     */
+    public Nullable(final Class<?> classKey,
+                    final V defaultValue,
+                    final ThrowingFunction<? super V, ? extends V, ?> extractOutputValue) {
+      this(keyOf(classKey), defaultValue, extractOutputValue);
     }
 
     /**
@@ -155,6 +264,11 @@ public interface SimpleStepAttribute<V> extends StepAttribute<V, V, V> {
       this.key = key;
       this.defaultValue = defaultValue;
       this.extractOutputValue = ThrowingFunction.unchecked(extractOutputValue);
+    }
+
+    private static String keyOf(final Class<?> classKey) {
+      if (classKey == null) { throw new NullPointerException("classKey arg is null"); }
+      return classKey.getName();
     }
 
     @Override
@@ -217,6 +331,18 @@ public interface SimpleStepAttribute<V> extends StepAttribute<V, V, V> {
     /**
      * Ctor.
      *
+     * @param classKey     the attribute key
+     * @param defaultValue the default value
+     * @throws NullPointerException if {@code classKey} arg or {@code defaultValue} arg is null
+     */
+    public NonNull(final Class<?> classKey,
+                   final V defaultValue) {
+      this(keyOf(classKey), defaultValue, v -> v);
+    }
+
+    /**
+     * Ctor.
+     *
      * @param key          the attribute key
      * @param defaultValue the default value
      * @throws NullPointerException if {@code key} arg or {@code defaultValue} arg is null
@@ -224,6 +350,21 @@ public interface SimpleStepAttribute<V> extends StepAttribute<V, V, V> {
     public NonNull(final String key,
                    final V defaultValue) {
       this(key, defaultValue, v -> v);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param classKey           the attribute key
+     * @param defaultValue       the default value
+     * @param extractOutputValue the extract output value function
+     * @throws NullPointerException if {@code classKey} arg or {@code defaultValue} arg or {@code extractOutputValue}
+     *                              arg is null
+     */
+    public NonNull(final Class<?> classKey,
+                   final V defaultValue,
+                   final ThrowingFunction<? super V, ? extends V, ?> extractOutputValue) {
+      this(keyOf(classKey), defaultValue, extractOutputValue);
     }
 
     /**
@@ -244,6 +385,11 @@ public interface SimpleStepAttribute<V> extends StepAttribute<V, V, V> {
       this.key = key;
       this.defaultValue = defaultValue;
       this.extractOutputValue = ThrowingFunction.unchecked(extractOutputValue);
+    }
+
+    private static String keyOf(final Class<?> classKey) {
+      if (classKey == null) { throw new NullPointerException("classKey arg is null"); }
+      return classKey.getName();
     }
 
     @Override
