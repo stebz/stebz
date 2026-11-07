@@ -23,7 +23,18 @@
  */
 package org.stebz.aaa.keyword;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.stebz.core.executor.StartupPropertiesReader;
+import org.stebz.core.extension.StebzExtension;
+import org.stebz.util.property.PropertiesReader;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,33 +43,127 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 final class AAAKeywordsTest {
 
-  @Test
-  void setUpKeywordDefaultValue() {
-    assertThat(AAAKeywords.setUp().value())
-      .isEqualTo("Set Up:");
+  @BeforeEach
+  @AfterEach
+  void resetKeywords() throws Exception {
+    final Field keywordsField = AAAKeywords.class.getDeclaredField("keywords");
+    keywordsField.setAccessible(true);
+    keywordsField.set(null, null);
+  }
+
+  private static AAAKeywords newExtension(final PropertiesReader reader) {
+    try {
+      final Constructor<AAAKeywords> ctor = AAAKeywords.class.getDeclaredConstructor(PropertiesReader.class);
+      ctor.setAccessible(true);
+      return ctor.newInstance(reader);
+    } catch (final ReflectiveOperationException ex) {
+      throw new IllegalStateException(ex);
+    }
+  }
+
+  private static void configureKeywords(final Map<String, String> properties) {
+    newExtension(new PropertiesReader.Of(properties));
+  }
+
+  private static void setStartupPropertiesReader(final PropertiesReader reader) throws Exception {
+    final Method setMethod = StartupPropertiesReader.class.getDeclaredMethod("set", PropertiesReader.class);
+    setMethod.setAccessible(true);
+    setMethod.invoke(null, reader);
+  }
+
+  private static void clearStartupPropertiesReader() throws Exception {
+    final Method clearMethod = StartupPropertiesReader.class.getDeclaredMethod("clear");
+    clearMethod.setAccessible(true);
+    clearMethod.invoke(null);
   }
 
   @Test
-  void tearDownKeywordDefaultValue() {
-    assertThat(AAAKeywords.tearDown().value())
-      .isEqualTo("Tear Down:");
+  void orderValue() {
+    assertThat(newExtension(new PropertiesReader.Of(new HashMap<>())).order())
+      .isEqualTo(StebzExtension.EARLY_ORDER);
   }
 
   @Test
-  void arrangeKeywordDefaultValue() {
-    assertThat(AAAKeywords.arrange().value())
-      .isEqualTo("Arrange:");
+  void defaultKeywordValues() {
+    configureKeywords(new HashMap<>());
+    assertThat(AAAKeywords.setUp().value()).isEqualTo("Set Up:");
+    assertThat(AAAKeywords.tearDown().value()).isEqualTo("Tear Down:");
+    assertThat(AAAKeywords.arrange().value()).isEqualTo("Arrange:");
+    assertThat(AAAKeywords.act().value()).isEqualTo("Act:");
+    assertThat(AAAKeywords._assert().value()).isEqualTo("Assert:");
+    assertThat(AAAKeywords.asterisk().value()).isEqualTo("*");
   }
 
   @Test
-  void actKeywordDefaultValue() {
-    assertThat(AAAKeywords.act().value())
-      .isEqualTo("Act:");
+  void customKeywordValues() {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.aaa.keyword.setUp", "Given:");
+    properties.put("stebz.aaa.keyword.tearDown", "Finally:");
+    properties.put("stebz.aaa.keyword.arrange", "Given:");
+    properties.put("stebz.aaa.keyword.act", "When:");
+    properties.put("stebz.aaa.keyword.assert", "Then:");
+    properties.put("stebz.aaa.keyword.asterisk", "And:");
+    configureKeywords(properties);
+    assertThat(AAAKeywords.setUp().value()).isEqualTo("Given:");
+    assertThat(AAAKeywords.tearDown().value()).isEqualTo("Finally:");
+    assertThat(AAAKeywords.arrange().value()).isEqualTo("Given:");
+    assertThat(AAAKeywords.act().value()).isEqualTo("When:");
+    assertThat(AAAKeywords._assert().value()).isEqualTo("Then:");
+    assertThat(AAAKeywords.asterisk().value()).isEqualTo("And:");
   }
 
   @Test
-  void assertKeywordDefaultValue() {
-    assertThat(AAAKeywords._assert().value())
-      .isEqualTo("Assert:");
+  void blankPropertyValueIsTreatedAsMissing() {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.aaa.keyword.setUp", "   ");
+    properties.put("stebz.aaa.keyword.asterisk", "");
+    configureKeywords(properties);
+    assertThat(AAAKeywords.setUp().value()).isEqualTo("Set Up:");
+    assertThat(AAAKeywords.asterisk().value()).isEqualTo("*");
+  }
+
+  @Test
+  void keywordValueIsTrimmed() {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.aaa.keyword.arrange", "  Arrange:  ");
+    configureKeywords(properties);
+    assertThat(AAAKeywords.arrange().value()).isEqualTo("Arrange:");
+  }
+
+  @Test
+  void keywordsAreInitializedOnlyOnce() {
+    final Map<String, String> firstProperties = new HashMap<>();
+    firstProperties.put("stebz.aaa.keyword.act", "When:");
+    final Map<String, String> secondProperties = new HashMap<>();
+    secondProperties.put("stebz.aaa.keyword.act", "Whenever:");
+    configureKeywords(firstProperties);
+    configureKeywords(secondProperties);
+    assertThat(AAAKeywords.act().value()).isEqualTo("When:");
+  }
+
+  @Test
+  void ctorReadsStartupProperties() throws Exception {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.aaa.keyword.setUp", "Given:");
+    try {
+      setStartupPropertiesReader(new PropertiesReader.Of(properties));
+      new AAAKeywords();
+      assertThat(AAAKeywords.setUp().value()).isEqualTo("Given:");
+    } finally {
+      clearStartupPropertiesReader();
+    }
+  }
+
+  @Test
+  void keywordsAreReadFromStartupPropertiesDuringStartup() throws Exception {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.aaa.keyword.act", "When:");
+    try {
+      setStartupPropertiesReader(new PropertiesReader.Of(properties));
+      assertThat(AAAKeywords.act().value()).isEqualTo("When:");
+      assertThat(AAAKeywords.setUp().value()).isEqualTo("Set Up:");
+    } finally {
+      clearStartupPropertiesReader();
+    }
   }
 }

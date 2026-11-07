@@ -38,6 +38,7 @@ import java.lang.annotation.Target;
 /**
  * Alias for the combination of the {@link WithName} and {@link WithKeyword} annotations. The keyword is
  * {@link GherkinKeywords#asterisk()}.
+ * <p>Underscores are used in the class name because the asterisk character cannot be used as a Java identifier.
  */
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
@@ -46,7 +47,8 @@ import java.lang.annotation.Target;
 public @interface ___ {
 
   /**
-   * Returns name attribute value. Non empty value overrides {@link WithName#value()} and {@link Step#value()}.
+   * Returns the step name. A non-empty value overrides the name specified by {@link WithName#value()} or
+   * {@link Step#value()}.
    *
    * @return name attribute value
    */

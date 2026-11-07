@@ -23,7 +23,18 @@
  */
 package org.stebz.gherkin.keyword;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.stebz.core.executor.StartupPropertiesReader;
+import org.stebz.core.extension.StebzExtension;
+import org.stebz.util.property.PropertiesReader;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,51 +43,136 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 final class GherkinKeywordsTest {
 
-  @Test
-  void backgroundKeywordDefaultValue() {
-    assertThat(GherkinKeywords.background().value())
-      .isEqualTo("Background:");
+  @BeforeEach
+  @AfterEach
+  void resetKeywords() throws Exception {
+    final Field keywordsField = GherkinKeywords.class.getDeclaredField("keywords");
+    keywordsField.setAccessible(true);
+    keywordsField.set(null, null);
+  }
+
+  private static GherkinKeywords newExtension(final PropertiesReader reader) {
+    try {
+      final Constructor<GherkinKeywords> ctor = GherkinKeywords.class.getDeclaredConstructor(PropertiesReader.class);
+      ctor.setAccessible(true);
+      return ctor.newInstance(reader);
+    } catch (final ReflectiveOperationException ex) {
+      throw new IllegalStateException(ex);
+    }
+  }
+
+  private static void configureKeywords(final Map<String, String> properties) {
+    newExtension(new PropertiesReader.Of(properties));
+  }
+
+  private static void setStartupPropertiesReader(final PropertiesReader reader) throws Exception {
+    final Method setMethod = StartupPropertiesReader.class.getDeclaredMethod("set", PropertiesReader.class);
+    setMethod.setAccessible(true);
+    setMethod.invoke(null, reader);
+  }
+
+  private static void clearStartupPropertiesReader() throws Exception {
+    final Method clearMethod = StartupPropertiesReader.class.getDeclaredMethod("clear");
+    clearMethod.setAccessible(true);
+    clearMethod.invoke(null);
   }
 
   @Test
-  void ruleKeywordDefaultValue() {
-    assertThat(GherkinKeywords.rule().value())
-      .isEqualTo("Rule:");
+  void orderValue() {
+    assertThat(newExtension(new PropertiesReader.Of(new HashMap<>())).order())
+      .isEqualTo(StebzExtension.EARLY_ORDER);
   }
 
   @Test
-  void givenKeywordDefaultValue() {
-    assertThat(GherkinKeywords.given().value())
-      .isEqualTo("Given");
+  void defaultKeywordValues() {
+    configureKeywords(new HashMap<>());
+    assertThat(GherkinKeywords.background().value()).isEqualTo("Background:");
+    assertThat(GherkinKeywords.rule().value()).isEqualTo("Rule:");
+    assertThat(GherkinKeywords.given().value()).isEqualTo("Given");
+    assertThat(GherkinKeywords.when().value()).isEqualTo("When");
+    assertThat(GherkinKeywords.then().value()).isEqualTo("Then");
+    assertThat(GherkinKeywords.and().value()).isEqualTo("And");
+    assertThat(GherkinKeywords.but().value()).isEqualTo("But");
+    assertThat(GherkinKeywords.asterisk().value()).isEqualTo("*");
+    assertThat(GherkinKeywords.technical().value()).isEqualTo("Technical:");
   }
 
   @Test
-  void whenKeywordDefaultValue() {
-    assertThat(GherkinKeywords.when().value())
-      .isEqualTo("When");
+  void customKeywordValues() {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.gherkin.keyword.background", "Backstory:");
+    properties.put("stebz.gherkin.keyword.rule", "Business rule:");
+    properties.put("stebz.gherkin.keyword.given", "Let:");
+    properties.put("stebz.gherkin.keyword.when", "If:");
+    properties.put("stebz.gherkin.keyword.then", "Expect:");
+    properties.put("stebz.gherkin.keyword.and", "Also:");
+    properties.put("stebz.gherkin.keyword.but", "Except:");
+    properties.put("stebz.gherkin.keyword.asterisk", "Step:");
+    properties.put("stebz.gherkin.keyword.technical", "Helper:");
+    configureKeywords(properties);
+    assertThat(GherkinKeywords.background().value()).isEqualTo("Backstory:");
+    assertThat(GherkinKeywords.rule().value()).isEqualTo("Business rule:");
+    assertThat(GherkinKeywords.given().value()).isEqualTo("Let:");
+    assertThat(GherkinKeywords.when().value()).isEqualTo("If:");
+    assertThat(GherkinKeywords.then().value()).isEqualTo("Expect:");
+    assertThat(GherkinKeywords.and().value()).isEqualTo("Also:");
+    assertThat(GherkinKeywords.but().value()).isEqualTo("Except:");
+    assertThat(GherkinKeywords.asterisk().value()).isEqualTo("Step:");
+    assertThat(GherkinKeywords.technical().value()).isEqualTo("Helper:");
   }
 
   @Test
-  void thenKeywordDefaultValue() {
-    assertThat(GherkinKeywords.then().value())
-      .isEqualTo("Then");
+  void blankPropertyValueIsTreatedAsMissing() {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.gherkin.keyword.given", "   ");
+    properties.put("stebz.gherkin.keyword.asterisk", "");
+    configureKeywords(properties);
+    assertThat(GherkinKeywords.given().value()).isEqualTo("Given");
+    assertThat(GherkinKeywords.asterisk().value()).isEqualTo("*");
   }
 
   @Test
-  void andKeywordDefaultValue() {
-    assertThat(GherkinKeywords.and().value())
-      .isEqualTo("And");
+  void keywordValueIsTrimmed() {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.gherkin.keyword.then", "  Then  ");
+    configureKeywords(properties);
+    assertThat(GherkinKeywords.then().value()).isEqualTo("Then");
   }
 
   @Test
-  void butKeywordDefaultValue() {
-    assertThat(GherkinKeywords.but().value())
-      .isEqualTo("But");
+  void keywordsAreInitializedOnlyOnce() {
+    final Map<String, String> firstProperties = new HashMap<>();
+    firstProperties.put("stebz.gherkin.keyword.when", "If:");
+    final Map<String, String> secondProperties = new HashMap<>();
+    secondProperties.put("stebz.gherkin.keyword.when", "Whenever:");
+    configureKeywords(firstProperties);
+    configureKeywords(secondProperties);
+    assertThat(GherkinKeywords.when().value()).isEqualTo("If:");
   }
 
   @Test
-  void technicalKeywordDefaultValue() {
-    assertThat(GherkinKeywords.technical().value())
-      .isEqualTo("Technical:");
+  void ctorReadsStartupProperties() throws Exception {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.gherkin.keyword.given", "Let:");
+    try {
+      setStartupPropertiesReader(new PropertiesReader.Of(properties));
+      new GherkinKeywords();
+      assertThat(GherkinKeywords.given().value()).isEqualTo("Let:");
+    } finally {
+      clearStartupPropertiesReader();
+    }
+  }
+
+  @Test
+  void keywordsAreReadFromStartupPropertiesDuringStartup() throws Exception {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.gherkin.keyword.when", "If:");
+    try {
+      setStartupPropertiesReader(new PropertiesReader.Of(properties));
+      assertThat(GherkinKeywords.when().value()).isEqualTo("If:");
+      assertThat(GherkinKeywords.given().value()).isEqualTo("Given");
+    } finally {
+      clearStartupPropertiesReader();
+    }
   }
 }

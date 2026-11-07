@@ -31,22 +31,31 @@ import org.stebz.util.property.PropertiesReader;
 
 /**
  * Stebz Gherkin keywords extension.
+ * <p>Keywords are initialized once with values of the following properties (a missing or blank property value is
+ * treated as a missing one, the default value is used instead):
+ * <ul>
+ *   <li>{@code stebz.gherkin.keyword.background} — default value: {@code Background:}</li>
+ *   <li>{@code stebz.gherkin.keyword.rule} — default value: {@code Rule:}</li>
+ *   <li>{@code stebz.gherkin.keyword.given} — default value: {@code Given}</li>
+ *   <li>{@code stebz.gherkin.keyword.when} — default value: {@code When}</li>
+ *   <li>{@code stebz.gherkin.keyword.then} — default value: {@code Then}</li>
+ *   <li>{@code stebz.gherkin.keyword.and} — default value: {@code And}</li>
+ *   <li>{@code stebz.gherkin.keyword.but} — default value: {@code But}</li>
+ *   <li>{@code stebz.gherkin.keyword.asterisk} — default value: {@code *}</li>
+ *   <li>{@code stebz.gherkin.keyword.technical} — default value: {@code Technical:}</li>
+ * </ul>
+ * <p>If a keyword accessor is called while the Stebz framework startup process is in progress, keyword values are read
+ * from the startup properties even if this extension has not been instantiated yet.
+ * <p>If this extension is not registered in the Stebz framework, keyword accessors throw {@code IllegalStateException}.
  */
 public final class GherkinKeywords implements StebzExtension {
   private static final Object LOCK = new Object();
-  private static final String BACKGROUND_KEYWORD_DEFAULT_VALUE = "Background:";
-  private static final String RULE_KEYWORD_DEFAULT_VALUE = "Rule:";
-  private static final String GIVEN_KEYWORD_DEFAULT_VALUE = "Given";
-  private static final String WHEN_KEYWORD_DEFAULT_VALUE = "When";
-  private static final String THEN_KEYWORD_DEFAULT_VALUE = "Then";
-  private static final String AND_KEYWORD_DEFAULT_VALUE = "And";
-  private static final String BUT_KEYWORD_DEFAULT_VALUE = "But";
-  private static final String ASTERISK_KEYWORD_DEFAULT_VALUE = "*";
-  private static final String TECHNICAL_KEYWORD_DEFAULT_VALUE = "Technical:";
   private static volatile Keywords keywords = null;
 
   /**
    * Ctor.
+   *
+   * @throws IllegalStateException if the Stebz framework startup process has not started yet or is already complete
    */
   public GherkinKeywords() {
     this(StartupPropertiesReader.get());
@@ -58,17 +67,7 @@ public final class GherkinKeywords implements StebzExtension {
    * @param properties the properties reader
    */
   private GherkinKeywords(final PropertiesReader properties) {
-    setKeywordsOnce(new Keywords(
-      new Keyword.Of(properties.getString("stebz.gherkin.keyword.background", BACKGROUND_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.gherkin.keyword.rule", RULE_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.gherkin.keyword.given", GIVEN_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.gherkin.keyword.when", WHEN_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.gherkin.keyword.then", THEN_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.gherkin.keyword.and", AND_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.gherkin.keyword.but", BUT_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.gherkin.keyword.asterisk", ASTERISK_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.gherkin.keyword.technical", TECHNICAL_KEYWORD_DEFAULT_VALUE))
-    ));
+    setKeywordsOnce(readKeywords(properties));
   }
 
   /**
@@ -169,31 +168,31 @@ public final class GherkinKeywords implements StebzExtension {
 
   private static Keywords getKeywords() {
     if (keywords == null) {
-      StepExecutor.get();
+      final PropertiesReader startupProperties = StartupPropertiesReader.getOrNull();
+      if (startupProperties != null) {
+        setKeywordsOnce(readKeywords(startupProperties));
+      }
       if (keywords == null) {
-        synchronized (LOCK) {
-          if (keywords == null) {
-            final Keywords defaultKeywords = defaultKeywords();
-            keywords = defaultKeywords;
-            return defaultKeywords;
-          }
-        }
+        StepExecutor.get();
+      }
+      if (keywords == null) {
+        throw new IllegalStateException("GherkinKeywords extension is not registered in the Stebz framework");
       }
     }
     return keywords;
   }
 
-  private static Keywords defaultKeywords() {
+  private static Keywords readKeywords(final PropertiesReader properties) {
     return new Keywords(
-      new Keyword.Of(BACKGROUND_KEYWORD_DEFAULT_VALUE),
-      new Keyword.Of(RULE_KEYWORD_DEFAULT_VALUE),
-      new Keyword.Of(GIVEN_KEYWORD_DEFAULT_VALUE),
-      new Keyword.Of(WHEN_KEYWORD_DEFAULT_VALUE),
-      new Keyword.Of(THEN_KEYWORD_DEFAULT_VALUE),
-      new Keyword.Of(AND_KEYWORD_DEFAULT_VALUE),
-      new Keyword.Of(BUT_KEYWORD_DEFAULT_VALUE),
-      new Keyword.Of(ASTERISK_KEYWORD_DEFAULT_VALUE),
-      new Keyword.Of(TECHNICAL_KEYWORD_DEFAULT_VALUE)
+      new Keyword.Of(properties.getString("stebz.gherkin.keyword.background", "Background:")),
+      new Keyword.Of(properties.getString("stebz.gherkin.keyword.rule", "Rule:")),
+      new Keyword.Of(properties.getString("stebz.gherkin.keyword.given", "Given")),
+      new Keyword.Of(properties.getString("stebz.gherkin.keyword.when", "When")),
+      new Keyword.Of(properties.getString("stebz.gherkin.keyword.then", "Then")),
+      new Keyword.Of(properties.getString("stebz.gherkin.keyword.and", "And")),
+      new Keyword.Of(properties.getString("stebz.gherkin.keyword.but", "But")),
+      new Keyword.Of(properties.getString("stebz.gherkin.keyword.asterisk", "*")),
+      new Keyword.Of(properties.getString("stebz.gherkin.keyword.technical", "Technical:"))
     );
   }
 

@@ -27,36 +27,49 @@ import org.stebz.annotation.Step;
 import org.stebz.annotation.WithName;
 import org.stebz.core.step.executable.RunnableStep;
 
+/**
+ * Step methods with Arrange-Act-Assert keyword annotations, used as annotation instances source.
+ */
 final class MethodSteps {
 
   MethodSteps() {
   }
 
   @Arrange
-  static RunnableStep aaaKeywordAnnotationWithoutName() {
+  static RunnableStep aaaArrangeAnnotationWithoutName() {
     return RunnableStep.empty();
   }
 
   @Act
   @WithName("step name")
-  static RunnableStep aaaKeywordAnnotationWithoutNameAndWithNameAnnotation() {
+  static RunnableStep aaaActAnnotationWithWithNameAnnotation() {
     return RunnableStep.empty();
   }
 
   @Assert("custom name")
-  static RunnableStep aaaKeywordAnnotationWithName() {
+  static RunnableStep aaaAssertAnnotationWithName() {
     return RunnableStep.empty();
   }
 
   @SetUp("custom name")
   @Step("step name")
-  static RunnableStep aaaKeywordAnnotationWithNameAndStepAnnotation() {
+  static RunnableStep aaaSetUpAnnotationWithNameAndStepAnnotation() {
     return RunnableStep.empty();
   }
 
   @TearDown("custom name")
   @WithName("step name")
-  static RunnableStep aaaKeywordAnnotationWithNameAndWithNameAnnotation() {
+  static RunnableStep aaaTearDownAnnotationWithNameAndWithNameAnnotation() {
+    return RunnableStep.empty();
+  }
+
+  @___
+  static RunnableStep aaaAsteriskAnnotationWithoutName() {
+    return RunnableStep.empty();
+  }
+
+  @___("custom name")
+  static RunnableStep aaaAsteriskAnnotationWithName() {
     return RunnableStep.empty();
   }
 }

@@ -44,11 +44,22 @@ import static org.stebz.core.attribute.StepAttribute.KEYWORD;
 import static org.stebz.core.attribute.StepAttribute.NAME;
 
 /**
- * Arrange-Act-Assert annotations {@link StebzExtension}.
+ * Arrange-Act-Assert annotations {@link StebzExtension}. Applies an Arrange-Act-Assert keyword to steps annotated
+ * with one of the Arrange-Act-Assert keyword annotations.
+ * <p>This extension is configured with values of the following properties (a missing or blank property value is
+ * treated as a missing one, the default value is used instead):
+ * <ul>
+ *   <li>{@code stebz.aaa.annotation.enabled} — extension enabled flag, default value: {@code true}</li>
+ *   <li>{@code stebz.aaa.annotation.order} — extension order, default value: {@code MID_EARLY_ORDER}</li>
+ * </ul>
+ * <p>If this extension is not registered in the Stebz framework, Arrange-Act-Assert keyword annotations have no
+ * effect.
  */
 public class AAAAnnotations implements InterceptStep {
   /**
    * Arrange-Act-Assert keyword annotation attribute.
+   * <p>The attribute value is populated automatically by the Stebz annotations aspect for steps with one of the
+   * Arrange-Act-Assert keyword annotations.
    *
    * @see SetUp
    * @see TearDown
@@ -84,6 +95,8 @@ public class AAAAnnotations implements InterceptStep {
 
   /**
    * Ctor.
+   *
+   * @throws IllegalStateException if the Stebz framework startup process has not started yet or is already complete
    */
   public AAAAnnotations() {
     this(StartupPropertiesReader.get());
