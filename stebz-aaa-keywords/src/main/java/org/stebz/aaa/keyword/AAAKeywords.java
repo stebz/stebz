@@ -31,19 +31,28 @@ import org.stebz.util.property.PropertiesReader;
 
 /**
  * Stebz Arrange-Act-Assert keywords extension.
+ * <p>Keywords are initialized once with values of the following properties (a missing or blank property value is
+ * treated as a missing one, the default value is used instead):
+ * <ul>
+ *   <li>{@code stebz.aaa.keyword.setUp} — default value: {@code Set Up:}</li>
+ *   <li>{@code stebz.aaa.keyword.tearDown} — default value: {@code Tear Down:}</li>
+ *   <li>{@code stebz.aaa.keyword.arrange} — default value: {@code Arrange:}</li>
+ *   <li>{@code stebz.aaa.keyword.act} — default value: {@code Act:}</li>
+ *   <li>{@code stebz.aaa.keyword.assert} — default value: {@code Assert:}</li>
+ *   <li>{@code stebz.aaa.keyword.asterisk} — default value: {@code *}</li>
+ * </ul>
+ * <p>If a keyword accessor is called while the Stebz framework startup process is in progress, keyword values are read
+ * from the startup properties even if this extension has not been instantiated yet.
+ * <p>If this extension is not registered in the Stebz framework, keyword accessors throw {@code IllegalStateException}.
  */
 public final class AAAKeywords implements StebzExtension {
   private static final Object LOCK = new Object();
-  private static final String SET_UP_KEYWORD_DEFAULT_VALUE = "Set Up:";
-  private static final String TEAR_DOWN_KEYWORD_DEFAULT_VALUE = "Tear Down:";
-  private static final String ARRANGE_KEYWORD_DEFAULT_VALUE = "Arrange:";
-  private static final String ACT_KEYWORD_DEFAULT_VALUE = "Act:";
-  private static final String ASSERT_KEYWORD_DEFAULT_VALUE = "Assert:";
-  private static final String ASTERISK_KEYWORD_DEFAULT_VALUE = "*";
   private static volatile Keywords keywords = null;
 
   /**
    * Ctor.
+   *
+   * @throws IllegalStateException if the Stebz framework startup process has not started yet or is already complete
    */
   public AAAKeywords() {
     this(StartupPropertiesReader.get());
@@ -55,14 +64,7 @@ public final class AAAKeywords implements StebzExtension {
    * @param properties the properties reader
    */
   private AAAKeywords(final PropertiesReader properties) {
-    setKeywordsOnce(new Keywords(
-      new Keyword.Of(properties.getString("stebz.aaa.keyword.setUp", SET_UP_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.aaa.keyword.tearDown", TEAR_DOWN_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.aaa.keyword.arrange", ARRANGE_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.aaa.keyword.act", ACT_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.aaa.keyword.assert", ASSERT_KEYWORD_DEFAULT_VALUE)),
-      new Keyword.Of(properties.getString("stebz.aaa.keyword.asterisk", ASTERISK_KEYWORD_DEFAULT_VALUE))
-    ));
+    setKeywordsOnce(readKeywords(properties));
   }
 
   /**
@@ -136,28 +138,28 @@ public final class AAAKeywords implements StebzExtension {
 
   private static Keywords getKeywords() {
     if (keywords == null) {
-      StepExecutor.get();
+      final PropertiesReader startupProperties = StartupPropertiesReader.getOrNull();
+      if (startupProperties != null) {
+        setKeywordsOnce(readKeywords(startupProperties));
+      }
       if (keywords == null) {
-        synchronized (LOCK) {
-          if (keywords == null) {
-            final Keywords defaultKeywords = defaultKeywords();
-            keywords = defaultKeywords;
-            return defaultKeywords;
-          }
-        }
+        StepExecutor.get();
+      }
+      if (keywords == null) {
+        throw new IllegalStateException("AAAKeywords extension is not registered in the Stebz framework");
       }
     }
     return keywords;
   }
 
-  private static Keywords defaultKeywords() {
+  private static Keywords readKeywords(final PropertiesReader properties) {
     return new Keywords(
-      new Keyword.Of(SET_UP_KEYWORD_DEFAULT_VALUE),
-      new Keyword.Of(TEAR_DOWN_KEYWORD_DEFAULT_VALUE),
-      new Keyword.Of(ARRANGE_KEYWORD_DEFAULT_VALUE),
-      new Keyword.Of(ACT_KEYWORD_DEFAULT_VALUE),
-      new Keyword.Of(ASSERT_KEYWORD_DEFAULT_VALUE),
-      new Keyword.Of(ASTERISK_KEYWORD_DEFAULT_VALUE)
+      new Keyword.Of(properties.getString("stebz.aaa.keyword.setUp", "Set Up:")),
+      new Keyword.Of(properties.getString("stebz.aaa.keyword.tearDown", "Tear Down:")),
+      new Keyword.Of(properties.getString("stebz.aaa.keyword.arrange", "Arrange:")),
+      new Keyword.Of(properties.getString("stebz.aaa.keyword.act", "Act:")),
+      new Keyword.Of(properties.getString("stebz.aaa.keyword.assert", "Assert:")),
+      new Keyword.Of(properties.getString("stebz.aaa.keyword.asterisk", "*"))
     );
   }
 

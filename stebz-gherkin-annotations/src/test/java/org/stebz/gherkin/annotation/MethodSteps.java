@@ -27,36 +27,59 @@ import org.stebz.annotation.Step;
 import org.stebz.annotation.WithName;
 import org.stebz.core.step.executable.RunnableStep;
 
+/**
+ * Step methods with Gherkin keyword annotations, used as annotation instances source.
+ */
 final class MethodSteps {
 
   MethodSteps() {
   }
 
-  @Given
-  static RunnableStep gherkinKeywordAnnotationWithoutName() {
+  @Background
+  static RunnableStep gherkinBackgroundAnnotationWithoutName() {
     return RunnableStep.empty();
   }
 
-  @But
+  @Rule
   @WithName("step name")
-  static RunnableStep gherkinKeywordAnnotationWithoutNameAndWithNameAnnotation() {
+  static RunnableStep gherkinRuleAnnotationWithWithNameAnnotation() {
+    return RunnableStep.empty();
+  }
+
+  @Given
+  static RunnableStep gherkinGivenAnnotationWithoutName() {
     return RunnableStep.empty();
   }
 
   @When("custom name")
-  static RunnableStep gherkinKeywordAnnotationWithName() {
+  static RunnableStep gherkinWhenAnnotationWithName() {
     return RunnableStep.empty();
   }
 
   @Then("custom name")
   @Step("step name")
-  static RunnableStep gherkinKeywordAnnotationWithNameAndStepAnnotation() {
+  static RunnableStep gherkinThenAnnotationWithNameAndStepAnnotation() {
     return RunnableStep.empty();
   }
 
   @And("custom name")
   @WithName("step name")
-  static RunnableStep gherkinKeywordAnnotationWithNameAndWithNameAnnotation() {
+  static RunnableStep gherkinAndAnnotationWithNameAndWithNameAnnotation() {
+    return RunnableStep.empty();
+  }
+
+  @But
+  static RunnableStep gherkinButAnnotationWithoutName() {
+    return RunnableStep.empty();
+  }
+
+  @___
+  static RunnableStep gherkinAsteriskAnnotationWithoutName() {
+    return RunnableStep.empty();
+  }
+
+  @Technical("custom name")
+  static RunnableStep gherkinTechnicalAnnotationWithName() {
     return RunnableStep.empty();
   }
 }

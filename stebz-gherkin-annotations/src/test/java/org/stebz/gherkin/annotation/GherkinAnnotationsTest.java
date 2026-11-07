@@ -35,7 +35,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.stebz.gherkin.annotation.GherkinAnnotations.GHERKIN_KEYWORD;
 
 /**
- * Tests for {@link GherkinAnnotations}.
+ * Integration tests for {@link GherkinAnnotations}: step annotation processing by the Stebz annotations aspect and
+ * the extension step interception.
  */
 final class GherkinAnnotationsTest {
 
@@ -44,9 +45,48 @@ final class GherkinAnnotationsTest {
     StaticStepListener.clear();
   }
 
+  private static void assertExecutedStep(final RunnableStep step,
+                                         final String expectedKeywordValue,
+                                         final String expectedName) {
+    StepExecutor.get().execute(step);
+    final StepObj<?> stepFromListener = StaticStepListener.lastStep;
+    assertThat(stepFromListener)
+      .isNotNull();
+    assertThat(stepFromListener.getKeyword().value())
+      .isEqualTo(expectedKeywordValue);
+    assertThat(stepFromListener.getName())
+      .isEqualTo(expectedName);
+  }
+
   @Test
-  void gherkinKeywordAnnotationWithoutName() {
-    final RunnableStep step = MethodSteps.gherkinKeywordAnnotationWithoutName();
+  void backgroundAnnotationWithoutName() {
+    final RunnableStep step = MethodSteps.gherkinBackgroundAnnotationWithoutName();
+
+    final Annotation annotation = step.get(GHERKIN_KEYWORD);
+    assertThat(annotation)
+      .isInstanceOf(Background.class);
+    assertThat(((Background) annotation).value())
+      .isEmpty();
+
+    assertExecutedStep(step, "Background:", "gherkinBackgroundAnnotationWithoutName");
+  }
+
+  @Test
+  void ruleAnnotationWithWithNameAnnotation() {
+    final RunnableStep step = MethodSteps.gherkinRuleAnnotationWithWithNameAnnotation();
+
+    final Annotation annotation = step.get(GHERKIN_KEYWORD);
+    assertThat(annotation)
+      .isInstanceOf(Rule.class);
+    assertThat(((Rule) annotation).value())
+      .isEmpty();
+
+    assertExecutedStep(step, "Rule:", "step name");
+  }
+
+  @Test
+  void givenAnnotationWithoutName() {
+    final RunnableStep step = MethodSteps.gherkinGivenAnnotationWithoutName();
 
     final Annotation annotation = step.get(GHERKIN_KEYWORD);
     assertThat(annotation)
@@ -54,39 +94,12 @@ final class GherkinAnnotationsTest {
     assertThat(((Given) annotation).value())
       .isEmpty();
 
-    StepExecutor.get().execute(step);
-    final StepObj<?> stepFromListener = StaticStepListener.lastStep;
-    assertThat(stepFromListener)
-      .isNotNull();
-    assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("Given");
-    assertThat(stepFromListener.getName())
-      .isEqualTo("gherkinKeywordAnnotationWithoutName");
+    assertExecutedStep(step, "Given", "gherkinGivenAnnotationWithoutName");
   }
 
   @Test
-  void gherkinKeywordAnnotationWithoutNameAndWithNameAnnotation() {
-    final RunnableStep step = MethodSteps.gherkinKeywordAnnotationWithoutNameAndWithNameAnnotation();
-
-    final Annotation annotation = step.get(GHERKIN_KEYWORD);
-    assertThat(annotation)
-      .isInstanceOf(But.class);
-    assertThat(((But) annotation).value())
-      .isEmpty();
-
-    StepExecutor.get().execute(step);
-    final StepObj<?> stepFromListener = StaticStepListener.lastStep;
-    assertThat(stepFromListener)
-      .isNotNull();
-    assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("But");
-    assertThat(stepFromListener.getName())
-      .isEqualTo("step name");
-  }
-
-  @Test
-  void gherkinKeywordAnnotationWithName() {
-    final RunnableStep step = MethodSteps.gherkinKeywordAnnotationWithName();
+  void whenAnnotationWithName() {
+    final RunnableStep step = MethodSteps.gherkinWhenAnnotationWithName();
 
     final Annotation annotation = step.get(GHERKIN_KEYWORD);
     assertThat(annotation)
@@ -94,19 +107,12 @@ final class GherkinAnnotationsTest {
     assertThat(((When) annotation).value())
       .isEqualTo("custom name");
 
-    StepExecutor.get().execute(step);
-    final StepObj<?> stepFromListener = StaticStepListener.lastStep;
-    assertThat(stepFromListener)
-      .isNotNull();
-    assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("When");
-    assertThat(stepFromListener.getName())
-      .isEqualTo("custom name");
+    assertExecutedStep(step, "When", "custom name");
   }
 
   @Test
-  void gherkinKeywordAnnotationWithNameAndStepAnnotation() {
-    final RunnableStep step = MethodSteps.gherkinKeywordAnnotationWithNameAndStepAnnotation();
+  void thenAnnotationWithNameAndStepAnnotation() {
+    final RunnableStep step = MethodSteps.gherkinThenAnnotationWithNameAndStepAnnotation();
 
     final Annotation annotation = step.get(GHERKIN_KEYWORD);
     assertThat(annotation)
@@ -114,19 +120,12 @@ final class GherkinAnnotationsTest {
     assertThat(((Then) annotation).value())
       .isEqualTo("custom name");
 
-    StepExecutor.get().execute(step);
-    final StepObj<?> stepFromListener = StaticStepListener.lastStep;
-    assertThat(stepFromListener)
-      .isNotNull();
-    assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("Then");
-    assertThat(stepFromListener.getName())
-      .isEqualTo("custom name");
+    assertExecutedStep(step, "Then", "custom name");
   }
 
   @Test
-  void gherkinKeywordAnnotationWithNameAndWithNameAnnotation() {
-    final RunnableStep step = MethodSteps.gherkinKeywordAnnotationWithNameAndWithNameAnnotation();
+  void andAnnotationWithNameAndWithNameAnnotation() {
+    final RunnableStep step = MethodSteps.gherkinAndAnnotationWithNameAndWithNameAnnotation();
 
     final Annotation annotation = step.get(GHERKIN_KEYWORD);
     assertThat(annotation)
@@ -134,13 +133,45 @@ final class GherkinAnnotationsTest {
     assertThat(((And) annotation).value())
       .isEqualTo("custom name");
 
-    StepExecutor.get().execute(step);
-    final StepObj<?> stepFromListener = StaticStepListener.lastStep;
-    assertThat(stepFromListener)
-      .isNotNull();
-    assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("And");
-    assertThat(stepFromListener.getName())
+    assertExecutedStep(step, "And", "custom name");
+  }
+
+  @Test
+  void butAnnotationWithoutName() {
+    final RunnableStep step = MethodSteps.gherkinButAnnotationWithoutName();
+
+    final Annotation annotation = step.get(GHERKIN_KEYWORD);
+    assertThat(annotation)
+      .isInstanceOf(But.class);
+    assertThat(((But) annotation).value())
+      .isEmpty();
+
+    assertExecutedStep(step, "But", "gherkinButAnnotationWithoutName");
+  }
+
+  @Test
+  void asteriskAnnotationWithoutName() {
+    final RunnableStep step = MethodSteps.gherkinAsteriskAnnotationWithoutName();
+
+    final Annotation annotation = step.get(GHERKIN_KEYWORD);
+    assertThat(annotation)
+      .isInstanceOf(___.class);
+    assertThat(((___) annotation).value())
+      .isEmpty();
+
+    assertExecutedStep(step, "*", "gherkinAsteriskAnnotationWithoutName");
+  }
+
+  @Test
+  void technicalAnnotationWithName() {
+    final RunnableStep step = MethodSteps.gherkinTechnicalAnnotationWithName();
+
+    final Annotation annotation = step.get(GHERKIN_KEYWORD);
+    assertThat(annotation)
+      .isInstanceOf(Technical.class);
+    assertThat(((Technical) annotation).value())
       .isEqualTo("custom name");
+
+    assertExecutedStep(step, "Technical:", "custom name");
   }
 }

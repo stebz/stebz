@@ -35,7 +35,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.stebz.aaa.annotation.AAAAnnotations.AAA_KEYWORD;
 
 /**
- * Tests for {@link AAAAnnotations}.
+ * Integration tests for {@link AAAAnnotations}: step annotation processing by the Stebz annotations aspect and the
+ * extension step interception.
  */
 final class AAAAnnotationsTest {
 
@@ -44,9 +45,22 @@ final class AAAAnnotationsTest {
     StaticStepListener.clear();
   }
 
+  private static void assertExecutedStep(final RunnableStep step,
+                                         final String expectedKeywordValue,
+                                         final String expectedName) {
+    StepExecutor.get().execute(step);
+    final StepObj<?> stepFromListener = StaticStepListener.lastStep;
+    assertThat(stepFromListener)
+      .isNotNull();
+    assertThat(stepFromListener.getKeyword().value())
+      .isEqualTo(expectedKeywordValue);
+    assertThat(stepFromListener.getName())
+      .isEqualTo(expectedName);
+  }
+
   @Test
-  void aaaKeywordAnnotationWithoutName() {
-    final RunnableStep step = MethodSteps.aaaKeywordAnnotationWithoutName();
+  void arrangeAnnotationWithoutName() {
+    final RunnableStep step = MethodSteps.aaaArrangeAnnotationWithoutName();
 
     final Annotation annotation = step.get(AAA_KEYWORD);
     assertThat(annotation)
@@ -54,19 +68,12 @@ final class AAAAnnotationsTest {
     assertThat(((Arrange) annotation).value())
       .isEmpty();
 
-    StepExecutor.get().execute(step);
-    final StepObj<?> stepFromListener = StaticStepListener.lastStep;
-    assertThat(stepFromListener)
-      .isNotNull();
-    assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("Arrange:");
-    assertThat(stepFromListener.getName())
-      .isEqualTo("aaaKeywordAnnotationWithoutName");
+    assertExecutedStep(step, "Arrange:", "aaaArrangeAnnotationWithoutName");
   }
 
   @Test
-  void aaaKeywordAnnotationWithoutNameAndWithNameAnnotation() {
-    final RunnableStep step = MethodSteps.aaaKeywordAnnotationWithoutNameAndWithNameAnnotation();
+  void actAnnotationWithWithNameAnnotation() {
+    final RunnableStep step = MethodSteps.aaaActAnnotationWithWithNameAnnotation();
 
     final Annotation annotation = step.get(AAA_KEYWORD);
     assertThat(annotation)
@@ -74,19 +81,12 @@ final class AAAAnnotationsTest {
     assertThat(((Act) annotation).value())
       .isEmpty();
 
-    StepExecutor.get().execute(step);
-    final StepObj<?> stepFromListener = StaticStepListener.lastStep;
-    assertThat(stepFromListener)
-      .isNotNull();
-    assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("Act:");
-    assertThat(stepFromListener.getName())
-      .isEqualTo("step name");
+    assertExecutedStep(step, "Act:", "step name");
   }
 
   @Test
-  void aaaKeywordAnnotationWithName() {
-    final RunnableStep step = MethodSteps.aaaKeywordAnnotationWithName();
+  void assertAnnotationWithName() {
+    final RunnableStep step = MethodSteps.aaaAssertAnnotationWithName();
 
     final Annotation annotation = step.get(AAA_KEYWORD);
     assertThat(annotation)
@@ -94,19 +94,12 @@ final class AAAAnnotationsTest {
     assertThat(((Assert) annotation).value())
       .isEqualTo("custom name");
 
-    StepExecutor.get().execute(step);
-    final StepObj<?> stepFromListener = StaticStepListener.lastStep;
-    assertThat(stepFromListener)
-      .isNotNull();
-    assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("Assert:");
-    assertThat(stepFromListener.getName())
-      .isEqualTo("custom name");
+    assertExecutedStep(step, "Assert:", "custom name");
   }
 
   @Test
-  void aaaKeywordAnnotationWithNameAndStepAnnotation() {
-    final RunnableStep step = MethodSteps.aaaKeywordAnnotationWithNameAndStepAnnotation();
+  void setUpAnnotationWithNameAndStepAnnotation() {
+    final RunnableStep step = MethodSteps.aaaSetUpAnnotationWithNameAndStepAnnotation();
 
     final Annotation annotation = step.get(AAA_KEYWORD);
     assertThat(annotation)
@@ -114,19 +107,12 @@ final class AAAAnnotationsTest {
     assertThat(((SetUp) annotation).value())
       .isEqualTo("custom name");
 
-    StepExecutor.get().execute(step);
-    final StepObj<?> stepFromListener = StaticStepListener.lastStep;
-    assertThat(stepFromListener)
-      .isNotNull();
-    assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("Set Up:");
-    assertThat(stepFromListener.getName())
-      .isEqualTo("custom name");
+    assertExecutedStep(step, "Set Up:", "custom name");
   }
 
   @Test
-  void aaaKeywordAnnotationWithNameAndWithNameAnnotation() {
-    final RunnableStep step = MethodSteps.aaaKeywordAnnotationWithNameAndWithNameAnnotation();
+  void tearDownAnnotationWithNameAndWithNameAnnotation() {
+    final RunnableStep step = MethodSteps.aaaTearDownAnnotationWithNameAndWithNameAnnotation();
 
     final Annotation annotation = step.get(AAA_KEYWORD);
     assertThat(annotation)
@@ -134,13 +120,32 @@ final class AAAAnnotationsTest {
     assertThat(((TearDown) annotation).value())
       .isEqualTo("custom name");
 
-    StepExecutor.get().execute(step);
-    final StepObj<?> stepFromListener = StaticStepListener.lastStep;
-    assertThat(stepFromListener)
-      .isNotNull();
-    assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("Tear Down:");
-    assertThat(stepFromListener.getName())
+    assertExecutedStep(step, "Tear Down:", "custom name");
+  }
+
+  @Test
+  void asteriskAnnotationWithoutName() {
+    final RunnableStep step = MethodSteps.aaaAsteriskAnnotationWithoutName();
+
+    final Annotation annotation = step.get(AAA_KEYWORD);
+    assertThat(annotation)
+      .isInstanceOf(___.class);
+    assertThat(((___) annotation).value())
+      .isEmpty();
+
+    assertExecutedStep(step, "*", "aaaAsteriskAnnotationWithoutName");
+  }
+
+  @Test
+  void asteriskAnnotationWithName() {
+    final RunnableStep step = MethodSteps.aaaAsteriskAnnotationWithName();
+
+    final Annotation annotation = step.get(AAA_KEYWORD);
+    assertThat(annotation)
+      .isInstanceOf(___.class);
+    assertThat(((___) annotation).value())
       .isEqualTo("custom name");
+
+    assertExecutedStep(step, "*", "custom name");
   }
 }

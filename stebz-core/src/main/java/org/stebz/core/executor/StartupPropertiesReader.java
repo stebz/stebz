@@ -38,6 +38,16 @@ public final class StartupPropertiesReader {
   }
 
   /**
+   * Returns Stebz framework initialization {@code PropertiesReader} if the Stebz framework startup process is in
+   * progress, and {@code null} otherwise.
+   *
+   * @return Stebz framework initialization {@code PropertiesReader} or {@code null}
+   */
+  public static PropertiesReader getOrNull() {
+    return instance;
+  }
+
+  /**
    * Returns Stebz framework initialization {@code PropertiesReader}.
    *
    * @return Stebz framework initialization {@code PropertiesReader}

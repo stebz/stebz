@@ -44,11 +44,21 @@ import static org.stebz.core.attribute.StepAttribute.KEYWORD;
 import static org.stebz.core.attribute.StepAttribute.NAME;
 
 /**
- * Gherkin annotations {@link StebzExtension}.
+ * Gherkin annotations {@link StebzExtension}. Applies a Gherkin keyword to steps annotated with one of the Gherkin
+ * keyword annotations.
+ * <p>This extension is configured with values of the following properties (a missing or blank property value is
+ * treated as a missing one, the default value is used instead):
+ * <ul>
+ *   <li>{@code stebz.gherkin.annotation.enabled} — extension enabled flag, default value: {@code true}</li>
+ *   <li>{@code stebz.gherkin.annotation.order} — extension order, default value: {@code MID_EARLY_ORDER}</li>
+ * </ul>
+ * <p>If this extension is not registered in the Stebz framework, Gherkin keyword annotations have no effect.
  */
 public class GherkinAnnotations implements InterceptStep {
   /**
    * Gherkin keyword annotation attribute.
+   * <p>The attribute value is populated automatically by the Stebz annotations aspect for steps with one of the
+   * Gherkin keyword annotations.
    *
    * @see Background
    * @see Rule
@@ -94,6 +104,8 @@ public class GherkinAnnotations implements InterceptStep {
 
   /**
    * Ctor.
+   *
+   * @throws IllegalStateException if the Stebz framework startup process has not started yet or is already complete
    */
   public GherkinAnnotations() {
     this(StartupPropertiesReader.get());
