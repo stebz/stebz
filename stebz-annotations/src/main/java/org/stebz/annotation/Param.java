@@ -32,8 +32,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Parameter annotation. Allows to change the step parameters specified through the {@link WithParams} annotation via
- * {@link StepAspects}.
+ * Parameter annotation. Allows to add or override step parameters of a method or constructor via {@link StepAspects}.
  */
 @Documented
 @Target({ElementType.PARAMETER})
@@ -55,7 +54,7 @@ public @interface Param {
   String name() default "";
 
   /**
-   * Returns parameter value.
+   * Returns parameter value. An empty value means that the actual method or constructor argument is used.
    *
    * @return parameter value
    */

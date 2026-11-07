@@ -41,7 +41,7 @@ public final class ReflectiveStepAttributes {
     SimpleStepAttribute.nullable("reflective:join_point");
 
   /**
-   * Step source step attribute.
+   * Step source type step attribute.
    *
    * @see #STEP_SOURCE
    */

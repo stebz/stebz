@@ -76,7 +76,8 @@ public @interface WithParam {
   boolean masked() default false;
 
   /**
-   * Step attribute annotation. Adds several parameters to a step. Mapped to {@link StepAttribute#PARAMS} attribute.
+   * Step attribute annotation. Adds several parameters to a step. Maps to {@link StepAttribute#PARAMS} attribute via
+   * {@link StepAspects}.
    *
    * @see WithParam
    * @see StepAttribute#PARAMS

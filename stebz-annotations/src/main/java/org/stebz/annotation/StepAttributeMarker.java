@@ -55,7 +55,8 @@ import java.lang.annotation.Target;
 public @interface StepAttributeMarker {
 
   /**
-   * Returns attribute key.
+   * Returns attribute key. Default value {@link MarkedAnnotation} means that the marked annotation type is used as the
+   * attribute key.
    *
    * @return attribute key
    */

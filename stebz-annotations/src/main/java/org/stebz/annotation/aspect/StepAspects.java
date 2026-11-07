@@ -97,6 +97,7 @@ public class StepAspects {
   private static final ThreadLocal<QuickStepMode> QUICK_STEP_MODE = new ThreadLocal<>();
   private static final ThreadLocal<StepAttributes> CAPTURED_ATTRIBUTES = new ThreadLocal<>();
   private static final ThreadLocal<ProceedingJoinPoint> CAPTURED_JOINT_POINT = new ThreadLocal<>();
+  private static final ThreadLocal<CaptureState> CAPTURE_STATE = new ThreadLocal<>();
 
   /**
    * Ctor.
@@ -109,7 +110,7 @@ public class StepAspects {
    *
    * @param joinPoint the joint point
    * @return step with attributes
-   * @throws Throwable never
+   * @throws Throwable if the field getter throws an exception
    */
   @Around("get(@(@org.stebz.annotation.StepAttributeMarker *) org.stebz.core.step.StepObj+ *)")
   public Object fieldStepObjWithAttributes(final ProceedingJoinPoint joinPoint) throws Throwable {
@@ -182,11 +183,10 @@ public class StepAspects {
    * Executes method as step.
    *
    * @param joinPoint the joint point
-   * @return method result
+   * @return method result or {@code null} if the method returns {@code void} or if the step is captured
    * @throws Throwable if the method throws an exception
    */
-  @Around("execution(@(@org.stebz.annotation.StepAttributeMarker *) !org.stebz.core.step.StepObj+ *(..))" +
-    " || execution(!org.stebz.core.step.StepObj+ *(.., @org.stebz.annotation.Param (*), ..))")
+  @Around("execution(@(@org.stebz.annotation.StepAttributeMarker *) !org.stebz.core.step.StepObj+ *(..))")
   public Object quickMethodStep(final ProceedingJoinPoint joinPoint) throws Throwable {
     final QuickStepMode quickStepMode = QUICK_STEP_MODE.get();
     if (quickStepMode == QuickStepMode.IGNORE) {
@@ -228,8 +228,7 @@ public class StepAspects {
    * @return constructor result
    * @throws Throwable if the constructor throws an exception
    */
-  @Around("execution(@(@org.stebz.annotation.StepAttributeMarker *) !org.stebz.core.step.StepObj+.new(..))" +
-    " || execution(!org.stebz.core.step.StepObj+.new(.., @org.stebz.annotation.Param (*), ..))")
+  @Around("execution(@(@org.stebz.annotation.StepAttributeMarker *) !org.stebz.core.step.StepObj+.new(..))")
   public Object quickCtorStep(final ProceedingJoinPoint joinPoint) throws Throwable {
     final QuickStepMode quickStepMode = QUICK_STEP_MODE.get();
     if (quickStepMode == QuickStepMode.IGNORE) {
@@ -272,13 +271,45 @@ public class StepAspects {
   }
 
   static void enableCaptureMode() {
+    CAPTURE_STATE.set(new CaptureState(
+      QUICK_STEP_MODE.get(),
+      CAPTURED_ATTRIBUTES.get(),
+      CAPTURED_JOINT_POINT.get(),
+      CAPTURE_STATE.get()
+    ));
     QUICK_STEP_MODE.set(QuickStepMode.CAPTURE);
+    CAPTURED_ATTRIBUTES.remove();
+    CAPTURED_JOINT_POINT.remove();
   }
 
   static void disableCaptureMode() {
-    QUICK_STEP_MODE.remove();
-    CAPTURED_ATTRIBUTES.remove();
-    CAPTURED_JOINT_POINT.remove();
+    final CaptureState captureState = CAPTURE_STATE.get();
+    if (captureState == null) {
+      QUICK_STEP_MODE.remove();
+      CAPTURED_ATTRIBUTES.remove();
+      CAPTURED_JOINT_POINT.remove();
+      return;
+    }
+    if (captureState.previousState == null) {
+      CAPTURE_STATE.remove();
+    } else {
+      CAPTURE_STATE.set(captureState.previousState);
+    }
+    if (captureState.quickStepMode == null) {
+      QUICK_STEP_MODE.remove();
+    } else {
+      QUICK_STEP_MODE.set(captureState.quickStepMode);
+    }
+    if (captureState.capturedAttributes == null) {
+      CAPTURED_ATTRIBUTES.remove();
+    } else {
+      CAPTURED_ATTRIBUTES.set(captureState.capturedAttributes);
+    }
+    if (captureState.capturedJointPoint == null) {
+      CAPTURED_JOINT_POINT.remove();
+    } else {
+      CAPTURED_JOINT_POINT.set(captureState.capturedJointPoint);
+    }
   }
 
   static StepAttributes capturedAttributes() {
@@ -436,10 +467,13 @@ public class StepAspects {
     if (values != null && values.length != 0) {
       final boolean addByDefault = annotations.containsKey(WithParams.class) || annotations.containsKey(Step.class);
       for (int idx = 0; idx < parameters.length; idx++) {
+        final String paramName = names != null && names[idx] != null
+          ? names[idx]
+          : "arg" + idx;
         final Param annot = parameters[idx].getAnnotation(Param.class);
         if (annot == null) {
           if (addByDefault) {
-            paramsMap.put(names[idx], values[idx]);
+            paramsMap.put(paramName, values[idx]);
           }
         } else {
           if (annot.hidden()) {
@@ -450,7 +484,7 @@ public class StepAspects {
               ? annot.value()
               : !annot.name().isEmpty()
               ? annot.name()
-              : names[idx],
+              : paramName,
             annot.masked()
               ? PARAM_VALUE_MASK
               : !annot.val().isEmpty()
@@ -501,6 +535,23 @@ public class StepAspects {
     CAPTURE,
     FORBIDDEN_CAPTURE,
     IGNORE
+  }
+
+  private static final class CaptureState {
+    private final QuickStepMode quickStepMode;
+    private final StepAttributes capturedAttributes;
+    private final ProceedingJoinPoint capturedJointPoint;
+    private final CaptureState previousState;
+
+    private CaptureState(final QuickStepMode quickStepMode,
+                         final StepAttributes capturedAttributes,
+                         final ProceedingJoinPoint capturedJointPoint,
+                         final CaptureState previousState) {
+      this.quickStepMode = quickStepMode;
+      this.capturedAttributes = capturedAttributes;
+      this.capturedJointPoint = capturedJointPoint;
+      this.previousState = previousState;
+    }
   }
 
   private static final class StepAttributesSetters {
