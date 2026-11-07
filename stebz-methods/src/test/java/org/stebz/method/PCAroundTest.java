@@ -23,14 +23,26 @@
  */
 package org.stebz.method;
 
+import dev.jlet.function.ThrowingConsumer;
+import dev.jlet.function.ThrowingFunction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.stebz.core.attribute.Keyword;
 import org.stebz.core.executor.StepExecutor;
 import org.stebz.core.step.StepObj;
 import org.stebz.core.step.executable.ConsumerStep;
+import org.stebz.core.step.executable.FunctionStep;
+import org.stebz.core.step.executable.RunnableStep;
+import org.stebz.core.step.executable.SupplierStep;
 import org.stebz.util.container.NullableOptional;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Tests for {@link PCAround}.
@@ -42,18 +54,527 @@ final class PCAroundTest {
     StaticStepListener.clear();
   }
 
-  @Test
-  void stepMethodWithConsumerStep() {
-    final String context = "context value";
-    final PCAround<String> around = new PCAround.Of<>(StepExecutor.get(), context);
-    final ConsumerStep<String> originStep = ConsumerStep.empty();
+  private static PCAround<String> around() {
+    return new PCAround.Of<>(StepExecutor.get(), "context value");
+  }
 
-    around.Step(originStep);
-    final StepObj<?> stepFromListener = StaticStepListener.lastStep;
-    assertThat(stepFromListener)
+  private static StepObj<?> executedStep() {
+    return StaticStepListener.lastStep;
+  }
+
+  private static Map<String, Object> params() {
+    final Map<String, Object> params = new LinkedHashMap<>();
+    params.put("param name", "param value");
+    return params;
+  }
+
+  @Test
+  void ctorThrowsNPEOnNullExecutor() {
+    assertThatThrownBy(() -> new PCAround.Of<>(null, "context value"))
+      .isInstanceOf(NullPointerException.class)
+      .hasMessage("executor arg is null");
+  }
+
+  @Test
+  void stepMethodExecutesGivenRunnableStepAndReturnsSameAroundObject() {
+    final PCAround<String> around = around();
+    final List<String> bodies = new ArrayList<>();
+    final RunnableStep originStep = new RunnableStep.Of(() -> bodies.add("step body"));
+
+    final PCAround<String> result = around.Step(originStep);
+
+    assertThat(result)
+      .isSameAs(around);
+    assertThat(StaticStepListener.lastStep)
       .isSameAs(originStep);
-    final NullableOptional<Object> contextFromListener = StaticStepListener.lastContext;
-    assertThat(contextFromListener)
-      .isEqualTo(NullableOptional.of(context));
+    assertThat(bodies).containsExactly("step body");
+    assertThat(StaticStepListener.lastContext)
+      .isEqualTo(NullableOptional.empty());
+  }
+
+  @Test
+  void stepMethodExecutesGivenRunnableStepWithKeyword() {
+    final RunnableStep originStep = new RunnableStep.Of("origin name", () -> { });
+
+    around().Step(Keyword.of("Given"), originStep);
+
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("Given"));
+    assertThat(executedStep().getName()).isEqualTo("origin name");
+  }
+
+  @Test
+  void stepMethodExecutesGivenRunnableStepWithName() {
+    final RunnableStep originStep = new RunnableStep.Of("origin name", () -> { });
+
+    around().Step("new name", originStep);
+
+    assertThat(executedStep().getName()).isEqualTo("new name");
+  }
+
+  @Test
+  void stepMethodExecutesGivenRunnableStepWithNameCreatedByNameGenerator() {
+    final RunnableStep originStep = new RunnableStep.Of("origin name", () -> { });
+    final ThrowingFunction<? super String, String, ?> nameGenerator = n -> n + " suffix";
+
+    around().Step(nameGenerator, originStep);
+
+    assertThat(executedStep().getName()).isEqualTo("origin name suffix");
+  }
+
+  @Test
+  void stepMethodExecutesGivenRunnableStepWithKeywordAndName() {
+    final RunnableStep originStep = new RunnableStep.Of("origin name", () -> { });
+
+    around().Step(Keyword.of("When"), "new name", originStep);
+
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("When"));
+    assertThat(executedStep().getName()).isEqualTo("new name");
+  }
+
+  @Test
+  void stepMethodExecutesGivenSupplierStepAndReturnsStepResult() {
+    final SupplierStep<String> originStep = new SupplierStep.Of<>(() -> "step result");
+
+    final String result = around().Step(originStep);
+
+    assertThat(result).isEqualTo("step result");
+    assertThat(StaticStepListener.lastResult)
+      .isEqualTo(NullableOptional.of("step result"));
+  }
+
+  @Test
+  void stepMethodExecutesGivenSupplierStepWithKeywordAndReturnsStepResult() {
+    final SupplierStep<String> originStep = new SupplierStep.Of<>("origin name", () -> "step result");
+
+    final String result = around().Step(Keyword.of("Given"), originStep);
+
+    assertThat(result).isEqualTo("step result");
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("Given"));
+    assertThat(executedStep().getName()).isEqualTo("origin name");
+  }
+
+  @Test
+  void stepMethodExecutesGivenSupplierStepWithNameAndReturnsStepResult() {
+    final SupplierStep<String> originStep = new SupplierStep.Of<>("origin name", () -> "step result");
+
+    final String result = around().Step("new name", originStep);
+
+    assertThat(result).isEqualTo("step result");
+    assertThat(executedStep().getName()).isEqualTo("new name");
+  }
+
+  @Test
+  void stepMethodExecutesGivenSupplierStepWithNameCreatedByNameGeneratorAndReturnsStepResult() {
+    final SupplierStep<String> originStep = new SupplierStep.Of<>("origin name", () -> "step result");
+    final ThrowingFunction<? super String, String, ?> nameGenerator = n -> n + " suffix";
+
+    final String result = around().Step(nameGenerator, originStep);
+
+    assertThat(result).isEqualTo("step result");
+    assertThat(executedStep().getName()).isEqualTo("origin name suffix");
+  }
+
+  @Test
+  void stepMethodExecutesGivenSupplierStepWithKeywordAndNameAndReturnsStepResult() {
+    final SupplierStep<String> originStep = new SupplierStep.Of<>("origin name", () -> "step result");
+
+    final String result = around().Step(Keyword.of("Then"), "new name", originStep);
+
+    assertThat(result).isEqualTo("step result");
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("Then"));
+    assertThat(executedStep().getName()).isEqualTo("new name");
+  }
+
+  @Test
+  void stepMethodExecutesGivenConsumerStepOnContextValue() {
+    final List<Object> received = new ArrayList<>();
+    final ConsumerStep<Object> originStep = new ConsumerStep.Of<>(v -> received.add(v));
+
+    around().Step(originStep);
+
+    assertThat(received).containsExactly("context value");
+    assertThat(StaticStepListener.lastContext)
+      .isEqualTo(NullableOptional.of("context value"));
+  }
+
+  @Test
+  void stepMethodExecutesGivenConsumerStepWithKeywordOnContextValue() {
+    final List<Object> received = new ArrayList<>();
+    final ConsumerStep<Object> originStep = new ConsumerStep.Of<>("origin name", v -> received.add(v));
+
+    around().Step(Keyword.of("Given"), originStep);
+
+    assertThat(received).containsExactly("context value");
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("Given"));
+    assertThat(executedStep().getName()).isEqualTo("origin name");
+  }
+
+  @Test
+  void stepMethodExecutesGivenConsumerStepWithNameOnContextValue() {
+    final List<Object> received = new ArrayList<>();
+    final ConsumerStep<Object> originStep = new ConsumerStep.Of<>("origin name", v -> received.add(v));
+
+    around().Step("new name", originStep);
+
+    assertThat(received).containsExactly("context value");
+    assertThat(executedStep().getName()).isEqualTo("new name");
+  }
+
+  @Test
+  void stepMethodExecutesGivenConsumerStepWithNameCreatedByNameGeneratorOnContextValue() {
+    final List<Object> received = new ArrayList<>();
+    final ConsumerStep<Object> originStep = new ConsumerStep.Of<>("origin name", v -> received.add(v));
+    final ThrowingFunction<? super String, String, ?> nameGenerator = n -> n + " suffix";
+
+    around().Step(nameGenerator, originStep);
+
+    assertThat(received).containsExactly("context value");
+    assertThat(executedStep().getName()).isEqualTo("origin name suffix");
+  }
+
+  @Test
+  void stepMethodExecutesGivenConsumerStepWithKeywordAndNameOnContextValue() {
+    final List<Object> received = new ArrayList<>();
+    final ConsumerStep<Object> originStep = new ConsumerStep.Of<>("origin name", v -> received.add(v));
+
+    around().Step(Keyword.of("When"), "new name", originStep);
+
+    assertThat(received).containsExactly("context value");
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("When"));
+    assertThat(executedStep().getName()).isEqualTo("new name");
+  }
+
+  @Test
+  void stepMethodExecutesGivenFunctionStepOnContextValueAndReturnsStepResult() {
+    final FunctionStep<Object, String> originStep = new FunctionStep.Of<>(v -> v + " result");
+
+    final String result = around().Step(originStep);
+
+    assertThat(result).isEqualTo("context value result");
+    assertThat(StaticStepListener.lastContext)
+      .isEqualTo(NullableOptional.of("context value"));
+    assertThat(StaticStepListener.lastResult)
+      .isEqualTo(NullableOptional.of("context value result"));
+  }
+
+  @Test
+  void stepMethodExecutesGivenFunctionStepWithKeywordOnContextValueAndReturnsStepResult() {
+    final FunctionStep<Object, String> originStep =
+      new FunctionStep.Of<>("origin name", v -> v + " result");
+
+    final String result = around().Step(Keyword.of("Given"), originStep);
+
+    assertThat(result).isEqualTo("context value result");
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("Given"));
+    assertThat(executedStep().getName()).isEqualTo("origin name");
+  }
+
+  @Test
+  void stepMethodExecutesGivenFunctionStepWithNameOnContextValueAndReturnsStepResult() {
+    final FunctionStep<Object, String> originStep =
+      new FunctionStep.Of<>("origin name", v -> v + " result");
+
+    final String result = around().Step("new name", originStep);
+
+    assertThat(result).isEqualTo("context value result");
+    assertThat(executedStep().getName()).isEqualTo("new name");
+  }
+
+  @Test
+  void stepMethodExecutesGivenFunctionStepWithNameCreatedByNameGeneratorOnContextValueAndReturnsStepResult() {
+    final FunctionStep<Object, String> originStep =
+      new FunctionStep.Of<>("origin name", v -> v + " result");
+    final ThrowingFunction<? super String, String, ?> nameGenerator = n -> n + " suffix";
+
+    final String result = around().Step(nameGenerator, originStep);
+
+    assertThat(result).isEqualTo("context value result");
+    assertThat(executedStep().getName()).isEqualTo("origin name suffix");
+  }
+
+  @Test
+  void stepMethodExecutesGivenFunctionStepWithKeywordAndNameOnContextValueAndReturnsStepResult() {
+    final FunctionStep<Object, String> originStep =
+      new FunctionStep.Of<>("origin name", v -> v + " result");
+
+    final String result = around().Step(Keyword.of("Then"), "new name", originStep);
+
+    assertThat(result).isEqualTo("context value result");
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("Then"));
+    assertThat(executedStep().getName()).isEqualTo("new name");
+  }
+
+  @Test
+  void stepMethodExecutesStepWithNameAndBodyOnContextValue() {
+    final PCAround<String> around = around();
+    final List<Object> received = new ArrayList<>();
+    final ThrowingConsumer<String, ?> body = v -> received.add(v);
+
+    final PCAround<String> result = around.Step("step name", body);
+
+    assertThat(result)
+      .isSameAs(around);
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(received).containsExactly("context value");
+    assertThat(StaticStepListener.lastContext)
+      .isEqualTo(NullableOptional.of("context value"));
+  }
+
+  @Test
+  void stepMethodExecutesStepWithKeywordAndNameAndBodyOnContextValue() {
+    final List<Object> received = new ArrayList<>();
+    final ThrowingConsumer<String, ?> body = v -> received.add(v);
+
+    around().Step(Keyword.of("Given"), "step name", body);
+
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("Given"));
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(received).containsExactly("context value");
+  }
+
+  @Test
+  void stepMethodExecutesStepWithNameAndParamsAndBodyOnContextValue() {
+    final List<Object> received = new ArrayList<>();
+    final ThrowingConsumer<String, ?> body = v -> received.add(v);
+
+    around().Step("step name", params(), body);
+
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(executedStep().getParams()).containsEntry("param name", "param value");
+    assertThat(received).containsExactly("context value");
+  }
+
+  @Test
+  void stepMethodExecutesStepWithKeywordAndNameAndParamsAndBodyOnContextValue() {
+    final List<Object> received = new ArrayList<>();
+    final ThrowingConsumer<String, ?> body = v -> received.add(v);
+
+    around().Step(Keyword.of("Given"), "step name", params(), body);
+
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("Given"));
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(executedStep().getParams()).containsEntry("param name", "param value");
+    assertThat(received).containsExactly("context value");
+  }
+
+  @Test
+  void stepMethodExecutesStepWithNameAndExpectedResultAndBodyOnContextValue() {
+    final List<Object> received = new ArrayList<>();
+    final ThrowingConsumer<String, ?> body = v -> received.add(v);
+
+    around().Step("step name", "expected result", body);
+
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(executedStep().getExpectedResult()).isEqualTo("expected result");
+    assertThat(received).containsExactly("context value");
+  }
+
+  @Test
+  void stepMethodExecutesStepWithKeywordAndNameAndExpectedResultAndBodyOnContextValue() {
+    final List<Object> received = new ArrayList<>();
+    final ThrowingConsumer<String, ?> body = v -> received.add(v);
+
+    around().Step(Keyword.of("Given"), "step name", "expected result", body);
+
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("Given"));
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(executedStep().getExpectedResult()).isEqualTo("expected result");
+    assertThat(received).containsExactly("context value");
+  }
+
+  @Test
+  void stepMethodExecutesStepWithNameAndParamsAndExpectedResultAndBodyOnContextValue() {
+    final List<Object> received = new ArrayList<>();
+    final ThrowingConsumer<String, ?> body = v -> received.add(v);
+
+    around().Step("step name", params(), "expected result", body);
+
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(executedStep().getParams()).containsEntry("param name", "param value");
+    assertThat(executedStep().getExpectedResult()).isEqualTo("expected result");
+    assertThat(received).containsExactly("context value");
+  }
+
+  @Test
+  void stepMethodExecutesStepWithKeywordAndNameAndParamsAndExpectedResultAndBodyOnContextValue() {
+    final List<Object> received = new ArrayList<>();
+    final ThrowingConsumer<String, ?> body = v -> received.add(v);
+
+    around().Step(Keyword.of("Given"), "step name", params(), "expected result", body);
+
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("Given"));
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(executedStep().getParams()).containsEntry("param name", "param value");
+    assertThat(executedStep().getExpectedResult()).isEqualTo("expected result");
+    assertThat(received).containsExactly("context value");
+  }
+
+  @Test
+  void stepMethodExecutesStepWithNameAndFunctionBodyOnContextValueAndReturnsStepResult() {
+    final ThrowingFunction<String, String, ?> body = v -> v + " result";
+
+    final String result = around().Step("step name", body);
+
+    assertThat(result).isEqualTo("context value result");
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(StaticStepListener.lastResult)
+      .isEqualTo(NullableOptional.of("context value result"));
+  }
+
+  @Test
+  void stepMethodExecutesStepWithKeywordAndNameAndFunctionBodyOnContextValueAndReturnsStepResult() {
+    final ThrowingFunction<String, String, ?> body = v -> v + " result";
+
+    final String result = around().Step(Keyword.of("Given"), "step name", body);
+
+    assertThat(result).isEqualTo("context value result");
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("Given"));
+    assertThat(executedStep().getName()).isEqualTo("step name");
+  }
+
+  @Test
+  void stepMethodExecutesStepWithNameAndParamsAndFunctionBodyOnContextValueAndReturnsStepResult() {
+    final ThrowingFunction<String, String, ?> body = v -> v + " result";
+
+    final String result = around().Step("step name", params(), body);
+
+    assertThat(result).isEqualTo("context value result");
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(executedStep().getParams()).containsEntry("param name", "param value");
+  }
+
+  @Test
+  void stepMethodExecutesStepWithKeywordAndNameAndParamsAndFunctionBodyOnContextValueAndReturnsStepResult() {
+    final ThrowingFunction<String, String, ?> body = v -> v + " result";
+
+    final String result = around().Step(Keyword.of("Given"), "step name", params(), body);
+
+    assertThat(result).isEqualTo("context value result");
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("Given"));
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(executedStep().getParams()).containsEntry("param name", "param value");
+  }
+
+  @Test
+  void stepMethodExecutesStepWithNameAndExpectedResultAndFunctionBodyOnContextValueAndReturnsStepResult() {
+    final ThrowingFunction<String, String, ?> body = v -> v + " result";
+
+    final String result = around().Step("step name", "expected result", body);
+
+    assertThat(result).isEqualTo("context value result");
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(executedStep().getExpectedResult()).isEqualTo("expected result");
+  }
+
+  @Test
+  void stepMethodExecutesStepWithKeywordAndNameAndExpectedResultAndFunctionBodyOnContextValueAndReturnsStepResult() {
+    final ThrowingFunction<String, String, ?> body = v -> v + " result";
+
+    final String result = around().Step(Keyword.of("Given"), "step name", "expected result", body);
+
+    assertThat(result).isEqualTo("context value result");
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("Given"));
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(executedStep().getExpectedResult()).isEqualTo("expected result");
+  }
+
+  @Test
+  void stepMethodExecutesStepWithNameAndParamsAndExpectedResultAndFunctionBodyOnContextValueAndReturnsStepResult() {
+    final ThrowingFunction<String, String, ?> body = v -> v + " result";
+
+    final String result = around().Step("step name", params(), "expected result", body);
+
+    assertThat(result).isEqualTo("context value result");
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(executedStep().getParams()).containsEntry("param name", "param value");
+    assertThat(executedStep().getExpectedResult()).isEqualTo("expected result");
+  }
+
+  @Test
+  void stepMethodExecutesStepWithKeywordAndNameAndParamsAndExpectedResultAndFunctionBodyOnContextValueAndReturnsStepResult() {
+    final ThrowingFunction<String, String, ?> body = v -> v + " result";
+
+    final String result = around().Step(
+      Keyword.of("Given"), "step name", params(), "expected result", body);
+
+    assertThat(result).isEqualTo("context value result");
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("Given"));
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(executedStep().getParams()).containsEntry("param name", "param value");
+    assertThat(executedStep().getExpectedResult()).isEqualTo("expected result");
+  }
+
+  @Test
+  void stepMethodExecutesEmptyStepWithNameOnContextValue() {
+    final PCAround<String> around = around();
+
+    final PCAround<String> result = around.Step("step name");
+
+    assertThat(result)
+      .isSameAs(around);
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(StaticStepListener.lastContext)
+      .isEqualTo(NullableOptional.of("context value"));
+  }
+
+  @Test
+  void stepMethodExecutesEmptyStepWithKeywordAndNameOnContextValue() {
+    around().Step(Keyword.of("Given"), "step name");
+
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("Given"));
+    assertThat(executedStep().getName()).isEqualTo("step name");
+  }
+
+  @Test
+  void stepMethodExecutesEmptyStepWithNameAndParamsOnContextValue() {
+    around().Step("step name", params());
+
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(executedStep().getParams()).containsEntry("param name", "param value");
+  }
+
+  @Test
+  void stepMethodExecutesEmptyStepWithKeywordAndNameAndParamsOnContextValue() {
+    around().Step(Keyword.of("Given"), "step name", params());
+
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("Given"));
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(executedStep().getParams()).containsEntry("param name", "param value");
+  }
+
+  @Test
+  void stepMethodExecutesEmptyStepWithNameAndExpectedResultOnContextValue() {
+    around().Step("step name", "expected result");
+
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(executedStep().getExpectedResult()).isEqualTo("expected result");
+  }
+
+  @Test
+  void stepMethodExecutesEmptyStepWithKeywordAndNameAndExpectedResultOnContextValue() {
+    around().Step(Keyword.of("Given"), "step name", "expected result");
+
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("Given"));
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(executedStep().getExpectedResult()).isEqualTo("expected result");
+  }
+
+  @Test
+  void stepMethodExecutesEmptyStepWithNameAndParamsAndExpectedResultOnContextValue() {
+    around().Step("step name", params(), "expected result");
+
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(executedStep().getParams()).containsEntry("param name", "param value");
+    assertThat(executedStep().getExpectedResult()).isEqualTo("expected result");
+  }
+
+  @Test
+  void stepMethodExecutesEmptyStepWithKeywordAndNameAndParamsAndExpectedResultOnContextValue() {
+    around().Step(Keyword.of("Given"), "step name", params(), "expected result");
+
+    assertThat(executedStep().getKeyword()).isEqualTo(Keyword.of("Given"));
+    assertThat(executedStep().getName()).isEqualTo("step name");
+    assertThat(executedStep().getParams()).containsEntry("param name", "param value");
+    assertThat(executedStep().getExpectedResult()).isEqualTo("expected result");
   }
 }

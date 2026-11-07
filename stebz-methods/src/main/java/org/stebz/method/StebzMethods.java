@@ -78,7 +78,7 @@ public final class StebzMethods {
   /**
    * Executes given block of steps.
    *
-   * @param value the additional value
+   * @param value the value for the block of steps
    * @param steps the block of steps
    * @param <V>   the type of the additional value
    * @throws NullPointerException if {@code steps} arg is null
@@ -105,7 +105,7 @@ public final class StebzMethods {
   /**
    * Executes given block of steps and returns result.
    *
-   * @param value the additional value
+   * @param value the value for the block of steps
    * @param steps the block of steps
    * @param <V>   the type of the additional value
    * @param <R>   the type of the result
@@ -122,6 +122,7 @@ public final class StebzMethods {
    * Executes given step.
    *
    * @param step the step
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static void step(final RunnableStep step) {
     StepExecutor.get().execute(step);
@@ -132,6 +133,7 @@ public final class StebzMethods {
    *
    * @param keyword the keyword
    * @param step    the step
+   * @throws NullPointerException if {@code keyword} arg or {@code step} arg is null
    */
   public static void step(final Keyword keyword,
                           final RunnableStep step) {
@@ -143,6 +145,7 @@ public final class StebzMethods {
    *
    * @param name the name
    * @param step the step
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static void step(final String name,
                           final RunnableStep step) {
@@ -150,10 +153,11 @@ public final class StebzMethods {
   }
 
   /**
-   * Executes given step with name created by {@code nameGenerator}.
+   * Executes given step with name created by applying {@code nameGenerator} to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static void step(final ThrowingFunction<? super String, String, ?> nameGenerator,
                           final RunnableStep step) {
@@ -166,6 +170,7 @@ public final class StebzMethods {
    * @param keyword the keyword
    * @param name    the name
    * @param step    the step
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code step} arg is null
    */
   public static void step(final Keyword keyword,
                           final String name,
@@ -179,6 +184,7 @@ public final class StebzMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <R> R step(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step);
@@ -191,6 +197,7 @@ public final class StebzMethods {
    * @param step    the step
    * @param <R>     the type of the result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code step} arg is null
    */
   public static <R> R step(final Keyword keyword,
                            final SupplierStep<? extends R> step) {
@@ -204,6 +211,7 @@ public final class StebzMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <R> R step(final String name,
                            final SupplierStep<? extends R> step) {
@@ -211,12 +219,14 @@ public final class StebzMethods {
   }
 
   /**
-   * Executes given step with name created by {@code nameGenerator} and returns step result.
+   * Executes given step with name created by applying {@code nameGenerator} to the current step name and returns step
+   * result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <R> R step(final ThrowingFunction<? super String, String, ?> nameGenerator,
                            final SupplierStep<? extends R> step) {
@@ -231,6 +241,7 @@ public final class StebzMethods {
    * @param step    the step
    * @param <R>     the type of the result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code step} arg is null
    */
   public static <R> R step(final Keyword keyword,
                            final String name,
@@ -244,6 +255,7 @@ public final class StebzMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T> void step(final ConsumerStep<? super T> step,
                               final T value) {
@@ -260,6 +272,7 @@ public final class StebzMethods {
    * @param step    the step
    * @param value   the value
    * @param <T>     the type of the value
+   * @throws NullPointerException if {@code keyword} arg or {@code step} arg is null
    */
   public static <T> void step(final Keyword keyword,
                               final ConsumerStep<? super T> step,
@@ -277,6 +290,7 @@ public final class StebzMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T> void step(final String name,
                               final ConsumerStep<? super T> step,
@@ -288,12 +302,13 @@ public final class StebzMethods {
   }
 
   /**
-   * Executes given step with name created by {@code nameGenerator} on given value.
+   * Executes given step with name created by applying {@code nameGenerator} to the current step name on given value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param value         the value
    * @param <T>           the type of the value
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T> void step(final ThrowingFunction<? super String, String, ?> nameGenerator,
                               final ConsumerStep<? super T> step,
@@ -312,6 +327,7 @@ public final class StebzMethods {
    * @param step    the step
    * @param value   the value
    * @param <T>     the type of the value
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code step} arg is null
    */
   public static <T> void step(final Keyword keyword,
                               final String name,
@@ -331,6 +347,7 @@ public final class StebzMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T, R> R step(final FunctionStep<? super T, ? extends R> step,
                               final T value) {
@@ -349,6 +366,7 @@ public final class StebzMethods {
    * @param <T>     the type of the value
    * @param <R>     the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code step} arg is null
    */
   public static <T, R> R step(final Keyword keyword,
                               final FunctionStep<? super T, ? extends R> step,
@@ -368,6 +386,7 @@ public final class StebzMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T, R> R step(final String name,
                               final FunctionStep<? super T, ? extends R> step,
@@ -379,13 +398,15 @@ public final class StebzMethods {
   }
 
   /**
-   * Executes given step with name created by {@code nameGenerator} on given value and returns step result.
+   * Executes given step with name created by applying {@code nameGenerator} to the current step name on given value and
+   * returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <T>           the type of the value
    * @param <R>           the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T, R> R step(final ThrowingFunction<? super String, String, ?> nameGenerator,
                               final FunctionStep<? super T, ? extends R> step,
@@ -406,6 +427,7 @@ public final class StebzMethods {
    * @param <T>     the type of the value
    * @param <R>     the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code step} arg is null
    */
   public static <T, R> R step(final Keyword keyword,
                               final String name,
@@ -422,6 +444,7 @@ public final class StebzMethods {
    *
    * @param name the step name
    * @param body the step body
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static void step(final String name,
                           final ThrowingRunnable<?> body) {
@@ -437,6 +460,7 @@ public final class StebzMethods {
    * @param keyword the step keyword
    * @param name    the step name
    * @param body    the step body
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code body} arg is null
    */
   public static void step(final Keyword keyword,
                           final String name,
@@ -453,6 +477,7 @@ public final class StebzMethods {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void step(final String name,
@@ -471,6 +496,8 @@ public final class StebzMethods {
    * @param name    the step name
    * @param params  the step params
    * @param body    the step body
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or {@code body} arg
+   *                              is null
    */
   @SuppressWarnings("unchecked")
   public static void step(final Keyword keyword,
@@ -489,6 +516,7 @@ public final class StebzMethods {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static void step(final String name,
                           final String expectedResult,
@@ -506,6 +534,8 @@ public final class StebzMethods {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   public static void step(final Keyword keyword,
                           final String name,
@@ -524,6 +554,8 @@ public final class StebzMethods {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void step(final String name,
@@ -544,6 +576,8 @@ public final class StebzMethods {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or
+   *                              {@code expectedResult} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void step(final Keyword keyword,
@@ -565,6 +599,7 @@ public final class StebzMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static <R> R step(final String name,
                            final ThrowingSupplier<? extends R, ?> body) {
@@ -582,6 +617,7 @@ public final class StebzMethods {
    * @param body    the step body
    * @param <R>     the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code body} arg is null
    */
   public static <R> R step(final Keyword keyword,
                            final String name,
@@ -600,6 +636,7 @@ public final class StebzMethods {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R step(final String name,
@@ -620,6 +657,8 @@ public final class StebzMethods {
    * @param body    the step body
    * @param <R>     the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or {@code body} arg
+   *                              is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R step(final Keyword keyword,
@@ -640,6 +679,7 @@ public final class StebzMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static <R> R step(final String name,
                            final String expectedResult,
@@ -659,6 +699,8 @@ public final class StebzMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   public static <R> R step(final Keyword keyword,
                            final String name,
@@ -679,6 +721,8 @@ public final class StebzMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R step(final String name,
@@ -701,6 +745,8 @@ public final class StebzMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or
+   *                              {@code expectedResult} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R step(final Keyword keyword,
@@ -719,6 +765,7 @@ public final class StebzMethods {
    * Executes step with given attributes.
    *
    * @param name the step name
+   * @throws NullPointerException if {@code name} arg is null
    */
   public static void step(final String name) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -732,6 +779,7 @@ public final class StebzMethods {
    *
    * @param keyword the step keyword
    * @param name    the step name
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg is null
    */
   public static void step(final Keyword keyword,
                           final String name) {
@@ -746,6 +794,7 @@ public final class StebzMethods {
    *
    * @param name   the step name
    * @param params the step params
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void step(final String name,
@@ -762,6 +811,7 @@ public final class StebzMethods {
    * @param keyword the step keyword
    * @param name    the step name
    * @param params  the step params
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void step(final Keyword keyword,
@@ -778,6 +828,7 @@ public final class StebzMethods {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   public static void step(final String name,
                           final String expectedResult) {
@@ -793,6 +844,7 @@ public final class StebzMethods {
    * @param keyword        the step keyword
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code expectedResult} arg is null
    */
   public static void step(final Keyword keyword,
                           final String name,
@@ -809,6 +861,7 @@ public final class StebzMethods {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void step(final String name,
@@ -827,6 +880,8 @@ public final class StebzMethods {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or
+   *                              {@code expectedResult} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void step(final Keyword keyword,

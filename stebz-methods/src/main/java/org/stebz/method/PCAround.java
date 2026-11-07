@@ -41,7 +41,7 @@ import static org.stebz.core.attribute.StepAttribute.NAME;
 import static org.stebz.core.attribute.StepAttribute.PARAMS;
 
 /**
- * Allows to call steps around a specific context with methods in Pascal Case style.
+ * Allows calling steps around a specific context with methods in Pascal Case style.
  *
  * @param <T> the type of the context
  */
@@ -51,7 +51,8 @@ public interface PCAround<T> {
    * Executes given step.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   PCAround<T> Step(RunnableStep step);
 
@@ -60,7 +61,8 @@ public interface PCAround<T> {
    *
    * @param keyword the keyword
    * @param step    the step
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code keyword} arg or {@code step} arg is null
    */
   PCAround<T> Step(Keyword keyword,
                    RunnableStep step);
@@ -70,17 +72,19 @@ public interface PCAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   PCAround<T> Step(String name,
                    RunnableStep step);
 
   /**
-   * Executes given step with name created by {@code nameGenerator}.
+   * Executes given step with name created by applying {@code nameGenerator} to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   PCAround<T> Step(ThrowingFunction<? super String, String, ?> nameGenerator,
                    RunnableStep step);
@@ -88,10 +92,11 @@ public interface PCAround<T> {
   /**
    * Executes given step with keyword and name.
    *
-   * @param name    the name
    * @param keyword the keyword
+   * @param name    the name
    * @param step    the step
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code step} arg is null
    */
   PCAround<T> Step(Keyword keyword,
                    String name,
@@ -103,6 +108,7 @@ public interface PCAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R Step(SupplierStep<? extends R> step);
 
@@ -113,6 +119,7 @@ public interface PCAround<T> {
    * @param step    the step
    * @param <R>     the type of the result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code step} arg is null
    */
   <R> R Step(Keyword keyword,
              SupplierStep<? extends R> step);
@@ -124,17 +131,20 @@ public interface PCAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R Step(String name,
              SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with name created by {@code nameGenerator} and returns step result.
+   * Executes given step with name created by applying {@code nameGenerator} to the current step name and returns step
+   * result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R Step(ThrowingFunction<? super String, String, ?> nameGenerator,
              SupplierStep<? extends R> step);
@@ -147,6 +157,7 @@ public interface PCAround<T> {
    * @param step    the step
    * @param <R>     the type of the result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code step} arg is null
    */
   <R> R Step(Keyword keyword,
              String name,
@@ -156,7 +167,8 @@ public interface PCAround<T> {
    * Executes given step on the context value.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   PCAround<T> Step(ConsumerStep<? super T> step);
 
@@ -165,7 +177,8 @@ public interface PCAround<T> {
    *
    * @param keyword the keyword
    * @param step    the step
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code keyword} arg or {@code step} arg is null
    */
   PCAround<T> Step(Keyword keyword,
                    ConsumerStep<? super T> step);
@@ -175,17 +188,20 @@ public interface PCAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   PCAround<T> Step(String name,
                    ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with name created by {@code nameGenerator} on the context value.
+   * Executes given step with name created by applying {@code nameGenerator} to the current step name on the context
+   * value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   PCAround<T> Step(ThrowingFunction<? super String, String, ?> nameGenerator,
                    ConsumerStep<? super T> step);
@@ -196,7 +212,8 @@ public interface PCAround<T> {
    * @param keyword the keyword
    * @param name    the name
    * @param step    the step
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code step} arg is null
    */
   PCAround<T> Step(Keyword keyword,
                    String name,
@@ -208,6 +225,7 @@ public interface PCAround<T> {
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R Step(FunctionStep<? super T, ? extends R> step);
 
@@ -218,6 +236,7 @@ public interface PCAround<T> {
    * @param step    the step
    * @param <R>     the type of the result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code step} arg is null
    */
   <R> R Step(Keyword keyword,
              FunctionStep<? super T, ? extends R> step);
@@ -229,17 +248,20 @@ public interface PCAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R Step(String name,
              FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with name created by {@code nameGenerator} on the context value and returns step result.
+   * Executes given step with name created by applying {@code nameGenerator} to the current step name on the context
+   * value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R Step(ThrowingFunction<? super String, String, ?> nameGenerator,
              FunctionStep<? super T, ? extends R> step);
@@ -252,6 +274,7 @@ public interface PCAround<T> {
    * @param step    the step
    * @param <R>     the type of the result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code step} arg is null
    */
   <R> R Step(Keyword keyword,
              String name,
@@ -262,7 +285,8 @@ public interface PCAround<T> {
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   PCAround<T> Step(String name,
                    ThrowingConsumer<? super T, ?> body);
@@ -273,7 +297,8 @@ public interface PCAround<T> {
    * @param keyword the step keyword
    * @param name    the step name
    * @param body    the step body
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code body} arg is null
    */
   PCAround<T> Step(Keyword keyword,
                    String name,
@@ -285,7 +310,8 @@ public interface PCAround<T> {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   PCAround<T> Step(String name,
                    Map<String, ?> params,
@@ -298,7 +324,9 @@ public interface PCAround<T> {
    * @param name    the step name
    * @param params  the step params
    * @param body    the step body
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or {@code body} arg
+   *                              is null
    */
   PCAround<T> Step(Keyword keyword,
                    String name,
@@ -311,7 +339,8 @@ public interface PCAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   PCAround<T> Step(String name,
                    String expectedResult,
@@ -324,7 +353,9 @@ public interface PCAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   PCAround<T> Step(Keyword keyword,
                    String name,
@@ -338,7 +369,9 @@ public interface PCAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   PCAround<T> Step(String name,
                    Map<String, ?> params,
@@ -353,7 +386,9 @@ public interface PCAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or
+   *                              {@code expectedResult} arg or {@code body} arg is null
    */
   PCAround<T> Step(Keyword keyword,
                    String name,
@@ -368,6 +403,7 @@ public interface PCAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   <R> R Step(String name,
              ThrowingFunction<? super T, ? extends R, ?> body);
@@ -380,6 +416,7 @@ public interface PCAround<T> {
    * @param body    the step body
    * @param <R>     the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code body} arg is null
    */
   <R> R Step(Keyword keyword,
              String name,
@@ -393,6 +430,7 @@ public interface PCAround<T> {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   <R> R Step(String name,
              Map<String, ?> params,
@@ -407,6 +445,8 @@ public interface PCAround<T> {
    * @param body    the step body
    * @param <R>     the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or {@code body} arg
+   *                              is null
    */
   <R> R Step(Keyword keyword,
              String name,
@@ -421,6 +461,7 @@ public interface PCAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R Step(String name,
              String expectedResult,
@@ -435,6 +476,8 @@ public interface PCAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R Step(Keyword keyword,
              String name,
@@ -450,6 +493,8 @@ public interface PCAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R Step(String name,
              Map<String, ?> params,
@@ -466,6 +511,8 @@ public interface PCAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or
+   *                              {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R Step(Keyword keyword,
              String name,
@@ -477,7 +524,8 @@ public interface PCAround<T> {
    * Executes step with given attributes.
    *
    * @param name the step name
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code name} arg is null
    */
   PCAround<T> Step(String name);
 
@@ -486,7 +534,8 @@ public interface PCAround<T> {
    *
    * @param keyword the step keyword
    * @param name    the step name
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg is null
    */
   PCAround<T> Step(Keyword keyword,
                    String name);
@@ -496,7 +545,8 @@ public interface PCAround<T> {
    *
    * @param name   the step name
    * @param params the step params
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   PCAround<T> Step(String name,
                    Map<String, ?> params);
@@ -507,7 +557,8 @@ public interface PCAround<T> {
    * @param keyword the step keyword
    * @param name    the step name
    * @param params  the step params
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg is null
    */
   PCAround<T> Step(Keyword keyword,
                    String name,
@@ -518,7 +569,8 @@ public interface PCAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   PCAround<T> Step(String name,
                    String expectedResult);
@@ -529,7 +581,8 @@ public interface PCAround<T> {
    * @param keyword        the step keyword
    * @param name           the step name
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code expectedResult} arg is null
    */
   PCAround<T> Step(Keyword keyword,
                    String name,
@@ -541,7 +594,8 @@ public interface PCAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   PCAround<T> Step(String name,
                    Map<String, ?> params,
@@ -554,7 +608,9 @@ public interface PCAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code PCAround} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or
+   *                              {@code expectedResult} arg is null
    */
   PCAround<T> Step(Keyword keyword,
                    String name,
@@ -562,7 +618,7 @@ public interface PCAround<T> {
                    String expectedResult);
 
   /**
-   * Default {@code Around} implementation.
+   * Default {@code PCAround} implementation.
    *
    * @param <T> the type of the context
    */
@@ -574,7 +630,7 @@ public interface PCAround<T> {
      * Ctor.
      *
      * @param executor the executor
-     * @param context  the context
+     * @param context  the context, may be {@code null}
      * @throws NullPointerException if {@code executor} arg is null
      */
     public Of(final StepExecutor executor,

@@ -41,7 +41,7 @@ import static org.stebz.core.attribute.StepAttribute.NAME;
 import static org.stebz.core.attribute.StepAttribute.PARAMS;
 
 /**
- * Allows to call steps around a specific context.
+ * Allows calling steps around a specific context.
  *
  * @param <T> the type of the context
  */
@@ -52,6 +52,7 @@ public interface Around<T> {
    *
    * @param step the step
    * @return {@code Around} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   Around<T> step(RunnableStep step);
 
@@ -61,6 +62,7 @@ public interface Around<T> {
    * @param keyword the keyword
    * @param step    the step
    * @return {@code Around} object
+   * @throws NullPointerException if {@code keyword} arg or {@code step} arg is null
    */
   Around<T> step(Keyword keyword,
                  RunnableStep step);
@@ -71,16 +73,18 @@ public interface Around<T> {
    * @param name the name
    * @param step the step
    * @return {@code Around} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   Around<T> step(String name,
                  RunnableStep step);
 
   /**
-   * Executes given step with name created by {@code nameGenerator}.
+   * Executes given step with name created by applying {@code nameGenerator} to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @return {@code Around} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   Around<T> step(ThrowingFunction<? super String, String, ?> nameGenerator,
                  RunnableStep step);
@@ -88,10 +92,11 @@ public interface Around<T> {
   /**
    * Executes given step with keyword and name.
    *
-   * @param name    the name
    * @param keyword the keyword
+   * @param name    the name
    * @param step    the step
    * @return {@code Around} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code step} arg is null
    */
   Around<T> step(Keyword keyword,
                  String name,
@@ -103,6 +108,7 @@ public interface Around<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R step(SupplierStep<? extends R> step);
 
@@ -113,6 +119,7 @@ public interface Around<T> {
    * @param step    the step
    * @param <R>     the type of the result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code step} arg is null
    */
   <R> R step(Keyword keyword,
              SupplierStep<? extends R> step);
@@ -124,17 +131,20 @@ public interface Around<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R step(String name,
              SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with name created by {@code nameGenerator} and returns step result.
+   * Executes given step with name created by applying {@code nameGenerator} to the current step name and returns step
+   * result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R step(ThrowingFunction<? super String, String, ?> nameGenerator,
              SupplierStep<? extends R> step);
@@ -147,6 +157,7 @@ public interface Around<T> {
    * @param step    the step
    * @param <R>     the type of the result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code step} arg is null
    */
   <R> R step(Keyword keyword,
              String name,
@@ -157,6 +168,7 @@ public interface Around<T> {
    *
    * @param step the step
    * @return {@code Around} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   Around<T> step(ConsumerStep<? super T> step);
 
@@ -166,6 +178,7 @@ public interface Around<T> {
    * @param keyword the keyword
    * @param step    the step
    * @return {@code Around} object
+   * @throws NullPointerException if {@code keyword} arg or {@code step} arg is null
    */
   Around<T> step(Keyword keyword,
                  ConsumerStep<? super T> step);
@@ -176,16 +189,19 @@ public interface Around<T> {
    * @param name the name
    * @param step the step
    * @return {@code Around} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   Around<T> step(String name,
                  ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with name created by {@code nameGenerator} on the context value.
+   * Executes given step with name created by applying {@code nameGenerator} to the current step name on the context
+   * value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @return {@code Around} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   Around<T> step(ThrowingFunction<? super String, String, ?> nameGenerator,
                  ConsumerStep<? super T> step);
@@ -197,6 +213,7 @@ public interface Around<T> {
    * @param name    the name
    * @param step    the step
    * @return {@code Around} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code step} arg is null
    */
   Around<T> step(Keyword keyword,
                  String name,
@@ -208,6 +225,7 @@ public interface Around<T> {
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R step(FunctionStep<? super T, ? extends R> step);
 
@@ -218,6 +236,7 @@ public interface Around<T> {
    * @param step    the step
    * @param <R>     the type of the result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code step} arg is null
    */
   <R> R step(Keyword keyword,
              FunctionStep<? super T, ? extends R> step);
@@ -229,17 +248,20 @@ public interface Around<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R step(String name,
              FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with name created by {@code nameGenerator} on the context value and returns step result.
+   * Executes given step with name created by applying {@code nameGenerator} to the current step name on the context
+   * value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R step(ThrowingFunction<? super String, String, ?> nameGenerator,
              FunctionStep<? super T, ? extends R> step);
@@ -252,6 +274,7 @@ public interface Around<T> {
    * @param step    the step
    * @param <R>     the type of the result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code step} arg is null
    */
   <R> R step(Keyword keyword,
              String name,
@@ -263,6 +286,7 @@ public interface Around<T> {
    * @param name the step name
    * @param body the step body
    * @return {@code Around} object
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   Around<T> step(String name,
                  ThrowingConsumer<? super T, ?> body);
@@ -274,6 +298,7 @@ public interface Around<T> {
    * @param name    the step name
    * @param body    the step body
    * @return {@code Around} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code body} arg is null
    */
   Around<T> step(Keyword keyword,
                  String name,
@@ -286,6 +311,7 @@ public interface Around<T> {
    * @param params the step params
    * @param body   the step body
    * @return {@code Around} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   Around<T> step(String name,
                  Map<String, ?> params,
@@ -299,6 +325,8 @@ public interface Around<T> {
    * @param params  the step params
    * @param body    the step body
    * @return {@code Around} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or {@code body} arg
+   *                              is null
    */
   Around<T> step(Keyword keyword,
                  String name,
@@ -312,6 +340,7 @@ public interface Around<T> {
    * @param expectedResult the step expected result
    * @param body           the step body
    * @return {@code Around} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   Around<T> step(String name,
                  String expectedResult,
@@ -325,6 +354,8 @@ public interface Around<T> {
    * @param expectedResult the step expected result
    * @param body           the step body
    * @return {@code Around} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   Around<T> step(Keyword keyword,
                  String name,
@@ -339,6 +370,8 @@ public interface Around<T> {
    * @param expectedResult the step expected result
    * @param body           the step body
    * @return {@code Around} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   Around<T> step(String name,
                  Map<String, ?> params,
@@ -354,6 +387,8 @@ public interface Around<T> {
    * @param expectedResult the step expected result
    * @param body           the step body
    * @return {@code Around} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or
+   *                              {@code expectedResult} arg or {@code body} arg is null
    */
   Around<T> step(Keyword keyword,
                  String name,
@@ -368,6 +403,7 @@ public interface Around<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   <R> R step(String name,
              ThrowingFunction<? super T, ? extends R, ?> body);
@@ -380,6 +416,7 @@ public interface Around<T> {
    * @param body    the step body
    * @param <R>     the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code body} arg is null
    */
   <R> R step(Keyword keyword,
              String name,
@@ -393,6 +430,7 @@ public interface Around<T> {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   <R> R step(String name,
              Map<String, ?> params,
@@ -407,6 +445,8 @@ public interface Around<T> {
    * @param body    the step body
    * @param <R>     the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or {@code body} arg
+   *                              is null
    */
   <R> R step(Keyword keyword,
              String name,
@@ -421,6 +461,7 @@ public interface Around<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R step(String name,
              String expectedResult,
@@ -435,6 +476,8 @@ public interface Around<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R step(Keyword keyword,
              String name,
@@ -450,6 +493,8 @@ public interface Around<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R step(String name,
              Map<String, ?> params,
@@ -466,6 +511,8 @@ public interface Around<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or
+   *                              {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R step(Keyword keyword,
              String name,
@@ -478,6 +525,7 @@ public interface Around<T> {
    *
    * @param name the step name
    * @return {@code Around} object
+   * @throws NullPointerException if {@code name} arg is null
    */
   Around<T> step(String name);
 
@@ -487,6 +535,7 @@ public interface Around<T> {
    * @param keyword the step keyword
    * @param name    the step name
    * @return {@code Around} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg is null
    */
   Around<T> step(Keyword keyword,
                  String name);
@@ -497,6 +546,7 @@ public interface Around<T> {
    * @param name   the step name
    * @param params the step params
    * @return {@code Around} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   Around<T> step(String name,
                  Map<String, ?> params);
@@ -508,6 +558,7 @@ public interface Around<T> {
    * @param name    the step name
    * @param params  the step params
    * @return {@code Around} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg is null
    */
   Around<T> step(Keyword keyword,
                  String name,
@@ -519,6 +570,7 @@ public interface Around<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @return {@code Around} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   Around<T> step(String name,
                  String expectedResult);
@@ -530,6 +582,7 @@ public interface Around<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @return {@code Around} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code expectedResult} arg is null
    */
   Around<T> step(Keyword keyword,
                  String name,
@@ -542,6 +595,7 @@ public interface Around<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @return {@code Around} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   Around<T> step(String name,
                  Map<String, ?> params,
@@ -555,6 +609,8 @@ public interface Around<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @return {@code Around} object
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or
+   *                              {@code expectedResult} arg is null
    */
   Around<T> step(Keyword keyword,
                  String name,
@@ -574,7 +630,7 @@ public interface Around<T> {
      * Ctor.
      *
      * @param executor the executor
-     * @param context  the context
+     * @param context  the context, may be {@code null}
      * @throws NullPointerException if {@code executor} arg is null
      */
     public Of(final StepExecutor executor,
