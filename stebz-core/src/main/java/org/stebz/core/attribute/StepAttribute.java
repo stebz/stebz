@@ -157,7 +157,7 @@ public interface StepAttribute<I, S, O> {
    * have the same contract.
    *
    * @return true if this object is the same as the {@code obj} argument, false otherwise
-   * @see StepAttribute.Of#equals(Object)
+   * @see Of#equals(Object)
    */
   @Override
   boolean equals(Object obj);
@@ -167,7 +167,7 @@ public interface StepAttribute<I, S, O> {
    * contract.
    *
    * @return a hash code value for this object
-   * @see StepAttribute.Of#hashCode()
+   * @see Of#hashCode()
    */
   @Override
   int hashCode();
@@ -340,6 +340,30 @@ public interface StepAttribute<I, S, O> {
     private final O defaultOutputValue;
     private final ThrowingFunction<I, S, Error> extractInputValue;
     private final ThrowingFunction<S, O, Error> extractOutputValue;
+
+    /**
+     * Ctor.
+     *
+     * @param classKey           the attribute key
+     * @param defaultInputValue  the default input value
+     * @param extractInputValue  the extract input value function
+     * @param defaultOutputValue the default output value
+     * @param extractOutputValue the extract output value function
+     * @throws NullPointerException if {@code classKey} arg or {@code extractInputValue} arg or
+     *                              {@code extractOutputValue} arg is null
+     */
+    public Of(final Class<?> classKey,
+              final I defaultInputValue,
+              final ThrowingFunction<I, S, ?> extractInputValue,
+              final O defaultOutputValue,
+              final ThrowingFunction<S, O, ?> extractOutputValue) {
+      this(keyOf(classKey), defaultInputValue, extractInputValue, defaultOutputValue, extractOutputValue);
+    }
+
+    private static String keyOf(final Class<?> classKey) {
+      if (classKey == null) { throw new NullPointerException("classKey arg is null"); }
+      return classKey.getName();
+    }
 
     /**
      * Ctor.

@@ -161,7 +161,7 @@ public interface StepAttributes {
    */
   static <I> StepAttributes of(final StepAttribute<I, ?, ?> attribute,
                                final I value) {
-    return new StepAttributes.Of(attribute, value);
+    return new Of(attribute, value);
   }
 
   /**
@@ -180,7 +180,7 @@ public interface StepAttributes {
                                     final I1 value1,
                                     final StepAttribute<I2, ?, ?> attribute2,
                                     final I2 value2) {
-    return new StepAttributes.Of(attribute1, value1, attribute2, value2);
+    return new Of(attribute1, value1, attribute2, value2);
   }
 
   /**
@@ -204,7 +204,7 @@ public interface StepAttributes {
                                         final I2 value2,
                                         final StepAttribute<I3, ?, ?> attribute3,
                                         final I3 value3) {
-    return new StepAttributes.Of(attribute1, value1, attribute2, value2, attribute3, value3);
+    return new Of(attribute1, value1, attribute2, value2, attribute3, value3);
   }
 
   /**
@@ -234,7 +234,7 @@ public interface StepAttributes {
                                             final I3 value3,
                                             final StepAttribute<I4, ?, ?> attribute4,
                                             final I4 value4) {
-    return new StepAttributes.Of(attribute1, value1, attribute2, value2, attribute3, value3, attribute4, value4);
+    return new Of(attribute1, value1, attribute2, value2, attribute3, value3, attribute4, value4);
   }
 
   /**
@@ -550,7 +550,7 @@ public interface StepAttributes {
 
     @Override
     public StepAttributes build() {
-      return new StepAttributes.Of(new HashMap<>(this.map));
+      return new Of(new HashMap<>(this.map));
     }
   }
 }

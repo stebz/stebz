@@ -44,7 +44,7 @@ final class SimpleStepAttributeTest {
 
   @Test
   void nullableShouldThrowExceptionForNullKey() {
-    assertThatThrownBy(() -> SimpleStepAttribute.nullable(null))
+    assertThatThrownBy(() -> SimpleStepAttribute.nullable((String) null))
       .isInstanceOf(NullPointerException.class);
   }
 
@@ -60,7 +60,7 @@ final class SimpleStepAttributeTest {
 
   @Test
   void nullableWithDefaultValueShouldThrowExceptionForNullKey() {
-    assertThatThrownBy(() -> SimpleStepAttribute.nullable(null, "default"))
+    assertThatThrownBy(() -> SimpleStepAttribute.nullable((String) null, "default"))
       .isInstanceOf(NullPointerException.class);
   }
 
@@ -75,7 +75,7 @@ final class SimpleStepAttributeTest {
 
   @Test
   void nullableWithExtractOutputFunctionShouldThrowExceptionForNullArgs() {
-    assertThatThrownBy(() -> SimpleStepAttribute.nullable(null, "default", v -> v))
+    assertThatThrownBy(() -> SimpleStepAttribute.nullable((String) null, "default", v -> v))
       .isInstanceOf(NullPointerException.class);
     assertThatThrownBy(() -> SimpleStepAttribute.nullable("test:key", "default", null))
       .isInstanceOf(NullPointerException.class);
@@ -93,7 +93,7 @@ final class SimpleStepAttributeTest {
 
   @Test
   void nonNullShouldThrowExceptionForNullArgs() {
-    assertThatThrownBy(() -> SimpleStepAttribute.nonNull(null, "default"))
+    assertThatThrownBy(() -> SimpleStepAttribute.nonNull((String) null, "default"))
       .isInstanceOf(NullPointerException.class);
     assertThatThrownBy(() -> SimpleStepAttribute.nonNull("test:key", null))
       .isInstanceOf(NullPointerException.class);
@@ -110,7 +110,7 @@ final class SimpleStepAttributeTest {
 
   @Test
   void nonNullWithExtractOutputFunctionShouldThrowExceptionForNullArgs() {
-    assertThatThrownBy(() -> SimpleStepAttribute.nonNull(null, "default", v -> v))
+    assertThatThrownBy(() -> SimpleStepAttribute.nonNull((String) null, "default", v -> v))
       .isInstanceOf(NullPointerException.class);
     assertThatThrownBy(() -> SimpleStepAttribute.nonNull("test:key", null, v -> v))
       .isInstanceOf(NullPointerException.class);
@@ -176,6 +176,108 @@ final class SimpleStepAttributeTest {
       .isEqualTo(SimpleStepAttribute.nullable("test:key", "other default"))
       .isNotEqualTo(SimpleStepAttribute.nullable("test:key2"))
       .isNotEqualTo("not an attribute");
+  }
+
+  @Test
+  void nullableWithClassKeyShouldUseClassNameAsKey() {
+    final SimpleStepAttribute<Object> attribute = SimpleStepAttribute.nullable(SimpleStepAttribute.class);
+
+    assertThat(attribute.key()).isEqualTo("org.stebz.core.attribute.SimpleStepAttribute");
+    assertThat(attribute.defaultInputValue()).isNull();
+    assertThat(attribute.defaultOutputValue()).isNull();
+  }
+
+  @Test
+  void nullableWithClassKeyShouldThrowExceptionForNullClass() {
+    assertThatThrownBy(() -> SimpleStepAttribute.nullable((Class<?>) null))
+      .isInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void nullableWithClassKeyAndDefaultValueShouldCreateAttributeWithGivenDefault() {
+    final SimpleStepAttribute<String> attribute = SimpleStepAttribute.nullable(String.class, "default");
+
+    assertThat(attribute.key()).isEqualTo("java.lang.String");
+    assertThat(attribute.defaultInputValue()).isEqualTo("default");
+    assertThat(attribute.defaultOutputValue()).isEqualTo("default");
+  }
+
+  @Test
+  void nullableWithClassKeyAndExtractOutputFunctionShouldApplyFunction() {
+    final SimpleStepAttribute<String> attribute =
+      SimpleStepAttribute.nullable(String.class, "default", v -> "[" + v + "]");
+
+    assertThat(attribute.key()).isEqualTo("java.lang.String");
+    assertThat(attribute.extractOutputValue("test")).isEqualTo("[test]");
+  }
+
+  @Test
+  void nullableWithClassKeyAndExtractOutputFunctionShouldThrowExceptionForNullArgs() {
+    assertThatThrownBy(() -> SimpleStepAttribute.nullable((Class<?>) null, "default", v -> v))
+      .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> SimpleStepAttribute.nullable(String.class, "default", null))
+      .isInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void nonNullWithClassKeyShouldCreateAttributeWithGivenDefault() {
+    final SimpleStepAttribute<String> attribute = SimpleStepAttribute.nonNull(String.class, "default");
+
+    assertThat(attribute.key()).isEqualTo("java.lang.String");
+    assertThat(attribute.defaultInputValue()).isEqualTo("default");
+    assertThat(attribute.defaultOutputValue()).isEqualTo("default");
+  }
+
+  @Test
+  void nonNullWithClassKeyShouldThrowExceptionForNullArgs() {
+    assertThatThrownBy(() -> SimpleStepAttribute.nonNull((Class<?>) null, "default"))
+      .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> SimpleStepAttribute.nonNull(String.class, null))
+      .isInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void nonNullWithClassKeyAndExtractOutputFunctionShouldApplyFunction() {
+    final SimpleStepAttribute<Integer> attribute =
+      SimpleStepAttribute.nonNull(Integer.class, 0, v -> v * 2);
+
+    assertThat(attribute.key()).isEqualTo("java.lang.Integer");
+    assertThat(attribute.extractOutputValue(21)).isEqualTo(42);
+  }
+
+  @Test
+  void nonNullWithClassKeyAndExtractOutputFunctionShouldThrowExceptionForNullArgs() {
+    assertThatThrownBy(() -> SimpleStepAttribute.nonNull((Class<?>) null, "default", v -> v))
+      .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> SimpleStepAttribute.nonNull(String.class, null, v -> v))
+      .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> SimpleStepAttribute.nonNull(String.class, "default", null))
+      .isInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void attributeCreatedWithClassKeyShouldBeEqualToAttributeCreatedWithSameClassName() {
+    assertThat(SimpleStepAttribute.nullable(String.class))
+      .isEqualTo(SimpleStepAttribute.nullable("java.lang.String"))
+      .hasSameHashCodeAs(SimpleStepAttribute.nullable("java.lang.String"))
+      .hasToString("Attribute[java.lang.String]");
+  }
+
+  @Test
+  void classKeyCtorsShouldUseClassNameAsKey() {
+    assertThat(new SimpleStepAttribute.Nullable<>(String.class).key()).isEqualTo("java.lang.String");
+    assertThat(new SimpleStepAttribute.Nullable<>(String.class, "default").key()).isEqualTo("java.lang.String");
+    assertThat(new SimpleStepAttribute.NonNull<>(String.class, "default").key()).isEqualTo("java.lang.String");
+  }
+
+  @Test
+  void classKeyCtorsShouldThrowExceptionForNullClass() {
+    assertThatThrownBy(() -> new SimpleStepAttribute.Nullable<Object>((Class<?>) null))
+      .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> new SimpleStepAttribute.Nullable<>((Class<?>) null, "default"))
+      .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> new SimpleStepAttribute.NonNull<>((Class<?>) null, "default"))
+      .isInstanceOf(NullPointerException.class);
   }
 
   @Test
