@@ -40,12 +40,8 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@StepAttributeAnnotation(WithHidden.KEY)
+@StepAttributeMarker
 public @interface WithHidden {
-  /**
-   * {@link WithHidden} step attribute annotation key.
-   */
-  String KEY = "annotation:with_hidden";
 
   /**
    * Returns hidden attribute value.

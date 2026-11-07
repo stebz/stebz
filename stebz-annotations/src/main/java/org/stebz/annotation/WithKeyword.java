@@ -33,8 +33,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static org.stebz.annotation.WithKeyword.KEY;
-
 /**
  * Step attribute annotation. Maps to {@link StepAttribute#KEYWORD} attribute via {@link StepAspects}.
  *
@@ -43,12 +41,8 @@ import static org.stebz.annotation.WithKeyword.KEY;
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@StepAttributeAnnotation(KEY)
+@StepAttributeMarker
 public @interface WithKeyword {
-  /**
-   * {@link WithKeyword} step attribute annotation key.
-   */
-  String KEY = "annotation:with_keyword";
 
   /**
    * Returns keyword attribute value. Empty value means {@link Keyword#empty()} keyword.

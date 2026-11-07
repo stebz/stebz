@@ -32,6 +32,7 @@ import java.lang.annotation.Annotation;
  * Reflective step attributes.
  */
 public final class ReflectiveStepAttributes {
+  private static final Annotation[] EMPTY_ANNOTATIONS_ARRAY = new Annotation[0];
 
   /**
    * Join point step attribute.
@@ -60,7 +61,8 @@ public final class ReflectiveStepAttributes {
    * Declared annotations step attribute.
    */
   public static final SimpleStepAttribute<Annotation[]> DECLARED_ANNOTATIONS =
-    SimpleStepAttribute.nonNull("reflective:annotations", new Annotation[0], Annotation[]::clone);
+    SimpleStepAttribute.nonNull("reflective:annotations", EMPTY_ANNOTATIONS_ARRAY, annotations ->
+      annotations.length == 0 ? annotations : annotations.clone());
 
   /**
    * Reflective name step attribute.

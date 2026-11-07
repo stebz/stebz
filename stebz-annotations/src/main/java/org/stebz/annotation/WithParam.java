@@ -44,12 +44,8 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(WithParam.List.class)
-@StepAttributeAnnotation(WithParam.KEY)
+@StepAttributeMarker
 public @interface WithParam {
-  /**
-   * {@link WithParam} step attribute annotation key.
-   */
-  String KEY = "annotation:with_param";
 
   /**
    * Returns parameter name. Non empty value overrides {@link #name()}.
@@ -88,12 +84,8 @@ public @interface WithParam {
   @Documented
   @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
   @Retention(RetentionPolicy.RUNTIME)
-  @StepAttributeAnnotation(List.KEY)
+  @StepAttributeMarker
   @interface List {
-    /**
-     * {@link WithParam.List} step attribute annotation key.
-     */
-    String KEY = "annotation:with_param_list";
 
     /**
      * Returns {@link WithParam} annotations list.

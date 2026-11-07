@@ -42,11 +42,6 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 @Retention(RetentionPolicy.RUNTIME)
-@StepAttributeAnnotation(WithParams.KEY)
+@StepAttributeMarker
 public @interface WithParams {
-  /**
-   * {@link WithParams} step attribute annotation key.
-   */
-  String KEY = "annotation:with_params";
-
 }

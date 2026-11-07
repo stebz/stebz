@@ -40,12 +40,8 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@StepAttributeAnnotation(WithComment.KEY)
+@StepAttributeMarker
 public @interface WithComment {
-  /**
-   * {@link WithComment} step attribute annotation key.
-   */
-  String KEY = "annotation:with_comment";
 
   /**
    * Returns comment attribute value.

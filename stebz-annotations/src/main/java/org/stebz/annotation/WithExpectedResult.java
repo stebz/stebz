@@ -40,12 +40,8 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@StepAttributeAnnotation(WithExpectedResult.KEY)
+@StepAttributeMarker
 public @interface WithExpectedResult {
-  /**
-   * {@link WithExpectedResult} step attribute annotation key.
-   */
-  String KEY = "annotation:with_expected_result";
 
   /**
    * Returns expected result attribute value.

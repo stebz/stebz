@@ -21,16 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.stebz.aaa.annotation;
+package org.stebz.gherkin.annotation;
 
 import dev.jlet.function.ThrowingFunction;
-import org.stebz.aaa.keyword.AAAKeywords;
 import org.stebz.core.attribute.Keyword;
 import org.stebz.core.attribute.SimpleStepAttribute;
 import org.stebz.core.executor.StartupPropertiesReader;
 import org.stebz.core.extension.InterceptStep;
 import org.stebz.core.extension.StebzExtension;
 import org.stebz.core.step.StepObj;
+import org.stebz.gherkin.keyword.GherkinKeywords;
 import org.stebz.util.Cached;
 import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
@@ -44,44 +44,49 @@ import static org.stebz.core.attribute.StepAttribute.KEYWORD;
 import static org.stebz.core.attribute.StepAttribute.NAME;
 
 /**
- * Arrange-Act-Assert annotations {@link StebzExtension}.
+ * Gherkin annotations {@link StebzExtension}.
  */
-public class AAAAnnotationsExtension implements InterceptStep {
+public class GherkinAnnotations implements InterceptStep {
   /**
-   * Arrange-Act-Assert keyword attribute key.
-   */
-  public static final String AAA_KEYWORD_ATTRIBUTE_KEY = "extension:aaa_keyword";
-  /**
-   * Arrange-Act-Assert keyword annotation attribute.
+   * Gherkin keyword annotation attribute.
    *
-   * @see SetUp
-   * @see TearDown
-   * @see Arrange
-   * @see Act
-   * @see Assert
+   * @see Background
+   * @see Rule
+   * @see Given
+   * @see When
+   * @see Then
+   * @see And
+   * @see But
    * @see ___
+   * @see Technical
    */
-  public static final SimpleStepAttribute<Annotation> AAA_KEYWORD =
-    SimpleStepAttribute.nullable(AAA_KEYWORD_ATTRIBUTE_KEY);
+  public static final SimpleStepAttribute<Annotation> GHERKIN_KEYWORD =
+    SimpleStepAttribute.nullable(GherkinAnnotations.class);
   private static final Cached<Map<Class<? extends Annotation>, Keyword>> KEYWORDS = new Cached<>(() -> {
     final Map<Class<? extends Annotation>, Keyword> keywords = new HashMap<>();
-    keywords.put(SetUp.class, AAAKeywords.setUp());
-    keywords.put(TearDown.class, AAAKeywords.tearDown());
-    keywords.put(Arrange.class, AAAKeywords.arrange());
-    keywords.put(Act.class, AAAKeywords.act());
-    keywords.put(Assert.class, AAAKeywords._assert());
-    keywords.put(___.class, AAAKeywords.asterisk());
+    keywords.put(Background.class, GherkinKeywords.background());
+    keywords.put(Rule.class, GherkinKeywords.rule());
+    keywords.put(Given.class, GherkinKeywords.given());
+    keywords.put(When.class, GherkinKeywords.when());
+    keywords.put(Then.class, GherkinKeywords.then());
+    keywords.put(And.class, GherkinKeywords.and());
+    keywords.put(But.class, GherkinKeywords.but());
+    keywords.put(___.class, GherkinKeywords.asterisk());
+    keywords.put(Technical.class, GherkinKeywords.technical());
     return keywords;
   });
   private static final Cached<Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>>> VALUES =
     new Cached<>(() -> {
       final Map<Class<? extends Annotation>, ThrowingFunction<Annotation, String, Error>> values = new HashMap<>();
-      values.put(SetUp.class, annot -> ((SetUp) annot).value());
-      values.put(TearDown.class, annot -> ((TearDown) annot).value());
-      values.put(Arrange.class, annot -> ((Arrange) annot).value());
-      values.put(Act.class, annot -> ((Act) annot).value());
-      values.put(Assert.class, annot -> ((Assert) annot).value());
+      values.put(Background.class, annot -> ((Background) annot).value());
+      values.put(Rule.class, annot -> ((Rule) annot).value());
+      values.put(Given.class, annot -> ((Given) annot).value());
+      values.put(When.class, annot -> ((When) annot).value());
+      values.put(Then.class, annot -> ((Then) annot).value());
+      values.put(And.class, annot -> ((And) annot).value());
+      values.put(But.class, annot -> ((But) annot).value());
       values.put(___.class, annot -> ((___) annot).value());
+      values.put(Technical.class, annot -> ((Technical) annot).value());
       return values;
     });
   private final boolean enabled;
@@ -90,7 +95,7 @@ public class AAAAnnotationsExtension implements InterceptStep {
   /**
    * Ctor.
    */
-  public AAAAnnotationsExtension() {
+  public GherkinAnnotations() {
     this(StartupPropertiesReader.get());
   }
 
@@ -99,9 +104,9 @@ public class AAAAnnotationsExtension implements InterceptStep {
    *
    * @param properties the properties reader
    */
-  public AAAAnnotationsExtension(final PropertiesReader properties) {
-    this.enabled = properties.getBoolean("stebz.aaa.annotation.enabled", true);
-    this.order = properties.getInteger("stebz.aaa.annotation.order", MID_EARLY_ORDER);
+  public GherkinAnnotations(final PropertiesReader properties) {
+    this.enabled = properties.getBoolean("stebz.gherkin.annotation.enabled", true);
+    this.order = properties.getInteger("stebz.gherkin.annotation.order", MID_EARLY_ORDER);
   }
 
   @Override
@@ -115,7 +120,7 @@ public class AAAAnnotationsExtension implements InterceptStep {
     if (!this.enabled) {
       return step;
     }
-    final Annotation annotation = step.get(AAA_KEYWORD);
+    final Annotation annotation = step.get(GHERKIN_KEYWORD);
     if (annotation == null) {
       return step;
     }

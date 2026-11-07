@@ -23,7 +23,7 @@
  */
 package org.stebz.repeatandretry;
 
-import org.stebz.annotation.StepAttributeAnnotation;
+import org.stebz.annotation.StepAttributeMarker;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -40,12 +40,8 @@ import java.util.concurrent.TimeUnit;
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@StepAttributeAnnotation(WithRepeat.KEY)
+@StepAttributeMarker
 public @interface WithRepeat {
-  /**
-   * {@link WithRepeat} step attribute annotation key.
-   */
-  String KEY = "extension:with_repeat";
 
   /**
    * Step executions count (including the first execution).
