@@ -27,9 +27,13 @@ import org.stebz.core.listener.StepListener;
 import org.stebz.core.step.StepObj;
 import org.stebz.util.container.NullableOptional;
 
+/**
+ * Step listener used by tests of this module. Stores step data of the last started step.
+ */
 public final class StaticStepListener implements StepListener {
   static StepObj<?> lastStep = null;
-  static NullableOptional<Object> lastContext;
+  static NullableOptional<Object> lastContext = null;
+  static NullableOptional<Object> lastResult = null;
 
   public StaticStepListener() {
   }
@@ -37,6 +41,7 @@ public final class StaticStepListener implements StepListener {
   public static void clear() {
     lastStep = null;
     lastContext = null;
+    lastResult = null;
   }
 
   @Override
@@ -50,6 +55,7 @@ public final class StaticStepListener implements StepListener {
   public void onStepSuccess(final StepObj<?> step,
                             final NullableOptional<Object> context,
                             final NullableOptional<Object> result) {
+    lastResult = result;
   }
 
   @Override

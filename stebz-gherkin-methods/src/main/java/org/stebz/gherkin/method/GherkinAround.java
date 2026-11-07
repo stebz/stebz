@@ -50,7 +50,7 @@ import static org.stebz.gherkin.keyword.GherkinKeywords.then;
 import static org.stebz.gherkin.keyword.GherkinKeywords.when;
 
 /**
- * Allows to call steps around a specific context with Gherkin keywords.
+ * Allows calling steps around a specific context with Gherkin keywords.
  *
  * @param <T> the type of the context
  */
@@ -60,7 +60,8 @@ public interface GherkinAround<T> {
    * Executes given step with {@link GherkinKeywords#background()} keyword.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   GherkinAround<T> Background(RunnableStep step);
 
@@ -69,17 +70,20 @@ public interface GherkinAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   GherkinAround<T> Background(String name,
                               RunnableStep step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   GherkinAround<T> Background(ThrowingFunction<? super String, String, ?> nameGenerator,
                               RunnableStep step);
@@ -90,6 +94,7 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R Background(SupplierStep<? extends R> step);
 
@@ -100,18 +105,20 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R Background(String name,
                    SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R Background(ThrowingFunction<? super String, String, ?> nameGenerator,
                    SupplierStep<? extends R> step);
@@ -120,7 +127,8 @@ public interface GherkinAround<T> {
    * Executes given step with {@link GherkinKeywords#background()} keyword on the context value.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   GherkinAround<T> Background(ConsumerStep<? super T> step);
 
@@ -129,18 +137,20 @@ public interface GherkinAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   GherkinAround<T> Background(String name,
                               ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by {@code nameGenerator} on
-   * the context value.
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name on the context value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   GherkinAround<T> Background(ThrowingFunction<? super String, String, ?> nameGenerator,
                               ConsumerStep<? super T> step);
@@ -152,6 +162,7 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R Background(FunctionStep<? super T, ? extends R> step);
 
@@ -163,18 +174,20 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R Background(String name,
                    FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by {@code nameGenerator} on
-   * the context value and returns step result.
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name on the context value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R Background(ThrowingFunction<? super String, String, ?> nameGenerator,
                    FunctionStep<? super T, ? extends R> step);
@@ -183,7 +196,8 @@ public interface GherkinAround<T> {
    * Executes step with {@link GherkinKeywords#background()} keyword on the context value.
    *
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code body} arg is null
    */
   GherkinAround<T> Background(ThrowingConsumer<? super T, ?> body);
 
@@ -192,7 +206,8 @@ public interface GherkinAround<T> {
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   GherkinAround<T> Background(String name,
                               ThrowingConsumer<? super T, ?> body);
@@ -203,7 +218,8 @@ public interface GherkinAround<T> {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   GherkinAround<T> Background(String name,
                               Map<String, ?> params,
@@ -215,7 +231,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   GherkinAround<T> Background(String name,
                               String expectedResult,
@@ -228,7 +245,9 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   GherkinAround<T> Background(String name,
                               Map<String, ?> params,
@@ -241,6 +260,7 @@ public interface GherkinAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   <R> R Background(ThrowingFunction<? super T, ? extends R, ?> body);
 
@@ -252,6 +272,7 @@ public interface GherkinAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   <R> R Background(String name,
                    ThrowingFunction<? super T, ? extends R, ?> body);
@@ -265,6 +286,7 @@ public interface GherkinAround<T> {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   <R> R Background(String name,
                    Map<String, ?> params,
@@ -279,6 +301,7 @@ public interface GherkinAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R Background(String name,
                    String expectedResult,
@@ -294,6 +317,8 @@ public interface GherkinAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R Background(String name,
                    Map<String, ?> params,
@@ -304,7 +329,8 @@ public interface GherkinAround<T> {
    * Executes given step with {@link GherkinKeywords#rule()} keyword.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   GherkinAround<T> Rule(RunnableStep step);
 
@@ -313,17 +339,20 @@ public interface GherkinAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   GherkinAround<T> Rule(String name,
                         RunnableStep step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   GherkinAround<T> Rule(ThrowingFunction<? super String, String, ?> nameGenerator,
                         RunnableStep step);
@@ -334,6 +363,7 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R Rule(SupplierStep<? extends R> step);
 
@@ -344,18 +374,20 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R Rule(String name,
              SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R Rule(ThrowingFunction<? super String, String, ?> nameGenerator,
              SupplierStep<? extends R> step);
@@ -364,7 +396,8 @@ public interface GherkinAround<T> {
    * Executes given step with {@link GherkinKeywords#rule()} keyword on the context value.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   GherkinAround<T> Rule(ConsumerStep<? super T> step);
 
@@ -373,18 +406,20 @@ public interface GherkinAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   GherkinAround<T> Rule(String name,
                         ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by {@code nameGenerator} on the
-   * context value.
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   GherkinAround<T> Rule(ThrowingFunction<? super String, String, ?> nameGenerator,
                         ConsumerStep<? super T> step);
@@ -395,6 +430,7 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R Rule(FunctionStep<? super T, ? extends R> step);
 
@@ -406,18 +442,20 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R Rule(String name,
              FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by {@code nameGenerator} on the
-   * context value and returns step result.
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R Rule(ThrowingFunction<? super String, String, ?> nameGenerator,
              FunctionStep<? super T, ? extends R> step);
@@ -426,7 +464,8 @@ public interface GherkinAround<T> {
    * Executes step with {@link GherkinKeywords#rule()} keyword on the context value.
    *
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code body} arg is null
    */
   GherkinAround<T> Rule(ThrowingConsumer<? super T, ?> body);
 
@@ -435,7 +474,8 @@ public interface GherkinAround<T> {
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   GherkinAround<T> Rule(String name,
                         ThrowingConsumer<? super T, ?> body);
@@ -446,7 +486,8 @@ public interface GherkinAround<T> {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   GherkinAround<T> Rule(String name,
                         Map<String, ?> params,
@@ -458,7 +499,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   GherkinAround<T> Rule(String name,
                         String expectedResult,
@@ -471,7 +513,9 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   GherkinAround<T> Rule(String name,
                         Map<String, ?> params,
@@ -484,6 +528,7 @@ public interface GherkinAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   <R> R Rule(ThrowingFunction<? super T, ? extends R, ?> body);
 
@@ -495,6 +540,7 @@ public interface GherkinAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   <R> R Rule(String name,
              ThrowingFunction<? super T, ? extends R, ?> body);
@@ -508,6 +554,7 @@ public interface GherkinAround<T> {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   <R> R Rule(String name,
              Map<String, ?> params,
@@ -522,6 +569,7 @@ public interface GherkinAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R Rule(String name,
              String expectedResult,
@@ -537,6 +585,8 @@ public interface GherkinAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R Rule(String name,
              Map<String, ?> params,
@@ -547,7 +597,8 @@ public interface GherkinAround<T> {
    * Executes step with {@link GherkinKeywords#rule()} keyword and given attributes.
    *
    * @param name the step name
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg is null
    */
   GherkinAround<T> Rule(String name);
 
@@ -556,7 +607,8 @@ public interface GherkinAround<T> {
    *
    * @param name   the step name
    * @param params the step params
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   GherkinAround<T> Rule(String name,
                         Map<String, ?> params);
@@ -566,7 +618,8 @@ public interface GherkinAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   GherkinAround<T> Rule(String name,
                         String expectedResult);
@@ -577,7 +630,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   GherkinAround<T> Rule(String name,
                         Map<String, ?> params,
@@ -587,7 +641,8 @@ public interface GherkinAround<T> {
    * Executes given step with {@link GherkinKeywords#given()} keyword.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   GherkinAround<T> Given(RunnableStep step);
 
@@ -596,17 +651,20 @@ public interface GherkinAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   GherkinAround<T> Given(String name,
                          RunnableStep step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   GherkinAround<T> Given(ThrowingFunction<? super String, String, ?> nameGenerator,
                          RunnableStep step);
@@ -617,6 +675,7 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R Given(SupplierStep<? extends R> step);
 
@@ -627,18 +686,20 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R Given(String name,
               SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R Given(ThrowingFunction<? super String, String, ?> nameGenerator,
               SupplierStep<? extends R> step);
@@ -647,7 +708,8 @@ public interface GherkinAround<T> {
    * Executes given step with {@link GherkinKeywords#given()} keyword on the context value.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   GherkinAround<T> Given(ConsumerStep<? super T> step);
 
@@ -656,18 +718,20 @@ public interface GherkinAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   GherkinAround<T> Given(String name,
                          ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by {@code nameGenerator} on the
-   * context value.
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   GherkinAround<T> Given(ThrowingFunction<? super String, String, ?> nameGenerator,
                          ConsumerStep<? super T> step);
@@ -678,6 +742,7 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R Given(FunctionStep<? super T, ? extends R> step);
 
@@ -689,18 +754,20 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R Given(String name,
               FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by {@code nameGenerator} on the
-   * context value and returns step result.
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R Given(ThrowingFunction<? super String, String, ?> nameGenerator,
               FunctionStep<? super T, ? extends R> step);
@@ -709,7 +776,8 @@ public interface GherkinAround<T> {
    * Executes step with {@link GherkinKeywords#given()} keyword on the context value.
    *
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code body} arg is null
    */
   GherkinAround<T> Given(ThrowingConsumer<? super T, ?> body);
 
@@ -718,7 +786,8 @@ public interface GherkinAround<T> {
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   GherkinAround<T> Given(String name,
                          ThrowingConsumer<? super T, ?> body);
@@ -729,7 +798,8 @@ public interface GherkinAround<T> {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   GherkinAround<T> Given(String name,
                          Map<String, ?> params,
@@ -741,7 +811,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   GherkinAround<T> Given(String name,
                          String expectedResult,
@@ -754,7 +825,9 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   GherkinAround<T> Given(String name,
                          Map<String, ?> params,
@@ -767,6 +840,7 @@ public interface GherkinAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   <R> R Given(ThrowingFunction<? super T, ? extends R, ?> body);
 
@@ -778,6 +852,7 @@ public interface GherkinAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   <R> R Given(String name,
               ThrowingFunction<? super T, ? extends R, ?> body);
@@ -791,6 +866,7 @@ public interface GherkinAround<T> {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   <R> R Given(String name,
               Map<String, ?> params,
@@ -805,6 +881,7 @@ public interface GherkinAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R Given(String name,
               String expectedResult,
@@ -820,6 +897,8 @@ public interface GherkinAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R Given(String name,
               Map<String, ?> params,
@@ -830,7 +909,8 @@ public interface GherkinAround<T> {
    * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
    *
    * @param name the step name
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg is null
    */
   GherkinAround<T> Given(String name);
 
@@ -839,7 +919,8 @@ public interface GherkinAround<T> {
    *
    * @param name   the step name
    * @param params the step params
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   GherkinAround<T> Given(String name,
                          Map<String, ?> params);
@@ -849,7 +930,8 @@ public interface GherkinAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   GherkinAround<T> Given(String name,
                          String expectedResult);
@@ -860,7 +942,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   GherkinAround<T> Given(String name,
                          Map<String, ?> params,
@@ -870,7 +953,8 @@ public interface GherkinAround<T> {
    * Executes given step with {@link GherkinKeywords#when()} keyword.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   GherkinAround<T> When(RunnableStep step);
 
@@ -879,17 +963,20 @@ public interface GherkinAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   GherkinAround<T> When(String name,
                         RunnableStep step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   GherkinAround<T> When(ThrowingFunction<? super String, String, ?> nameGenerator,
                         RunnableStep step);
@@ -900,6 +987,7 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R When(SupplierStep<? extends R> step);
 
@@ -910,18 +998,20 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R When(String name,
              SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R When(ThrowingFunction<? super String, String, ?> nameGenerator,
              SupplierStep<? extends R> step);
@@ -930,7 +1020,8 @@ public interface GherkinAround<T> {
    * Executes given step with {@link GherkinKeywords#when()} keyword on the context value.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   GherkinAround<T> When(ConsumerStep<? super T> step);
 
@@ -939,18 +1030,20 @@ public interface GherkinAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   GherkinAround<T> When(String name,
                         ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by {@code nameGenerator} on the
-   * context value.
+   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   GherkinAround<T> When(ThrowingFunction<? super String, String, ?> nameGenerator,
                         ConsumerStep<? super T> step);
@@ -961,6 +1054,7 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R When(FunctionStep<? super T, ? extends R> step);
 
@@ -972,18 +1066,20 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R When(String name,
              FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by {@code nameGenerator} on the
-   * context value and returns step result.
+   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R When(ThrowingFunction<? super String, String, ?> nameGenerator,
              FunctionStep<? super T, ? extends R> step);
@@ -992,7 +1088,8 @@ public interface GherkinAround<T> {
    * Executes step with {@link GherkinKeywords#when()} keyword on the context value.
    *
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code body} arg is null
    */
   GherkinAround<T> When(ThrowingConsumer<? super T, ?> body);
 
@@ -1001,7 +1098,8 @@ public interface GherkinAround<T> {
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   GherkinAround<T> When(String name,
                         ThrowingConsumer<? super T, ?> body);
@@ -1012,7 +1110,8 @@ public interface GherkinAround<T> {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   GherkinAround<T> When(String name,
                         Map<String, ?> params,
@@ -1024,7 +1123,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   GherkinAround<T> When(String name,
                         String expectedResult,
@@ -1037,7 +1137,9 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   GherkinAround<T> When(String name,
                         Map<String, ?> params,
@@ -1050,6 +1152,7 @@ public interface GherkinAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   <R> R When(ThrowingFunction<? super T, ? extends R, ?> body);
 
@@ -1061,6 +1164,7 @@ public interface GherkinAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   <R> R When(String name,
              ThrowingFunction<? super T, ? extends R, ?> body);
@@ -1074,6 +1178,7 @@ public interface GherkinAround<T> {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   <R> R When(String name,
              Map<String, ?> params,
@@ -1088,6 +1193,7 @@ public interface GherkinAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R When(String name,
              String expectedResult,
@@ -1103,6 +1209,8 @@ public interface GherkinAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R When(String name,
              Map<String, ?> params,
@@ -1113,7 +1221,8 @@ public interface GherkinAround<T> {
    * Executes step with {@link GherkinKeywords#when()} keyword and given attributes.
    *
    * @param name the step name
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg is null
    */
   GherkinAround<T> When(String name);
 
@@ -1122,7 +1231,8 @@ public interface GherkinAround<T> {
    *
    * @param name   the step name
    * @param params the step params
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   GherkinAround<T> When(String name,
                         Map<String, ?> params);
@@ -1132,7 +1242,8 @@ public interface GherkinAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   GherkinAround<T> When(String name,
                         String expectedResult);
@@ -1143,7 +1254,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   GherkinAround<T> When(String name,
                         Map<String, ?> params,
@@ -1153,7 +1265,8 @@ public interface GherkinAround<T> {
    * Executes given step with {@link GherkinKeywords#then()} keyword.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   GherkinAround<T> Then(RunnableStep step);
 
@@ -1162,17 +1275,20 @@ public interface GherkinAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   GherkinAround<T> Then(String name,
                         RunnableStep step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   GherkinAround<T> Then(ThrowingFunction<? super String, String, ?> nameGenerator,
                         RunnableStep step);
@@ -1183,6 +1299,7 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R Then(SupplierStep<? extends R> step);
 
@@ -1193,18 +1310,20 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R Then(String name,
              SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R Then(ThrowingFunction<? super String, String, ?> nameGenerator,
              SupplierStep<? extends R> step);
@@ -1213,7 +1332,8 @@ public interface GherkinAround<T> {
    * Executes given step with {@link GherkinKeywords#then()} keyword on the context value.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   GherkinAround<T> Then(ConsumerStep<? super T> step);
 
@@ -1222,18 +1342,20 @@ public interface GherkinAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   GherkinAround<T> Then(String name,
                         ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by {@code nameGenerator} on the
-   * context value.
+   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   GherkinAround<T> Then(ThrowingFunction<? super String, String, ?> nameGenerator,
                         ConsumerStep<? super T> step);
@@ -1244,6 +1366,7 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R Then(FunctionStep<? super T, ? extends R> step);
 
@@ -1255,18 +1378,20 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R Then(String name,
              FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by {@code nameGenerator} on the
-   * context value and returns step result.
+   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R Then(ThrowingFunction<? super String, String, ?> nameGenerator,
              FunctionStep<? super T, ? extends R> step);
@@ -1275,7 +1400,8 @@ public interface GherkinAround<T> {
    * Executes step with {@link GherkinKeywords#then()} keyword on the context value.
    *
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code body} arg is null
    */
   GherkinAround<T> Then(ThrowingConsumer<? super T, ?> body);
 
@@ -1284,7 +1410,8 @@ public interface GherkinAround<T> {
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   GherkinAround<T> Then(String name,
                         ThrowingConsumer<? super T, ?> body);
@@ -1295,7 +1422,8 @@ public interface GherkinAround<T> {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   GherkinAround<T> Then(String name,
                         Map<String, ?> params,
@@ -1307,7 +1435,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   GherkinAround<T> Then(String name,
                         String expectedResult,
@@ -1320,7 +1449,9 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   GherkinAround<T> Then(String name,
                         Map<String, ?> params,
@@ -1333,6 +1464,7 @@ public interface GherkinAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   <R> R Then(ThrowingFunction<? super T, ? extends R, ?> body);
 
@@ -1344,6 +1476,7 @@ public interface GherkinAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   <R> R Then(String name,
              ThrowingFunction<? super T, ? extends R, ?> body);
@@ -1357,6 +1490,7 @@ public interface GherkinAround<T> {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   <R> R Then(String name,
              Map<String, ?> params,
@@ -1371,6 +1505,7 @@ public interface GherkinAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R Then(String name,
              String expectedResult,
@@ -1386,6 +1521,8 @@ public interface GherkinAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R Then(String name,
              Map<String, ?> params,
@@ -1396,7 +1533,8 @@ public interface GherkinAround<T> {
    * Executes step with {@link GherkinKeywords#then()} keyword and given attributes.
    *
    * @param name the step name
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg is null
    */
   GherkinAround<T> Then(String name);
 
@@ -1405,7 +1543,8 @@ public interface GherkinAround<T> {
    *
    * @param name   the step name
    * @param params the step params
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   GherkinAround<T> Then(String name,
                         Map<String, ?> params);
@@ -1415,7 +1554,8 @@ public interface GherkinAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   GherkinAround<T> Then(String name,
                         String expectedResult);
@@ -1426,7 +1566,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   GherkinAround<T> Then(String name,
                         Map<String, ?> params,
@@ -1436,7 +1577,8 @@ public interface GherkinAround<T> {
    * Executes given step with {@link GherkinKeywords#and()} keyword.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   GherkinAround<T> And(RunnableStep step);
 
@@ -1445,17 +1587,20 @@ public interface GherkinAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   GherkinAround<T> And(String name,
                        RunnableStep step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   GherkinAround<T> And(ThrowingFunction<? super String, String, ?> nameGenerator,
                        RunnableStep step);
@@ -1466,6 +1611,7 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R And(SupplierStep<? extends R> step);
 
@@ -1476,18 +1622,20 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R And(String name,
             SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R And(ThrowingFunction<? super String, String, ?> nameGenerator,
             SupplierStep<? extends R> step);
@@ -1496,7 +1644,8 @@ public interface GherkinAround<T> {
    * Executes given step with {@link GherkinKeywords#and()} keyword on the context value.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   GherkinAround<T> And(ConsumerStep<? super T> step);
 
@@ -1505,18 +1654,20 @@ public interface GherkinAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   GherkinAround<T> And(String name,
                        ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by {@code nameGenerator} on the
-   * context value.
+   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   GherkinAround<T> And(ThrowingFunction<? super String, String, ?> nameGenerator,
                        ConsumerStep<? super T> step);
@@ -1527,6 +1678,7 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R And(FunctionStep<? super T, ? extends R> step);
 
@@ -1538,18 +1690,20 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R And(String name,
             FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by {@code nameGenerator} on the
-   * context value and returns step result.
+   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R And(ThrowingFunction<? super String, String, ?> nameGenerator,
             FunctionStep<? super T, ? extends R> step);
@@ -1558,7 +1712,8 @@ public interface GherkinAround<T> {
    * Executes step with {@link GherkinKeywords#and()} keyword on the context value.
    *
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code body} arg is null
    */
   GherkinAround<T> And(ThrowingConsumer<? super T, ?> body);
 
@@ -1567,7 +1722,8 @@ public interface GherkinAround<T> {
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   GherkinAround<T> And(String name,
                        ThrowingConsumer<? super T, ?> body);
@@ -1578,7 +1734,8 @@ public interface GherkinAround<T> {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   GherkinAround<T> And(String name,
                        Map<String, ?> params,
@@ -1590,7 +1747,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   GherkinAround<T> And(String name,
                        String expectedResult,
@@ -1603,7 +1761,9 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   GherkinAround<T> And(String name,
                        Map<String, ?> params,
@@ -1616,6 +1776,7 @@ public interface GherkinAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   <R> R And(ThrowingFunction<? super T, ? extends R, ?> body);
 
@@ -1627,6 +1788,7 @@ public interface GherkinAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   <R> R And(String name,
             ThrowingFunction<? super T, ? extends R, ?> body);
@@ -1640,6 +1802,7 @@ public interface GherkinAround<T> {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   <R> R And(String name,
             Map<String, ?> params,
@@ -1647,13 +1810,14 @@ public interface GherkinAround<T> {
 
   /**
    * Executes step with {@link GherkinKeywords#and()} keyword and given attributes on the context value and returns step
-   * result
+   * result.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R And(String name,
             String expectedResult,
@@ -1661,7 +1825,7 @@ public interface GherkinAround<T> {
 
   /**
    * Executes step with {@link GherkinKeywords#and()} keyword and given attributes on the context value and returns step
-   * result
+   * result.
    *
    * @param name           the step name
    * @param params         the step params
@@ -1669,6 +1833,8 @@ public interface GherkinAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R And(String name,
             Map<String, ?> params,
@@ -1679,7 +1845,8 @@ public interface GherkinAround<T> {
    * Executes step with {@link GherkinKeywords#and()} keyword and given attributes.
    *
    * @param name the step name
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg is null
    */
   GherkinAround<T> And(String name);
 
@@ -1688,7 +1855,8 @@ public interface GherkinAround<T> {
    *
    * @param name   the step name
    * @param params the step params
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   GherkinAround<T> And(String name,
                        Map<String, ?> params);
@@ -1698,7 +1866,8 @@ public interface GherkinAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   GherkinAround<T> And(String name,
                        String expectedResult);
@@ -1709,7 +1878,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   GherkinAround<T> And(String name,
                        Map<String, ?> params,
@@ -1719,7 +1889,8 @@ public interface GherkinAround<T> {
    * Executes given step with {@link GherkinKeywords#but()} keyword.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   GherkinAround<T> But(RunnableStep step);
 
@@ -1728,17 +1899,20 @@ public interface GherkinAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   GherkinAround<T> But(String name,
                        RunnableStep step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   GherkinAround<T> But(ThrowingFunction<? super String, String, ?> nameGenerator,
                        RunnableStep step);
@@ -1749,6 +1923,7 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R But(SupplierStep<? extends R> step);
 
@@ -1759,18 +1934,20 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R But(String name,
             SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R But(ThrowingFunction<? super String, String, ?> nameGenerator,
             SupplierStep<? extends R> step);
@@ -1779,7 +1956,8 @@ public interface GherkinAround<T> {
    * Executes given step with {@link GherkinKeywords#but()} keyword on the context value.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   GherkinAround<T> But(ConsumerStep<? super T> step);
 
@@ -1788,18 +1966,20 @@ public interface GherkinAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   GherkinAround<T> But(String name,
                        ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by {@code nameGenerator} on the
-   * context value.
+   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   GherkinAround<T> But(ThrowingFunction<? super String, String, ?> nameGenerator,
                        ConsumerStep<? super T> step);
@@ -1810,6 +1990,7 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R But(FunctionStep<? super T, ? extends R> step);
 
@@ -1821,18 +2002,20 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R But(String name,
             FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by {@code nameGenerator} on the
-   * context value and returns step result.
+   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R But(ThrowingFunction<? super String, String, ?> nameGenerator,
             FunctionStep<? super T, ? extends R> step);
@@ -1841,7 +2024,8 @@ public interface GherkinAround<T> {
    * Executes step with {@link GherkinKeywords#but()} keyword on the context value.
    *
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code body} arg is null
    */
   GherkinAround<T> But(ThrowingConsumer<? super T, ?> body);
 
@@ -1850,7 +2034,8 @@ public interface GherkinAround<T> {
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   GherkinAround<T> But(String name,
                        ThrowingConsumer<? super T, ?> body);
@@ -1861,7 +2046,8 @@ public interface GherkinAround<T> {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   GherkinAround<T> But(String name,
                        Map<String, ?> params,
@@ -1873,7 +2059,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   GherkinAround<T> But(String name,
                        String expectedResult,
@@ -1886,7 +2073,9 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   GherkinAround<T> But(String name,
                        Map<String, ?> params,
@@ -1899,6 +2088,7 @@ public interface GherkinAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   <R> R But(ThrowingFunction<? super T, ? extends R, ?> body);
 
@@ -1910,6 +2100,7 @@ public interface GherkinAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   <R> R But(String name,
             ThrowingFunction<? super T, ? extends R, ?> body);
@@ -1923,6 +2114,7 @@ public interface GherkinAround<T> {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   <R> R But(String name,
             Map<String, ?> params,
@@ -1930,13 +2122,14 @@ public interface GherkinAround<T> {
 
   /**
    * Executes step with {@link GherkinKeywords#but()} keyword and given attributes on the context value and returns step
-   * result
+   * result.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R But(String name,
             String expectedResult,
@@ -1944,7 +2137,7 @@ public interface GherkinAround<T> {
 
   /**
    * Executes step with {@link GherkinKeywords#but()} keyword and given attributes on the context value and returns step
-   * result
+   * result.
    *
    * @param name           the step name
    * @param params         the step params
@@ -1952,6 +2145,8 @@ public interface GherkinAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R But(String name,
             Map<String, ?> params,
@@ -1962,7 +2157,8 @@ public interface GherkinAround<T> {
    * Executes step with {@link GherkinKeywords#but()} keyword and given attributes.
    *
    * @param name the step name
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg is null
    */
   GherkinAround<T> But(String name);
 
@@ -1971,7 +2167,8 @@ public interface GherkinAround<T> {
    *
    * @param name   the step name
    * @param params the step params
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   GherkinAround<T> But(String name,
                        Map<String, ?> params);
@@ -1981,7 +2178,8 @@ public interface GherkinAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   GherkinAround<T> But(String name,
                        String expectedResult);
@@ -1992,7 +2190,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   GherkinAround<T> But(String name,
                        Map<String, ?> params,
@@ -2002,7 +2201,8 @@ public interface GherkinAround<T> {
    * Executes given step with {@link GherkinKeywords#asterisk()} keyword.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   GherkinAround<T> ___(RunnableStep step);
 
@@ -2011,17 +2211,20 @@ public interface GherkinAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   GherkinAround<T> ___(String name,
                        RunnableStep step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#asterisk()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link GherkinKeywords#asterisk()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   GherkinAround<T> ___(ThrowingFunction<? super String, String, ?> nameGenerator,
                        RunnableStep step);
@@ -2032,6 +2235,7 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R ___(SupplierStep<? extends R> step);
 
@@ -2042,18 +2246,20 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R ___(String name,
             SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#asterisk()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link GherkinKeywords#asterisk()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R ___(ThrowingFunction<? super String, String, ?> nameGenerator,
             SupplierStep<? extends R> step);
@@ -2062,7 +2268,8 @@ public interface GherkinAround<T> {
    * Executes given step with {@link GherkinKeywords#asterisk()} keyword on the context value.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   GherkinAround<T> ___(ConsumerStep<? super T> step);
 
@@ -2071,18 +2278,20 @@ public interface GherkinAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   GherkinAround<T> ___(String name,
                        ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#asterisk()} keyword and name created by {@code nameGenerator} on
-   * the context value.
+   * Executes given step with {@link GherkinKeywords#asterisk()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name on the context value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   GherkinAround<T> ___(ThrowingFunction<? super String, String, ?> nameGenerator,
                        ConsumerStep<? super T> step);
@@ -2093,6 +2302,7 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R ___(FunctionStep<? super T, ? extends R> step);
 
@@ -2104,18 +2314,20 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R ___(String name,
             FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#asterisk()} keyword and name created by {@code nameGenerator} on
-   * the context value and returns step result.
+   * Executes given step with {@link GherkinKeywords#asterisk()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name on the context value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R ___(ThrowingFunction<? super String, String, ?> nameGenerator,
             FunctionStep<? super T, ? extends R> step);
@@ -2124,7 +2336,8 @@ public interface GherkinAround<T> {
    * Executes step with {@link GherkinKeywords#asterisk()} keyword on the context value.
    *
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code body} arg is null
    */
   GherkinAround<T> ___(ThrowingConsumer<? super T, ?> body);
 
@@ -2133,7 +2346,8 @@ public interface GherkinAround<T> {
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   GherkinAround<T> ___(String name,
                        ThrowingConsumer<? super T, ?> body);
@@ -2144,7 +2358,8 @@ public interface GherkinAround<T> {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   GherkinAround<T> ___(String name,
                        Map<String, ?> params,
@@ -2156,7 +2371,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   GherkinAround<T> ___(String name,
                        String expectedResult,
@@ -2169,7 +2385,9 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   GherkinAround<T> ___(String name,
                        Map<String, ?> params,
@@ -2182,6 +2400,7 @@ public interface GherkinAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   <R> R ___(ThrowingFunction<? super T, ? extends R, ?> body);
 
@@ -2193,6 +2412,7 @@ public interface GherkinAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   <R> R ___(String name,
             ThrowingFunction<? super T, ? extends R, ?> body);
@@ -2206,6 +2426,7 @@ public interface GherkinAround<T> {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   <R> R ___(String name,
             Map<String, ?> params,
@@ -2220,6 +2441,7 @@ public interface GherkinAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R ___(String name,
             String expectedResult,
@@ -2235,6 +2457,8 @@ public interface GherkinAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R ___(String name,
             Map<String, ?> params,
@@ -2245,7 +2469,8 @@ public interface GherkinAround<T> {
    * Executes step with {@link GherkinKeywords#asterisk()} keyword and given attributes.
    *
    * @param name the step name
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg is null
    */
   GherkinAround<T> ___(String name);
 
@@ -2254,7 +2479,8 @@ public interface GherkinAround<T> {
    *
    * @param name   the step name
    * @param params the step params
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   GherkinAround<T> ___(String name,
                        Map<String, ?> params);
@@ -2264,7 +2490,8 @@ public interface GherkinAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   GherkinAround<T> ___(String name,
                        String expectedResult);
@@ -2275,7 +2502,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   GherkinAround<T> ___(String name,
                        Map<String, ?> params,
@@ -2285,7 +2513,8 @@ public interface GherkinAround<T> {
    * Executes step with {@link GherkinKeywords#background()} keyword and given attributes.
    *
    * @param name the step name
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg is null
    */
   GherkinAround<T> Background(String name);
 
@@ -2294,7 +2523,8 @@ public interface GherkinAround<T> {
    *
    * @param name   the step name
    * @param params the step params
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   GherkinAround<T> Background(String name,
                               Map<String, ?> params);
@@ -2304,7 +2534,8 @@ public interface GherkinAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   GherkinAround<T> Background(String name,
                               String expectedResult);
@@ -2315,7 +2546,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   GherkinAround<T> Background(String name,
                               Map<String, ?> params,
@@ -2325,7 +2557,8 @@ public interface GherkinAround<T> {
    * Executes given step with {@link GherkinKeywords#technical()} keyword.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   GherkinAround<T> Technical(RunnableStep step);
 
@@ -2334,17 +2567,20 @@ public interface GherkinAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   GherkinAround<T> Technical(String name,
                              RunnableStep step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#technical()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link GherkinKeywords#technical()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   GherkinAround<T> Technical(ThrowingFunction<? super String, String, ?> nameGenerator,
                              RunnableStep step);
@@ -2355,6 +2591,7 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R Technical(SupplierStep<? extends R> step);
 
@@ -2365,18 +2602,20 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R Technical(String name,
                   SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#technical()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link GherkinKeywords#technical()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R Technical(ThrowingFunction<? super String, String, ?> nameGenerator,
                   SupplierStep<? extends R> step);
@@ -2385,7 +2624,8 @@ public interface GherkinAround<T> {
    * Executes given step with {@link GherkinKeywords#technical()} keyword on the context value.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   GherkinAround<T> Technical(ConsumerStep<? super T> step);
 
@@ -2394,18 +2634,20 @@ public interface GherkinAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   GherkinAround<T> Technical(String name,
                              ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#technical()} keyword and name created by {@code nameGenerator} on
-   * the context value.
+   * Executes given step with {@link GherkinKeywords#technical()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name on the context value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   GherkinAround<T> Technical(ThrowingFunction<? super String, String, ?> nameGenerator,
                              ConsumerStep<? super T> step);
@@ -2416,6 +2658,7 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R Technical(FunctionStep<? super T, ? extends R> step);
 
@@ -2427,18 +2670,20 @@ public interface GherkinAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R Technical(String name,
                   FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link GherkinKeywords#technical()} keyword and name created by {@code nameGenerator} on
-   * the context value and returns step result.
+   * Executes given step with {@link GherkinKeywords#technical()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name on the context value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R Technical(ThrowingFunction<? super String, String, ?> nameGenerator,
                   FunctionStep<? super T, ? extends R> step);
@@ -2447,7 +2692,8 @@ public interface GherkinAround<T> {
    * Executes step with {@link GherkinKeywords#technical()} keyword on the context value.
    *
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code body} arg is null
    */
   GherkinAround<T> Technical(ThrowingConsumer<? super T, ?> body);
 
@@ -2456,7 +2702,8 @@ public interface GherkinAround<T> {
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   GherkinAround<T> Technical(String name,
                              ThrowingConsumer<? super T, ?> body);
@@ -2467,7 +2714,8 @@ public interface GherkinAround<T> {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   GherkinAround<T> Technical(String name,
                              Map<String, ?> params,
@@ -2479,7 +2727,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   GherkinAround<T> Technical(String name,
                              String expectedResult,
@@ -2492,7 +2741,9 @@ public interface GherkinAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   GherkinAround<T> Technical(String name,
                              Map<String, ?> params,
@@ -2505,6 +2756,7 @@ public interface GherkinAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   <R> R Technical(ThrowingFunction<? super T, ? extends R, ?> body);
 
@@ -2516,6 +2768,7 @@ public interface GherkinAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   <R> R Technical(String name,
                   ThrowingFunction<? super T, ? extends R, ?> body);
@@ -2529,6 +2782,7 @@ public interface GherkinAround<T> {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   <R> R Technical(String name,
                   Map<String, ?> params,
@@ -2543,6 +2797,7 @@ public interface GherkinAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R Technical(String name,
                   String expectedResult,
@@ -2558,6 +2813,8 @@ public interface GherkinAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R Technical(String name,
                   Map<String, ?> params,
@@ -2568,7 +2825,8 @@ public interface GherkinAround<T> {
    * Executes step with {@link GherkinKeywords#technical()} keyword and given attributes.
    *
    * @param name the step name
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg is null
    */
   GherkinAround<T> Technical(String name);
 
@@ -2577,7 +2835,8 @@ public interface GherkinAround<T> {
    *
    * @param name   the step name
    * @param params the step params
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   GherkinAround<T> Technical(String name,
                              Map<String, ?> params);
@@ -2587,7 +2846,8 @@ public interface GherkinAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   GherkinAround<T> Technical(String name,
                              String expectedResult);
@@ -2598,7 +2858,8 @@ public interface GherkinAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code GherkinAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   GherkinAround<T> Technical(String name,
                              Map<String, ?> params,
@@ -2617,7 +2878,7 @@ public interface GherkinAround<T> {
      * Ctor.
      *
      * @param executor the executor
-     * @param context  the context
+     * @param context  the context, may be {@code null}
      * @throws NullPointerException if {@code executor} arg is null
      */
     public Of(final StepExecutor executor,
@@ -2834,10 +3095,10 @@ public interface GherkinAround<T> {
 
     @Override
     public GherkinAround<T> Background(final String name) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, background(), NAME, name),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -2845,31 +3106,31 @@ public interface GherkinAround<T> {
     @SuppressWarnings("unchecked")
     public GherkinAround<T> Background(final String name,
                                        final Map<String, ?> params) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, background(), NAME, name, PARAMS, (Map<String, Object>) params),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     public GherkinAround<T> Background(final String name,
                                        final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, background(), NAME, name, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public GherkinAround<T> Background(final String name, final Map<String, ?> params, final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(
           KEYWORD, background(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -3080,10 +3341,10 @@ public interface GherkinAround<T> {
 
     @Override
     public GherkinAround<T> Rule(final String name) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, rule(), NAME, name),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -3091,31 +3352,31 @@ public interface GherkinAround<T> {
     @SuppressWarnings("unchecked")
     public GherkinAround<T> Rule(final String name,
                                  final Map<String, ?> params) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, rule(), NAME, name, PARAMS, (Map<String, Object>) params),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     public GherkinAround<T> Rule(final String name,
                                  final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, rule(), NAME, name, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public GherkinAround<T> Rule(final String name, final Map<String, ?> params, final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(
           KEYWORD, rule(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -3326,10 +3587,10 @@ public interface GherkinAround<T> {
 
     @Override
     public GherkinAround<T> Given(final String name) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, given(), NAME, name),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -3337,31 +3598,31 @@ public interface GherkinAround<T> {
     @SuppressWarnings("unchecked")
     public GherkinAround<T> Given(final String name,
                                   final Map<String, ?> params) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     public GherkinAround<T> Given(final String name,
                                   final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, given(), NAME, name, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public GherkinAround<T> Given(final String name, final Map<String, ?> params, final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(
           KEYWORD, given(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -3572,10 +3833,10 @@ public interface GherkinAround<T> {
 
     @Override
     public GherkinAround<T> When(final String name) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, when(), NAME, name),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -3583,31 +3844,31 @@ public interface GherkinAround<T> {
     @SuppressWarnings("unchecked")
     public GherkinAround<T> When(final String name,
                                  final Map<String, ?> params) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, when(), NAME, name, PARAMS, (Map<String, Object>) params),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     public GherkinAround<T> When(final String name,
                                  final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, when(), NAME, name, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public GherkinAround<T> When(final String name, final Map<String, ?> params, final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(
           KEYWORD, when(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -3818,10 +4079,10 @@ public interface GherkinAround<T> {
 
     @Override
     public GherkinAround<T> Then(final String name) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, then(), NAME, name),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -3829,31 +4090,31 @@ public interface GherkinAround<T> {
     @SuppressWarnings("unchecked")
     public GherkinAround<T> Then(final String name,
                                  final Map<String, ?> params) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, then(), NAME, name, PARAMS, (Map<String, Object>) params),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     public GherkinAround<T> Then(final String name,
                                  final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, then(), NAME, name, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public GherkinAround<T> Then(final String name, final Map<String, ?> params, final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(
           KEYWORD, then(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -4064,10 +4325,10 @@ public interface GherkinAround<T> {
 
     @Override
     public GherkinAround<T> And(final String name) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, and(), NAME, name),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -4075,31 +4336,31 @@ public interface GherkinAround<T> {
     @SuppressWarnings("unchecked")
     public GherkinAround<T> And(final String name,
                                 final Map<String, ?> params) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, and(), NAME, name, PARAMS, (Map<String, Object>) params),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     public GherkinAround<T> And(final String name,
                                 final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, and(), NAME, name, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public GherkinAround<T> And(final String name, final Map<String, ?> params, final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(
           KEYWORD, and(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -4310,10 +4571,10 @@ public interface GherkinAround<T> {
 
     @Override
     public GherkinAround<T> But(final String name) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, but(), NAME, name),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -4321,31 +4582,31 @@ public interface GherkinAround<T> {
     @SuppressWarnings("unchecked")
     public GherkinAround<T> But(final String name,
                                 final Map<String, ?> params) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, but(), NAME, name, PARAMS, (Map<String, Object>) params),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     public GherkinAround<T> But(final String name,
                                 final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, but(), NAME, name, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public GherkinAround<T> But(final String name, final Map<String, ?> params, final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(
           KEYWORD, but(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -4556,10 +4817,10 @@ public interface GherkinAround<T> {
 
     @Override
     public GherkinAround<T> ___(final String name) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, asterisk(), NAME, name),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -4567,31 +4828,31 @@ public interface GherkinAround<T> {
     @SuppressWarnings("unchecked")
     public GherkinAround<T> ___(final String name,
                                 final Map<String, ?> params) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, asterisk(), NAME, name, PARAMS, (Map<String, Object>) params),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     public GherkinAround<T> ___(final String name,
                                 final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, asterisk(), NAME, name, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public GherkinAround<T> ___(final String name, final Map<String, ?> params, final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(
           KEYWORD, asterisk(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -4802,10 +5063,10 @@ public interface GherkinAround<T> {
 
     @Override
     public GherkinAround<T> Technical(final String name) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, technical(), NAME, name),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -4813,31 +5074,31 @@ public interface GherkinAround<T> {
     @SuppressWarnings("unchecked")
     public GherkinAround<T> Technical(final String name,
                                       final Map<String, ?> params) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, technical(), NAME, name, PARAMS, (Map<String, Object>) params),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     public GherkinAround<T> Technical(final String name,
                                       final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, technical(), NAME, name, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public GherkinAround<T> Technical(final String name, final Map<String, ?> params, final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(
           KEYWORD, technical(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
   }

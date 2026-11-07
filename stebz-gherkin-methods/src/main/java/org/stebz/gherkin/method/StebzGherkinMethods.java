@@ -87,6 +87,7 @@ public final class StebzGherkinMethods {
    * Executes given step with {@link GherkinKeywords#background()} keyword.
    *
    * @param step the step
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static void Background(final RunnableStep step) {
     StepExecutor.get().execute(step.withKeyword(background()));
@@ -97,6 +98,7 @@ public final class StebzGherkinMethods {
    *
    * @param name the name
    * @param step the step
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static void Background(final String name,
                                 final RunnableStep step) {
@@ -104,10 +106,12 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static void Background(final ThrowingFunction<? super String, String, ?> nameGenerator,
                                 final RunnableStep step) {
@@ -123,6 +127,7 @@ public final class StebzGherkinMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <R> R Background(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, background()));
@@ -135,6 +140,7 @@ public final class StebzGherkinMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <R> R Background(final String name,
                                  final SupplierStep<? extends R> step) {
@@ -142,13 +148,14 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <R> R Background(final ThrowingFunction<? super String, String, ?> nameGenerator,
                                  final SupplierStep<? extends R> step) {
@@ -164,6 +171,7 @@ public final class StebzGherkinMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T> void Background(final ConsumerStep<? super T> step,
                                     final T value) {
@@ -180,6 +188,7 @@ public final class StebzGherkinMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T> void Background(final String name,
                                     final ConsumerStep<? super T> step,
@@ -191,13 +200,14 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by {@code nameGenerator} on
-   * given value.
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name on given value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param value         the value
    * @param <T>           the type of the value
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T> void Background(final ThrowingFunction<? super String, String, ?> nameGenerator,
                                     final ConsumerStep<? super T> step,
@@ -219,6 +229,7 @@ public final class StebzGherkinMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T, R> R Background(final FunctionStep<? super T, ? extends R> step,
                                     final T value) {
@@ -238,6 +249,7 @@ public final class StebzGherkinMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T, R> R Background(final String name,
                                     final FunctionStep<? super T, ? extends R> step,
@@ -249,8 +261,8 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by {@code nameGenerator} on
-   * given value and returns step result.
+   * Executes given step with {@link GherkinKeywords#background()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name on given value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
@@ -258,6 +270,7 @@ public final class StebzGherkinMethods {
    * @param <T>           the type of the value
    * @param <R>           the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T, R> R Background(final ThrowingFunction<? super String, String, ?> nameGenerator,
                                     final FunctionStep<? super T, ? extends R> step,
@@ -275,6 +288,7 @@ public final class StebzGherkinMethods {
    * Executes step with {@link GherkinKeywords#background()} keyword.
    *
    * @param body the step body
+   * @throws NullPointerException if {@code body} arg is null
    */
   public static void Background(final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -288,6 +302,7 @@ public final class StebzGherkinMethods {
    *
    * @param name the step name
    * @param body the step body
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static void Background(final String name,
                                 final ThrowingRunnable<?> body) {
@@ -303,6 +318,7 @@ public final class StebzGherkinMethods {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Background(final String name,
@@ -320,6 +336,7 @@ public final class StebzGherkinMethods {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static void Background(final String name,
                                 final String expectedResult,
@@ -337,6 +354,8 @@ public final class StebzGherkinMethods {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Background(final String name,
@@ -356,6 +375,7 @@ public final class StebzGherkinMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   public static <R> R Background(final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
@@ -371,6 +391,7 @@ public final class StebzGherkinMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static <R> R Background(final String name,
                                  final ThrowingSupplier<? extends R, ?> body) {
@@ -388,6 +409,7 @@ public final class StebzGherkinMethods {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R Background(final String name,
@@ -407,6 +429,7 @@ public final class StebzGherkinMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static <R> R Background(final String name,
                                  final String expectedResult,
@@ -426,6 +449,8 @@ public final class StebzGherkinMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R Background(final String name,
@@ -443,6 +468,7 @@ public final class StebzGherkinMethods {
    * Executes step with {@link GherkinKeywords#background()} keyword and given attributes.
    *
    * @param name the step name
+   * @throws NullPointerException if {@code name} arg is null
    */
   public static void Background(final String name) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -456,6 +482,7 @@ public final class StebzGherkinMethods {
    *
    * @param name   the step name
    * @param params the step params
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Background(final String name,
@@ -471,6 +498,7 @@ public final class StebzGherkinMethods {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   public static void Background(final String name,
                                 final String expectedResult) {
@@ -486,6 +514,7 @@ public final class StebzGherkinMethods {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Background(final String name,
@@ -502,6 +531,7 @@ public final class StebzGherkinMethods {
    * Executes given step with {@link GherkinKeywords#rule()} keyword.
    *
    * @param step the step
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static void Rule(final RunnableStep step) {
     StepExecutor.get().execute(step.withKeyword(rule()));
@@ -512,6 +542,7 @@ public final class StebzGherkinMethods {
    *
    * @param name the name
    * @param step the step
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static void Rule(final String name,
                           final RunnableStep step) {
@@ -519,10 +550,12 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static void Rule(final ThrowingFunction<? super String, String, ?> nameGenerator,
                           final RunnableStep step) {
@@ -538,6 +571,7 @@ public final class StebzGherkinMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <R> R Rule(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, rule()));
@@ -550,6 +584,7 @@ public final class StebzGherkinMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <R> R Rule(final String name,
                            final SupplierStep<? extends R> step) {
@@ -557,13 +592,14 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <R> R Rule(final ThrowingFunction<? super String, String, ?> nameGenerator,
                            final SupplierStep<? extends R> step) {
@@ -579,6 +615,7 @@ public final class StebzGherkinMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T> void Rule(final ConsumerStep<? super T> step,
                               final T value) {
@@ -595,6 +632,7 @@ public final class StebzGherkinMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T> void Rule(final String name,
                               final ConsumerStep<? super T> step,
@@ -606,13 +644,14 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by {@code nameGenerator} on given
-   * value.
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on given value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param value         the value
    * @param <T>           the type of the value
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T> void Rule(final ThrowingFunction<? super String, String, ?> nameGenerator,
                               final ConsumerStep<? super T> step,
@@ -634,6 +673,7 @@ public final class StebzGherkinMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T, R> R Rule(final FunctionStep<? super T, ? extends R> step,
                               final T value) {
@@ -652,6 +692,7 @@ public final class StebzGherkinMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T, R> R Rule(final String name,
                               final FunctionStep<? super T, ? extends R> step,
@@ -663,8 +704,8 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by {@code nameGenerator} on given
-   * value and returns step result.
+   * Executes given step with {@link GherkinKeywords#rule()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on given value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
@@ -672,6 +713,7 @@ public final class StebzGherkinMethods {
    * @param <T>           the type of the value
    * @param <R>           the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T, R> R Rule(final ThrowingFunction<? super String, String, ?> nameGenerator,
                               final FunctionStep<? super T, ? extends R> step,
@@ -689,6 +731,7 @@ public final class StebzGherkinMethods {
    * Executes step with {@link GherkinKeywords#rule()} keyword.
    *
    * @param body the step body
+   * @throws NullPointerException if {@code body} arg is null
    */
   public static void Rule(final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -702,6 +745,7 @@ public final class StebzGherkinMethods {
    *
    * @param name the step name
    * @param body the step body
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static void Rule(final String name,
                           final ThrowingRunnable<?> body) {
@@ -717,6 +761,7 @@ public final class StebzGherkinMethods {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Rule(final String name,
@@ -734,6 +779,7 @@ public final class StebzGherkinMethods {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static void Rule(final String name,
                           final String expectedResult,
@@ -751,6 +797,8 @@ public final class StebzGherkinMethods {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Rule(final String name,
@@ -770,6 +818,7 @@ public final class StebzGherkinMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   public static <R> R Rule(final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
@@ -785,6 +834,7 @@ public final class StebzGherkinMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static <R> R Rule(final String name,
                            final ThrowingSupplier<? extends R, ?> body) {
@@ -802,6 +852,7 @@ public final class StebzGherkinMethods {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R Rule(final String name,
@@ -821,6 +872,7 @@ public final class StebzGherkinMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static <R> R Rule(final String name,
                            final String expectedResult,
@@ -840,6 +892,8 @@ public final class StebzGherkinMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R Rule(final String name,
@@ -857,6 +911,7 @@ public final class StebzGherkinMethods {
    * Executes step with {@link GherkinKeywords#rule()} keyword and given attributes.
    *
    * @param name the step name
+   * @throws NullPointerException if {@code name} arg is null
    */
   public static void Rule(final String name) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -870,6 +925,7 @@ public final class StebzGherkinMethods {
    *
    * @param name   the step name
    * @param params the step params
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Rule(final String name,
@@ -885,6 +941,7 @@ public final class StebzGherkinMethods {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   public static void Rule(final String name,
                           final String expectedResult) {
@@ -900,6 +957,7 @@ public final class StebzGherkinMethods {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Rule(final String name,
@@ -916,6 +974,7 @@ public final class StebzGherkinMethods {
    * Executes given step with {@link GherkinKeywords#given()} keyword.
    *
    * @param step the step
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static void Given(final RunnableStep step) {
     StepExecutor.get().execute(step.withKeyword(given()));
@@ -926,6 +985,7 @@ public final class StebzGherkinMethods {
    *
    * @param name the name
    * @param step the step
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static void Given(final String name,
                            final RunnableStep step) {
@@ -933,10 +993,12 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static void Given(final ThrowingFunction<? super String, String, ?> nameGenerator,
                            final RunnableStep step) {
@@ -952,6 +1014,7 @@ public final class StebzGherkinMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <R> R Given(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, given()));
@@ -964,6 +1027,7 @@ public final class StebzGherkinMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <R> R Given(final String name,
                             final SupplierStep<? extends R> step) {
@@ -971,13 +1035,14 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @param <R>           the type of the step result
+   * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <R> R Given(final ThrowingFunction<? super String, String, ?> nameGenerator,
                             final SupplierStep<? extends R> step) {
@@ -993,6 +1058,7 @@ public final class StebzGherkinMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T> void Given(final ConsumerStep<? super T> step,
                                final T value) {
@@ -1009,6 +1075,7 @@ public final class StebzGherkinMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T> void Given(final String name,
                                final ConsumerStep<? super T> step,
@@ -1020,13 +1087,14 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by {@code nameGenerator} on given
-   * value.
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on given value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param value         the value
    * @param <T>           the type of the value
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T> void Given(final ThrowingFunction<? super String, String, ?> nameGenerator,
                                final ConsumerStep<? super T> step,
@@ -1048,6 +1116,7 @@ public final class StebzGherkinMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T, R> R Given(final FunctionStep<? super T, ? extends R> step,
                                final T value) {
@@ -1066,6 +1135,7 @@ public final class StebzGherkinMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T, R> R Given(final String name,
                                final FunctionStep<? super T, ? extends R> step,
@@ -1077,8 +1147,8 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by {@code nameGenerator} on given
-   * value and returns step result.
+   * Executes given step with {@link GherkinKeywords#given()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on given value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
@@ -1086,6 +1156,7 @@ public final class StebzGherkinMethods {
    * @param <T>           the type of the value
    * @param <R>           the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T, R> R Given(final ThrowingFunction<? super String, String, ?> nameGenerator,
                                final FunctionStep<? super T, ? extends R> step,
@@ -1103,6 +1174,7 @@ public final class StebzGherkinMethods {
    * Executes step with {@link GherkinKeywords#given()} keyword.
    *
    * @param body the step body
+   * @throws NullPointerException if {@code body} arg is null
    */
   public static void Given(final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -1116,6 +1188,7 @@ public final class StebzGherkinMethods {
    *
    * @param name the step name
    * @param body the step body
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static void Given(final String name,
                            final ThrowingRunnable<?> body) {
@@ -1131,6 +1204,7 @@ public final class StebzGherkinMethods {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Given(final String name,
@@ -1148,6 +1222,7 @@ public final class StebzGherkinMethods {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static void Given(final String name,
                            final String expectedResult,
@@ -1165,6 +1240,8 @@ public final class StebzGherkinMethods {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Given(final String name,
@@ -1184,6 +1261,7 @@ public final class StebzGherkinMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   public static <R> R Given(final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
@@ -1199,6 +1277,7 @@ public final class StebzGherkinMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static <R> R Given(final String name,
                             final ThrowingSupplier<? extends R, ?> body) {
@@ -1216,6 +1295,7 @@ public final class StebzGherkinMethods {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R Given(final String name,
@@ -1235,6 +1315,7 @@ public final class StebzGherkinMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static <R> R Given(final String name,
                             final String expectedResult,
@@ -1254,6 +1335,8 @@ public final class StebzGherkinMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R Given(final String name,
@@ -1271,6 +1354,7 @@ public final class StebzGherkinMethods {
    * Executes step with {@link GherkinKeywords#given()} keyword and given attributes.
    *
    * @param name the step name
+   * @throws NullPointerException if {@code name} arg is null
    */
   public static void Given(final String name) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -1284,6 +1368,7 @@ public final class StebzGherkinMethods {
    *
    * @param name   the step name
    * @param params the step params
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Given(final String name,
@@ -1299,6 +1384,7 @@ public final class StebzGherkinMethods {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   public static void Given(final String name,
                            final String expectedResult) {
@@ -1314,6 +1400,7 @@ public final class StebzGherkinMethods {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Given(final String name,
@@ -1330,6 +1417,7 @@ public final class StebzGherkinMethods {
    * Executes given step with {@link GherkinKeywords#when()} keyword.
    *
    * @param step the step
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static void When(final RunnableStep step) {
     StepExecutor.get().execute(step.withKeyword(when()));
@@ -1340,6 +1428,7 @@ public final class StebzGherkinMethods {
    *
    * @param name the name
    * @param step the step
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static void When(final String name,
                           final RunnableStep step) {
@@ -1347,10 +1436,12 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static void When(final ThrowingFunction<? super String, String, ?> nameGenerator,
                           final RunnableStep step) {
@@ -1366,6 +1457,7 @@ public final class StebzGherkinMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <R> R When(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, when()));
@@ -1378,6 +1470,7 @@ public final class StebzGherkinMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <R> R When(final String name,
                            final SupplierStep<? extends R> step) {
@@ -1385,13 +1478,14 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @param <R>           the type of the step result
+   * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <R> R When(final ThrowingFunction<? super String, String, ?> nameGenerator,
                            final SupplierStep<? extends R> step) {
@@ -1407,6 +1501,7 @@ public final class StebzGherkinMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T> void When(final ConsumerStep<? super T> step,
                               final T value) {
@@ -1423,6 +1518,7 @@ public final class StebzGherkinMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T> void When(final String name,
                               final ConsumerStep<? super T> step,
@@ -1434,13 +1530,14 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by {@code nameGenerator} on given
-   * value.
+   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on given value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param value         the value
    * @param <T>           the type of the value
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T> void When(final ThrowingFunction<? super String, String, ?> nameGenerator,
                               final ConsumerStep<? super T> step,
@@ -1462,6 +1559,7 @@ public final class StebzGherkinMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T, R> R When(final FunctionStep<? super T, ? extends R> step,
                               final T value) {
@@ -1480,6 +1578,7 @@ public final class StebzGherkinMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T, R> R When(final String name,
                               final FunctionStep<? super T, ? extends R> step,
@@ -1491,8 +1590,8 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by {@code nameGenerator} on given
-   * value and returns step result.
+   * Executes given step with {@link GherkinKeywords#when()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on given value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
@@ -1500,6 +1599,7 @@ public final class StebzGherkinMethods {
    * @param <T>           the type of the value
    * @param <R>           the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T, R> R When(final ThrowingFunction<? super String, String, ?> nameGenerator,
                               final FunctionStep<? super T, ? extends R> step,
@@ -1517,6 +1617,7 @@ public final class StebzGherkinMethods {
    * Executes step with {@link GherkinKeywords#when()} keyword.
    *
    * @param body the step body
+   * @throws NullPointerException if {@code body} arg is null
    */
   public static void When(final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -1530,6 +1631,7 @@ public final class StebzGherkinMethods {
    *
    * @param name the step name
    * @param body the step body
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static void When(final String name,
                           final ThrowingRunnable<?> body) {
@@ -1545,6 +1647,7 @@ public final class StebzGherkinMethods {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void When(final String name,
@@ -1562,6 +1665,7 @@ public final class StebzGherkinMethods {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static void When(final String name,
                           final String expectedResult,
@@ -1579,6 +1683,8 @@ public final class StebzGherkinMethods {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void When(final String name,
@@ -1598,6 +1704,7 @@ public final class StebzGherkinMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   public static <R> R When(final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
@@ -1613,6 +1720,7 @@ public final class StebzGherkinMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static <R> R When(final String name,
                            final ThrowingSupplier<? extends R, ?> body) {
@@ -1630,6 +1738,7 @@ public final class StebzGherkinMethods {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R When(final String name,
@@ -1649,6 +1758,7 @@ public final class StebzGherkinMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static <R> R When(final String name,
                            final String expectedResult,
@@ -1668,6 +1778,8 @@ public final class StebzGherkinMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R When(final String name,
@@ -1685,6 +1797,7 @@ public final class StebzGherkinMethods {
    * Executes step with {@link GherkinKeywords#when()} keyword and given attributes.
    *
    * @param name the step name
+   * @throws NullPointerException if {@code name} arg is null
    */
   public static void When(final String name) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -1698,6 +1811,7 @@ public final class StebzGherkinMethods {
    *
    * @param name   the step name
    * @param params the step params
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void When(final String name,
@@ -1713,6 +1827,7 @@ public final class StebzGherkinMethods {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   public static void When(final String name,
                           final String expectedResult) {
@@ -1728,6 +1843,7 @@ public final class StebzGherkinMethods {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void When(final String name,
@@ -1744,6 +1860,7 @@ public final class StebzGherkinMethods {
    * Executes given step with {@link GherkinKeywords#then()} keyword.
    *
    * @param step the step
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static void Then(final RunnableStep step) {
     StepExecutor.get().execute(step.withKeyword(then()));
@@ -1754,6 +1871,7 @@ public final class StebzGherkinMethods {
    *
    * @param name the name
    * @param step the step
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static void Then(final String name,
                           final RunnableStep step) {
@@ -1761,10 +1879,12 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static void Then(final ThrowingFunction<? super String, String, ?> nameGenerator,
                           final RunnableStep step) {
@@ -1780,6 +1900,7 @@ public final class StebzGherkinMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <R> R Then(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, then()));
@@ -1792,6 +1913,7 @@ public final class StebzGherkinMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <R> R Then(final String name,
                            final SupplierStep<? extends R> step) {
@@ -1799,13 +1921,14 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @param <R>           the type of the step result
+   * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <R> R Then(final ThrowingFunction<? super String, String, ?> nameGenerator,
                            final SupplierStep<? extends R> step) {
@@ -1821,6 +1944,7 @@ public final class StebzGherkinMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T> void Then(final ConsumerStep<? super T> step,
                               final T value) {
@@ -1837,6 +1961,7 @@ public final class StebzGherkinMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T> void Then(final String name,
                               final ConsumerStep<? super T> step,
@@ -1848,13 +1973,14 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by {@code nameGenerator} on given
-   * value.
+   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on given value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param value         the value
    * @param <T>           the type of the value
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T> void Then(final ThrowingFunction<? super String, String, ?> nameGenerator,
                               final ConsumerStep<? super T> step,
@@ -1876,6 +2002,7 @@ public final class StebzGherkinMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T, R> R Then(final FunctionStep<? super T, ? extends R> step,
                               final T value) {
@@ -1894,6 +2021,7 @@ public final class StebzGherkinMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T, R> R Then(final String name,
                               final FunctionStep<? super T, ? extends R> step,
@@ -1905,8 +2033,8 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by {@code nameGenerator} on given
-   * value and returns step result.
+   * Executes given step with {@link GherkinKeywords#then()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on given value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
@@ -1914,6 +2042,7 @@ public final class StebzGherkinMethods {
    * @param <T>           the type of the value
    * @param <R>           the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T, R> R Then(final ThrowingFunction<? super String, String, ?> nameGenerator,
                               final FunctionStep<? super T, ? extends R> step,
@@ -1931,6 +2060,7 @@ public final class StebzGherkinMethods {
    * Executes step with {@link GherkinKeywords#then()} keyword.
    *
    * @param body the step body
+   * @throws NullPointerException if {@code body} arg is null
    */
   public static void Then(final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -1944,6 +2074,7 @@ public final class StebzGherkinMethods {
    *
    * @param name the step name
    * @param body the step body
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static void Then(final String name,
                           final ThrowingRunnable<?> body) {
@@ -1959,6 +2090,7 @@ public final class StebzGherkinMethods {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Then(final String name,
@@ -1976,6 +2108,7 @@ public final class StebzGherkinMethods {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static void Then(final String name,
                           final String expectedResult,
@@ -1993,6 +2126,8 @@ public final class StebzGherkinMethods {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Then(final String name,
@@ -2012,6 +2147,7 @@ public final class StebzGherkinMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   public static <R> R Then(final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
@@ -2027,6 +2163,7 @@ public final class StebzGherkinMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static <R> R Then(final String name,
                            final ThrowingSupplier<? extends R, ?> body) {
@@ -2044,6 +2181,7 @@ public final class StebzGherkinMethods {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R Then(final String name,
@@ -2063,6 +2201,7 @@ public final class StebzGherkinMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static <R> R Then(final String name,
                            final String expectedResult,
@@ -2082,6 +2221,8 @@ public final class StebzGherkinMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R Then(final String name,
@@ -2099,6 +2240,7 @@ public final class StebzGherkinMethods {
    * Executes step with {@link GherkinKeywords#then()} keyword and given attributes.
    *
    * @param name the step name
+   * @throws NullPointerException if {@code name} arg is null
    */
   public static void Then(final String name) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -2112,6 +2254,7 @@ public final class StebzGherkinMethods {
    *
    * @param name   the step name
    * @param params the step params
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Then(final String name,
@@ -2127,6 +2270,7 @@ public final class StebzGherkinMethods {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   public static void Then(final String name,
                           final String expectedResult) {
@@ -2142,6 +2286,7 @@ public final class StebzGherkinMethods {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Then(final String name,
@@ -2158,6 +2303,7 @@ public final class StebzGherkinMethods {
    * Executes given step with {@link GherkinKeywords#and()} keyword.
    *
    * @param step the step
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static void And(final RunnableStep step) {
     StepExecutor.get().execute(step.withKeyword(and()));
@@ -2168,6 +2314,7 @@ public final class StebzGherkinMethods {
    *
    * @param name the name
    * @param step the step
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static void And(final String name,
                          final RunnableStep step) {
@@ -2175,10 +2322,12 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static void And(final ThrowingFunction<? super String, String, ?> nameGenerator,
                          final RunnableStep step) {
@@ -2194,6 +2343,7 @@ public final class StebzGherkinMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <R> R And(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, and()));
@@ -2206,6 +2356,7 @@ public final class StebzGherkinMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <R> R And(final String name,
                           final SupplierStep<? extends R> step) {
@@ -2213,13 +2364,14 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @param <R>           the type of the step result
+   * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <R> R And(final ThrowingFunction<? super String, String, ?> nameGenerator,
                           final SupplierStep<? extends R> step) {
@@ -2235,6 +2387,7 @@ public final class StebzGherkinMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T> void And(final ConsumerStep<? super T> step,
                              final T value) {
@@ -2251,6 +2404,7 @@ public final class StebzGherkinMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T> void And(final String name,
                              final ConsumerStep<? super T> step,
@@ -2262,13 +2416,14 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by {@code nameGenerator} on given
-   * value.
+   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on given value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param value         the value
    * @param <T>           the type of the value
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T> void And(final ThrowingFunction<? super String, String, ?> nameGenerator,
                              final ConsumerStep<? super T> step,
@@ -2290,6 +2445,7 @@ public final class StebzGherkinMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T, R> R And(final FunctionStep<? super T, ? extends R> step,
                              final T value) {
@@ -2308,6 +2464,7 @@ public final class StebzGherkinMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T, R> R And(final String name,
                              final FunctionStep<? super T, ? extends R> step,
@@ -2319,8 +2476,8 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by {@code nameGenerator} on given
-   * value and returns step result.
+   * Executes given step with {@link GherkinKeywords#and()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on given value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
@@ -2328,6 +2485,7 @@ public final class StebzGherkinMethods {
    * @param <T>           the type of the value
    * @param <R>           the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T, R> R And(final ThrowingFunction<? super String, String, ?> nameGenerator,
                              final FunctionStep<? super T, ? extends R> step,
@@ -2345,6 +2503,7 @@ public final class StebzGherkinMethods {
    * Executes step with {@link GherkinKeywords#and()} keyword.
    *
    * @param body the step body
+   * @throws NullPointerException if {@code body} arg is null
    */
   public static void And(final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -2358,6 +2517,7 @@ public final class StebzGherkinMethods {
    *
    * @param name the step name
    * @param body the step body
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static void And(final String name,
                          final ThrowingRunnable<?> body) {
@@ -2373,6 +2533,7 @@ public final class StebzGherkinMethods {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void And(final String name,
@@ -2390,6 +2551,7 @@ public final class StebzGherkinMethods {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static void And(final String name,
                          final String expectedResult,
@@ -2407,6 +2569,8 @@ public final class StebzGherkinMethods {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void And(final String name,
@@ -2426,6 +2590,7 @@ public final class StebzGherkinMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   public static <R> R And(final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
@@ -2441,6 +2606,7 @@ public final class StebzGherkinMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static <R> R And(final String name,
                           final ThrowingSupplier<? extends R, ?> body) {
@@ -2458,6 +2624,7 @@ public final class StebzGherkinMethods {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R And(final String name,
@@ -2477,6 +2644,7 @@ public final class StebzGherkinMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static <R> R And(final String name,
                           final String expectedResult,
@@ -2496,6 +2664,8 @@ public final class StebzGherkinMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R And(final String name,
@@ -2513,6 +2683,7 @@ public final class StebzGherkinMethods {
    * Executes step with {@link GherkinKeywords#and()} keyword and given attributes.
    *
    * @param name the step name
+   * @throws NullPointerException if {@code name} arg is null
    */
   public static void And(final String name) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -2526,6 +2697,7 @@ public final class StebzGherkinMethods {
    *
    * @param name   the step name
    * @param params the step params
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void And(final String name,
@@ -2541,6 +2713,7 @@ public final class StebzGherkinMethods {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   public static void And(final String name,
                          final String expectedResult) {
@@ -2556,6 +2729,7 @@ public final class StebzGherkinMethods {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void And(final String name,
@@ -2572,6 +2746,7 @@ public final class StebzGherkinMethods {
    * Executes given step with {@link GherkinKeywords#but()} keyword.
    *
    * @param step the step
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static void But(final RunnableStep step) {
     StepExecutor.get().execute(step.withKeyword(but()));
@@ -2582,6 +2757,7 @@ public final class StebzGherkinMethods {
    *
    * @param name the name
    * @param step the step
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static void But(final String name,
                          final RunnableStep step) {
@@ -2589,10 +2765,12 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static void But(final ThrowingFunction<? super String, String, ?> nameGenerator,
                          final RunnableStep step) {
@@ -2608,6 +2786,7 @@ public final class StebzGherkinMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <R> R But(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, but()));
@@ -2620,6 +2799,7 @@ public final class StebzGherkinMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <R> R But(final String name,
                           final SupplierStep<? extends R> step) {
@@ -2627,13 +2807,14 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @param <R>           the type of the step result
+   * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <R> R But(final ThrowingFunction<? super String, String, ?> nameGenerator,
                           final SupplierStep<? extends R> step) {
@@ -2649,6 +2830,7 @@ public final class StebzGherkinMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T> void But(final ConsumerStep<? super T> step,
                              final T value) {
@@ -2665,6 +2847,7 @@ public final class StebzGherkinMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T> void But(final String name,
                              final ConsumerStep<? super T> step,
@@ -2676,13 +2859,14 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by {@code nameGenerator} on given
-   * value.
+   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on given value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param value         the value
    * @param <T>           the type of the value
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T> void But(final ThrowingFunction<? super String, String, ?> nameGenerator,
                              final ConsumerStep<? super T> step,
@@ -2704,6 +2888,7 @@ public final class StebzGherkinMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T, R> R But(final FunctionStep<? super T, ? extends R> step,
                              final T value) {
@@ -2722,6 +2907,7 @@ public final class StebzGherkinMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T, R> R But(final String name,
                              final FunctionStep<? super T, ? extends R> step,
@@ -2733,8 +2919,8 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by {@code nameGenerator} on given
-   * value and returns step result.
+   * Executes given step with {@link GherkinKeywords#but()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on given value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
@@ -2742,6 +2928,7 @@ public final class StebzGherkinMethods {
    * @param <T>           the type of the value
    * @param <R>           the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T, R> R But(final ThrowingFunction<? super String, String, ?> nameGenerator,
                              final FunctionStep<? super T, ? extends R> step,
@@ -2759,6 +2946,7 @@ public final class StebzGherkinMethods {
    * Executes step with {@link GherkinKeywords#but()} keyword.
    *
    * @param body the step body
+   * @throws NullPointerException if {@code body} arg is null
    */
   public static void But(final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -2772,6 +2960,7 @@ public final class StebzGherkinMethods {
    *
    * @param name the step name
    * @param body the step body
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static void But(final String name,
                          final ThrowingRunnable<?> body) {
@@ -2787,6 +2976,7 @@ public final class StebzGherkinMethods {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void But(final String name,
@@ -2804,6 +2994,7 @@ public final class StebzGherkinMethods {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static void But(final String name,
                          final String expectedResult,
@@ -2821,6 +3012,8 @@ public final class StebzGherkinMethods {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void But(final String name,
@@ -2840,6 +3033,7 @@ public final class StebzGherkinMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   public static <R> R But(final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
@@ -2855,6 +3049,7 @@ public final class StebzGherkinMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static <R> R But(final String name,
                           final ThrowingSupplier<? extends R, ?> body) {
@@ -2872,6 +3067,7 @@ public final class StebzGherkinMethods {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R But(final String name,
@@ -2891,6 +3087,7 @@ public final class StebzGherkinMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static <R> R But(final String name,
                           final String expectedResult,
@@ -2910,6 +3107,8 @@ public final class StebzGherkinMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R But(final String name,
@@ -2927,6 +3126,7 @@ public final class StebzGherkinMethods {
    * Executes step with {@link GherkinKeywords#but()} keyword and given attributes.
    *
    * @param name the step name
+   * @throws NullPointerException if {@code name} arg is null
    */
   public static void But(final String name) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -2940,6 +3140,7 @@ public final class StebzGherkinMethods {
    *
    * @param name   the step name
    * @param params the step params
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void But(final String name,
@@ -2955,6 +3156,7 @@ public final class StebzGherkinMethods {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   public static void But(final String name,
                          final String expectedResult) {
@@ -2970,6 +3172,7 @@ public final class StebzGherkinMethods {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void But(final String name,
@@ -2986,6 +3189,7 @@ public final class StebzGherkinMethods {
    * Executes given step with {@link GherkinKeywords#asterisk()} keyword.
    *
    * @param step the step
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static void ___(final RunnableStep step) {
     StepExecutor.get().execute(step.withKeyword(asterisk()));
@@ -2996,6 +3200,7 @@ public final class StebzGherkinMethods {
    *
    * @param name the name
    * @param step the step
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static void ___(final String name,
                          final RunnableStep step) {
@@ -3003,10 +3208,12 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#asterisk()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link GherkinKeywords#asterisk()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static void ___(final ThrowingFunction<? super String, String, ?> nameGenerator,
                          final RunnableStep step) {
@@ -3022,6 +3229,7 @@ public final class StebzGherkinMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <R> R ___(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, asterisk()));
@@ -3034,6 +3242,7 @@ public final class StebzGherkinMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <R> R ___(final String name,
                           final SupplierStep<? extends R> step) {
@@ -3041,13 +3250,14 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#asterisk()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link GherkinKeywords#asterisk()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @param <R>           the type of the step result
+   * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <R> R ___(final ThrowingFunction<? super String, String, ?> nameGenerator,
                           final SupplierStep<? extends R> step) {
@@ -3063,6 +3273,7 @@ public final class StebzGherkinMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T> void ___(final ConsumerStep<? super T> step,
                              final T value) {
@@ -3079,6 +3290,7 @@ public final class StebzGherkinMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T> void ___(final String name,
                              final ConsumerStep<? super T> step,
@@ -3090,13 +3302,14 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#asterisk()} keyword and name created by {@code nameGenerator} on
-   * given value.
+   * Executes given step with {@link GherkinKeywords#asterisk()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name on given value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param value         the value
    * @param <T>           the type of the value
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T> void ___(final ThrowingFunction<? super String, String, ?> nameGenerator,
                              final ConsumerStep<? super T> step,
@@ -3118,6 +3331,7 @@ public final class StebzGherkinMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T, R> R ___(final FunctionStep<? super T, ? extends R> step,
                              final T value) {
@@ -3137,6 +3351,7 @@ public final class StebzGherkinMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T, R> R ___(final String name,
                              final FunctionStep<? super T, ? extends R> step,
@@ -3148,8 +3363,8 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#asterisk()} keyword and name created by {@code nameGenerator} on
-   * given value and returns step result.
+   * Executes given step with {@link GherkinKeywords#asterisk()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name on given value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
@@ -3157,6 +3372,7 @@ public final class StebzGherkinMethods {
    * @param <T>           the type of the value
    * @param <R>           the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T, R> R ___(final ThrowingFunction<? super String, String, ?> nameGenerator,
                              final FunctionStep<? super T, ? extends R> step,
@@ -3174,6 +3390,7 @@ public final class StebzGherkinMethods {
    * Executes step with {@link GherkinKeywords#asterisk()} keyword.
    *
    * @param body the step body
+   * @throws NullPointerException if {@code body} arg is null
    */
   public static void ___(final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -3187,6 +3404,7 @@ public final class StebzGherkinMethods {
    *
    * @param name the step name
    * @param body the step body
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static void ___(final String name,
                          final ThrowingRunnable<?> body) {
@@ -3202,6 +3420,7 @@ public final class StebzGherkinMethods {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void ___(final String name,
@@ -3219,6 +3438,7 @@ public final class StebzGherkinMethods {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static void ___(final String name,
                          final String expectedResult,
@@ -3236,6 +3456,8 @@ public final class StebzGherkinMethods {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void ___(final String name,
@@ -3255,6 +3477,7 @@ public final class StebzGherkinMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   public static <R> R ___(final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
@@ -3270,6 +3493,7 @@ public final class StebzGherkinMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static <R> R ___(final String name,
                           final ThrowingSupplier<? extends R, ?> body) {
@@ -3287,6 +3511,7 @@ public final class StebzGherkinMethods {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R ___(final String name,
@@ -3306,6 +3531,7 @@ public final class StebzGherkinMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static <R> R ___(final String name,
                           final String expectedResult,
@@ -3325,6 +3551,8 @@ public final class StebzGherkinMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R ___(final String name,
@@ -3342,6 +3570,7 @@ public final class StebzGherkinMethods {
    * Executes step with {@link GherkinKeywords#asterisk()} keyword and given attributes.
    *
    * @param name the step name
+   * @throws NullPointerException if {@code name} arg is null
    */
   public static void ___(final String name) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -3355,6 +3584,7 @@ public final class StebzGherkinMethods {
    *
    * @param name   the step name
    * @param params the step params
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void ___(final String name,
@@ -3370,6 +3600,7 @@ public final class StebzGherkinMethods {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   public static void ___(final String name,
                          final String expectedResult) {
@@ -3385,6 +3616,7 @@ public final class StebzGherkinMethods {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void ___(final String name,
@@ -3401,6 +3633,7 @@ public final class StebzGherkinMethods {
    * Executes given step with {@link GherkinKeywords#technical()} keyword.
    *
    * @param step the step
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static void Technical(final RunnableStep step) {
     StepExecutor.get().execute(step.withKeyword(technical()));
@@ -3411,6 +3644,7 @@ public final class StebzGherkinMethods {
    *
    * @param name the name
    * @param step the step
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static void Technical(final String name,
                                final RunnableStep step) {
@@ -3418,10 +3652,12 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#technical()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link GherkinKeywords#technical()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static void Technical(final ThrowingFunction<? super String, String, ?> nameGenerator,
                                final RunnableStep step) {
@@ -3437,6 +3673,7 @@ public final class StebzGherkinMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <R> R Technical(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step.with(KEYWORD, technical()));
@@ -3449,6 +3686,7 @@ public final class StebzGherkinMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <R> R Technical(final String name,
                                 final SupplierStep<? extends R> step) {
@@ -3456,13 +3694,14 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#technical()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link GherkinKeywords#technical()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <R> R Technical(final ThrowingFunction<? super String, String, ?> nameGenerator,
                                 final SupplierStep<? extends R> step) {
@@ -3478,6 +3717,7 @@ public final class StebzGherkinMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T> void Technical(final ConsumerStep<? super T> step,
                                    final T value) {
@@ -3494,6 +3734,7 @@ public final class StebzGherkinMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T> void Technical(final String name,
                                    final ConsumerStep<? super T> step,
@@ -3505,13 +3746,14 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#technical()} keyword and name created by {@code nameGenerator} on
-   * given value.
+   * Executes given step with {@link GherkinKeywords#technical()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name on given value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param value         the value
    * @param <T>           the type of the value
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T> void Technical(final ThrowingFunction<? super String, String, ?> nameGenerator,
                                    final ConsumerStep<? super T> step,
@@ -3533,6 +3775,7 @@ public final class StebzGherkinMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T, R> R Technical(final FunctionStep<? super T, ? extends R> step,
                                    final T value) {
@@ -3552,6 +3795,7 @@ public final class StebzGherkinMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T, R> R Technical(final String name,
                                    final FunctionStep<? super T, ? extends R> step,
@@ -3563,8 +3807,8 @@ public final class StebzGherkinMethods {
   }
 
   /**
-   * Executes given step with {@link GherkinKeywords#technical()} keyword and name created by {@code nameGenerator} on
-   * given value and returns step result.
+   * Executes given step with {@link GherkinKeywords#technical()} keyword and name created by applying
+   * {@code nameGenerator} to the current step name on given value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
@@ -3572,6 +3816,7 @@ public final class StebzGherkinMethods {
    * @param <T>           the type of the value
    * @param <R>           the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T, R> R Technical(final ThrowingFunction<? super String, String, ?> nameGenerator,
                                    final FunctionStep<? super T, ? extends R> step,
@@ -3589,6 +3834,7 @@ public final class StebzGherkinMethods {
    * Executes step with {@link GherkinKeywords#technical()} keyword.
    *
    * @param body the step body
+   * @throws NullPointerException if {@code body} arg is null
    */
   public static void Technical(final ThrowingRunnable<?> body) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -3602,6 +3848,7 @@ public final class StebzGherkinMethods {
    *
    * @param name the step name
    * @param body the step body
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static void Technical(final String name,
                                final ThrowingRunnable<?> body) {
@@ -3617,6 +3864,7 @@ public final class StebzGherkinMethods {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Technical(final String name,
@@ -3634,6 +3882,7 @@ public final class StebzGherkinMethods {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static void Technical(final String name,
                                final String expectedResult,
@@ -3651,6 +3900,8 @@ public final class StebzGherkinMethods {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Technical(final String name,
@@ -3670,6 +3921,7 @@ public final class StebzGherkinMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   public static <R> R Technical(final ThrowingSupplier<? extends R, ?> body) {
     return StepExecutor.get().execute(new SupplierStep.Of<>(
@@ -3685,6 +3937,7 @@ public final class StebzGherkinMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static <R> R Technical(final String name,
                                 final ThrowingSupplier<? extends R, ?> body) {
@@ -3702,6 +3955,7 @@ public final class StebzGherkinMethods {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R Technical(final String name,
@@ -3721,6 +3975,7 @@ public final class StebzGherkinMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static <R> R Technical(final String name,
                                 final String expectedResult,
@@ -3740,6 +3995,8 @@ public final class StebzGherkinMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R Technical(final String name,
@@ -3757,6 +4014,7 @@ public final class StebzGherkinMethods {
    * Executes step with {@link GherkinKeywords#technical()} keyword and given attributes.
    *
    * @param name the step name
+   * @throws NullPointerException if {@code name} arg is null
    */
   public static void Technical(final String name) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -3770,6 +4028,7 @@ public final class StebzGherkinMethods {
    *
    * @param name   the step name
    * @param params the step params
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Technical(final String name,
@@ -3785,6 +4044,7 @@ public final class StebzGherkinMethods {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   public static void Technical(final String name,
                                final String expectedResult) {
@@ -3800,6 +4060,7 @@ public final class StebzGherkinMethods {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Technical(final String name,

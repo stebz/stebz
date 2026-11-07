@@ -47,7 +47,7 @@ import static org.stebz.core.attribute.StepAttribute.NAME;
 import static org.stebz.core.attribute.StepAttribute.PARAMS;
 
 /**
- * Allows to call steps around a specific context with Arrange-Act-Assert keywords.
+ * Allows calling steps around a specific context with Arrange-Act-Assert keywords.
  *
  * @param <T> the type of the context
  */
@@ -57,7 +57,8 @@ public interface AAAAround<T> {
    * Executes given step with {@link AAAKeywords#setUp()} keyword.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   AAAAround<T> SetUp(RunnableStep step);
 
@@ -66,17 +67,20 @@ public interface AAAAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   AAAAround<T> SetUp(String name,
                      RunnableStep step);
 
   /**
-   * Executes given step with {@link AAAKeywords#setUp()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name created by applying {@code nameGenerator} to
+   * the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   AAAAround<T> SetUp(ThrowingFunction<? super String, String, ?> nameGenerator,
                      RunnableStep step);
@@ -87,6 +91,7 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R SetUp(SupplierStep<? extends R> step);
 
@@ -97,18 +102,20 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R SetUp(String name,
               SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#setUp()} keyword and name created by {@code nameGenerator} and returns
-   * step result.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name created by applying {@code nameGenerator} to
+   * the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R SetUp(ThrowingFunction<? super String, String, ?> nameGenerator,
               SupplierStep<? extends R> step);
@@ -117,7 +124,8 @@ public interface AAAAround<T> {
    * Executes given step with {@link AAAKeywords#setUp()} keyword on the context value.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   AAAAround<T> SetUp(ConsumerStep<? super T> step);
 
@@ -126,18 +134,20 @@ public interface AAAAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   AAAAround<T> SetUp(String name,
                      ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#setUp()} keyword and name created by {@code nameGenerator} on the
-   * context value.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name created by applying {@code nameGenerator} to
+   * the current step name on the context value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   AAAAround<T> SetUp(ThrowingFunction<? super String, String, ?> nameGenerator,
                      ConsumerStep<? super T> step);
@@ -148,6 +158,7 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R SetUp(FunctionStep<? super T, ? extends R> step);
 
@@ -159,18 +170,20 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R SetUp(String name,
               FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#setUp()} keyword and name created by {@code nameGenerator} on the
-   * context value and returns step result.
+   * Executes given step with {@link AAAKeywords#setUp()} keyword and name created by applying {@code nameGenerator} to
+   * the current step name on the context value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R SetUp(ThrowingFunction<? super String, String, ?> nameGenerator,
               FunctionStep<? super T, ? extends R> step);
@@ -179,7 +192,8 @@ public interface AAAAround<T> {
    * Executes step with {@link AAAKeywords#setUp()} keyword on the context value.
    *
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code body} arg is null
    */
   AAAAround<T> SetUp(ThrowingConsumer<? super T, ?> body);
 
@@ -188,7 +202,8 @@ public interface AAAAround<T> {
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   AAAAround<T> SetUp(String name,
                      ThrowingConsumer<? super T, ?> body);
@@ -199,7 +214,8 @@ public interface AAAAround<T> {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   AAAAround<T> SetUp(String name,
                      Map<String, ?> params,
@@ -211,7 +227,8 @@ public interface AAAAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   AAAAround<T> SetUp(String name,
                      String expectedResult,
@@ -224,7 +241,9 @@ public interface AAAAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   AAAAround<T> SetUp(String name,
                      Map<String, ?> params,
@@ -237,6 +256,7 @@ public interface AAAAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   <R> R SetUp(ThrowingFunction<? super T, ? extends R, ?> body);
 
@@ -248,6 +268,7 @@ public interface AAAAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   <R> R SetUp(String name,
               ThrowingFunction<? super T, ? extends R, ?> body);
@@ -261,6 +282,7 @@ public interface AAAAround<T> {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   <R> R SetUp(String name,
               Map<String, ?> params,
@@ -268,13 +290,14 @@ public interface AAAAround<T> {
 
   /**
    * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes on the context value and returns step
-   * result
+   * result.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R SetUp(String name,
               String expectedResult,
@@ -282,7 +305,7 @@ public interface AAAAround<T> {
 
   /**
    * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes on the context value and returns step
-   * result
+   * result.
    *
    * @param name           the step name
    * @param params         the step params
@@ -290,6 +313,8 @@ public interface AAAAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R SetUp(String name,
               Map<String, ?> params,
@@ -300,7 +325,8 @@ public interface AAAAround<T> {
    * Executes step with {@link AAAKeywords#setUp()} keyword and given attributes.
    *
    * @param name the step name
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg is null
    */
   AAAAround<T> SetUp(String name);
 
@@ -309,7 +335,8 @@ public interface AAAAround<T> {
    *
    * @param name   the step name
    * @param params the step params
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   AAAAround<T> SetUp(String name,
                      Map<String, ?> params);
@@ -319,7 +346,8 @@ public interface AAAAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   AAAAround<T> SetUp(String name,
                      String expectedResult);
@@ -330,7 +358,8 @@ public interface AAAAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   AAAAround<T> SetUp(String name,
                      Map<String, ?> params,
@@ -340,7 +369,8 @@ public interface AAAAround<T> {
    * Executes given step with {@link AAAKeywords#tearDown()} keyword.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   AAAAround<T> TearDown(RunnableStep step);
 
@@ -349,17 +379,20 @@ public interface AAAAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   AAAAround<T> TearDown(String name,
                         RunnableStep step);
 
   /**
-   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   AAAAround<T> TearDown(ThrowingFunction<? super String, String, ?> nameGenerator,
                         RunnableStep step);
@@ -370,6 +403,7 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R TearDown(SupplierStep<? extends R> step);
 
@@ -380,18 +414,20 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R TearDown(String name,
                  SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R TearDown(ThrowingFunction<? super String, String, ?> nameGenerator,
                  SupplierStep<? extends R> step);
@@ -400,7 +436,8 @@ public interface AAAAround<T> {
    * Executes given step with {@link AAAKeywords#tearDown()} keyword on the context value.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   AAAAround<T> TearDown(ConsumerStep<? super T> step);
 
@@ -409,18 +446,20 @@ public interface AAAAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   AAAAround<T> TearDown(String name,
                         ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name created by {@code nameGenerator} on the
-   * context value.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   AAAAround<T> TearDown(ThrowingFunction<? super String, String, ?> nameGenerator,
                         ConsumerStep<? super T> step);
@@ -431,6 +470,7 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R TearDown(FunctionStep<? super T, ? extends R> step);
 
@@ -442,18 +482,20 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R TearDown(String name,
                  FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name created by {@code nameGenerator} on the
-   * context value and returns step result.
+   * Executes given step with {@link AAAKeywords#tearDown()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R TearDown(ThrowingFunction<? super String, String, ?> nameGenerator,
                  FunctionStep<? super T, ? extends R> step);
@@ -462,7 +504,8 @@ public interface AAAAround<T> {
    * Executes step with {@link AAAKeywords#tearDown()} keyword on the context value.
    *
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code body} arg is null
    */
   AAAAround<T> TearDown(ThrowingConsumer<? super T, ?> body);
 
@@ -471,7 +514,8 @@ public interface AAAAround<T> {
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   AAAAround<T> TearDown(String name,
                         ThrowingConsumer<? super T, ?> body);
@@ -482,7 +526,8 @@ public interface AAAAround<T> {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   AAAAround<T> TearDown(String name,
                         Map<String, ?> params,
@@ -494,7 +539,8 @@ public interface AAAAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   AAAAround<T> TearDown(String name,
                         String expectedResult,
@@ -507,7 +553,9 @@ public interface AAAAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   AAAAround<T> TearDown(String name,
                         Map<String, ?> params,
@@ -520,6 +568,7 @@ public interface AAAAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   <R> R TearDown(ThrowingFunction<? super T, ? extends R, ?> body);
 
@@ -531,6 +580,7 @@ public interface AAAAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   <R> R TearDown(String name,
                  ThrowingFunction<? super T, ? extends R, ?> body);
@@ -544,6 +594,7 @@ public interface AAAAround<T> {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   <R> R TearDown(String name,
                  Map<String, ?> params,
@@ -558,6 +609,7 @@ public interface AAAAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R TearDown(String name,
                  String expectedResult,
@@ -573,6 +625,8 @@ public interface AAAAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R TearDown(String name,
                  Map<String, ?> params,
@@ -583,7 +637,8 @@ public interface AAAAround<T> {
    * Executes step with {@link AAAKeywords#tearDown()} keyword and given attributes.
    *
    * @param name the step name
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg is null
    */
   AAAAround<T> TearDown(String name);
 
@@ -592,7 +647,8 @@ public interface AAAAround<T> {
    *
    * @param name   the step name
    * @param params the step params
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   AAAAround<T> TearDown(String name,
                         Map<String, ?> params);
@@ -602,7 +658,8 @@ public interface AAAAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   AAAAround<T> TearDown(String name,
                         String expectedResult);
@@ -613,7 +670,8 @@ public interface AAAAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   AAAAround<T> TearDown(String name,
                         Map<String, ?> params,
@@ -623,7 +681,8 @@ public interface AAAAround<T> {
    * Executes given step with {@link AAAKeywords#arrange()} keyword.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   AAAAround<T> Arrange(RunnableStep step);
 
@@ -632,17 +691,20 @@ public interface AAAAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   AAAAround<T> Arrange(String name,
                        RunnableStep step);
 
   /**
-   * Executes given step with {@link AAAKeywords#arrange()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link AAAKeywords#arrange()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   AAAAround<T> Arrange(ThrowingFunction<? super String, String, ?> nameGenerator,
                        RunnableStep step);
@@ -653,6 +715,7 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R Arrange(SupplierStep<? extends R> step);
 
@@ -663,18 +726,20 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R Arrange(String name,
                 SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#arrange()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link AAAKeywords#arrange()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R Arrange(ThrowingFunction<? super String, String, ?> nameGenerator,
                 SupplierStep<? extends R> step);
@@ -683,7 +748,8 @@ public interface AAAAround<T> {
    * Executes given step with {@link AAAKeywords#arrange()} keyword on the context value.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   AAAAround<T> Arrange(ConsumerStep<? super T> step);
 
@@ -692,18 +758,20 @@ public interface AAAAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   AAAAround<T> Arrange(String name,
                        ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#arrange()} keyword and name created by {@code nameGenerator} on the
-   * context value.
+   * Executes given step with {@link AAAKeywords#arrange()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   AAAAround<T> Arrange(ThrowingFunction<? super String, String, ?> nameGenerator,
                        ConsumerStep<? super T> step);
@@ -714,6 +782,7 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R Arrange(FunctionStep<? super T, ? extends R> step);
 
@@ -725,18 +794,20 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R Arrange(String name,
                 FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#arrange()} keyword and name created by {@code nameGenerator} on the
-   * context value and returns step result.
+   * Executes given step with {@link AAAKeywords#arrange()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R Arrange(ThrowingFunction<? super String, String, ?> nameGenerator,
                 FunctionStep<? super T, ? extends R> step);
@@ -745,7 +816,8 @@ public interface AAAAround<T> {
    * Executes step with {@link AAAKeywords#arrange()} keyword on the context value.
    *
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code body} arg is null
    */
   AAAAround<T> Arrange(ThrowingConsumer<? super T, ?> body);
 
@@ -754,7 +826,8 @@ public interface AAAAround<T> {
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   AAAAround<T> Arrange(String name,
                        ThrowingConsumer<? super T, ?> body);
@@ -765,7 +838,8 @@ public interface AAAAround<T> {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   AAAAround<T> Arrange(String name,
                        Map<String, ?> params,
@@ -777,7 +851,8 @@ public interface AAAAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   AAAAround<T> Arrange(String name,
                        String expectedResult,
@@ -790,7 +865,9 @@ public interface AAAAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   AAAAround<T> Arrange(String name,
                        Map<String, ?> params,
@@ -803,6 +880,7 @@ public interface AAAAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   <R> R Arrange(ThrowingFunction<? super T, ? extends R, ?> body);
 
@@ -814,6 +892,7 @@ public interface AAAAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   <R> R Arrange(String name,
                 ThrowingFunction<? super T, ? extends R, ?> body);
@@ -827,6 +906,7 @@ public interface AAAAround<T> {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   <R> R Arrange(String name,
                 Map<String, ?> params,
@@ -834,13 +914,14 @@ public interface AAAAround<T> {
 
   /**
    * Executes step with {@link AAAKeywords#arrange()} keyword and given attributes on the context value and returns step
-   * result
+   * result.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R Arrange(String name,
                 String expectedResult,
@@ -848,7 +929,7 @@ public interface AAAAround<T> {
 
   /**
    * Executes step with {@link AAAKeywords#arrange()} keyword and given attributes on the context value and returns step
-   * result
+   * result.
    *
    * @param name           the step name
    * @param params         the step params
@@ -856,6 +937,8 @@ public interface AAAAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R Arrange(String name,
                 Map<String, ?> params,
@@ -866,7 +949,8 @@ public interface AAAAround<T> {
    * Executes step with {@link AAAKeywords#arrange()} keyword and given attributes.
    *
    * @param name the step name
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg is null
    */
   AAAAround<T> Arrange(String name);
 
@@ -875,7 +959,8 @@ public interface AAAAround<T> {
    *
    * @param name   the step name
    * @param params the step params
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   AAAAround<T> Arrange(String name,
                        Map<String, ?> params);
@@ -885,7 +970,8 @@ public interface AAAAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   AAAAround<T> Arrange(String name,
                        String expectedResult);
@@ -896,7 +982,8 @@ public interface AAAAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   AAAAround<T> Arrange(String name,
                        Map<String, ?> params,
@@ -906,7 +993,8 @@ public interface AAAAround<T> {
    * Executes given step with {@link AAAKeywords#act()} keyword.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   AAAAround<T> Act(RunnableStep step);
 
@@ -915,17 +1003,20 @@ public interface AAAAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   AAAAround<T> Act(String name,
                    RunnableStep step);
 
   /**
-   * Executes given step with {@link AAAKeywords#act()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link AAAKeywords#act()} keyword and name created by applying {@code nameGenerator} to
+   * the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   AAAAround<T> Act(ThrowingFunction<? super String, String, ?> nameGenerator,
                    RunnableStep step);
@@ -936,6 +1027,7 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R Act(SupplierStep<? extends R> step);
 
@@ -946,18 +1038,20 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R Act(String name,
             SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#act()} keyword and name created by {@code nameGenerator} and returns
-   * step result.
+   * Executes given step with {@link AAAKeywords#act()} keyword and name created by applying {@code nameGenerator} to
+   * the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R Act(ThrowingFunction<? super String, String, ?> nameGenerator,
             SupplierStep<? extends R> step);
@@ -966,7 +1060,8 @@ public interface AAAAround<T> {
    * Executes given step with {@link AAAKeywords#act()} keyword on the context value.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   AAAAround<T> Act(ConsumerStep<? super T> step);
 
@@ -975,18 +1070,20 @@ public interface AAAAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   AAAAround<T> Act(String name,
                    ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#act()} keyword and name created by {@code nameGenerator} on the context
-   * value.
+   * Executes given step with {@link AAAKeywords#act()} keyword and name created by applying {@code nameGenerator} to
+   * the current step name on the context value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   AAAAround<T> Act(ThrowingFunction<? super String, String, ?> nameGenerator,
                    ConsumerStep<? super T> step);
@@ -997,6 +1094,7 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R Act(FunctionStep<? super T, ? extends R> step);
 
@@ -1007,18 +1105,20 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R Act(String name,
             FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#act()} keyword and name created by {@code nameGenerator} on the context
-   * value and returns step result.
+   * Executes given step with {@link AAAKeywords#act()} keyword and name created by applying {@code nameGenerator} to
+   * the current step name on the context value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R Act(ThrowingFunction<? super String, String, ?> nameGenerator,
             FunctionStep<? super T, ? extends R> step);
@@ -1027,7 +1127,8 @@ public interface AAAAround<T> {
    * Executes step with {@link AAAKeywords#act()} keyword on the context value.
    *
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code body} arg is null
    */
   AAAAround<T> Act(ThrowingConsumer<? super T, ?> body);
 
@@ -1036,7 +1137,8 @@ public interface AAAAround<T> {
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   AAAAround<T> Act(String name,
                    ThrowingConsumer<? super T, ?> body);
@@ -1047,7 +1149,8 @@ public interface AAAAround<T> {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   AAAAround<T> Act(String name,
                    Map<String, ?> params,
@@ -1059,7 +1162,8 @@ public interface AAAAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   AAAAround<T> Act(String name,
                    String expectedResult,
@@ -1072,7 +1176,9 @@ public interface AAAAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   AAAAround<T> Act(String name,
                    Map<String, ?> params,
@@ -1085,6 +1191,7 @@ public interface AAAAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   <R> R Act(ThrowingFunction<? super T, ? extends R, ?> body);
 
@@ -1096,6 +1203,7 @@ public interface AAAAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   <R> R Act(String name,
             ThrowingFunction<? super T, ? extends R, ?> body);
@@ -1109,6 +1217,7 @@ public interface AAAAround<T> {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   <R> R Act(String name,
             Map<String, ?> params,
@@ -1116,13 +1225,14 @@ public interface AAAAround<T> {
 
   /**
    * Executes step with {@link AAAKeywords#act()} keyword and given attributes on the context value and returns step
-   * result
+   * result.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R Act(String name,
             String expectedResult,
@@ -1130,7 +1240,7 @@ public interface AAAAround<T> {
 
   /**
    * Executes step with {@link AAAKeywords#act()} keyword and given attributes on the context value and returns step
-   * result
+   * result.
    *
    * @param name           the step name
    * @param params         the step params
@@ -1138,6 +1248,8 @@ public interface AAAAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R Act(String name,
             Map<String, ?> params,
@@ -1148,7 +1260,8 @@ public interface AAAAround<T> {
    * Executes step with {@link AAAKeywords#act()} keyword and given attributes.
    *
    * @param name the step name
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg is null
    */
   AAAAround<T> Act(String name);
 
@@ -1157,7 +1270,8 @@ public interface AAAAround<T> {
    *
    * @param name   the step name
    * @param params the step params
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   AAAAround<T> Act(String name,
                    Map<String, ?> params);
@@ -1167,7 +1281,8 @@ public interface AAAAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   AAAAround<T> Act(String name,
                    String expectedResult);
@@ -1178,7 +1293,8 @@ public interface AAAAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   AAAAround<T> Act(String name,
                    Map<String, ?> params,
@@ -1188,7 +1304,8 @@ public interface AAAAround<T> {
    * Executes given step with {@link AAAKeywords#_assert()} keyword.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   AAAAround<T> Assert(RunnableStep step);
 
@@ -1197,17 +1314,20 @@ public interface AAAAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   AAAAround<T> Assert(String name,
                       RunnableStep step);
 
   /**
-   * Executes given step with {@link AAAKeywords#_assert()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link AAAKeywords#_assert()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   AAAAround<T> Assert(ThrowingFunction<? super String, String, ?> nameGenerator,
                       RunnableStep step);
@@ -1218,6 +1338,7 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R Assert(SupplierStep<? extends R> step);
 
@@ -1228,18 +1349,20 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R Assert(String name,
                SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#_assert()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link AAAKeywords#_assert()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R Assert(ThrowingFunction<? super String, String, ?> nameGenerator,
                SupplierStep<? extends R> step);
@@ -1248,7 +1371,8 @@ public interface AAAAround<T> {
    * Executes given step with {@link AAAKeywords#_assert()} keyword on the context value.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   AAAAround<T> Assert(ConsumerStep<? super T> step);
 
@@ -1257,18 +1381,20 @@ public interface AAAAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   AAAAround<T> Assert(String name,
                       ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#_assert()} keyword and name created by {@code nameGenerator} on the
-   * context value.
+   * Executes given step with {@link AAAKeywords#_assert()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   AAAAround<T> Assert(ThrowingFunction<? super String, String, ?> nameGenerator,
                       ConsumerStep<? super T> step);
@@ -1279,6 +1405,7 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R Assert(FunctionStep<? super T, ? extends R> step);
 
@@ -1290,18 +1417,20 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R Assert(String name,
                FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#_assert()} keyword and name created by {@code nameGenerator} on the
-   * context value and returns step result.
+   * Executes given step with {@link AAAKeywords#_assert()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R Assert(ThrowingFunction<? super String, String, ?> nameGenerator,
                FunctionStep<? super T, ? extends R> step);
@@ -1310,7 +1439,8 @@ public interface AAAAround<T> {
    * Executes step with {@link AAAKeywords#_assert()} keyword on the context value.
    *
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code body} arg is null
    */
   AAAAround<T> Assert(ThrowingConsumer<? super T, ?> body);
 
@@ -1319,7 +1449,8 @@ public interface AAAAround<T> {
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   AAAAround<T> Assert(String name,
                       ThrowingConsumer<? super T, ?> body);
@@ -1330,7 +1461,8 @@ public interface AAAAround<T> {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   AAAAround<T> Assert(String name,
                       Map<String, ?> params,
@@ -1342,7 +1474,8 @@ public interface AAAAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   AAAAround<T> Assert(String name,
                       String expectedResult,
@@ -1355,7 +1488,9 @@ public interface AAAAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   AAAAround<T> Assert(String name,
                       Map<String, ?> params,
@@ -1368,6 +1503,7 @@ public interface AAAAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   <R> R Assert(ThrowingFunction<? super T, ? extends R, ?> body);
 
@@ -1379,6 +1515,7 @@ public interface AAAAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   <R> R Assert(String name,
                ThrowingFunction<? super T, ? extends R, ?> body);
@@ -1392,6 +1529,7 @@ public interface AAAAround<T> {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   <R> R Assert(String name,
                Map<String, ?> params,
@@ -1399,13 +1537,14 @@ public interface AAAAround<T> {
 
   /**
    * Executes step with {@link AAAKeywords#_assert()} keyword and given attributes on the context value and returns step
-   * result
+   * result.
    *
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R Assert(String name,
                String expectedResult,
@@ -1413,7 +1552,7 @@ public interface AAAAround<T> {
 
   /**
    * Executes step with {@link AAAKeywords#_assert()} keyword and given attributes on the context value and returns step
-   * result
+   * result.
    *
    * @param name           the step name
    * @param params         the step params
@@ -1421,6 +1560,8 @@ public interface AAAAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R Assert(String name,
                Map<String, ?> params,
@@ -1431,7 +1572,8 @@ public interface AAAAround<T> {
    * Executes step with {@link AAAKeywords#_assert()} keyword and given attributes.
    *
    * @param name the step name
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg is null
    */
   AAAAround<T> Assert(String name);
 
@@ -1440,7 +1582,8 @@ public interface AAAAround<T> {
    *
    * @param name   the step name
    * @param params the step params
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   AAAAround<T> Assert(String name,
                       Map<String, ?> params);
@@ -1450,7 +1593,8 @@ public interface AAAAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   AAAAround<T> Assert(String name,
                       String expectedResult);
@@ -1461,7 +1605,8 @@ public interface AAAAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   AAAAround<T> Assert(String name,
                       Map<String, ?> params,
@@ -1471,7 +1616,8 @@ public interface AAAAround<T> {
    * Executes given step with {@link AAAKeywords#asterisk()} keyword.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   AAAAround<T> ___(RunnableStep step);
 
@@ -1480,17 +1626,20 @@ public interface AAAAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   AAAAround<T> ___(String name,
                    RunnableStep step);
 
   /**
-   * Executes given step with {@link AAAKeywords#asterisk()} keyword and name created by {@code nameGenerator}.
+   * Executes given step with {@link AAAKeywords#asterisk()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   AAAAround<T> ___(ThrowingFunction<? super String, String, ?> nameGenerator,
                    RunnableStep step);
@@ -1501,6 +1650,7 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R ___(SupplierStep<? extends R> step);
 
@@ -1511,18 +1661,20 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R ___(String name,
             SupplierStep<? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#asterisk()} keyword and name created by {@code nameGenerator} and
-   * returns step result.
+   * Executes given step with {@link AAAKeywords#asterisk()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R ___(ThrowingFunction<? super String, String, ?> nameGenerator,
             SupplierStep<? extends R> step);
@@ -1531,7 +1683,8 @@ public interface AAAAround<T> {
    * Executes given step with {@link AAAKeywords#asterisk()} keyword on the context value.
    *
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code step} arg is null
    */
   AAAAround<T> ___(ConsumerStep<? super T> step);
 
@@ -1540,18 +1693,20 @@ public interface AAAAround<T> {
    *
    * @param name the name
    * @param step the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   AAAAround<T> ___(String name,
                    ConsumerStep<? super T> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#asterisk()} keyword and name created by {@code nameGenerator} on the
-   * context value.
+   * Executes given step with {@link AAAKeywords#asterisk()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   AAAAround<T> ___(ThrowingFunction<? super String, String, ?> nameGenerator,
                    ConsumerStep<? super T> step);
@@ -1562,6 +1717,7 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   <R> R ___(FunctionStep<? super T, ? extends R> step);
 
@@ -1573,18 +1729,20 @@ public interface AAAAround<T> {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   <R> R ___(String name,
             FunctionStep<? super T, ? extends R> step);
 
   /**
-   * Executes given step with {@link AAAKeywords#asterisk()} keyword and name created by {@code nameGenerator} on the
-   * context value and returns step result.
+   * Executes given step with {@link AAAKeywords#asterisk()} keyword and name created by applying {@code nameGenerator}
+   * to the current step name on the context value and returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   <R> R ___(ThrowingFunction<? super String, String, ?> nameGenerator,
             FunctionStep<? super T, ? extends R> step);
@@ -1593,7 +1751,8 @@ public interface AAAAround<T> {
    * Executes step with {@link AAAKeywords#asterisk()} keyword on the context value.
    *
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code body} arg is null
    */
   AAAAround<T> ___(ThrowingConsumer<? super T, ?> body);
 
@@ -1602,7 +1761,8 @@ public interface AAAAround<T> {
    *
    * @param name the step name
    * @param body the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   AAAAround<T> ___(String name,
                    ThrowingConsumer<? super T, ?> body);
@@ -1613,7 +1773,8 @@ public interface AAAAround<T> {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   AAAAround<T> ___(String name,
                    Map<String, ?> params,
@@ -1625,7 +1786,8 @@ public interface AAAAround<T> {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   AAAAround<T> ___(String name,
                    String expectedResult,
@@ -1638,7 +1800,9 @@ public interface AAAAround<T> {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   AAAAround<T> ___(String name,
                    Map<String, ?> params,
@@ -1651,6 +1815,7 @@ public interface AAAAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code body} arg is null
    */
   <R> R ___(ThrowingFunction<? super T, ? extends R, ?> body);
 
@@ -1662,6 +1827,7 @@ public interface AAAAround<T> {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   <R> R ___(String name,
             ThrowingFunction<? super T, ? extends R, ?> body);
@@ -1675,6 +1841,7 @@ public interface AAAAround<T> {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   <R> R ___(String name,
             Map<String, ?> params,
@@ -1689,6 +1856,7 @@ public interface AAAAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   <R> R ___(String name,
             String expectedResult,
@@ -1704,6 +1872,8 @@ public interface AAAAround<T> {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   <R> R ___(String name,
             Map<String, ?> params,
@@ -1714,7 +1884,8 @@ public interface AAAAround<T> {
    * Executes step with {@link AAAKeywords#asterisk()} keyword and given attributes.
    *
    * @param name the step name
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg is null
    */
   AAAAround<T> ___(String name);
 
@@ -1723,7 +1894,8 @@ public interface AAAAround<T> {
    *
    * @param name   the step name
    * @param params the step params
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   AAAAround<T> ___(String name,
                    Map<String, ?> params);
@@ -1733,7 +1905,8 @@ public interface AAAAround<T> {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   AAAAround<T> ___(String name,
                    String expectedResult);
@@ -1744,7 +1917,8 @@ public interface AAAAround<T> {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
-   * @return {@code Around} object
+   * @return {@code AAAround} object
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   AAAAround<T> ___(String name,
                    Map<String, ?> params,
@@ -1763,7 +1937,7 @@ public interface AAAAround<T> {
      * Ctor.
      *
      * @param executor the executor
-     * @param context  the context
+     * @param context  the context, may be {@code null}
      * @throws NullPointerException if {@code executor} arg is null
      */
     public Of(final StepExecutor executor,
@@ -1980,10 +2154,10 @@ public interface AAAAround<T> {
 
     @Override
     public AAAAround<T> SetUp(final String name) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, setUp(), NAME, name),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -1991,31 +2165,31 @@ public interface AAAAround<T> {
     @SuppressWarnings("unchecked")
     public AAAAround<T> SetUp(final String name,
                               final Map<String, ?> params) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, setUp(), NAME, name, PARAMS, (Map<String, Object>) params),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     public AAAAround<T> SetUp(final String name,
                               final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, setUp(), NAME, name, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public AAAAround<T> SetUp(final String name, final Map<String, ?> params, final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(
           KEYWORD, setUp(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -2226,10 +2400,10 @@ public interface AAAAround<T> {
 
     @Override
     public AAAAround<T> TearDown(final String name) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, tearDown(), NAME, name),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -2237,31 +2411,31 @@ public interface AAAAround<T> {
     @SuppressWarnings("unchecked")
     public AAAAround<T> TearDown(final String name,
                                  final Map<String, ?> params) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, tearDown(), NAME, name, PARAMS, (Map<String, Object>) params),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     public AAAAround<T> TearDown(final String name,
                                  final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, tearDown(), NAME, name, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public AAAAround<T> TearDown(final String name, final Map<String, ?> params, final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(
           KEYWORD, tearDown(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -2472,10 +2646,10 @@ public interface AAAAround<T> {
 
     @Override
     public AAAAround<T> Arrange(final String name) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, arrange(), NAME, name),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -2483,31 +2657,31 @@ public interface AAAAround<T> {
     @SuppressWarnings("unchecked")
     public AAAAround<T> Arrange(final String name,
                                 final Map<String, ?> params) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, arrange(), NAME, name, PARAMS, (Map<String, Object>) params),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     public AAAAround<T> Arrange(final String name,
                                 final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, arrange(), NAME, name, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public AAAAround<T> Arrange(final String name, final Map<String, ?> params, final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(
           KEYWORD, arrange(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -2718,10 +2892,10 @@ public interface AAAAround<T> {
 
     @Override
     public AAAAround<T> Act(final String name) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, act(), NAME, name),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -2729,31 +2903,31 @@ public interface AAAAround<T> {
     @SuppressWarnings("unchecked")
     public AAAAround<T> Act(final String name,
                             final Map<String, ?> params) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, act(), NAME, name, PARAMS, (Map<String, Object>) params),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     public AAAAround<T> Act(final String name,
                             final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, act(), NAME, name, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public AAAAround<T> Act(final String name, final Map<String, ?> params, final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(
           KEYWORD, act(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -2964,10 +3138,10 @@ public interface AAAAround<T> {
 
     @Override
     public AAAAround<T> Assert(final String name) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, _assert(), NAME, name),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -2975,31 +3149,31 @@ public interface AAAAround<T> {
     @SuppressWarnings("unchecked")
     public AAAAround<T> Assert(final String name,
                                final Map<String, ?> params) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, _assert(), NAME, name, PARAMS, (Map<String, Object>) params),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     public AAAAround<T> Assert(final String name,
                                final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, _assert(), NAME, name, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public AAAAround<T> Assert(final String name, final Map<String, ?> params, final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(
           KEYWORD, _assert(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -3210,10 +3384,10 @@ public interface AAAAround<T> {
 
     @Override
     public AAAAround<T> ___(final String name) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, asterisk(), NAME, name),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
@@ -3221,31 +3395,31 @@ public interface AAAAround<T> {
     @SuppressWarnings("unchecked")
     public AAAAround<T> ___(final String name,
                             final Map<String, ?> params) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, asterisk(), NAME, name, PARAMS, (Map<String, Object>) params),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     public AAAAround<T> ___(final String name,
                             final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(KEYWORD, asterisk(), NAME, name, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public AAAAround<T> ___(final String name, final Map<String, ?> params, final String expectedResult) {
-      this.executor.execute(new RunnableStep.Of(
+      this.executor.execute(new ConsumerStep.Of<>(
         new StepAttributes.Of(
           KEYWORD, asterisk(), NAME, name, PARAMS, (Map<String, Object>) params, EXPECTED_RESULT, expectedResult),
-        RunnableStep.emptyBody()
-      ));
+        ConsumerStep.emptyBody()
+      ), this.context);
       return this;
     }
   }
