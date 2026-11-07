@@ -23,6 +23,7 @@
  */
 package org.stebz.method;
 
+import dev.jlet.function.ThrowingConsumer;
 import dev.jlet.function.ThrowingFunction;
 import dev.jlet.function.ThrowingRunnable;
 import dev.jlet.function.ThrowingSupplier;
@@ -75,9 +76,64 @@ public final class StebzPCMethods {
   }
 
   /**
+   * Executes given block of steps.
+   *
+   * @param steps the block of steps
+   * @throws NullPointerException if {@code steps} arg is null
+   */
+  public static void Steps(final ThrowingRunnable<?> steps) {
+    if (steps == null) { throw new NullPointerException("steps arg is null"); }
+    ThrowingRunnable.unchecked(steps).run();
+  }
+
+  /**
+   * Executes given block of steps.
+   *
+   * @param value the value for the block of steps
+   * @param steps the block of steps
+   * @param <V>   the type of the value
+   * @throws NullPointerException if {@code steps} arg is null
+   */
+  public static <V> void Steps(final V value,
+                               final ThrowingConsumer<? super V, ?> steps) {
+    if (steps == null) { throw new NullPointerException("steps arg is null"); }
+    ThrowingConsumer.unchecked(steps).accept(value);
+  }
+
+  /**
+   * Executes given block of steps and returns result.
+   *
+   * @param steps the block of steps
+   * @param <R>   the type of the result
+   * @return execution result
+   * @throws NullPointerException if {@code steps} arg is null
+   */
+  public static <R> R StepsResult(final ThrowingSupplier<? extends R, ?> steps) {
+    if (steps == null) { throw new NullPointerException("steps arg is null"); }
+    return ThrowingSupplier.unchecked(steps).get();
+  }
+
+  /**
+   * Executes given block of steps and returns result.
+   *
+   * @param value the value for the block of steps
+   * @param steps the block of steps
+   * @param <V>   the type of the value
+   * @param <R>   the type of the result
+   * @return execution result
+   * @throws NullPointerException if {@code steps} arg is null
+   */
+  public static <V, R> R StepsResult(final V value,
+                                     final ThrowingFunction<? super V, ? extends R, ?> steps) {
+    if (steps == null) { throw new NullPointerException("steps arg is null"); }
+    return ThrowingFunction.unchecked(steps).apply(value);
+  }
+
+  /**
    * Executes given step.
    *
    * @param step the step
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static void Step(final RunnableStep step) {
     StepExecutor.get().execute(step);
@@ -88,6 +144,7 @@ public final class StebzPCMethods {
    *
    * @param keyword the keyword
    * @param step    the step
+   * @throws NullPointerException if {@code keyword} arg or {@code step} arg is null
    */
   public static void Step(final Keyword keyword,
                           final RunnableStep step) {
@@ -99,6 +156,7 @@ public final class StebzPCMethods {
    *
    * @param name the name
    * @param step the step
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static void Step(final String name,
                           final RunnableStep step) {
@@ -106,10 +164,11 @@ public final class StebzPCMethods {
   }
 
   /**
-   * Executes given step with name created by {@code nameGenerator}.
+   * Executes given step with name created by applying {@code nameGenerator} to the current step name.
    *
    * @param nameGenerator the name generator
    * @param step          the step
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static void Step(final ThrowingFunction<? super String, String, ?> nameGenerator,
                           final RunnableStep step) {
@@ -122,6 +181,7 @@ public final class StebzPCMethods {
    * @param keyword the keyword
    * @param name    the name
    * @param step    the step
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code step} arg is null
    */
   public static void Step(final Keyword keyword,
                           final String name,
@@ -135,6 +195,7 @@ public final class StebzPCMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <R> R Step(final SupplierStep<? extends R> step) {
     return StepExecutor.get().execute(step);
@@ -147,6 +208,7 @@ public final class StebzPCMethods {
    * @param step    the step
    * @param <R>     the type of the result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code step} arg is null
    */
   public static <R> R Step(final Keyword keyword,
                            final SupplierStep<? extends R> step) {
@@ -160,6 +222,7 @@ public final class StebzPCMethods {
    * @param step the step
    * @param <R>  the type of the result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <R> R Step(final String name,
                            final SupplierStep<? extends R> step) {
@@ -167,12 +230,14 @@ public final class StebzPCMethods {
   }
 
   /**
-   * Executes given step with name created by {@code nameGenerator} and returns step result.
+   * Executes given step with name created by applying {@code nameGenerator} to the current step name and returns step
+   * result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <R>           the type of the result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <R> R Step(final ThrowingFunction<? super String, String, ?> nameGenerator,
                            final SupplierStep<? extends R> step) {
@@ -187,6 +252,7 @@ public final class StebzPCMethods {
    * @param step    the step
    * @param <R>     the type of the result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code step} arg is null
    */
   public static <R> R Step(final Keyword keyword,
                            final String name,
@@ -200,6 +266,7 @@ public final class StebzPCMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T> void Step(final ConsumerStep<? super T> step,
                               final T value) {
@@ -216,6 +283,7 @@ public final class StebzPCMethods {
    * @param step    the step
    * @param value   the value
    * @param <T>     the type of the value
+   * @throws NullPointerException if {@code keyword} arg or {@code step} arg is null
    */
   public static <T> void Step(final Keyword keyword,
                               final ConsumerStep<? super T> step,
@@ -233,6 +301,7 @@ public final class StebzPCMethods {
    * @param step  the step
    * @param value the value
    * @param <T>   the type of the value
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T> void Step(final String name,
                               final ConsumerStep<? super T> step,
@@ -244,12 +313,13 @@ public final class StebzPCMethods {
   }
 
   /**
-   * Executes given step with name created by {@code nameGenerator} on given value.
+   * Executes given step with name created by applying {@code nameGenerator} to the current step name on given value.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param value         the value
    * @param <T>           the type of the value
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T> void Step(final ThrowingFunction<? super String, String, ?> nameGenerator,
                               final ConsumerStep<? super T> step,
@@ -268,6 +338,7 @@ public final class StebzPCMethods {
    * @param step    the step
    * @param value   the value
    * @param <T>     the type of the value
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code step} arg is null
    */
   public static <T> void Step(final Keyword keyword,
                               final String name,
@@ -287,6 +358,7 @@ public final class StebzPCMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code step} arg is null
    */
   public static <T, R> R Step(final FunctionStep<? super T, ? extends R> step,
                               final T value) {
@@ -305,6 +377,7 @@ public final class StebzPCMethods {
    * @param <T>     the type of the value
    * @param <R>     the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code step} arg is null
    */
   public static <T, R> R Step(final Keyword keyword,
                               final FunctionStep<? super T, ? extends R> step,
@@ -324,6 +397,7 @@ public final class StebzPCMethods {
    * @param <T>   the type of the value
    * @param <R>   the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code step} arg is null
    */
   public static <T, R> R Step(final String name,
                               final FunctionStep<? super T, ? extends R> step,
@@ -335,13 +409,15 @@ public final class StebzPCMethods {
   }
 
   /**
-   * Executes given step with name created by {@code nameGenerator} on given value and returns step result.
+   * Executes given step with name created by applying {@code nameGenerator} to the current step name on given value and
+   * returns step result.
    *
    * @param nameGenerator the name generator
    * @param step          the step
    * @param <T>           the type of the value
    * @param <R>           the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code nameGenerator} arg or {@code step} arg is null
    */
   public static <T, R> R Step(final ThrowingFunction<? super String, String, ?> nameGenerator,
                               final FunctionStep<? super T, ? extends R> step,
@@ -362,6 +438,7 @@ public final class StebzPCMethods {
    * @param <T>     the type of the value
    * @param <R>     the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code step} arg is null
    */
   public static <T, R> R Step(final Keyword keyword,
                               final String name,
@@ -378,6 +455,7 @@ public final class StebzPCMethods {
    *
    * @param name the step name
    * @param body the step body
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static void Step(final String name,
                           final ThrowingRunnable<?> body) {
@@ -393,6 +471,7 @@ public final class StebzPCMethods {
    * @param keyword the step keyword
    * @param name    the step name
    * @param body    the step body
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code body} arg is null
    */
   public static void Step(final Keyword keyword,
                           final String name,
@@ -409,6 +488,7 @@ public final class StebzPCMethods {
    * @param name   the step name
    * @param params the step params
    * @param body   the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Step(final String name,
@@ -427,6 +507,8 @@ public final class StebzPCMethods {
    * @param name    the step name
    * @param params  the step params
    * @param body    the step body
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or {@code body} arg
+   *                              is null
    */
   @SuppressWarnings("unchecked")
   public static void Step(final Keyword keyword,
@@ -445,6 +527,7 @@ public final class StebzPCMethods {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static void Step(final String name,
                           final String expectedResult,
@@ -462,6 +545,8 @@ public final class StebzPCMethods {
    * @param name           the step name
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   public static void Step(final Keyword keyword,
                           final String name,
@@ -480,6 +565,8 @@ public final class StebzPCMethods {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Step(final String name,
@@ -500,6 +587,8 @@ public final class StebzPCMethods {
    * @param params         the step params
    * @param expectedResult the step expected result
    * @param body           the step body
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or
+   *                              {@code expectedResult} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Step(final Keyword keyword,
@@ -521,6 +610,7 @@ public final class StebzPCMethods {
    * @param body the step body
    * @param <R>  the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code body} arg is null
    */
   public static <R> R Step(final String name,
                            final ThrowingSupplier<? extends R, ?> body) {
@@ -538,6 +628,7 @@ public final class StebzPCMethods {
    * @param body    the step body
    * @param <R>     the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code body} arg is null
    */
   public static <R> R Step(final Keyword keyword,
                            final String name,
@@ -556,6 +647,7 @@ public final class StebzPCMethods {
    * @param body   the step body
    * @param <R>    the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R Step(final String name,
@@ -576,6 +668,8 @@ public final class StebzPCMethods {
    * @param body    the step body
    * @param <R>     the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or {@code body} arg
+   *                              is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R Step(final Keyword keyword,
@@ -596,6 +690,7 @@ public final class StebzPCMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg or {@code body} arg is null
    */
   public static <R> R Step(final String name,
                            final String expectedResult,
@@ -615,6 +710,8 @@ public final class StebzPCMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   public static <R> R Step(final Keyword keyword,
                            final String name,
@@ -635,6 +732,8 @@ public final class StebzPCMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg or
+   *                              {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R Step(final String name,
@@ -657,6 +756,8 @@ public final class StebzPCMethods {
    * @param body           the step body
    * @param <R>            the type of the step result
    * @return step result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or
+   *                              {@code expectedResult} arg or {@code body} arg is null
    */
   @SuppressWarnings("unchecked")
   public static <R> R Step(final Keyword keyword,
@@ -675,6 +776,7 @@ public final class StebzPCMethods {
    * Executes step with given attributes.
    *
    * @param name the step name
+   * @throws NullPointerException if {@code name} arg is null
    */
   public static void Step(final String name) {
     StepExecutor.get().execute(new RunnableStep.Of(
@@ -688,6 +790,7 @@ public final class StebzPCMethods {
    *
    * @param keyword the step keyword
    * @param name    the step name
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg is null
    */
   public static void Step(final Keyword keyword,
                           final String name) {
@@ -702,6 +805,7 @@ public final class StebzPCMethods {
    *
    * @param name   the step name
    * @param params the step params
+   * @throws NullPointerException if {@code name} arg or {@code params} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Step(final String name,
@@ -718,6 +822,7 @@ public final class StebzPCMethods {
    * @param keyword the step keyword
    * @param name    the step name
    * @param params  the step params
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Step(final Keyword keyword,
@@ -734,6 +839,7 @@ public final class StebzPCMethods {
    *
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code expectedResult} arg is null
    */
   public static void Step(final String name,
                           final String expectedResult) {
@@ -749,6 +855,7 @@ public final class StebzPCMethods {
    * @param keyword        the step keyword
    * @param name           the step name
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code expectedResult} arg is null
    */
   public static void Step(final Keyword keyword,
                           final String name,
@@ -765,6 +872,7 @@ public final class StebzPCMethods {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code name} arg or {@code params} arg or {@code expectedResult} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Step(final String name,
@@ -783,6 +891,8 @@ public final class StebzPCMethods {
    * @param name           the step name
    * @param params         the step params
    * @param expectedResult the step expected result
+   * @throws NullPointerException if {@code keyword} arg or {@code name} arg or {@code params} arg or
+   *                              {@code expectedResult} arg is null
    */
   @SuppressWarnings("unchecked")
   public static void Step(final Keyword keyword,
