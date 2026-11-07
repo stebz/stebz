@@ -23,141 +23,243 @@
  */
 package org.stebz.annotation.aspect;
 
+import dev.jlet.function.ThrowingRunnable;
 import dev.jlet.function.ThrowingSupplier;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.stebz.core.executor.StepExecutor;
 import org.stebz.core.step.executable.RunnableStep;
 import org.stebz.core.step.executable.SupplierStep;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.assertj.core.api.Assertions.entry;
 import static org.stebz.annotation.aspect.StepCaptor.captured;
 
+/**
+ * Tests for {@link StepCaptor}.
+ */
 final class StepCaptorTest {
 
   @BeforeEach
-  void clearListener() {
+  void clearState() {
     StaticStepListener.clear();
+    MethodSteps.quickStaticMethodBodyCount.set(0);
+    QuickConstructorStep.ctorBodyCount.set(0);
   }
 
-  @Test
-  void capturedMethodRunnableStep() {
-    final RunnableStep step = captured(MethodSteps::quickStaticMethodStep);
+  /**
+   * Tests for {@code StepCaptor.captured} methods returning {@code RunnableStep}.
+   */
+  @Nested
+  class CapturedRunnableStepTests {
 
-    assertThat(step.getName())
-      .isEqualTo("quickStaticMethodStep");
-    assertThat(step.getParams())
-      .containsExactly(
-        entry("param name", "param value")
-      );
-    assertThat(StaticStepListener.lastStep)
-      .isNull();
+    @Test
+    void capturedMethodRunnableStep() {
+      final RunnableStep step = captured(MethodSteps::quickStaticMethodStep);
+
+      assertThat(MethodSteps.quickStaticMethodBodyCount)
+        .hasValue(0);
+      assertThat(StaticStepListener.startedSteps)
+        .isEmpty();
+      assertThat(step.getName())
+        .isEqualTo("quickStaticMethodStep");
+      assertThat(step.getParams())
+        .containsExactly(
+          entry("param name", "param value")
+        );
+    }
+
+    @Test
+    void capturedMethodRunnableStepExecutesBodyOnStepExecution() {
+      final RunnableStep step = captured(MethodSteps::quickStaticMethodStep);
+
+      StepExecutor.get().execute(step);
+
+      assertThat(MethodSteps.quickStaticMethodBodyCount)
+        .hasValue(1);
+      assertThat(StaticStepListener.startedSteps)
+        .hasSize(1);
+      assertThat(StaticStepListener.succeededSteps)
+        .hasSize(1);
+      assertThat(StaticStepListener.startedSteps.get(0).getName())
+        .isEqualTo("quickStaticMethodStep");
+    }
+
+    @Test
+    void nestedCaptureRestoresOuterCapture() {
+      final RunnableStep[] innerStep = new RunnableStep[1];
+      final RunnableStep outerStep = captured(() -> {
+        MethodSteps.quickStaticMethodStep();
+        innerStep[0] = captured(MethodSteps::quickStaticMethodStep);
+      });
+
+      assertThat(MethodSteps.quickStaticMethodBodyCount)
+        .hasValue(0);
+      assertThat(outerStep.getName())
+        .isEqualTo("quickStaticMethodStep");
+      assertThat(innerStep[0].getName())
+        .isEqualTo("quickStaticMethodStep");
+
+      StepExecutor.get().execute(outerStep);
+      StepExecutor.get().execute(innerStep[0]);
+
+      assertThat(MethodSteps.quickStaticMethodBodyCount)
+        .hasValue(2);
+    }
   }
 
-  @Test
-  void capturedMethodSupplierStep() throws Throwable {
-    final SupplierStep<String> step = captured(new MethodSteps()::quickInstanceMethodStep, "value");
+  /**
+   * Tests for {@code StepCaptor.captured} methods returning {@code SupplierStep}.
+   */
+  @Nested
+  class CapturedSupplierStepTests {
 
-    assertThat(step.getName())
-      .isEqualTo("quickInstanceMethodStep");
-    assertThat(step.getParams())
-      .containsExactly(
-        entry("param", "value")
-      );
-    assertThat(step.isHidden())
-      .isTrue();
-    assertThat(step.getBody().get())
-      .isEqualTo("value");
-    assertThat(StaticStepListener.lastStep)
-      .isNull();
+    @Test
+    void capturedMethodSupplierStep() throws Throwable {
+      final SupplierStep<String> step = captured(new MethodSteps()::quickInstanceMethodStep, "value");
+
+      assertThat(StaticStepListener.startedSteps)
+        .isEmpty();
+      assertThat(step.getName())
+        .isEqualTo("quickInstanceMethodStep");
+      assertThat(step.getParams())
+        .containsExactly(
+          entry("param", "value")
+        );
+      assertThat(step.isHidden())
+        .isTrue();
+      assertThat(step.getBody().get())
+        .isEqualTo("value");
+    }
+
+    @Test
+    void capturedMethodSupplierStepWithCustomResult() throws Throwable {
+      final SupplierStep<Integer> step = captured(() -> {
+        new MethodSteps().quickInstanceMethodStep("value");
+        return 100;
+      });
+
+      assertThat(step.getName())
+        .isEqualTo("quickInstanceMethodStep");
+      assertThat(step.isHidden())
+        .isTrue();
+      assertThat(step.getBody().get())
+        .isEqualTo(100);
+      assertThat(StaticStepListener.startedSteps)
+        .isEmpty();
+    }
+
+    @Test
+    void capturedMethodSupplierStepExecutesBodyOnStepExecution() {
+      final SupplierStep<String> step = captured(new MethodSteps()::quickInstanceMethodStep, "value");
+
+      final String result = StepExecutor.get().execute(step);
+
+      assertThat(result)
+        .isEqualTo("value");
+      assertThat(StaticStepListener.startedSteps)
+        .hasSize(1);
+      assertThat(StaticStepListener.succeededSteps)
+        .hasSize(1);
+    }
   }
 
-  @Test
-  void capturedMethodSupplierStepWithCustomResult() throws Throwable {
-    final SupplierStep<Integer> step = captured(() -> {
-      new MethodSteps().quickInstanceMethodStep("value");
-      return 100;
-    });
+  /**
+   * Tests for constructor steps capturing.
+   */
+  @Nested
+  class CapturedConstructorStepTests {
 
-    assertThat(step.getName())
-      .isEqualTo("quickInstanceMethodStep");
-    assertThat(step.getParams())
-      .containsExactly(
-        entry("param", "value")
-      );
-    assertThat(step.isHidden())
-      .isTrue();
-    assertThat(step.getBody().get())
-      .isEqualTo(100);
-    assertThat(StaticStepListener.lastStep)
-      .isNull();
+    @Test
+    void capturedConstructorSupplierStep() throws Throwable {
+      final SupplierStep<QuickConstructorStep> step = captured(QuickConstructorStep::new, "value1", "value2");
+
+      assertThat(QuickConstructorStep.ctorBodyCount)
+        .hasValue(0);
+      assertThat(StaticStepListener.startedSteps)
+        .isEmpty();
+      assertThat(step.getName())
+        .isEqualTo("name value");
+      assertThat(step.getParams())
+        .containsExactly(
+          entry("param1", "******"),
+          entry("param name", "param value")
+        );
+      assertThat(step.getBody().get())
+        .isInstanceOf(QuickConstructorStep.class);
+      assertThat(QuickConstructorStep.ctorBodyCount)
+        .hasValue(1);
+    }
+
+    @Test
+    void capturedConstructorSupplierStepWithCustomResult() throws Throwable {
+      final SupplierStep<Integer> step = captured(() -> {
+        new QuickConstructorStep("value1", "value2");
+        return 100;
+      });
+
+      assertThat(step.getName())
+        .isEqualTo("name value");
+      assertThat(step.getParams())
+        .containsExactly(
+          entry("param1", "******"),
+          entry("param name", "param value")
+        );
+      assertThat(step.getBody().get())
+        .isEqualTo(100);
+      assertThat(StaticStepListener.startedSteps)
+        .isEmpty();
+    }
+
+    @Test
+    void capturedConstructorSupplierStepReturnsNewInstances() throws Throwable {
+      final SupplierStep<QuickConstructorStep> step = captured(QuickConstructorStep::new, "value1", "value2");
+      final ThrowingSupplier<QuickConstructorStep, ?> body = step.getBody();
+
+      final QuickConstructorStep firstResult = body.get();
+
+      assertThat(body.get())
+        .isInstanceOf(QuickConstructorStep.class)
+        .isNotSameAs(firstResult);
+      assertThat(body.get())
+        .isInstanceOf(QuickConstructorStep.class)
+        .isNotSameAs(firstResult);
+      assertThat(QuickConstructorStep.ctorBodyCount)
+        .hasValue(3);
+      assertThat(StaticStepListener.startedSteps)
+        .isEmpty();
+    }
   }
 
-  @Test
-  void capturedConstructorSupplierStep() throws Throwable {
-    final SupplierStep<QuickConstructorStep> step = captured(QuickConstructorStep::new, "value1", "value2");
+  /**
+   * Tests for {@code StepCaptor.captured} methods error cases.
+   */
+  @Nested
+  class CapturedStepErrorTests {
 
-    assertThat(step.getName())
-      .isEqualTo("name value");
-    assertThat(step.getParams())
-      .containsExactly(
-        entry("param1", "******"),
-        entry("param name", "param value")
-      );
-    assertThat(step.getBody().get())
-      .isInstanceOf(QuickConstructorStep.class);
-    assertThat(StaticStepListener.lastStep)
-      .isNull();
-  }
+    @Test
+    void nullReference() {
+      assertThatNullPointerException()
+        .isThrownBy(() -> captured((ThrowingRunnable<?>) null));
+    }
 
-  @Test
-  void capturedConstructorSupplierStepWithCustomResult() throws Throwable {
-    final SupplierStep<Integer> step = captured(() -> {
-      new QuickConstructorStep("value1", "value2");
-      return 100;
-    });
+    @Test
+    void noStepCaptured() {
+      assertThatCode(() -> captured(() -> { }))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("does not contain any steps");
+    }
 
-    assertThat(step.getName())
-      .isEqualTo("name value");
-    assertThat(step.getParams())
-      .containsExactly(
-        entry("param1", "******"),
-        entry("param name", "param value")
-      );
-    assertThat(step.getBody().get())
-      .isEqualTo(100);
-    assertThat(StaticStepListener.lastStep)
-      .isNull();
-  }
-
-  @Test
-  void capturedConstructorSupplierStepReturnsNewInstances() throws Throwable {
-    final SupplierStep<QuickConstructorStep> step = captured(QuickConstructorStep::new, "value1", "value2");
-    final ThrowingSupplier<QuickConstructorStep, ?> body = step.getBody();
-    final QuickConstructorStep firstResult = body.get();
-
-    assertThat(body.get())
-      .isInstanceOf(QuickConstructorStep.class)
-      .isNotSameAs(firstResult);
-    assertThat(body.get())
-      .isInstanceOf(QuickConstructorStep.class)
-      .isNotSameAs(firstResult);
-    assertThat(StaticStepListener.lastStep)
-      .isNull();
-  }
-
-  @Test
-  void noStepCaptured() {
-    assertThatCode(() -> captured(() -> { }))
-      .isInstanceOf(IllegalArgumentException.class);
-  }
-
-  @Test
-  void moreThanOneStepCaptured() {
-    assertThatCode(() -> captured(() -> {
-      new QuickConstructorStep("value1", "value2");
-      MethodSteps.quickStaticMethodStep();
-    })).isInstanceOf(IllegalArgumentException.class);
+    @Test
+    void moreThanOneStepCaptured() {
+      assertThatCode(() -> captured(() -> {
+        new QuickConstructorStep("value1", "value2");
+        MethodSteps.quickStaticMethodStep();
+      })).isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Only one step can be captured");
+    }
   }
 }

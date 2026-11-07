@@ -28,12 +28,19 @@ import org.stebz.annotation.WithName;
 import org.stebz.annotation.WithParam;
 import org.stebz.annotation.WithParams;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
+/**
+ * Quick step constructor fixture.
+ */
 final class QuickConstructorStep {
+  static final AtomicInteger ctorBodyCount = new AtomicInteger();
 
   @WithName("name value")
   @WithParam(name = "param name", val = "param value")
   @WithParams
   QuickConstructorStep(@Param(masked = true) final String param1,
                        @Param(hidden = true) final String param2) {
+    ctorBodyCount.incrementAndGet();
   }
 }

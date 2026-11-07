@@ -58,6 +58,18 @@ import static org.stebz.annotation.aspect.StepAspects.enableIgnoreMode;
 
 /**
  * Step captor. Contains methods for step capturing.
+ * <p>Capture semantics:
+ * <ul>
+ *   <li>the body of the captured step is not executed during capturing, it is executed on each execution of the
+ *   returned step</li>
+ *   <li>a method with a result returns {@code null} during capturing, so the reference must not use this result</li>
+ *   <li>only one step can be captured within a single reference, otherwise {@link IllegalArgumentException} is
+ *   thrown</li>
+ *   <li>capturing is bound to the calling thread, the reference must not execute the step in another thread</li>
+ *   <li>a captured constructor step creates a new instance via reflection on each execution of the returned step
+ *   except the first one, so the constructor must be accessible ({@code InaccessibleObjectException} may be thrown
+ *   e.g. under JPMS)</li>
+ * </ul>
  */
 public final class StepCaptor {
 

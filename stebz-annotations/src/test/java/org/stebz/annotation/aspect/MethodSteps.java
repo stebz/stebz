@@ -26,7 +26,9 @@ package org.stebz.annotation.aspect;
 import org.stebz.annotation.Param;
 import org.stebz.annotation.Step;
 import org.stebz.annotation.WithComment;
+import org.stebz.annotation.WithExpectedResult;
 import org.stebz.annotation.WithHidden;
+import org.stebz.annotation.WithKeyword;
 import org.stebz.annotation.WithName;
 import org.stebz.annotation.WithParam;
 import org.stebz.annotation.WithParams;
@@ -35,9 +37,16 @@ import org.stebz.core.step.executable.FunctionStep;
 import org.stebz.core.step.executable.RunnableStep;
 import org.stebz.core.step.executable.SupplierStep;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static org.stebz.core.attribute.StepAttribute.params;
 
+/**
+ * Step methods fixtures.
+ */
 final class MethodSteps {
+  static final AtomicInteger quickStaticMethodBodyCount = new AtomicInteger();
+  static final AtomicInteger paramOnlyMethodBodyCount = new AtomicInteger();
 
   MethodSteps() {
   }
@@ -55,14 +64,8 @@ final class MethodSteps {
     return ConsumerStep.of("old name", params("param1", "value1"), ConsumerStep.emptyBody());
   }
 
-  @Step
-  @WithParam(name = "param name", val = "param value")
-  public static void quickStaticMethodStep() {
-  }
-
-  @Step("name value")
-  @WithComment("comment value")
-  public SupplierStep<String> instanceMethodSupplierStep() {
+  @WithExpectedResult("expected value")
+  public static SupplierStep<String> staticMethodSupplierStep() {
     return SupplierStep.of(() -> "result value");
   }
 
@@ -72,9 +75,73 @@ final class MethodSteps {
     return FunctionStep.of(v -> v);
   }
 
+  public static RunnableStep paramOnlyMethodStep(@Param(name = "renamed param") final String param) {
+    return RunnableStep.empty();
+  }
+
+  @Step
+  @WithParam(name = "param name", val = "param value")
+  public static void quickStaticMethodStep() {
+    quickStaticMethodBodyCount.incrementAndGet();
+  }
+
   @Step
   @WithHidden
   public String quickInstanceMethodStep(final String param) {
     return param;
+  }
+
+  @Step("name value")
+  @WithKeyword("keyword value")
+  public static void quickMethodWithKeyword() {
+  }
+
+  @Step("name value")
+  @WithKeyword("")
+  public static void quickMethodWithEmptyKeyword() {
+  }
+
+  @Step
+  @WithParams
+  public static void quickMethodWithParams(final String param1,
+                                           final String param2) {
+  }
+
+  @Step
+  @WithParams
+  public static void quickMethodWithParamModifiers(
+    @Param(value = "masked param", masked = true) final String param1,
+    @Param(name = "val param", val = "constant value") final String param2,
+    @Param(hidden = true) final String param3
+  ) {
+  }
+
+  @Step
+  @WithParam(name = "first param", val = "first value")
+  @WithParam(name = "second param", val = "second value")
+  public static void quickMethodWithRepeatedParam() {
+  }
+
+  @Step
+  @CustomAttr("attr value")
+  @KeyedCustomAttr("keyed attr value")
+  public static void quickMethodWithCustomAttributes() {
+  }
+
+  @Step
+  @WithComment("comment value")
+  @WithExpectedResult("expected value")
+  public static String quickMethodWithExpectedResult() {
+    return "result value";
+  }
+
+  public static String paramOnlyMethod(@Param(name = "renamed param") final String param) {
+    paramOnlyMethodBodyCount.incrementAndGet();
+    return param;
+  }
+
+  @Step("name value")
+  public static void quickThrowingMethodStep() {
+    throw new IllegalStateException("step exception");
   }
 }

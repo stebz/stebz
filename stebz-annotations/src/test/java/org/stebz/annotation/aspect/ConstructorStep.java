@@ -28,6 +28,9 @@ import org.stebz.annotation.WithKeyword;
 import org.stebz.annotation.WithName;
 import org.stebz.core.step.executable.RunnableStep;
 
+/**
+ * Step constructor fixture.
+ */
 final class ConstructorStep extends RunnableStep.Of {
 
   @WithName

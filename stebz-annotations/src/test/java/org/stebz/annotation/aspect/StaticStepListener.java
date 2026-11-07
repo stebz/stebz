@@ -27,31 +27,58 @@ import org.stebz.core.listener.StepListener;
 import org.stebz.core.step.StepObj;
 import org.stebz.util.container.NullableOptional;
 
-public final class StaticStepListener implements StepListener {
-  static StepObj<?> lastStep = null;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * Test step listener. Collects steps started, succeeded, and failed via the main {@code StepExecutor}.
+ */
+public final class StaticStepListener implements StepListener {
+  /**
+   * Steps started by the main {@code StepExecutor}.
+   */
+  public static final List<StepObj<?>> startedSteps = new CopyOnWriteArrayList<>();
+  /**
+   * Steps succeeded by the main {@code StepExecutor}.
+   */
+  public static final List<StepObj<?>> succeededSteps = new CopyOnWriteArrayList<>();
+  /**
+   * Steps failed by the main {@code StepExecutor}.
+   */
+  public static final List<StepObj<?>> failedSteps = new CopyOnWriteArrayList<>();
+
+  /**
+   * Ctor.
+   */
   public StaticStepListener() {
   }
 
+  /**
+   * Clears collected steps.
+   */
   public static void clear() {
-    lastStep = null;
+    startedSteps.clear();
+    succeededSteps.clear();
+    failedSteps.clear();
   }
 
   @Override
   public void onStepStart(final StepObj<?> step,
                           final NullableOptional<Object> context) {
-    lastStep = step;
+    startedSteps.add(step);
   }
 
   @Override
   public void onStepSuccess(final StepObj<?> step,
                             final NullableOptional<Object> context,
                             final NullableOptional<Object> result) {
+    succeededSteps.add(step);
   }
 
   @Override
   public void onStepFailure(final StepObj<?> step,
                             final NullableOptional<Object> context,
                             final Throwable exception) {
+    failedSteps.add(step);
   }
 }

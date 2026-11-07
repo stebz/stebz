@@ -28,8 +28,13 @@ import org.stebz.annotation.WithComment;
 import org.stebz.annotation.WithName;
 import org.stebz.annotation.WithParam;
 import org.stebz.core.step.executable.RunnableStep;
+import org.stebz.core.step.executable.SupplierStep;
 
+/**
+ * Step fields fixtures.
+ */
 final class FieldSteps {
+
   @WithName("name value")
   @WithComment("comment value")
   static RunnableStep staticFieldRunnableStep = RunnableStep.empty();
@@ -37,6 +42,9 @@ final class FieldSteps {
   @Step
   @WithParam(name = "param name", val = "param value")
   RunnableStep instanceFieldRunnableStep = RunnableStep.empty();
+
+  @CustomAttr("attr value")
+  static SupplierStep<String> customAttrFieldStep = SupplierStep.of(() -> "result value");
 
   FieldSteps() {
   }
