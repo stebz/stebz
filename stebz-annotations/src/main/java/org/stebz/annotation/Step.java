@@ -42,12 +42,8 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@StepAttributeAnnotation(Step.KEY)
+@StepAttributeMarker
 public @interface Step {
-  /**
-   * {@link Step} step attribute annotation key.
-   */
-  String KEY = "annotation:step";
 
   /**
    * Returns name attribute value. Empty value means reflective name.

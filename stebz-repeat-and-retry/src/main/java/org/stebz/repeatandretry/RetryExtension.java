@@ -63,7 +63,7 @@ public class RetryExtension implements InterceptStep {
    * @see WithRetry
    */
   public static final SimpleStepAttribute<RetryOptions> retry = RETRY;
-  private static final SimpleStepAttribute<WithRetry> RETRY_ANNOT = SimpleStepAttribute.nullable(WithRetry.KEY);
+  private static final SimpleStepAttribute<WithRetry> RETRY_ANNOT = SimpleStepAttribute.nullable(WithRetry.class);
   private final boolean enabled;
   private final int order;
 

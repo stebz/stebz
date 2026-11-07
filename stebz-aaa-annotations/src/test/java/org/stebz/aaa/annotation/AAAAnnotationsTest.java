@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.stebz.gherkin.annotation;
+package org.stebz.aaa.annotation;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,12 +32,12 @@ import org.stebz.core.step.executable.RunnableStep;
 import java.lang.annotation.Annotation;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.stebz.gherkin.annotation.GherkinAnnotationsExtension.GHERKIN_KEYWORD;
+import static org.stebz.aaa.annotation.AAAAnnotations.AAA_KEYWORD;
 
 /**
- * Tests for {@link GherkinAnnotationsExtension}.
+ * Tests for {@link AAAAnnotations}.
  */
-final class GherkinAnnotationsExtensionTest {
+final class AAAAnnotationsTest {
 
   @BeforeEach
   void clearListener() {
@@ -45,13 +45,13 @@ final class GherkinAnnotationsExtensionTest {
   }
 
   @Test
-  void gherkinKeywordAnnotationWithoutName() {
-    final RunnableStep step = MethodSteps.gherkinKeywordAnnotationWithoutName();
+  void aaaKeywordAnnotationWithoutName() {
+    final RunnableStep step = MethodSteps.aaaKeywordAnnotationWithoutName();
 
-    final Annotation annotation = step.get(GHERKIN_KEYWORD);
+    final Annotation annotation = step.get(AAA_KEYWORD);
     assertThat(annotation)
-      .isInstanceOf(Given.class);
-    assertThat(((Given) annotation).value())
+      .isInstanceOf(Arrange.class);
+    assertThat(((Arrange) annotation).value())
       .isEmpty();
 
     StepExecutor.get().execute(step);
@@ -59,19 +59,19 @@ final class GherkinAnnotationsExtensionTest {
     assertThat(stepFromListener)
       .isNotNull();
     assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("Given");
+      .isEqualTo("Arrange:");
     assertThat(stepFromListener.getName())
-      .isEqualTo("gherkinKeywordAnnotationWithoutName");
+      .isEqualTo("aaaKeywordAnnotationWithoutName");
   }
 
   @Test
-  void gherkinKeywordAnnotationWithoutNameAndWithNameAnnotation() {
-    final RunnableStep step = MethodSteps.gherkinKeywordAnnotationWithoutNameAndWithNameAnnotation();
+  void aaaKeywordAnnotationWithoutNameAndWithNameAnnotation() {
+    final RunnableStep step = MethodSteps.aaaKeywordAnnotationWithoutNameAndWithNameAnnotation();
 
-    final Annotation annotation = step.get(GHERKIN_KEYWORD);
+    final Annotation annotation = step.get(AAA_KEYWORD);
     assertThat(annotation)
-      .isInstanceOf(But.class);
-    assertThat(((But) annotation).value())
+      .isInstanceOf(Act.class);
+    assertThat(((Act) annotation).value())
       .isEmpty();
 
     StepExecutor.get().execute(step);
@@ -79,19 +79,19 @@ final class GherkinAnnotationsExtensionTest {
     assertThat(stepFromListener)
       .isNotNull();
     assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("But");
+      .isEqualTo("Act:");
     assertThat(stepFromListener.getName())
       .isEqualTo("step name");
   }
 
   @Test
-  void gherkinKeywordAnnotationWithName() {
-    final RunnableStep step = MethodSteps.gherkinKeywordAnnotationWithName();
+  void aaaKeywordAnnotationWithName() {
+    final RunnableStep step = MethodSteps.aaaKeywordAnnotationWithName();
 
-    final Annotation annotation = step.get(GHERKIN_KEYWORD);
+    final Annotation annotation = step.get(AAA_KEYWORD);
     assertThat(annotation)
-      .isInstanceOf(When.class);
-    assertThat(((When) annotation).value())
+      .isInstanceOf(Assert.class);
+    assertThat(((Assert) annotation).value())
       .isEqualTo("custom name");
 
     StepExecutor.get().execute(step);
@@ -99,19 +99,19 @@ final class GherkinAnnotationsExtensionTest {
     assertThat(stepFromListener)
       .isNotNull();
     assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("When");
+      .isEqualTo("Assert:");
     assertThat(stepFromListener.getName())
       .isEqualTo("custom name");
   }
 
   @Test
-  void gherkinKeywordAnnotationWithNameAndStepAnnotation() {
-    final RunnableStep step = MethodSteps.gherkinKeywordAnnotationWithNameAndStepAnnotation();
+  void aaaKeywordAnnotationWithNameAndStepAnnotation() {
+    final RunnableStep step = MethodSteps.aaaKeywordAnnotationWithNameAndStepAnnotation();
 
-    final Annotation annotation = step.get(GHERKIN_KEYWORD);
+    final Annotation annotation = step.get(AAA_KEYWORD);
     assertThat(annotation)
-      .isInstanceOf(Then.class);
-    assertThat(((Then) annotation).value())
+      .isInstanceOf(SetUp.class);
+    assertThat(((SetUp) annotation).value())
       .isEqualTo("custom name");
 
     StepExecutor.get().execute(step);
@@ -119,19 +119,19 @@ final class GherkinAnnotationsExtensionTest {
     assertThat(stepFromListener)
       .isNotNull();
     assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("Then");
+      .isEqualTo("Set Up:");
     assertThat(stepFromListener.getName())
       .isEqualTo("custom name");
   }
 
   @Test
-  void gherkinKeywordAnnotationWithNameAndWithNameAnnotation() {
-    final RunnableStep step = MethodSteps.gherkinKeywordAnnotationWithNameAndWithNameAnnotation();
+  void aaaKeywordAnnotationWithNameAndWithNameAnnotation() {
+    final RunnableStep step = MethodSteps.aaaKeywordAnnotationWithNameAndWithNameAnnotation();
 
-    final Annotation annotation = step.get(GHERKIN_KEYWORD);
+    final Annotation annotation = step.get(AAA_KEYWORD);
     assertThat(annotation)
-      .isInstanceOf(And.class);
-    assertThat(((And) annotation).value())
+      .isInstanceOf(TearDown.class);
+    assertThat(((TearDown) annotation).value())
       .isEqualTo("custom name");
 
     StepExecutor.get().execute(step);
@@ -139,7 +139,7 @@ final class GherkinAnnotationsExtensionTest {
     assertThat(stepFromListener)
       .isNotNull();
     assertThat(stepFromListener.getKeyword().value())
-      .isEqualTo("And");
+      .isEqualTo("Tear Down:");
     assertThat(stepFromListener.getName())
       .isEqualTo("custom name");
   }

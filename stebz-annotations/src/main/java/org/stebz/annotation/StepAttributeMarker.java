@@ -24,7 +24,7 @@
 package org.stebz.annotation;
 
 import org.stebz.annotation.aspect.StepAspects;
-import org.stebz.core.attribute.StepAttribute;
+import org.stebz.core.attribute.SimpleStepAttribute;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -33,9 +33,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Step attribute annotation. Annotations marked with {@link StepAttributeAnnotation} annotation except default
- * annotations are converted into step attributes via {@link StepAspects} in accordance with
- * {@link StepAttribute#nullable(String)} method.
+ * Step attribute marker. Annotations marked with {@link StepAttributeMarker} annotation except default annotations are
+ * converted into step attributes via {@link StepAspects} in accordance with {@link SimpleStepAttribute#nullable(Class)}
+ * method.
  * <p>Default annotations list:
  * <ul>
  *   <li>{@link Step}</li>
@@ -52,12 +52,21 @@ import java.lang.annotation.Target;
 @Documented
 @Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface StepAttributeAnnotation {
+public @interface StepAttributeMarker {
 
   /**
    * Returns attribute key.
    *
    * @return attribute key
    */
-  String value();
+  Class<?> value() default MarkedAnnotation.class;
+
+  /**
+   * Marked annotation pointer.
+   */
+  final class MarkedAnnotation {
+
+    private MarkedAnnotation() {
+    }
+  }
 }

@@ -63,7 +63,7 @@ public class RepeatExtension implements InterceptStep {
    * @see WithRepeat
    */
   public static final SimpleStepAttribute<RepeatOptions> repeat = REPEAT;
-  private static final SimpleStepAttribute<WithRepeat> REPEAT_ANNOT = SimpleStepAttribute.nullable(WithRepeat.KEY);
+  private static final SimpleStepAttribute<WithRepeat> REPEAT_ANNOT = SimpleStepAttribute.nullable(WithRepeat.class);
   private final boolean enabled;
   private final int order;
 
