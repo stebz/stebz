@@ -24,4 +24,4 @@
 /**
  * Readable reflective name extension.
  */
-package org.stebz.reabablereflectivename;
+package org.stebz.readablereflectivename;

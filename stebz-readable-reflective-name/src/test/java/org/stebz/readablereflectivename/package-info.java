@@ -21,37 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.stebz.reabablereflectivename;
-
-import org.stebz.core.listener.StepListener;
-import org.stebz.core.step.StepObj;
-import org.stebz.util.container.NullableOptional;
-
-public final class StaticStepListener implements StepListener {
-  static StepObj<?> lastStep = null;
-
-  public StaticStepListener() {
-  }
-
-  public static void clear() {
-    lastStep = null;
-  }
-
-  @Override
-  public void onStepStart(final StepObj<?> step,
-                          final NullableOptional<Object> context) {
-    lastStep = step;
-  }
-
-  @Override
-  public void onStepSuccess(final StepObj<?> step,
-                            final NullableOptional<Object> context,
-                            final NullableOptional<Object> result) {
-  }
-
-  @Override
-  public void onStepFailure(final StepObj<?> step,
-                            final NullableOptional<Object> context,
-                            final Throwable exception) {
-  }
-}
+/**
+ * Tests for {@link org.stebz.readablereflectivename} package.
+ */
+package org.stebz.readablereflectivename;
