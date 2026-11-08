@@ -41,11 +41,29 @@ import org.stebz.util.property.PropertiesReader;
 import java.time.Instant;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * ReportPortal {@code StepListener} implementation.
+ * ReportPortal {@code StepListener} implementation: reports steps to ReportPortal as nested steps with names,
+ * descriptions, and statuses.
+ * <p>The {@code stebz.reportportal.enabled} property enables or disables this listener (default: {@code true}). The
+ * {@code stebz.reportportal.order} property sets its execution order (default: {@code MIDDLE_ORDER}). The
+ * {@code stebz.reportportal.onlyKeywordSteps} property limits reporting to steps with a keyword (default:
+ * {@code false}). The {@code stebz.reportportal.keywordPosition} property sets the keyword position, {@code AT_START}
+ * or {@code AT_END} (default: {@code AT_START}). The {@code stebz.reportportal.keywordToUppercase} property uppercases
+ * the keyword (default: {@code false}). The {@code stebz.reportportal.processName} property enables name template
+ * processing with step parameters (default: {@code true}). The {@code stebz.reportportal.contextParam} property enables
+ * adding of the step context as a parameter (default: {@code false}). The {@code stebz.reportportal.contextParamName}
+ * property sets the context parameter name (default: {@code Context}). The {@code stebz.reportportal.contextDesc}
+ * property enables adding of the step context to the description (default: {@code false}). The
+ * {@code stebz.reportportal.contextDescName} property sets the context description name (default: {@code Context}). The
+ * {@code stebz.reportportal.expectedResultDesc} property enables adding of the step expected result to the description
+ * (default: {@code true}). The {@code stebz.reportportal.expectedResultDescName} property sets the expected result
+ * description name (default: {@code Expected result}). The {@code stebz.reportportal.commentDesc} property enables
+ * adding of the step comment to the description (default: {@code true}). The {@code stebz.reportportal.commentDescName}
+ * property sets the comment description name (default: {@code Comment}).
  */
 public class ReportPortalStepListener implements StepListener {
   private static final TemplateConfiguration TEMPLATE_CONFIG = new TemplateConfiguration();
@@ -124,7 +142,7 @@ public class ReportPortalStepListener implements StepListener {
     final StartTestItemRQ startTestItemRQ = StepRequestUtils.buildStartStepRequest(
       this.keywordPosition.concat(
         this.keywordValue(keyword),
-        this.processStepName(step, step.getName(), step.getParams())
+        this.processStepName(step, step.getName(), params)
       ),
       this.processStepDescription(context, step.getExpectedResult(), step.getComment()),
       launch.useMicroseconds() ? Instant.now() : Calendar.getInstance().getTime()
@@ -171,7 +189,7 @@ public class ReportPortalStepListener implements StepListener {
 
   private static boolean isStebzAnnotationsUsed() {
     try {
-      Class.forName("org.stebz.annotation.aspect.StepAspects");
+      Class.forName("org.stebz.annotation.aspect.StepAspects", false, ReportPortalStepListener.class.getClassLoader());
       return true;
     } catch (final ClassNotFoundException ex) {
       return false;
@@ -238,7 +256,7 @@ public class ReportPortalStepListener implements StepListener {
 
   private String keywordValue(final Keyword keyword) {
     return this.keywordToUppercase
-      ? keyword.value().toUpperCase()
+      ? keyword.value().toUpperCase(Locale.ROOT)
       : keyword.value();
   }
 

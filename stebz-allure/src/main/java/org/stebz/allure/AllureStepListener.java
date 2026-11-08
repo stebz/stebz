@@ -44,12 +44,27 @@ import org.stebz.util.property.PropertiesReader;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Allure {@code StepListener} implementation.
+ * Allure {@code StepListener} implementation: reports steps to Allure as nested steps with names, parameters, and
+ * statuses.
+ * <p>The {@code stebz.allure.enabled} property enables or disables this listener (default: {@code true}). The
+ * {@code stebz.allure.order} property sets its execution order (default: {@code MIDDLE_ORDER}). The
+ * {@code stebz.allure.onlyKeywordSteps} property limits reporting to steps with a keyword (default: {@code false}). The
+ * {@code stebz.allure.keywordPosition} property sets the keyword position, {@code AT_START} or {@code AT_END} (default:
+ * {@code AT_START}). The {@code stebz.allure.keywordToUppercase} property uppercases the keyword (default:
+ * {@code false}). The {@code stebz.allure.processName} property enables name template processing with step parameters
+ * (default: {@code true}). The {@code stebz.allure.contextParam} property enables adding of the step context as a
+ * parameter (default: {@code false}). The {@code stebz.allure.contextParamName} property sets the context parameter
+ * name (default: {@code Context}). The {@code stebz.allure.expectedResultParam} property enables adding of the step
+ * expected result as a parameter (default: {@code true}). The {@code stebz.allure.expectedResultParamName} property
+ * sets the expected result parameter name (default: {@code Expected result}). The {@code stebz.allure.commentParam}
+ * property enables adding of the step comment as a parameter (default: {@code true}). The
+ * {@code stebz.allure.commentParamName} property sets the comment parameter name (default: {@code Comment}).
  */
 public class AllureStepListener implements StepListener {
   private final boolean enabled;
@@ -97,7 +112,7 @@ public class AllureStepListener implements StepListener {
   }
 
   /**
-   * Adds parameter to current step if any. Takes no effect if no step run at the moment.
+   * Adds parameter to current step if any. Takes no effect if no step is running at the moment.
    *
    * @param name  the step parameter name
    * @param value the step parameter value
@@ -110,7 +125,7 @@ public class AllureStepListener implements StepListener {
   }
 
   /**
-   * Adds parameter to current step if any. Takes no effect if no step run at the moment.
+   * Adds parameter to current step if any. Takes no effect if no step is running at the moment.
    *
    * @param name     the step parameter name
    * @param value    the step parameter value
@@ -125,7 +140,7 @@ public class AllureStepListener implements StepListener {
   }
 
   /**
-   * Adds parameter to current step if any. Takes no effect if no step run at the moment.
+   * Adds parameter to current step if any. Takes no effect if no step is running at the moment.
    *
    * @param name  the step parameter name
    * @param value the step parameter value
@@ -140,7 +155,7 @@ public class AllureStepListener implements StepListener {
   }
 
   /**
-   * Adds parameter to current step if any. Takes no effect if no step run at the moment.
+   * Adds parameter to current step if any. Takes no effect if no step is running at the moment.
    *
    * @param name     the step parameter name
    * @param value    the step parameter value
@@ -153,6 +168,7 @@ public class AllureStepListener implements StepListener {
                                     final T value,
                                     final Boolean excluded,
                                     final Parameter.Mode mode) {
+    if (name == null) { throw new NullPointerException("name arg is null"); }
     Allure.getLifecycle().updateStep(stepResult ->
       stepResult.getParameters().add(ResultsUtils.createParameter(name, value, excluded, mode))
     );
@@ -160,7 +176,7 @@ public class AllureStepListener implements StepListener {
   }
 
   /**
-   * Adds parameter to current step if any. Takes no effect if no step run at the moment.
+   * Adds parameter to current step if any. Takes no effect if no step is running at the moment.
    *
    * @param update the step parameter update function
    * @throws NullPointerException if {@code update} arg is null
@@ -175,18 +191,20 @@ public class AllureStepListener implements StepListener {
   }
 
   /**
-   * Sets current step name if any. Takes no effect if no step run at the moment.
+   * Sets current step name if any. Takes no effect if no step is running at the moment.
    *
    * @param name the step name
+   * @throws NullPointerException if {@code name} arg is null
    */
   public static void stepName(final String name) {
+    if (name == null) { throw new NullPointerException("name arg is null"); }
     Allure.getLifecycle().updateStep(stepResult ->
       stepResult.setName(name)
     );
   }
 
   /**
-   * Sets current step name if any. Takes no effect if no step run at the moment.
+   * Sets current step name if any. Takes no effect if no step is running at the moment.
    *
    * @param update the step name update function
    * @throws NullPointerException if {@code update} arg is null
@@ -199,18 +217,20 @@ public class AllureStepListener implements StepListener {
   }
 
   /**
-   * Sets current step status if any. Takes no effect if no step run at the moment.
+   * Sets current step status if any. Takes no effect if no step is running at the moment.
    *
    * @param status the step status
+   * @throws NullPointerException if {@code status} arg is null
    */
   public static void stepStatus(final Status status) {
+    if (status == null) { throw new NullPointerException("status arg is null"); }
     Allure.getLifecycle().updateStep(stepResult ->
       stepResult.setStatus(status)
     );
   }
 
   /**
-   * Sets current step status if any. Takes no effect if no step run at the moment.
+   * Sets current step status if any. Takes no effect if no step is running at the moment.
    *
    * @param exception the step exception
    * @throws NullPointerException if {@code exception} arg is null
@@ -224,7 +244,7 @@ public class AllureStepListener implements StepListener {
   }
 
   /**
-   * Updates current step if any. Takes no effect if no step run at the moment.
+   * Updates current step if any. Takes no effect if no step is running at the moment.
    *
    * @param update the step update function
    * @throws NullPointerException if {@code update} arg is null
@@ -320,7 +340,7 @@ public class AllureStepListener implements StepListener {
 
   private static boolean isStebzAnnotationsUsed() {
     try {
-      Class.forName("org.stebz.annotation.aspect.StepAspects");
+      Class.forName("org.stebz.annotation.aspect.StepAspects", false, AllureStepListener.class.getClassLoader());
       return true;
     } catch (final ClassNotFoundException ex) {
       return false;
@@ -363,7 +383,7 @@ public class AllureStepListener implements StepListener {
 
   private String keywordValue(final Keyword keyword) {
     return this.keywordToUppercase
-      ? keyword.value().toUpperCase()
+      ? keyword.value().toUpperCase(Locale.ROOT)
       : keyword.value();
   }
 

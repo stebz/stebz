@@ -32,12 +32,24 @@ import org.stebz.util.property.PropertiesReader;
 
 import java.io.PrintStream;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
- * System.out {@code StepListener} implementation.
+ * System.out {@code StepListener} implementation: prints steps to the given print stream with indentation by nesting
+ * depth.
+ * <p>The {@code stebz.systemOut.enabled} property enables or disables this listener (default: {@code true}). The
+ * {@code stebz.systemOut.order} property sets its execution order (default: {@code MIDDLE_ORDER}). The
+ * {@code stebz.systemOut.onlyKeywordSteps} property limits reporting to steps with a keyword (default: {@code false}).
+ * The {@code stebz.systemOut.keywordPosition} property sets the keyword position, {@code AT_START} or {@code AT_END}
+ * (default: {@code AT_START}). The {@code stebz.systemOut.keywordToUppercase} property uppercases the keyword (default:
+ * {@code false}). The {@code stebz.systemOut.indent} property sets the number of spaces per nesting level (default:
+ * {@code 2}). The {@code stebz.systemOut.params} property enables printing of step parameters (default: {@code true}).
+ * The {@code stebz.systemOut.expectedResult} property enables printing of the step expected result (default:
+ * {@code true}). The {@code stebz.systemOut.comment} property enables printing of the step comment (default:
+ * {@code true}).
  */
 public class SystemOutStepListener implements StepListener {
   private final ThreadLocal<AtomicInteger> depth;
@@ -73,9 +85,11 @@ public class SystemOutStepListener implements StepListener {
    *
    * @param printStream the print stream
    * @param properties  the properties reader
+   * @throws NullPointerException if {@code printStream} arg is null
    */
   public SystemOutStepListener(final PrintStream printStream,
                                final PropertiesReader properties) {
+    if (printStream == null) { throw new NullPointerException("printStream arg is null"); }
     this.depth = ThreadLocal.withInitial(AtomicInteger::new);
     this.printStream = printStream;
     this.enabled = properties.getBoolean("stebz.systemOut.enabled", true);
@@ -227,7 +241,7 @@ public class SystemOutStepListener implements StepListener {
 
   private String keywordValue(final Keyword keyword) {
     return this.keywordToUppercase
-      ? keyword.value().toUpperCase()
+      ? keyword.value().toUpperCase(Locale.ROOT)
       : keyword.value();
   }
 
