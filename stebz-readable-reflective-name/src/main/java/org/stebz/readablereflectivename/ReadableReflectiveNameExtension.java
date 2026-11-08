@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.stebz.reabablereflectivename;
+package org.stebz.readablereflectivename;
 
 import org.stebz.core.executor.StartupPropertiesReader;
 import org.stebz.core.extension.InterceptStep;
@@ -30,20 +30,16 @@ import org.stebz.core.step.StepObj;
 import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
 
-import java.lang.annotation.Annotation;
-
-import static org.stebz.annotation.attribute.ReflectiveStepAttributes.DECLARED_ANNOTATIONS;
 import static org.stebz.annotation.attribute.ReflectiveStepAttributes.REFLECTIVE_NAME;
 
 /**
  * Readable reflective name {@link StebzExtension}.
- *
- * @see NameWordSeparator
+ * <p>Replaces underscores with spaces in the step name if the step name is equal to the reflective name
+ * (i.e. the step name was not customized).
  */
 public class ReadableReflectiveNameExtension implements InterceptStep {
   private final boolean enabled;
   private final int order;
-  private final String defaultWordSeparator;
 
   /**
    * Ctor.
@@ -53,14 +49,13 @@ public class ReadableReflectiveNameExtension implements InterceptStep {
   }
 
   /**
-   * Ctor
+   * Ctor.
    *
    * @param properties the properties reader
    */
   public ReadableReflectiveNameExtension(final PropertiesReader properties) {
     this.enabled = properties.getBoolean("stebz.readableReflectiveName.enabled", true);
     this.order = properties.getInteger("stebz.readableReflectiveName.order", MIDDLE_ORDER);
-    this.defaultWordSeparator = properties.getString("stebz.readableReflectiveName.wordSeparator", "_");
   }
 
   @Override
@@ -75,30 +70,9 @@ public class ReadableReflectiveNameExtension implements InterceptStep {
       return step;
     }
     final String reflectiveName = step.get(REFLECTIVE_NAME);
-    if (!reflectiveName.equals(step.getName())) {
+    if (!reflectiveName.equals(step.getName()) || reflectiveName.indexOf('_') == -1) {
       return step;
     }
-    String wordSeparator = getWordSeparator(step);
-    return wordSeparator.length() == 1
-      ? step.withName(reflectiveName.replace(wordSeparator.charAt(0), ' '))
-      : step.withName(reflectiveName.replace(wordSeparator, " "));
-  }
-
-  private String getWordSeparator(final StepObj<?> step) {
-    final Annotation[] annotations = step.get(DECLARED_ANNOTATIONS);
-    NameWordSeparator nameWordSeparator = null;
-    for (final Annotation annotation : annotations) {
-      if (annotation instanceof NameWordSeparator) {
-        nameWordSeparator = (NameWordSeparator) annotation;
-        break;
-      }
-    }
-    if (nameWordSeparator == null) {
-      return this.defaultWordSeparator;
-    }
-    final String withNameWordSeparatorValue = nameWordSeparator.value().trim();
-    return withNameWordSeparatorValue.isEmpty()
-      ? this.defaultWordSeparator
-      : withNameWordSeparatorValue;
+    return step.withName(reflectiveName.replace('_', ' '));
   }
 }
