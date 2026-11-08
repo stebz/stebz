@@ -23,214 +23,306 @@
  */
 package org.stebz.repeatandretry;
 
+import dev.jlet.function.ThrowingConsumer;
+import dev.jlet.function.ThrowingFunction;
 import dev.jlet.function.ThrowingRunnable;
 import dev.jlet.function.ThrowingSupplier;
 import org.junit.jupiter.api.Test;
+import org.stebz.core.attribute.SimpleStepAttribute;
 import org.stebz.core.attribute.StepAttributes;
+import org.stebz.core.extension.StebzExtension;
 import org.stebz.core.step.StepObj;
+import org.stebz.core.step.executable.ConsumerStep;
+import org.stebz.core.step.executable.FunctionStep;
 import org.stebz.core.step.executable.RunnableStep;
 import org.stebz.core.step.executable.SupplierStep;
 import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
 
-import java.util.Properties;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.stebz.repeatandretry.RepeatExtension.repeatOptions;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Tests for {@link RepeatExtension}.
  */
 final class RepeatExtensionTest {
 
+  private static final SimpleStepAttribute<WithRepeat> WITH_REPEAT =
+    SimpleStepAttribute.nullable(WithRepeat.class);
+
+  private static RepeatExtension newExtension(final Map<String, String> properties) {
+    return new RepeatExtension(new PropertiesReader.Of(properties));
+  }
+
+  private static RepeatExtension newExtensionWithProperty(final String name,
+                                                          final String value) {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put(name, value);
+    return newExtension(properties);
+  }
+
+  private static StepObj<?> intercept(final RepeatExtension extension,
+                                      final StepObj<?> step) {
+    return extension.interceptStep(step, NullableOptional.empty());
+  }
+
+  private static ThrowingRunnable<?> bodyFailingFirstAttempts(final int timesToFail,
+                                                              final Throwable exception,
+                                                              final AtomicInteger counter) {
+    return () -> {
+      if (counter.incrementAndGet() <= timesToFail) {
+        throw exception;
+      }
+    };
+  }
+
+  private static WithRepeat withRepeatAnnotation(final String methodName) throws Exception {
+    return AnnotationHolder.class.getDeclaredMethod(methodName).getAnnotation(WithRepeat.class);
+  }
+
+  static class AnnotationHolder {
+    @WithRepeat(count = 3)
+    void threeTimes() {
+    }
+  }
+
   @Test
-  void repeatRunnableStepWithoutException() throws Throwable {
-    final ThrowingRunnable<?> originBody = mockRunnable();
+  void orderDefaultValue() {
+    assertThat(newExtension(new HashMap<>()).order())
+      .isEqualTo(StebzExtension.MIDDLE_ORDER);
+  }
+
+  @Test
+  void customOrderValue() {
+    assertThat(newExtensionWithProperty("stebz.repeat.order", "12345").order())
+      .isEqualTo(12345);
+  }
+
+  @Test
+  void disabledExtensionShouldReturnStepUnchanged() {
+    final RunnableStep step = RunnableStep.of(
+      StepAttributes.of(RepeatExtension.REPEAT, RepeatExtension.repeatOptions()),
+      RunnableStep.emptyBody()
+    );
+
+    final StepObj<?> resultStep =
+      intercept(newExtensionWithProperty("stebz.repeat.enabled", "false"), step);
+
+    assertThat(resultStep).isSameAs(step);
+  }
+
+  @Test
+  void stepWithoutRepeatOptionsShouldBeReturnedUnchanged() {
+    final RunnableStep step = RunnableStep.of(
+      RunnableStep.emptyBody()
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+
+    assertThat(resultStep).isSameAs(step);
+  }
+
+  @Test
+  void countLessThanTwoShouldBeIgnored() {
+    final RunnableStep step = RunnableStep.of(
+      StepAttributes.of(RepeatExtension.REPEAT, RepeatExtension.repeatOptions().count(1)),
+      RunnableStep.emptyBody()
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+
+    assertThat(resultStep).isSameAs(step);
+  }
+
+  @Test
+  void repeatRunnableStepShouldExecuteBodyGivenCountTimes() throws Throwable {
+    final AtomicInteger counter = new AtomicInteger();
+    final RunnableStep step = RunnableStep.of(
+      StepAttributes.of(RepeatExtension.REPEAT, RepeatExtension.repeatOptions().count(3)),
+      (ThrowingRunnable<?>) counter::incrementAndGet
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    assertThat(resultStep)
+      .isInstanceOf(RunnableStep.class)
+      .isNotSameAs(step);
+    ((RunnableStep) resultStep).getBody().run();
+
+    assertThat(counter.get()).isEqualTo(3);
+  }
+
+  @Test
+  void repeatRunnableStepShouldIgnoreSkippedExceptionsOnIntermediateAttempts() throws Throwable {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalStateException exception = new IllegalStateException();
     final RunnableStep step = RunnableStep.of(
       StepAttributes.of(
-        RepeatExtension.REPEAT, repeatOptions()
+        RepeatExtension.REPEAT,
+        RepeatExtension.repeatOptions().count(3).skip(IllegalStateException.class)
       ),
-      originBody
+      bodyFailingFirstAttempts(2, exception, counter)
     );
-    final RepeatExtension extension = new RepeatExtension(new PropertiesReader.Of(new Properties()));
 
-    final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
-    assertThat(resultStep)
-      .isInstanceOf(RunnableStep.class);
-    final ThrowingRunnable<?> body = ((RunnableStep) resultStep).getBody();
-    assertThat(body)
-      .isNotSameAs(originBody);
-    body.run();
-    verify(originBody, times(2)).run();
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    ((RunnableStep) resultStep).getBody().run();
+
+    assertThat(counter.get()).isEqualTo(3);
   }
 
   @Test
-  void repeatRunnableStepWithException() throws Throwable {
-    final Throwable originException = new Throwable();
-    final ThrowingRunnable<?> originBody = mockRunnableWithException(originException);
+  void repeatRunnableStepShouldStopOnButExceptions() {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalStateException exception = new IllegalStateException();
     final RunnableStep step = RunnableStep.of(
       StepAttributes.of(
-        RepeatExtension.REPEAT, repeatOptions().skip(Throwable.class)
+        RepeatExtension.REPEAT,
+        RepeatExtension.repeatOptions().count(3).but(IllegalStateException.class)
       ),
-      originBody
+      bodyFailingFirstAttempts(3, exception, counter)
     );
-    final RepeatExtension extension = new RepeatExtension(new PropertiesReader.Of(new Properties()));
 
-    final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
-    assertThat(resultStep)
-      .isInstanceOf(RunnableStep.class);
-    final ThrowingRunnable<?> body = ((RunnableStep) resultStep).getBody();
-    assertThat(body)
-      .isNotSameAs(originBody);
-    assertThatCode(() -> body.run())
-      .isSameAs(originException);
-    verify(originBody, times(2)).run();
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    assertThatThrownBy(() -> ((RunnableStep) resultStep).getBody().run())
+      .isSameAs(exception);
+
+    assertThat(counter.get()).isEqualTo(1);
   }
 
   @Test
-  void repeatRunnableStepWithFirstTimeException() throws Throwable {
-    final Throwable originException = new Throwable();
-    final ThrowingRunnable<?> originBody = mockRunnableWithFirstTimeException(originException);
+  void repeatRunnableStepShouldStopOnNonSkippedExceptions() {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalArgumentException exception = new IllegalArgumentException();
     final RunnableStep step = RunnableStep.of(
       StepAttributes.of(
-        RepeatExtension.REPEAT, repeatOptions().skip(Throwable.class)
+        RepeatExtension.REPEAT,
+        RepeatExtension.repeatOptions().count(3).skip(IllegalStateException.class)
       ),
-      originBody
+      bodyFailingFirstAttempts(3, exception, counter)
     );
-    final RepeatExtension extension = new RepeatExtension(new PropertiesReader.Of(new Properties()));
 
-    final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
-    assertThat(resultStep)
-      .isInstanceOf(RunnableStep.class);
-    final ThrowingRunnable<?> body = ((RunnableStep) resultStep).getBody();
-    assertThat(body)
-      .isNotSameAs(originBody);
-    body.run();
-    verify(originBody, times(2)).run();
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    assertThatThrownBy(() -> ((RunnableStep) resultStep).getBody().run())
+      .isSameAs(exception);
+
+    assertThat(counter.get()).isEqualTo(1);
   }
 
   @Test
-  void repeatSupplierStepWithoutException() throws Throwable {
-    final Object originResult = new Object();
-    final ThrowingSupplier<Object, ?> originBody = mockSupplier(originResult);
-    final SupplierStep<Object> step = SupplierStep.of(
+  void repeatRunnableStepShouldPropagateExceptionOfLastAttempt() {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalStateException exception = new IllegalStateException();
+    final RunnableStep step = RunnableStep.of(
       StepAttributes.of(
-        RepeatExtension.REPEAT, repeatOptions()
+        RepeatExtension.REPEAT,
+        RepeatExtension.repeatOptions().count(2).skip(IllegalStateException.class)
       ),
-      originBody
+      bodyFailingFirstAttempts(2, exception, counter)
     );
-    final RepeatExtension extension = new RepeatExtension(new PropertiesReader.Of(new Properties()));
 
-    final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
-    assertThat(resultStep)
-      .isInstanceOf(SupplierStep.class);
-    @SuppressWarnings("unchecked")
-    final ThrowingSupplier<Object, ?> body = ((SupplierStep<Object>) resultStep).getBody();
-    assertThat(body)
-      .isNotSameAs(originBody);
-    assertThat(body.get())
-      .isSameAs(originResult);
-    verify(originBody, times(2)).get();
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    assertThatThrownBy(() -> ((RunnableStep) resultStep).getBody().run())
+      .isSameAs(exception);
+
+    assertThat(counter.get()).isEqualTo(2);
   }
 
   @Test
-  void repeatSupplierStepWithException() throws Throwable {
-    final Throwable originException = new Throwable();
-    final ThrowingSupplier<Object, ?> originBody = mockSupplierWithException(originException);
+  void repeatSupplierStepShouldReturnResultOfLastAttempt() throws Throwable {
+    final AtomicInteger counter = new AtomicInteger();
     final SupplierStep<Object> step = SupplierStep.of(
-      StepAttributes.of(
-        RepeatExtension.REPEAT, repeatOptions().skip(Throwable.class)
-      ),
-      originBody
+      StepAttributes.of(RepeatExtension.REPEAT, RepeatExtension.repeatOptions().count(3)),
+      (ThrowingSupplier<Object, ?>) counter::incrementAndGet
     );
-    final RepeatExtension extension = new RepeatExtension(new PropertiesReader.Of(new Properties()));
 
-    final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
     assertThat(resultStep)
-      .isInstanceOf(SupplierStep.class);
+      .isInstanceOf(SupplierStep.class)
+      .isNotSameAs(step);
     @SuppressWarnings("unchecked")
-    final ThrowingSupplier<Object, ?> body = ((SupplierStep<Object>) resultStep).getBody();
-    assertThat(body)
-      .isNotSameAs(originBody);
-    assertThatCode(() -> body.get())
-      .isSameAs(originException);
-    verify(originBody, times(2)).get();
+    final Object result = ((SupplierStep<Object>) resultStep).getBody().get();
+
+    assertThat(result).isEqualTo(3);
   }
 
   @Test
-  void repeatSupplierStepWithFirstTimeException() throws Throwable {
-    final Throwable originException = new Throwable();
-    final Object originResult = new Object();
-    final ThrowingSupplier<Object, ?> originBody = mockSupplierWithFirstTimeException(originException, originResult);
-    final SupplierStep<Object> step = SupplierStep.of(
-      StepAttributes.of(
-        RepeatExtension.REPEAT, repeatOptions().skip(Throwable.class)
-      ),
-      originBody
+  void repeatConsumerStepShouldPassContextAndExecuteBodyGivenCountTimes() throws Throwable {
+    final List<Object> contexts = new ArrayList<>();
+    final ConsumerStep<Object> step = ConsumerStep.of(
+      StepAttributes.of(RepeatExtension.REPEAT, RepeatExtension.repeatOptions().count(3)),
+      (ThrowingConsumer<Object, ?>) contexts::add
     );
-    final RepeatExtension extension = new RepeatExtension(new PropertiesReader.Of(new Properties()));
 
-    final StepObj<?> resultStep = extension.interceptStep(step, NullableOptional.empty());
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
     assertThat(resultStep)
-      .isInstanceOf(SupplierStep.class);
+      .isInstanceOf(ConsumerStep.class)
+      .isNotSameAs(step);
     @SuppressWarnings("unchecked")
-    final ThrowingSupplier<Object, ?> body = ((SupplierStep<Object>) resultStep).getBody();
+    final ConsumerStep<Object> consumerStep = (ConsumerStep<Object>) resultStep;
+    consumerStep.getBody().accept("context value");
 
-    assertThat(body)
-      .isNotSameAs(originBody);
-    assertThat(body.get())
-      .isSameAs(originResult);
-    verify(originBody, times(2)).get();
+    assertThat(contexts)
+      .hasSize(3)
+      .containsOnly("context value");
   }
 
-  @SuppressWarnings("unchecked")
-  private static ThrowingRunnable<Error> mockRunnable() {
-    return mock(ThrowingRunnable.class);
+  @Test
+  void repeatFunctionStepShouldReturnResultOfLastAttempt() throws Throwable {
+    final AtomicInteger counter = new AtomicInteger();
+    final FunctionStep<Object, Object> step = FunctionStep.of(
+      StepAttributes.of(RepeatExtension.REPEAT, RepeatExtension.repeatOptions().count(3)),
+      (ThrowingFunction<Object, Object, ?>) context -> counter.incrementAndGet()
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    assertThat(resultStep)
+      .isInstanceOf(FunctionStep.class)
+      .isNotSameAs(step);
+    @SuppressWarnings("unchecked")
+    final FunctionStep<Object, Object> functionStep = (FunctionStep<Object, Object>) resultStep;
+    final Object result = functionStep.getBody().apply("context value");
+
+    assertThat(result).isEqualTo(3);
   }
 
-  @SuppressWarnings("unchecked")
-  private static ThrowingRunnable<Error> mockRunnableWithException(final Throwable exception) {
-    final ThrowingRunnable<Error> mock = mock(ThrowingRunnable.class);
-    doThrow(exception).when(mock).run();
-    return mock;
+  @Test
+  void withRepeatAnnotationShouldBeUsed() throws Throwable {
+    final AtomicInteger counter = new AtomicInteger();
+    final RunnableStep step = RunnableStep.of(
+      StepAttributes.of(WITH_REPEAT, withRepeatAnnotation("threeTimes")),
+      (ThrowingRunnable<?>) counter::incrementAndGet
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    assertThat(resultStep).isNotSameAs(step);
+    ((RunnableStep) resultStep).getBody().run();
+
+    assertThat(counter.get()).isEqualTo(3);
   }
 
-  @SuppressWarnings("unchecked")
-  private static ThrowingRunnable<Error> mockRunnableWithFirstTimeException(final Throwable exception) {
-    final ThrowingRunnable<Error> mock = mock(ThrowingRunnable.class);
-    doThrow(exception).doNothing().when(mock).run();
-    return mock;
-  }
+  @Test
+  void repeatDelayShouldBeAppliedBetweenAttempts() throws Throwable {
+    final RunnableStep step = RunnableStep.of(
+      StepAttributes.of(
+        RepeatExtension.REPEAT,
+        RepeatExtension.repeatOptions().count(3).delay(Duration.ofMillis(50))
+      ),
+      RunnableStep.emptyBody()
+    );
 
-  @SuppressWarnings("unchecked")
-  private static ThrowingSupplier<Object, Error> mockSupplier(final Object result) {
-    final ThrowingSupplier<Object, Error> mock = mock(ThrowingSupplier.class);
-    doReturn(result).when(mock).get();
-    return mock;
-  }
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    final long startTime = System.nanoTime();
+    ((RunnableStep) resultStep).getBody().run();
+    final long elapsedMillis = (System.nanoTime() - startTime) / 1_000_000;
 
-  @SuppressWarnings("unchecked")
-  private static ThrowingSupplier<Object, Error> mockSupplierWithException(final Throwable exception) {
-    final ThrowingSupplier<Object, Error> mock = mock(ThrowingSupplier.class);
-    doThrow(exception).when(mock).get();
-    return mock;
-  }
-
-  @SuppressWarnings("unchecked")
-  private static ThrowingSupplier<Object, Error> mockSupplierWithFirstTimeException(final Throwable exception,
-                                                                                    final Object result) {
-    final ThrowingSupplier<Object, Error> mock = mock(ThrowingSupplier.class);
-    doThrow(exception).doReturn(result).when(mock).get();
-
-//    when(mock.get())
-//      .thenThrow(exception)
-//      .thenReturn(result);
-    return mock;
+    assertThat(elapsedMillis)
+      .as("two 50ms delays are expected between three attempts")
+      .isGreaterThanOrEqualTo(90L);
   }
 }
