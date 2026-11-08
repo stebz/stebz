@@ -39,36 +39,42 @@ import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
 
 /**
- * Empty steps {@link StebzExtension}.
+ * Empty steps {@link StebzExtension}: step bodies of steps executed within an {@code emptySteps} block are replaced
+ * with empty bodies, so steps are reported to listeners, but not executed. When the {@code stebz.emptySteps.forEach}
+ * property is enabled, every step is treated as an empty step regardless of the block.
+ * <p>The {@code stebz.emptySteps.enabled} property enables or disables this extension (default: {@code true}). The
+ * {@code stebz.emptySteps.order} property sets its execution order (default: {@code LATE_ORDER}). The
+ * {@code stebz.emptySteps.forEach} property enables emptying of all steps (default: {@code false}).
  */
 public class EmptyStepsExtension implements InterceptStep {
   private static final ThreadLocal<Integer> THREAD_LOCAL_DEPTH = new ThreadLocal<>();
   private final boolean enabled;
   private final int order;
-  private final boolean each;
+  private final boolean forEach;
 
   /**
-   * Ctor.
+   * Creates the extension using the startup properties.
    */
   public EmptyStepsExtension() {
     this(StartupPropertiesReader.get());
   }
 
   /**
-   * Ctor.
+   * Creates the extension using the specified properties.
    *
    * @param properties the properties reader
    */
   public EmptyStepsExtension(final PropertiesReader properties) {
     this.enabled = properties.getBoolean("stebz.emptySteps.enabled", true);
     this.order = properties.getInteger("stebz.emptySteps.order", LATE_ORDER);
-    this.each = properties.getBoolean("stebz.emptySteps.each", false);
+    this.forEach = properties.getBoolean("stebz.emptySteps.forEach", false);
   }
 
   /**
-   * Executes given block of empty steps.
+   * Executes the given block of steps as empty steps: each step executed within the block is reported to listeners, but
+   * its body is not executed.
    *
-   * @param steps the block of empty steps
+   * @param steps the block of steps
    * @throws NullPointerException if {@code steps} arg is null
    */
   public static void emptySteps(final ThrowingRunnable<?> steps) {
@@ -82,10 +88,11 @@ public class EmptyStepsExtension implements InterceptStep {
   }
 
   /**
-   * Executes given block of empty steps.
+   * Executes the given block of steps as empty steps: each step executed within the block is reported to listeners, but
+   * its body is not executed.
    *
    * @param value the additional value
-   * @param steps the block of empty steps
+   * @param steps the block of steps
    * @param <V>   the type of the additional value
    * @throws NullPointerException if {@code steps} arg is null
    */
@@ -101,9 +108,10 @@ public class EmptyStepsExtension implements InterceptStep {
   }
 
   /**
-   * Executes given block of empty steps and returns result.
+   * Executes the given block of steps as empty steps and returns the execution result: each step executed within the
+   * block is reported to listeners, but its body is not executed.
    *
-   * @param steps the block of empty steps
+   * @param steps the block of steps
    * @param <R>   the type of the result
    * @return execution result
    * @throws NullPointerException if {@code steps} arg is null
@@ -119,9 +127,11 @@ public class EmptyStepsExtension implements InterceptStep {
   }
 
   /**
-   * Executes given block of empty steps and returns execution result.
+   * Executes the given block of steps as empty steps and returns the execution result: each step executed within the
+   * block is reported to listeners, but its body is not executed.
    *
-   * @param steps the block of empty steps
+   * @param value the additional value
+   * @param steps the block of steps
    * @param <V>   the type of the additional value
    * @param <R>   the type of the result
    * @return execution result
@@ -136,6 +146,62 @@ public class EmptyStepsExtension implements InterceptStep {
     } finally {
       finishEmptySteps();
     }
+  }
+
+  /**
+   * Executes the given block of steps as empty steps: each step executed within the block is reported to listeners, but
+   * its body is not executed. Alias for {@link #emptySteps(ThrowingRunnable)}.
+   *
+   * @param steps the block of steps
+   * @throws NullPointerException if {@code steps} arg is null
+   */
+  public static void EmptySteps(final ThrowingRunnable<?> steps) {
+    emptySteps(steps);
+  }
+
+  /**
+   * Executes the given block of steps as empty steps: each step executed within the block is reported to listeners, but
+   * its body is not executed. Alias for {@link #emptySteps(Object, ThrowingConsumer)}.
+   *
+   * @param value the additional value
+   * @param steps the block of steps
+   * @param <V>   the type of the additional value
+   * @throws NullPointerException if {@code steps} arg is null
+   */
+  public static <V> void EmptySteps(final V value,
+                                    final ThrowingConsumer<? super V, ?> steps) {
+    emptySteps(value, steps);
+  }
+
+  /**
+   * Executes the given block of steps as empty steps and returns the execution result: each step executed within the
+   * block is reported to listeners, but its body is not executed. Alias for
+   * {@link #emptyStepsResult(ThrowingSupplier)}.
+   *
+   * @param steps the block of steps
+   * @param <R>   the type of the result
+   * @return execution result
+   * @throws NullPointerException if {@code steps} arg is null
+   */
+  public static <R> R EmptyStepsResult(final ThrowingSupplier<? extends R, ?> steps) {
+    return emptyStepsResult(steps);
+  }
+
+  /**
+   * Executes the given block of steps as empty steps and returns the execution result: each step executed within the
+   * block is reported to listeners, but its body is not executed. Alias for
+   * {@link #emptyStepsResult(Object, ThrowingFunction)}.
+   *
+   * @param value the additional value
+   * @param steps the block of steps
+   * @param <V>   the type of the additional value
+   * @param <R>   the type of the result
+   * @return execution result
+   * @throws NullPointerException if {@code steps} arg is null
+   */
+  public static <V, R> R EmptyStepsResult(final V value,
+                                          final ThrowingFunction<? super V, ? extends R, ?> steps) {
+    return emptyStepsResult(value, steps);
   }
 
   private static void startEmptySteps() {
@@ -164,7 +230,7 @@ public class EmptyStepsExtension implements InterceptStep {
   @Override
   public StepObj<?> interceptStep(final StepObj<?> step,
                                   final NullableOptional<Object> context) {
-    if (this.enabled && (this.each || THREAD_LOCAL_DEPTH.get() != null)) {
+    if (this.enabled && (this.forEach || THREAD_LOCAL_DEPTH.get() != null)) {
       if (step instanceof RunnableStep) {
         return ((RunnableStep) step).withBody(RunnableStep.emptyBody());
       } else if (step instanceof ConsumerStep) {
