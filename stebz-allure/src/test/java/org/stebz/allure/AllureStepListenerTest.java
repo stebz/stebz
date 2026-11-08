@@ -47,7 +47,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -104,7 +103,7 @@ final class AllureStepListenerTest {
 
   private static StepResult startMarkerStep() {
     final StepResult marker = new StepResult().setName("marker");
-    Allure.getLifecycle().startStep(UUID.randomUUID().toString(), marker);
+    Allure.getLifecycle().startStep(marker);
     return marker;
   }
 

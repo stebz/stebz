@@ -40,9 +40,8 @@
 
   <properties>
     <automatic.module.name>org.stebz.reportportal</automatic.module.name>
-    <!-- the only Java 11 module of the project; javadoc is kept at 1.8 intentionally -->
     <java.version>11</java.version>
-    <javadoc.version>1.8</javadoc.version>
+    <javadoc.version>11</javadoc.version>
   </properties>
 
   <dependencies>

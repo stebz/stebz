@@ -46,7 +46,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -296,7 +295,7 @@ public class AllureStepListener implements StepListener {
       this.processStepName(step, step.getName(), params)
     ));
 
-    Allure.getLifecycle().startStep(UUID.randomUUID().toString(), stepResult);
+    Allure.getLifecycle().startStep(stepResult);
   }
 
   @Override
