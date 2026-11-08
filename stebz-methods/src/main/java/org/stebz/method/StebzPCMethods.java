@@ -414,6 +414,7 @@ public final class StebzPCMethods {
    *
    * @param nameGenerator the name generator
    * @param step          the step
+   * @param value         the value passed to the step
    * @param <T>           the type of the value
    * @param <R>           the type of the step result
    * @return step result

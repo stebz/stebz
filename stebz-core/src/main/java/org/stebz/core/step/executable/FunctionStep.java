@@ -170,7 +170,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * {@code FunctionStep} with a body that rethrows any exception.
    *
    * @param generator the exception generator
-   * @return {@code FunctionStep} with body that rethrow any exception
+   * @return {@code FunctionStep} with a body that rethrows any exception
    * @throws NullPointerException if {@code generator} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -193,7 +193,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @param exceptionType the exception type
    * @param generator     the exception generator
    * @param <E>           the type of the exception
-   * @return {@code FunctionStep} with body that rethrow exception
+   * @return {@code FunctionStep} with a body that rethrows the exception
    * @throws NullPointerException if {@code exceptionType} arg or {@code generator} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -223,7 +223,7 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
    * @param exceptionType2 the second exception type
    * @param generator      the exception generator
    * @param <E>            the type of exceptions
-   * @return {@code FunctionStep} with body that rethrow exception
+   * @return {@code FunctionStep} with a body that rethrows the matching exception
    * @throws NullPointerException if {@code exceptionType1} arg or {@code exceptionType2} arg or {@code generator} arg
    *                              is null
    * @see #withBody(Object)
@@ -371,10 +371,10 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
-   * Returns {@code FunctionStep} with provided block that be executed after step body in case of step failure.
+   * Returns {@code FunctionStep} with the provided block executed after the step body if the step fails.
    *
    * @param block the on failure block
-   * @return {@code FunctionStep} with provided block that be executed after step body in case of step failure
+   * @return {@code FunctionStep} with the provided block executed after the step body if the step fails
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)

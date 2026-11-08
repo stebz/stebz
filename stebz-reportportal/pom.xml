@@ -46,6 +46,16 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjrt</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.reactivex.rxjava2</groupId>
+      <artifactId>rxjava</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.stebz</groupId>
       <artifactId>stebz-utils</artifactId>
       <scope>compile</scope>
