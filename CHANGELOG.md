@@ -15,12 +15,8 @@
 
 * #137 add step context tuples by @evpl in PR #141
 * #138 add clearRelated `CleanStackTraceExtension` option by @evpl in PR #140
-* #134 add `stebz-soft-assertions` extension by @evpl in PR #136 #139
+* #134 add `stebz-soft-asserted-steps` extension by @evpl in PR #136 #139
 * #132 add `withEmptyBody`, `withEmptyBodyReturning` and `withNotImplementedBody` step methods by @evpl in PR #133
-
-## 1.11 (2025/12/07)
-
-* #127 add `stepOf` alias methods to create steps by @evpl in PR #128
 
 ## 1.11 (2025/12/07)
 
@@ -38,7 +34,7 @@
 * #114 step listeners attributes refactoring by @evpl in PR #115
 * #116 `stebz-repeat-and-retry` module refactoring by @evpl in PR #117
 * #118 add overloads of the `captured` method for 7 and 8 values by @evpl in PR #119
-* bump Aspectj version to 1.9.25 in PR #113
+* bump AspectJ version to 1.9.25 in PR #113
 
 ## 1.8 (2025/11/03)
 
@@ -77,7 +73,7 @@
 
 * #44 add stebz-gherkin-keywords module by @evpl
 * #46 add GherkinAround object by @evpl
-* #47 add StebObj withParam method by @evpl
+* #47 add StepObj withParam method by @evpl
 * #48 add StebzGherkinMethods gherkinAround method by @evpl
 * #49 add expected result attribute by @evpl in PR #50
 * #51 add withFinally method by @evpl in PR #52

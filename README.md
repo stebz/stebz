@@ -6,6 +6,7 @@
 [![Maven Central Last Update](https://img.shields.io/maven-central/last-update/org.stebz/stebz?color=blue)](https://central.sonatype.com/search?namespace=org.stebz&sort=name)
 
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/stebz/stebz/tests.yml?branch=main)](https://github.com/stebz/stebz/actions/workflows/tests.yml/)
+[![Codecov](https://codecov.io/gh/stebz/stebz/graph/badge.svg)](https://codecov.io/gh/stebz/stebz)
 [![GitHub commits since latest release](https://img.shields.io/github/commits-since/stebz/stebz/latest?color=brightgreen)](https://github.com/stebz/stebz/commits/main/)
 [![GitHub last commit](https://img.shields.io/github/last-commit/stebz/stebz?color=brightgreen)](https://github.com/stebz/stebz/commits/main/)
 

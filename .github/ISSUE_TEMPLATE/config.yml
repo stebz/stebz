@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Stebz Telegram chat (English)
+    url: https://t.me/stebz_en/
+    about: Ask questions and discuss usage — not for bug reports.
+  - name: Stebz Telegram chat (Russian)
+    url: https://t.me/stebz_ru/
+    about: Вопросы и обсуждение использования — не для баг-репортов.
