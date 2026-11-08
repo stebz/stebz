@@ -79,7 +79,7 @@
     <aspectj.version>1.9.27</aspectj.version>
     <opentest4j.version>1.3.0</opentest4j.version>
     <allure.version>2.35.1</allure.version>
-    <qase.version>4.1.17</qase.version>
+    <qase.version>4.1.66</qase.version>
     <reportportal.version>5.4.3</reportportal.version>
     <testit.version>4.2.0</testit.version>
     <junit.version>5.14.0</junit.version>
