@@ -10,8 +10,6 @@ updates:
       - dependency-name: "org.stebz:*"
       - dependency-name: "org.junit.jupiter:junit-jupiter-api"
       - dependency-name: "org.junit.platform:junit-platform-launcher"
-      - dependency-name: "ru.testit:testit-java-commons"
-        versions: [ "*-TMS-*" ]
 
   # plugin versions declared directly in the root aggregator pom
   - package-ecosystem: maven
