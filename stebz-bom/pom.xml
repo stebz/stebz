@@ -29,7 +29,7 @@
 
   <groupId>org.stebz</groupId>
   <artifactId>stebz-bom</artifactId>
-  <version>${revision}</version>
+  <version>1.13</version>
   <packaging>pom</packaging>
 
   <name>Stebz BOM</name>
