@@ -242,6 +242,131 @@ final class FunctionStepTest {
   }
 
   @Test
+  void withIgnoredOfTwoTypesShouldIgnoreExceptionOfSecondTypeAndReturnNullResult() throws Throwable {
+    assertThat(FunctionStep.of("name", (ThrowingFunction<Object, String, Error>) value -> {
+      throw new NumberFormatException("ignored");
+    }).withIgnored(IllegalStateException.class, NumberFormatException.class).getBody().apply("v"))
+      .isNull();
+  }
+
+  @Test
+  void withIgnoredOfTwoTypesShouldRethrowExceptionOfThirdType() {
+    assertThatThrownBy(() -> FunctionStep.of("name", failing("not ignored"))
+      .withIgnored(IllegalArgumentException.class, NumberFormatException.class)
+      .getBody().apply("v"))
+      .isInstanceOf(IllegalStateException.class);
+  }
+
+  @Test
+  void withIgnoredOfThreeTypesShouldIgnoreMatchingExceptionAndReturnNullResult() throws Throwable {
+    assertThat(FunctionStep.of("name", (ThrowingFunction<Object, String, Error>) value -> {
+        throw new UnsupportedOperationException("ignored");
+      }).withIgnored(IllegalStateException.class, IllegalArgumentException.class, UnsupportedOperationException.class)
+      .getBody().apply("v"))
+      .isNull();
+  }
+
+  @Test
+  void withRethrownOfTwoTypesShouldReplaceMatchingExceptionsOnly() {
+    assertThatThrownBy(() -> FunctionStep.of("name", (ThrowingFunction<Object, String, Error>) value -> {
+      throw new IllegalStateException("origin");
+    }).withRethrown(IllegalStateException.class, IllegalArgumentException.class,
+      ex -> new RuntimeException("generated")).getBody().apply("v"))
+      .isInstanceOf(RuntimeException.class)
+      .hasMessage("generated");
+    assertThatThrownBy(() -> FunctionStep.of("name", (ThrowingFunction<Object, String, Error>) value -> {
+      throw new IllegalArgumentException("origin");
+    }).withRethrown(IllegalStateException.class, IllegalArgumentException.class,
+      ex -> new RuntimeException("generated")).getBody().apply("v"))
+      .isInstanceOf(RuntimeException.class)
+      .hasMessage("generated");
+    assertThatThrownBy(() -> FunctionStep.of("name", (ThrowingFunction<Object, String, Error>) value -> {
+      throw new UnsupportedOperationException("origin");
+    }).withRethrown(IllegalStateException.class, IllegalArgumentException.class,
+      ex -> new RuntimeException("generated")).getBody().apply("v"))
+      .isInstanceOf(UnsupportedOperationException.class)
+      .hasMessage("origin");
+  }
+
+  @Test
+  void withRethrownOfThreeTypesShouldReplaceMatchingExceptionsOnly() {
+    assertThatThrownBy(() -> FunctionStep.of("name", (ThrowingFunction<Object, String, Error>) value -> {
+      throw new IllegalStateException("origin");
+    }).withRethrown(IllegalStateException.class, IllegalArgumentException.class, UnsupportedOperationException.class,
+      ex -> new RuntimeException("generated")).getBody().apply("v"))
+      .isInstanceOf(RuntimeException.class)
+      .hasMessage("generated");
+    assertThatThrownBy(() -> FunctionStep.of("name", (ThrowingFunction<Object, String, Error>) value -> {
+      throw new UnsupportedOperationException("origin");
+    }).withRethrown(IllegalStateException.class, IllegalArgumentException.class, UnsupportedOperationException.class,
+      ex -> new RuntimeException("generated")).getBody().apply("v"))
+      .isInstanceOf(RuntimeException.class)
+      .hasMessage("generated");
+    assertThatThrownBy(() -> FunctionStep.of("name", (ThrowingFunction<Object, String, Error>) value -> {
+      throw new ClassCastException("origin");
+    }).withRethrown(IllegalStateException.class, IllegalArgumentException.class, UnsupportedOperationException.class,
+      ex -> new RuntimeException("generated")).getBody().apply("v"))
+      .isInstanceOf(ClassCastException.class)
+      .hasMessage("origin");
+  }
+
+  @Test
+  void withOnSuccessShouldTransformResultWithFunction() throws Throwable {
+    final FunctionStep<Object, String> step = FunctionStep.of("name", value -> "result")
+      .withOnSuccess((ThrowingFunction2<Object, String, String, Error>) (input, result) -> result + "!");
+    assertThat(step.getBody().apply("v")).isEqualTo("result!");
+  }
+
+  @Test
+  void withIgnoredAndWithRethrownShouldKeepSucceedingBodyBehavior() throws Throwable {
+    final AtomicInteger runs = new AtomicInteger();
+    final ThrowingFunction<Object, String, Error> body = value -> {
+      runs.incrementAndGet();
+      return "result";
+    };
+    final FunctionStep<Object, String> step = FunctionStep.of("name", body);
+    assertThat(step.withIgnored(IllegalStateException.class).getBody().apply("v")).isEqualTo("result");
+    assertThat(step.withIgnored(IllegalStateException.class, IllegalArgumentException.class)
+      .getBody().apply("v")).isEqualTo("result");
+    assertThat(step.withIgnored(IllegalStateException.class, IllegalArgumentException.class,
+      UnsupportedOperationException.class).getBody().apply("v")).isEqualTo("result");
+    assertThat(step.withRethrown(ex -> new RuntimeException("generated")).getBody().apply("v"))
+      .isEqualTo("result");
+    assertThat(step.withRethrown(IllegalStateException.class, ex -> new RuntimeException("generated"))
+      .getBody().apply("v")).isEqualTo("result");
+    assertThat(step.withRethrown(IllegalStateException.class, IllegalArgumentException.class,
+      ex -> new RuntimeException("generated")).getBody().apply("v")).isEqualTo("result");
+    assertThat(step.withRethrown(IllegalStateException.class, IllegalArgumentException.class,
+        UnsupportedOperationException.class, ex -> new RuntimeException("generated"))
+      .getBody().apply("v")).isEqualTo("result");
+    assertThat(runs.get()).isEqualTo(7);
+  }
+
+  @Test
+  void withAttributesAndWithBodyShouldThrowExceptionForNullArgs() {
+    final FunctionStep<Object, String> step = FunctionStep.of("name", IDENTITY);
+    assertThatThrownBy(() -> step.withAttributes(null)).isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> step.withBody(null)).isInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void ofOriginStaticShouldCopyAttributesAndBody() throws Throwable {
+    final FunctionStep<Object, String> origin = FunctionStep.of("name", IDENTITY);
+    final FunctionStep<Object, String> copy = FunctionStep.of(origin);
+    assertThat(copy.getName()).isEqualTo("name");
+    assertThat(copy.getBody()).isSameAs(origin.getBody());
+    assertThat(copy.getBody().apply("v")).isEqualTo("v");
+  }
+
+  @Test
+  void ofAttributesAndBodyStaticShouldUseGivenInstances() {
+    final StepAttributes attributes = StepAttributes.of(StepAttribute.NAME, "name");
+    final FunctionStep<Object, String> step = FunctionStep.of(attributes, IDENTITY);
+    assertThat(step.getAttributes()).isSameAs(attributes);
+    assertThat(step.getBody()).isNotNull();
+  }
+
+  @Test
   void withRethrownShouldThrowExceptionForNullArgs() {
     final FunctionStep<Object, String> step = FunctionStep.of("name", IDENTITY);
     assertThatThrownBy(() -> step.withRethrown(null))

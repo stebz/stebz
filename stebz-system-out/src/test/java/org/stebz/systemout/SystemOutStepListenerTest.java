@@ -26,6 +26,7 @@ package org.stebz.systemout;
 import org.junit.jupiter.api.Test;
 import org.stebz.core.attribute.Keyword;
 import org.stebz.core.attribute.StepAttributes;
+import org.stebz.core.executor.StartupPropertiesReader;
 import org.stebz.core.extension.StebzExtension;
 import org.stebz.core.step.executable.RunnableStep;
 import org.stebz.util.container.NullableOptional;
@@ -34,12 +35,14 @@ import org.stebz.util.property.PropertiesReader;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.stebz.core.attribute.StepAttribute.COMMENT;
 import static org.stebz.core.attribute.StepAttribute.EXPECTED_RESULT;
 import static org.stebz.core.attribute.StepAttribute.HIDING;
@@ -105,6 +108,18 @@ final class SystemOutStepListenerTest {
   private static String outputOf(final ByteArrayOutputStream output) {
     return new String(output.toByteArray(), StandardCharsets.UTF_8)
       .replace(LINE_SEPARATOR, "\n");
+  }
+
+  private static void setStartupPropertiesReader(final PropertiesReader reader) throws Exception {
+    final Method setMethod = StartupPropertiesReader.class.getDeclaredMethod("set", PropertiesReader.class);
+    setMethod.setAccessible(true);
+    setMethod.invoke(null, reader);
+  }
+
+  private static void clearStartupPropertiesReader() throws Exception {
+    final Method clearMethod = StartupPropertiesReader.class.getDeclaredMethod("clear");
+    clearMethod.setAccessible(true);
+    clearMethod.invoke(null);
   }
 
   @Test
@@ -275,5 +290,262 @@ final class SystemOutStepListenerTest {
 
     assertThat(outputOf(output))
       .isEqualTo("Step: outer\n  Step: inner\n  Failure: " + exception + "\nStep: next\n");
+  }
+
+  @Test
+  void noArgConstructorShouldPrintToSystemOut() throws Exception {
+    final PrintStream originalOut = System.out;
+    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    setStartupPropertiesReader(new PropertiesReader.Of(new HashMap<>()));
+    try {
+      System.setOut(new PrintStream(output, true, "UTF-8"));
+
+      new SystemOutStepListener()
+        .onStepStart(step(null, "name", false, null, null, null), NullableOptional.empty());
+
+      assertThat(outputOf(output)).isEqualTo("Step: name\n");
+    } finally {
+      System.setOut(originalOut);
+      clearStartupPropertiesReader();
+    }
+  }
+
+  @Test
+  void propertiesConstructorShouldPrintToSystemOut() throws UnsupportedEncodingException {
+    final PrintStream originalOut = System.out;
+    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.systemOut.indent", "1");
+    try {
+      System.setOut(new PrintStream(output, true, "UTF-8"));
+
+      new SystemOutStepListener(new PropertiesReader.Of(properties))
+        .onStepStart(step(null, "name", false, null, null, null), NullableOptional.empty());
+
+      assertThat(outputOf(output)).isEqualTo("Step: name\n");
+    } finally {
+      System.setOut(originalOut);
+    }
+  }
+
+  @Test
+  void onStepStartShouldPrintKeywordOnlyWhenNameIsEmpty() {
+    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    final SystemOutStepListener listener = newListener(new HashMap<>(), output);
+
+    listener.onStepStart(step("keyword", null, false, null, null, null), NullableOptional.empty());
+
+    assertThat(outputOf(output)).isEqualTo("Step: keyword\n");
+  }
+
+  @Test
+  void onStepStartShouldPrintNameOnlyWhenKeywordIsEmpty() {
+    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    final SystemOutStepListener listener = newListener(new HashMap<>(), output);
+
+    listener.onStepStart(step(null, "name", false, null, null, null), NullableOptional.empty());
+
+    assertThat(outputOf(output)).isEqualTo("Step: name\n");
+  }
+
+  @Test
+  void onStepStartShouldPrintKeywordAtEndOnlyWhenNameIsEmpty() {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.systemOut.keywordPosition", "AT_END");
+    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    final SystemOutStepListener listener = newListener(properties, output);
+
+    listener.onStepStart(step("keyword", null, false, null, null, null), NullableOptional.empty());
+
+    assertThat(outputOf(output)).isEqualTo("Step: keyword\n");
+  }
+
+  @Test
+  void onStepStartShouldPrintNameAtEndOnlyWhenKeywordIsEmpty() {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.systemOut.keywordPosition", "AT_END");
+    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    final SystemOutStepListener listener = newListener(properties, output);
+
+    listener.onStepStart(step(null, "name", false, null, null, null), NullableOptional.empty());
+
+    assertThat(outputOf(output)).isEqualTo("Step: name\n");
+  }
+
+  @Test
+  void onStepStartShouldPrintDifferentParamValueTypes() {
+    final Map<String, Object> params = new LinkedHashMap<>();
+    params.put("p1", new int[]{1, 2});
+    params.put("p2", new long[]{1, 2});
+    params.put("p3", new double[]{1.0, 2.0});
+    params.put("p4", new float[]{1.0f, 2.0f});
+    params.put("p5", new boolean[]{true, false});
+    params.put("p6", new short[]{1, 2});
+    params.put("p7", new char[]{'a', 'b'});
+    params.put("p8", new byte[]{1, 2});
+    params.put("p9", new Object[]{"a", "b"});
+    params.put("p10", null);
+    params.put("p11", "string value");
+    params.put("p12", 42);
+    params.put("p13", Thread.State.NEW);
+    params.put("p14", new Object() {
+      @Override
+      public String toString() {
+        return "custom object";
+      }
+    });
+    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    final SystemOutStepListener listener = newListener(new HashMap<>(), output);
+
+    listener.onStepStart(step(null, "name", false, params, null, null), NullableOptional.empty());
+
+    assertThat(outputOf(output))
+      .isEqualTo("Step: name (p1 = [1, 2], p2 = [1, 2], p3 = [1.0, 2.0], p4 = [1.0, 2.0], "
+        + "p5 = [true, false], p6 = [1, 2], p7 = [a, b], p8 = [1, 2], p9 = [a, b], p10 = null, "
+        + "p11 = string value, p12 = 42, p13 = NEW, p14 = custom object)\n");
+  }
+
+  @Test
+  void onStepSuccessShouldTakeNoEffectWhenStepIsHidden() {
+    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    final SystemOutStepListener listener = newListener(new HashMap<>(), output);
+
+    listener.onStepSuccess(step(null, "name", true, null, null, null),
+      NullableOptional.empty(), NullableOptional.empty());
+    listener.onStepStart(step(null, "next", false, null, null, null), NullableOptional.empty());
+
+    assertThat(outputOf(output)).isEqualTo("Step: next\n");
+  }
+
+  @Test
+  void onStepSuccessShouldTakeNoEffectForNonKeywordStepWhenOnlyKeywordStepsEnabled() {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.systemOut.onlyKeywordSteps", "true");
+    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    final SystemOutStepListener listener = newListener(properties, output);
+
+    listener.onStepSuccess(step(null, "name", false, null, null, null),
+      NullableOptional.empty(), NullableOptional.empty());
+    listener.onStepStart(step("keyword", "next", false, null, null, null), NullableOptional.empty());
+
+    assertThat(outputOf(output)).isEqualTo("Step: keyword next\n");
+  }
+
+  @Test
+  void onStepSuccessShouldUnindentKeywordStepWhenOnlyKeywordStepsEnabled() {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.systemOut.onlyKeywordSteps", "true");
+    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    final SystemOutStepListener listener = newListener(properties, output);
+
+    listener.onStepStart(step("keyword", "name", false, null, null, null), NullableOptional.empty());
+    listener.onStepSuccess(step("keyword", "name", false, null, null, null),
+      NullableOptional.empty(), NullableOptional.empty());
+    listener.onStepStart(step("keyword", "next", false, null, null, null), NullableOptional.empty());
+
+    assertThat(outputOf(output)).isEqualTo("Step: keyword name\nStep: keyword next\n");
+  }
+
+  @Test
+  void onStepFailureShouldTakeNoEffectWhenListenerDisabled() {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.systemOut.enabled", "false");
+    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    final SystemOutStepListener listener = newListener(properties, output);
+    final Throwable exception = new IllegalStateException("failure message");
+
+    listener.onStepFailure(step(null, "name", false, null, null, null),
+      NullableOptional.empty(), exception);
+    listener.onStepStart(step(null, "next", false, null, null, null), NullableOptional.empty());
+
+    assertThat(outputOf(output)).isEmpty();
+  }
+
+  @Test
+  void onStepFailureShouldTakeNoEffectWhenStepIsHidden() {
+    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    final SystemOutStepListener listener = newListener(new HashMap<>(), output);
+    final Throwable exception = new IllegalStateException("failure message");
+
+    listener.onStepFailure(step(null, "name", true, null, null, null),
+      NullableOptional.empty(), exception);
+    listener.onStepStart(step(null, "next", false, null, null, null), NullableOptional.empty());
+
+    assertThat(outputOf(output)).isEqualTo("Step: next\n");
+  }
+
+  @Test
+  void onStepFailureShouldTakeNoEffectForNonKeywordStepWhenOnlyKeywordStepsEnabled() {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.systemOut.onlyKeywordSteps", "true");
+    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    final SystemOutStepListener listener = newListener(properties, output);
+    final Throwable exception = new IllegalStateException("failure message");
+
+    listener.onStepFailure(step(null, "name", false, null, null, null),
+      NullableOptional.empty(), exception);
+    listener.onStepStart(step("keyword", "next", false, null, null, null), NullableOptional.empty());
+
+    assertThat(outputOf(output)).isEqualTo("Step: keyword next\n");
+  }
+
+  @Test
+  void onStepFailureShouldPrintFailureForKeywordStepWhenOnlyKeywordStepsEnabled() {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.systemOut.onlyKeywordSteps", "true");
+    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    final SystemOutStepListener listener = newListener(properties, output);
+    final Throwable exception = new IllegalStateException("failure message");
+
+    listener.onStepStart(step("keyword", "name", false, null, null, null), NullableOptional.empty());
+    listener.onStepFailure(step("keyword", "name", false, null, null, null),
+      NullableOptional.empty(), exception);
+    listener.onStepStart(step("keyword", "next", false, null, null, null), NullableOptional.empty());
+
+    assertThat(outputOf(output)).isEqualTo("Step: keyword name\nFailure: " + exception + "\nStep: keyword next\n");
+  }
+
+  @Test
+  void constructorShouldThrowNpeOnNullPrintStream() {
+    assertThatThrownBy(() -> new SystemOutStepListener(null, new PropertiesReader.Of(new HashMap<>())))
+      .isInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void onStepStartShouldNotPrintExpectedResultWhenDisabled() {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.systemOut.expectedResult", "false");
+    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    final SystemOutStepListener listener = newListener(properties, output);
+
+    listener.onStepStart(step(null, "name", false, null, "expected result", "comment"), NullableOptional.empty());
+
+    assertThat(outputOf(output)).isEqualTo("Step: name, comment = comment\n");
+  }
+
+  @Test
+  void onStepStartShouldNotPrintCommentWhenDisabled() {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.systemOut.comment", "false");
+    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    final SystemOutStepListener listener = newListener(properties, output);
+
+    listener.onStepStart(step(null, "name", false, null, "expected result", "comment"), NullableOptional.empty());
+
+    assertThat(outputOf(output)).isEqualTo("Step: name, expected result = expected result\n");
+  }
+
+  @Test
+  void onStepSuccessShouldKeepIndentForOuterStepWhenNestedStepFinishes() {
+    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    final SystemOutStepListener listener = newListener(new HashMap<>(), output);
+
+    listener.onStepStart(step(null, "outer", false, null, null, null), NullableOptional.empty());
+    listener.onStepStart(step(null, "inner", false, null, null, null), NullableOptional.empty());
+    listener.onStepSuccess(step(null, "inner", false, null, null, null),
+      NullableOptional.empty(), NullableOptional.empty());
+    listener.onStepStart(step(null, "inner2", false, null, null, null), NullableOptional.empty());
+
+    assertThat(outputOf(output)).isEqualTo("Step: outer\n  Step: inner\n  Step: inner2\n");
   }
 }

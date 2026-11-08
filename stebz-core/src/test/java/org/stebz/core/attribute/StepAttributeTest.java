@@ -155,6 +155,18 @@ final class StepAttributeTest {
   }
 
   @Test
+  void attributeOfEqualsShouldBeTrueForSameInstance() {
+    final StepAttribute<String, String, String> attribute =
+      new StepAttribute.Of<>("test:key", "default", v -> v, "default", v -> v);
+
+    assertThat(attribute).isEqualTo(attribute);
+    assertThat(new StepAttribute.Of<>("test:key", "default", v -> v, "default", v -> v))
+      .isEqualTo(new StepAttribute.Of<>("test:key", "other default", v -> v, "other default", v -> v))
+      .isNotEqualTo(null)
+      .isNotEqualTo(42);
+  }
+
+  @Test
   void attributeOfWithClassKeyShouldThrowExceptionForNullArgs() {
     assertThatThrownBy(() -> new StepAttribute.Of<>((Class<?>) null, "default", v -> v, "default", v -> v))
       .isInstanceOf(NullPointerException.class);

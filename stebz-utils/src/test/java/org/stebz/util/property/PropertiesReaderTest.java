@@ -25,6 +25,8 @@ package org.stebz.util.property;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -609,6 +611,275 @@ final class PropertiesReaderTest {
   private enum TestEnum {
     FIRST,
     SECOND
+  }
+
+  @Test
+  void mapCtorShouldAcceptNullKeys() {
+    final Map<String, String> map = new HashMap<>();
+    map.put(null, "value");
+
+    assertThatCode(() -> new PropertiesReader.Of(map))
+      .doesNotThrowAnyException();
+  }
+
+  @Test
+  void filesCtorShouldIgnoreUnreadableContextClassLoaderResource() {
+    final Thread thread = Thread.currentThread();
+    final ClassLoader originalContextClassLoader = thread.getContextClassLoader();
+    try {
+      thread.setContextClassLoader(new ClassLoader() {
+        @Override
+        public InputStream getResourceAsStream(final String name) {
+          return new InputStream() {
+            @Override
+            public int read() throws IOException {
+              throw new IOException("unreadable resource");
+            }
+          };
+        }
+      });
+
+      final PropertiesReader reader = new PropertiesReader.Of("stebz-utils-test.properties");
+
+      assertThat(reader.getString("fileProperty"))
+        .isEqualTo("fileValue");
+    } finally {
+      thread.setContextClassLoader(originalContextClassLoader);
+    }
+  }
+
+  @Test
+  void getBooleanMethodShouldThrowExceptionIfPropertyDoesNotExist() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf());
+
+    assertThatThrownBy(() -> reader.getBoolean("property"))
+      .isInstanceOf(IllegalStateException.class);
+  }
+
+  @Test
+  void getIntegerMethodShouldThrowExceptionIfPropertyDoesNotExist() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf());
+
+    assertThatThrownBy(() -> reader.getInteger("property"))
+      .isInstanceOf(IllegalStateException.class);
+  }
+
+  @Test
+  void getLongMethodShouldThrowExceptionIfPropertyDoesNotExist() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf());
+
+    assertThatThrownBy(() -> reader.getLong("property"))
+      .isInstanceOf(IllegalStateException.class);
+  }
+
+  @Test
+  void getDoubleMethodShouldThrowExceptionIfPropertyDoesNotExist() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf());
+
+    assertThatThrownBy(() -> reader.getDouble("property"))
+      .isInstanceOf(IllegalStateException.class);
+  }
+
+  @Test
+  void getEnumMethodShouldThrowExceptionIfPropertyDoesNotExist() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf());
+
+    assertThatThrownBy(() -> reader.getEnum("property", TestEnum.class))
+      .isInstanceOf(IllegalStateException.class);
+  }
+
+  @Test
+  void getClassMethodShouldThrowExceptionIfPropertyDoesNotExist() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf());
+
+    assertThatThrownBy(() -> reader.getClass("property"))
+      .isInstanceOf(IllegalStateException.class);
+  }
+
+  @Test
+  void getCharacterListMethodShouldThrowNullPointerExceptionForNullDelimiterArg() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf(
+      "property", "a,b"
+    ));
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> reader.getCharacterList("property", null));
+  }
+
+  @Test
+  void getBooleanListMethodShouldThrowNullPointerExceptionForNullDelimiterArg() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf(
+      "property", "true,false"
+    ));
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> reader.getBooleanList("property", null));
+  }
+
+  @Test
+  void getIntegerListMethodShouldThrowNullPointerExceptionForNullDelimiterArg() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf(
+      "property", "1,2"
+    ));
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> reader.getIntegerList("property", null));
+  }
+
+  @Test
+  void getLongListMethodShouldThrowNullPointerExceptionForNullDelimiterArg() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf(
+      "property", "1,2"
+    ));
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> reader.getLongList("property", null));
+  }
+
+  @Test
+  void getDoubleListMethodShouldThrowNullPointerExceptionForNullDelimiterArg() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf(
+      "property", "1.0,2.0"
+    ));
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> reader.getDoubleList("property", null));
+  }
+
+  @Test
+  void getEnumListMethodShouldThrowNullPointerExceptionForNullDelimiterArg() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf(
+      "property", "FIRST,SECOND"
+    ));
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> reader.getEnumList("property", TestEnum.class, null));
+  }
+
+  @Test
+  void getClassListMethodShouldThrowNullPointerExceptionForNullDelimiterArg() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf(
+      "property", "java.lang.String,java.lang.Integer"
+    ));
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> reader.getClassList("property", null));
+  }
+
+  @Test
+  void getCharacterListMethodShouldReturnEmptyListIfPropertyDoesNotExist() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf());
+
+    assertThat(reader.getCharacterList("property", ","))
+      .isEmpty();
+  }
+
+  @Test
+  void getBooleanListMethodShouldReturnEmptyListIfPropertyDoesNotExist() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf());
+
+    assertThat(reader.getBooleanList("property", ","))
+      .isEmpty();
+  }
+
+  @Test
+  void getIntegerListMethodShouldReturnEmptyListIfPropertyDoesNotExist() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf());
+
+    assertThat(reader.getIntegerList("property", ","))
+      .isEmpty();
+  }
+
+  @Test
+  void getLongListMethodShouldReturnEmptyListIfPropertyDoesNotExist() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf());
+
+    assertThat(reader.getLongList("property", ","))
+      .isEmpty();
+  }
+
+  @Test
+  void getDoubleListMethodShouldReturnEmptyListIfPropertyDoesNotExist() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf());
+
+    assertThat(reader.getDoubleList("property", ","))
+      .isEmpty();
+  }
+
+  @Test
+  void getEnumListMethodShouldReturnEmptyListIfPropertyDoesNotExist() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf());
+
+    assertThat(reader.getEnumList("property", TestEnum.class, ","))
+      .isEmpty();
+  }
+
+  @Test
+  void getClassListMethodShouldReturnEmptyListIfPropertyDoesNotExist() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf());
+
+    assertThat(reader.getClassList("property", ","))
+      .isEmpty();
+  }
+
+  @Test
+  void getCharacterListMethodShouldSkipEmptyElements() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf(
+      "property", " a ,, b "
+    ));
+
+    assertThat(reader.getCharacterList("property", ","))
+      .containsExactly('a', 'b');
+  }
+
+  @Test
+  void getBooleanListMethodShouldSkipEmptyElements() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf(
+      "property", " true ,, false "
+    ));
+
+    assertThat(reader.getBooleanList("property", ","))
+      .containsExactly(true, false);
+  }
+
+  @Test
+  void getLongListMethodShouldSkipEmptyElements() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf(
+      "property", " 1 ,, 2 "
+    ));
+
+    assertThat(reader.getLongList("property", ","))
+      .containsExactly(1L, 2L);
+  }
+
+  @Test
+  void getDoubleListMethodShouldSkipEmptyElements() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf(
+      "property", " 1.0 ,, 2.0 "
+    ));
+
+    assertThat(reader.getDoubleList("property", ","))
+      .containsExactly(1.0, 2.0);
+  }
+
+  @Test
+  void getEnumListMethodShouldSkipEmptyElements() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf(
+      "property", " FIRST ,, SECOND "
+    ));
+
+    assertThat(reader.getEnumList("property", TestEnum.class, ","))
+      .containsExactly(TestEnum.FIRST, TestEnum.SECOND);
+  }
+
+  @Test
+  void getClassListMethodShouldSkipEmptyElements() {
+    final PropertiesReader reader = new PropertiesReader.Of(propertiesOf(
+      "property", " java.lang.String ,, java.lang.Integer "
+    ));
+
+    assertThat(reader.getClassList("property", ","))
+      .containsExactly(String.class, Integer.class);
   }
 
   private static Properties propertiesOf(final String... nameAndValueList) {

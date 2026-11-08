@@ -290,5 +290,45 @@ final class SimpleStepAttributeTest {
   @Test
   void toStringShouldContainKey() {
     assertThat(SimpleStepAttribute.nullable("test:key")).hasToString("Attribute[test:key]");
+    assertThat(SimpleStepAttribute.nonNull("test:key", "default")).hasToString("Attribute[test:key]");
+  }
+
+  @Test
+  void equalsShouldBeTrueForSameInstance() {
+    final SimpleStepAttribute<String> nullableAttribute = SimpleStepAttribute.nullable("test:key");
+    final SimpleStepAttribute<String> nonNullAttribute = SimpleStepAttribute.nonNull("test:key", "default");
+
+    assertThat(nullableAttribute).isEqualTo(nullableAttribute);
+    assertThat(nonNullAttribute).isEqualTo(nonNullAttribute);
+  }
+
+  @Test
+  void equalsShouldBeFalseForNullOrDifferentTypeObject() {
+    assertThat(SimpleStepAttribute.nullable("test:key")).isNotEqualTo(null);
+    assertThat(SimpleStepAttribute.nonNull("test:key", "default")).isNotEqualTo(null);
+    assertThat(SimpleStepAttribute.nonNull("test:key", "default")).isNotEqualTo(42);
+  }
+
+  @Test
+  void nonNullEqualsShouldBeBasedOnKey() {
+    assertThat(SimpleStepAttribute.nonNull("test:key", "default"))
+      .isEqualTo(SimpleStepAttribute.nonNull("test:key", "other default"))
+      .isEqualTo(SimpleStepAttribute.nullable("test:key"))
+      .isNotEqualTo(SimpleStepAttribute.nonNull("test:key2", "default"))
+      .hasSameHashCodeAs(SimpleStepAttribute.nonNull("test:key", "other default"));
+  }
+
+  @Test
+  void nonNullWithDefaultValueExtractOutputValueShouldReturnValueAsIs() {
+    assertThat(SimpleStepAttribute.nonNull("test:key", "default").extractOutputValue("value"))
+      .isEqualTo("value");
+  }
+
+  @Test
+  void nullableWithDefaultValueExtractOutputValueShouldReturnValueAsIs() {
+    assertThat(SimpleStepAttribute.nullable("test:key", "default").extractOutputValue("value"))
+      .isEqualTo("value");
+    assertThat(SimpleStepAttribute.nullable("test:key", "default").extractOutputValue(null))
+      .isNull();
   }
 }

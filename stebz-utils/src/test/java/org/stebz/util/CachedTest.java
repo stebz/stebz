@@ -28,11 +28,13 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
@@ -170,5 +172,22 @@ final class CachedTest {
   void ctorShouldThrowNullPointerExceptionForNullOriginArgWithLock() {
     assertThatNullPointerException()
       .isThrownBy(() -> new Cached<>(new Object(), null));
+  }
+
+  @Test
+  void getMethodShouldReturnAlreadyInitializedValueInsideLock() throws Exception {
+    final CountDownLatch initializerStarted = new CountDownLatch(1);
+    final Cached<Object> cached = new Cached<>(() -> {
+      initializerStarted.countDown();
+      Thread.sleep(200);
+      return new Object();
+    });
+    final AtomicReference<Object> asyncValue = new AtomicReference<>();
+    final Thread initializingThread = new Thread(() -> asyncValue.set(cached.get()));
+    initializingThread.start();
+    initializerStarted.await();
+
+    assertThat(cached.get())
+      .isSameAs(asyncValue.get());
   }
 }

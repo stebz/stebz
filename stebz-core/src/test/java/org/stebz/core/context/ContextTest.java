@@ -32,6 +32,11 @@ import dev.jlet.function.ThrowingConsumer7;
 import dev.jlet.function.ThrowingConsumer8;
 import dev.jlet.function.ThrowingFunction2;
 import dev.jlet.function.ThrowingFunction3;
+import dev.jlet.function.ThrowingFunction4;
+import dev.jlet.function.ThrowingFunction5;
+import dev.jlet.function.ThrowingFunction6;
+import dev.jlet.function.ThrowingFunction7;
+import dev.jlet.function.ThrowingFunction8;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -182,6 +187,46 @@ final class ContextTest {
     final ThrowingFunction3<String, Integer, Boolean, String, Error> block =
       (v1, v2, v3) -> v1 + v2 + v3;
     assertThat(Context.context(block).apply(Context.context("v", 2, true))).isEqualTo("v2true");
+  }
+
+  @Test
+  void contextOfFunction4ShouldUnpackTupleToBlock() {
+    final ThrowingFunction4<String, Integer, Boolean, String, String, Error> block =
+      (v1, v2, v3, v4) -> v4;
+    assertThat(Context.context(block).apply(Context.context("v1", 2, true, "v4")))
+      .isEqualTo("v4");
+  }
+
+  @Test
+  void contextOfFunction5ShouldUnpackTupleToBlock() {
+    final ThrowingFunction5<String, Integer, Boolean, String, Integer, Integer, Error> block =
+      (v1, v2, v3, v4, v5) -> v5;
+    assertThat(Context.context(block).apply(Context.context("v1", 2, true, "v4", 5)))
+      .isEqualTo(5);
+  }
+
+  @Test
+  void contextOfFunction6ShouldUnpackTupleToBlock() {
+    final ThrowingFunction6<String, Integer, Boolean, String, Integer, String, String, Error> block =
+      (v1, v2, v3, v4, v5, v6) -> v6;
+    assertThat(Context.context(block).apply(Context.context("v1", 2, true, "v4", 5, "v6")))
+      .isEqualTo("v6");
+  }
+
+  @Test
+  void contextOfFunction7ShouldUnpackTupleToBlock() {
+    final ThrowingFunction7<String, Integer, Boolean, String, Integer, String, Integer, Integer, Error> block =
+      (v1, v2, v3, v4, v5, v6, v7) -> v7;
+    assertThat(Context.context(block).apply(Context.context("v1", 2, true, "v4", 5, "v6", 7)))
+      .isEqualTo(7);
+  }
+
+  @Test
+  void contextOfFunction8ShouldUnpackTupleToBlock() {
+    final ThrowingFunction8<String, Integer, Boolean, String, Integer, String, Integer, String, String, Error> block =
+      (v1, v2, v3, v4, v5, v6, v7, v8) -> v8;
+    assertThat(Context.context(block).apply(Context.context("v1", 2, true, "v4", 5, "v6", 7, "v8")))
+      .isEqualTo("v8");
   }
 
   @Test

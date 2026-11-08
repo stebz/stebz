@@ -272,6 +272,130 @@ final class SupplierStepTest {
   }
 
   @Test
+  void withIgnoredOfTwoTypesShouldIgnoreExceptionOfSecondTypeAndReturnNullResult() throws Throwable {
+    assertThat(SupplierStep.of("name", (ThrowingSupplier<String, Error>) () -> {
+      throw new NumberFormatException("ignored");
+    }).withIgnored(IllegalStateException.class, NumberFormatException.class).getBody().get())
+      .isNull();
+  }
+
+  @Test
+  void withIgnoredOfTwoTypesShouldRethrowExceptionOfThirdType() {
+    assertThatThrownBy(SupplierStep.of("name", failing("not ignored"))
+      .withIgnored(IllegalArgumentException.class, NumberFormatException.class).getBody()::get)
+      .isInstanceOf(IllegalStateException.class);
+  }
+
+  @Test
+  void withIgnoredOfThreeTypesShouldIgnoreMatchingExceptionAndReturnNullResult() throws Throwable {
+    assertThat(SupplierStep.of("name", (ThrowingSupplier<String, Error>) () -> {
+        throw new UnsupportedOperationException("ignored");
+      }).withIgnored(IllegalStateException.class, IllegalArgumentException.class, UnsupportedOperationException.class)
+      .getBody().get())
+      .isNull();
+  }
+
+  @Test
+  void withRethrownOfTwoTypesShouldReplaceMatchingExceptionsOnly() {
+    assertThatThrownBy(SupplierStep.of("name", (ThrowingSupplier<String, Error>) () -> {
+      throw new IllegalStateException("origin");
+    }).withRethrown(IllegalStateException.class, IllegalArgumentException.class,
+      ex -> new RuntimeException("generated")).getBody()::get)
+      .isInstanceOf(RuntimeException.class)
+      .hasMessage("generated");
+    assertThatThrownBy(SupplierStep.of("name", (ThrowingSupplier<String, Error>) () -> {
+      throw new IllegalArgumentException("origin");
+    }).withRethrown(IllegalStateException.class, IllegalArgumentException.class,
+      ex -> new RuntimeException("generated")).getBody()::get)
+      .isInstanceOf(RuntimeException.class)
+      .hasMessage("generated");
+    assertThatThrownBy(SupplierStep.of("name", (ThrowingSupplier<String, Error>) () -> {
+      throw new UnsupportedOperationException("origin");
+    }).withRethrown(IllegalStateException.class, IllegalArgumentException.class,
+      ex -> new RuntimeException("generated")).getBody()::get)
+      .isInstanceOf(UnsupportedOperationException.class)
+      .hasMessage("origin");
+  }
+
+  @Test
+  void withRethrownOfThreeTypesShouldReplaceMatchingExceptionsOnly() {
+    assertThatThrownBy(SupplierStep.of("name", (ThrowingSupplier<String, Error>) () -> {
+      throw new IllegalStateException("origin");
+    }).withRethrown(IllegalStateException.class, IllegalArgumentException.class, UnsupportedOperationException.class,
+      ex -> new RuntimeException("generated")).getBody()::get)
+      .isInstanceOf(RuntimeException.class)
+      .hasMessage("generated");
+    assertThatThrownBy(SupplierStep.of("name", (ThrowingSupplier<String, Error>) () -> {
+      throw new UnsupportedOperationException("origin");
+    }).withRethrown(IllegalStateException.class, IllegalArgumentException.class, UnsupportedOperationException.class,
+      ex -> new RuntimeException("generated")).getBody()::get)
+      .isInstanceOf(RuntimeException.class)
+      .hasMessage("generated");
+    assertThatThrownBy(SupplierStep.of("name", (ThrowingSupplier<String, Error>) () -> {
+      throw new ClassCastException("origin");
+    }).withRethrown(IllegalStateException.class, IllegalArgumentException.class, UnsupportedOperationException.class,
+      ex -> new RuntimeException("generated")).getBody()::get)
+      .isInstanceOf(ClassCastException.class)
+      .hasMessage("origin");
+  }
+
+  @Test
+  void withIgnoredAndWithRethrownShouldKeepSucceedingBodyBehavior() throws Throwable {
+    final AtomicInteger runs = new AtomicInteger();
+    final ThrowingSupplier<String, Error> body = () -> {
+      runs.incrementAndGet();
+      return "result";
+    };
+    final SupplierStep<String> step = SupplierStep.of("name", body);
+    assertThat(step.withIgnored(IllegalStateException.class).getBody().get()).isEqualTo("result");
+    assertThat(step.withIgnored(IllegalStateException.class, IllegalArgumentException.class)
+      .getBody().get()).isEqualTo("result");
+    assertThat(step.withIgnored(IllegalStateException.class, IllegalArgumentException.class,
+      UnsupportedOperationException.class).getBody().get()).isEqualTo("result");
+    assertThat(step.withRethrown(ex -> new RuntimeException("generated")).getBody().get())
+      .isEqualTo("result");
+    assertThat(step.withRethrown(IllegalStateException.class, ex -> new RuntimeException("generated"))
+      .getBody().get()).isEqualTo("result");
+    assertThat(step.withRethrown(IllegalStateException.class, IllegalArgumentException.class,
+      ex -> new RuntimeException("generated")).getBody().get()).isEqualTo("result");
+    assertThat(step.withRethrown(IllegalStateException.class, IllegalArgumentException.class,
+        UnsupportedOperationException.class, ex -> new RuntimeException("generated"))
+      .getBody().get()).isEqualTo("result");
+    assertThat(runs.get()).isEqualTo(7);
+  }
+
+  @Test
+  void withAttributesAndWithBodyShouldThrowExceptionForNullArgs() {
+    final SupplierStep<Object> step = SupplierStep.of("name", NULL_SUPPLIER);
+    assertThatThrownBy(() -> step.withAttributes(null)).isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> step.withBody(null)).isInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void ofOriginStaticShouldCopyAttributesAndBody() throws Throwable {
+    final SupplierStep<String> origin = SupplierStep.of("name", () -> "result");
+    final SupplierStep<String> copy = SupplierStep.of(origin);
+    assertThat(copy.getName()).isEqualTo("name");
+    assertThat(copy.getBody()).isSameAs(origin.getBody());
+    assertThat(copy.getBody().get()).isEqualTo("result");
+  }
+
+  @Test
+  void ofAttributesAndBodyStaticShouldUseGivenInstances() {
+    final StepAttributes attributes = StepAttributes.of(StepAttribute.NAME, "name");
+    final SupplierStep<Object> step = SupplierStep.of(attributes, NULL_SUPPLIER);
+    assertThat(step.getAttributes()).isSameAs(attributes);
+    assertThat(step.getBody()).isNotNull();
+  }
+
+  @Test
+  void getContextualBodyShouldThrowExceptionIfStepHasNoContext() {
+    assertThatThrownBy(SupplierStep.of("name", NULL_SUPPLIER)::getContextualBody)
+      .isInstanceOf(NoSuchElementException.class)
+      .hasMessage("SupplierStep has no context");
+  }
+
+  @Test
   void withRethrownShouldThrowExceptionForNullArgs() {
     final SupplierStep<Object> step = SupplierStep.of("name", NULL_SUPPLIER);
     assertThatThrownBy(() -> step.withRethrown(null))

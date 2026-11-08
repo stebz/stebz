@@ -25,12 +25,14 @@ package org.stebz.readablereflectivename;
 
 import org.junit.jupiter.api.Test;
 import org.stebz.core.attribute.StepAttributes;
+import org.stebz.core.executor.StartupPropertiesReader;
 import org.stebz.core.extension.StebzExtension;
 import org.stebz.core.step.StepObj;
 import org.stebz.core.step.executable.RunnableStep;
 import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -143,5 +145,22 @@ final class ReadableReflectiveNameExtensionTest {
     final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
 
     assertThat(resultStep.getName()).isEqualTo("step name");
+  }
+
+  @Test
+  void ctorShouldUseStartupPropertiesReader() throws Exception {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.readableReflectiveName.order", "12345");
+    final Method setMethod = StartupPropertiesReader.class.getDeclaredMethod("set", PropertiesReader.class);
+    setMethod.setAccessible(true);
+    final Method clearMethod = StartupPropertiesReader.class.getDeclaredMethod("clear");
+    clearMethod.setAccessible(true);
+    try {
+      setMethod.invoke(null, new PropertiesReader.Of(properties));
+      assertThat(new ReadableReflectiveNameExtension().order())
+        .isEqualTo(12345);
+    } finally {
+      clearMethod.invoke(null);
+    }
   }
 }

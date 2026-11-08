@@ -23,12 +23,18 @@
  */
 package org.stebz.core.step;
 
+import dev.jlet.function.ThrowingConsumer;
+import dev.jlet.function.ThrowingFunction;
+import dev.jlet.function.ThrowingSupplier;
 import org.junit.jupiter.api.Test;
 import org.stebz.core.attribute.Keyword;
 import org.stebz.core.attribute.SimpleStepAttribute;
 import org.stebz.core.attribute.StepAttribute;
 import org.stebz.core.attribute.StepAttributes;
+import org.stebz.core.step.executable.ConsumerStep;
+import org.stebz.core.step.executable.FunctionStep;
 import org.stebz.core.step.executable.RunnableStep;
+import org.stebz.core.step.executable.SupplierStep;
 import org.stebz.core.step.executable.alias.RStep;
 
 import java.util.LinkedHashMap;
@@ -244,6 +250,55 @@ final class StepObjTest {
     assertThatThrownBy(() -> StepObj.stepOf((RunnableStep) null))
       .isInstanceOf(NullPointerException.class);
     assertThatThrownBy(() -> StepObj.stepOf((String) null, () -> { }))
+      .isInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void stepOfConsumerOverloadsShouldCreateStepsWithGivenAttributes() {
+    assertThat(StepObj.stepOf("name", "expected", (ThrowingConsumer<Object, Error>) value -> { })
+      .getExpectedResult()).isEqualTo("expected");
+    assertThat(StepObj.stepOf("name", java.util.Collections.emptyMap(),
+      (ThrowingConsumer<Object, Error>) value -> { }).getParams()).isEmpty();
+    assertThat(StepObj.stepOf("name", java.util.Collections.emptyMap(), "expected",
+      (ThrowingConsumer<Object, Error>) value -> { }).getExpectedResult()).isEqualTo("expected");
+    assertThat(StepObj.stepOf((ConsumerStep<Object>) ConsumerStep.of("name", value -> { })).getName())
+      .isEqualTo("name");
+    assertThat(StepObj.stepOf(StepAttributes.of(StepAttribute.NAME, "name"),
+      (ThrowingConsumer<Object, Error>) value -> { }).getName()).isEqualTo("name");
+  }
+
+  @Test
+  void stepOfSupplierOverloadsShouldCreateStepsWithGivenAttributes() throws Throwable {
+    final ThrowingSupplier<String, Error> body = () -> "result";
+    assertThat(StepObj.stepOf(body).getBody().get()).isEqualTo("result");
+    assertThat(StepObj.stepOf("name", body).getName()).isEqualTo("name");
+    assertThat(StepObj.stepOf("name", "expected", body).getExpectedResult()).isEqualTo("expected");
+    assertThat(StepObj.stepOf("name", java.util.Collections.emptyMap(), body).getParams()).isEmpty();
+    assertThat(StepObj.stepOf("name", java.util.Collections.emptyMap(), "expected", body)
+      .getExpectedResult()).isEqualTo("expected");
+    assertThat(StepObj.stepOf((SupplierStep<String>) SupplierStep.of("name", body)).getName())
+      .isEqualTo("name");
+    assertThat(StepObj.stepOf(StepAttributes.of(StepAttribute.NAME, "name"), body).getName())
+      .isEqualTo("name");
+  }
+
+  @Test
+  void stepOfFunctionOverloadsShouldCreateStepsWithGivenAttributes() {
+    final ThrowingFunction<Object, String, Error> body = String::valueOf;
+    assertThat(StepObj.stepOf("name", body).getName()).isEqualTo("name");
+    assertThat(StepObj.stepOf("name", "expected", body).getExpectedResult()).isEqualTo("expected");
+    assertThat(StepObj.stepOf("name", java.util.Collections.emptyMap(), body).getParams()).isEmpty();
+    assertThat(StepObj.stepOf("name", java.util.Collections.emptyMap(), "expected", body)
+      .getExpectedResult()).isEqualTo("expected");
+    assertThat(StepObj.stepOf((FunctionStep<Object, String>) FunctionStep.of("name", body)).getName())
+      .isEqualTo("name");
+    assertThat(StepObj.stepOf(StepAttributes.of(StepAttribute.NAME, "name"), body).getName())
+      .isEqualTo("name");
+  }
+
+  @Test
+  void withParamsUpdaterShouldThrowExceptionForNullUpdater() {
+    assertThatThrownBy(() -> step().withParams((ThrowingConsumer<Map<String, Object>, Error>) null))
       .isInstanceOf(NullPointerException.class);
   }
 }

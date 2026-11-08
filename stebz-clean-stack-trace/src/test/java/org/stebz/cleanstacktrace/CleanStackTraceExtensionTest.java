@@ -24,10 +24,12 @@
 package org.stebz.cleanstacktrace;
 
 import org.junit.jupiter.api.Test;
+import org.stebz.core.executor.StartupPropertiesReader;
 import org.stebz.core.extension.StebzExtension;
 import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +49,18 @@ final class CleanStackTraceExtensionTest {
     final Map<String, String> properties = new HashMap<>();
     properties.put(name, value);
     return newExtension(properties);
+  }
+
+  private static void setStartupPropertiesReader(final PropertiesReader reader) throws Exception {
+    final Method setMethod = StartupPropertiesReader.class.getDeclaredMethod("set", PropertiesReader.class);
+    setMethod.setAccessible(true);
+    setMethod.invoke(null, reader);
+  }
+
+  private static void clearStartupPropertiesReader() throws Exception {
+    final Method clearMethod = StartupPropertiesReader.class.getDeclaredMethod("clear");
+    clearMethod.setAccessible(true);
+    clearMethod.invoke(null);
   }
 
   private static StackTraceElement frame(final String className,
@@ -327,5 +341,35 @@ final class CleanStackTraceExtensionTest {
     public int hashCode() {
       return 1;
     }
+  }
+
+  @Test
+  void ctorShouldUseStartupPropertiesReader() throws Exception {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.cleanStackTrace.order", "12345");
+    try {
+      setStartupPropertiesReader(new PropertiesReader.Of(properties));
+      assertThat(new CleanStackTraceExtension().order())
+        .isEqualTo(12345);
+    } finally {
+      clearStartupPropertiesReader();
+    }
+  }
+
+  @Test
+  void aspectjClearingDisabledShouldKeepAspectjFrames() {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.cleanStackTrace.clearAspectjLines", "false");
+    final Throwable exception = new Throwable();
+    exception.setStackTrace(new StackTraceElement[]{
+      frame("com.example.Foo", "first"),
+      frame("org.aspectj.runtime.Foo", "aspectjLine"),
+      frame("org.stebz.core.Foo", "stebzLine"),
+      frame("com.example.Foo", "last")
+    });
+    cleanStackTrace(newExtension(properties), exception);
+    assertThat(exception.getStackTrace())
+      .extracting(StackTraceElement::getClassName)
+      .containsExactly("com.example.Foo", "org.aspectj.runtime.Foo", "com.example.Foo");
   }
 }

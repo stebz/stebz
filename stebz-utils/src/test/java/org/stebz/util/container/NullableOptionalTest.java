@@ -513,6 +513,14 @@ final class NullableOptionalTest {
     }
 
     @Test
+    void equalsMethodShouldReturnTrueForSameInstance() {
+      final NullableOptional<Integer> optional = NullableOptional.of(1);
+
+      assertThat(optional.equals(optional))
+        .isTrue();
+    }
+
+    @Test
     void hashCodeMethodShouldFollowContract() {
       assertThat(NullableOptional.of(1).hashCode())
         .hasSameHashCodeAs(NullableOptional.of(1));

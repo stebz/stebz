@@ -30,6 +30,7 @@ import dev.jlet.function.ThrowingSupplier;
 import org.junit.jupiter.api.Test;
 import org.stebz.core.attribute.SimpleStepAttribute;
 import org.stebz.core.attribute.StepAttributes;
+import org.stebz.core.executor.StartupPropertiesReader;
 import org.stebz.core.extension.StebzExtension;
 import org.stebz.core.step.StepObj;
 import org.stebz.core.step.executable.ConsumerStep;
@@ -39,6 +40,7 @@ import org.stebz.core.step.executable.SupplierStep;
 import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
 
+import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,6 +49,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
@@ -90,6 +93,68 @@ final class RepeatExtensionTest {
   static class AnnotationHolder {
     @WithRepeat(count = 3)
     void threeTimes() {
+    }
+  }
+
+  private static void setStartupPropertiesReader(final PropertiesReader reader) throws Exception {
+    final Method setMethod = StartupPropertiesReader.class.getDeclaredMethod("set", PropertiesReader.class);
+    setMethod.setAccessible(true);
+    setMethod.invoke(null, reader);
+  }
+
+  private static void clearStartupPropertiesReader() throws Exception {
+    final Method clearMethod = StartupPropertiesReader.class.getDeclaredMethod("clear");
+    clearMethod.setAccessible(true);
+    clearMethod.invoke(null);
+  }
+
+  private static ThrowingConsumer<Object, ?> consumerFailingFirstAttempts(final int timesToFail,
+                                                                          final Throwable exception,
+                                                                          final AtomicInteger counter) {
+    return context -> {
+      if (counter.incrementAndGet() <= timesToFail) {
+        throw exception;
+      }
+    };
+  }
+
+  private static ThrowingSupplier<Object, ?> supplierFailingFirstAttempts(final int timesToFail,
+                                                                          final Throwable exception,
+                                                                          final AtomicInteger counter) {
+    return () -> {
+      if (counter.incrementAndGet() <= timesToFail) {
+        throw exception;
+      }
+      return counter.get();
+    };
+  }
+
+  private static ThrowingFunction<Object, Object, ?> functionFailingFirstAttempts(final int timesToFail,
+                                                                                  final Throwable exception,
+                                                                                  final AtomicInteger counter) {
+    return context -> {
+      if (counter.incrementAndGet() <= timesToFail) {
+        throw exception;
+      }
+      return counter.get();
+    };
+  }
+
+  private static final class CustomStepObj implements StepObj<CustomStepObj> {
+    private final StepAttributes attributes;
+
+    private CustomStepObj(final StepAttributes attributes) {
+      this.attributes = attributes;
+    }
+
+    @Override
+    public StepAttributes getAttributes() {
+      return this.attributes;
+    }
+
+    @Override
+    public CustomStepObj withAttributes(final StepAttributes attributes) {
+      return new CustomStepObj(attributes);
     }
   }
 
@@ -324,5 +389,336 @@ final class RepeatExtensionTest {
     assertThat(elapsedMillis)
       .as("two 50ms delays are expected between three attempts")
       .isGreaterThanOrEqualTo(90L);
+  }
+
+  @Test
+  void ctorShouldUseStartupPropertiesReader() throws Exception {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.repeat.order", "12345");
+    try {
+      setStartupPropertiesReader(new PropertiesReader.Of(properties));
+      assertThat(new RepeatExtension().order())
+        .isEqualTo(12345);
+    } finally {
+      clearStartupPropertiesReader();
+    }
+  }
+
+  @Test
+  void repeatStaticMethodShouldReturnDefaultRepeatOptions() {
+    assertThat(RepeatExtension.repeat())
+      .isSameAs(RepeatExtension.repeatOptions());
+  }
+
+  @Test
+  void repeatOptionsFromRepeatStaticMethodShouldBeAppliedToStep() throws Throwable {
+    final AtomicInteger counter = new AtomicInteger();
+    final RunnableStep step = RunnableStep.of(
+      StepAttributes.of(RepeatExtension.REPEAT, RepeatExtension.repeat()),
+      (ThrowingRunnable<?>) counter::incrementAndGet
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    assertThat(resultStep).isNotSameAs(step);
+    ((RunnableStep) resultStep).getBody().run();
+
+    assertThat(counter.get()).isEqualTo(2);
+  }
+
+  @Test
+  void stepOfCustomTypeShouldBeReturnedUnchanged() {
+    final StepObj<?> step = new CustomStepObj(
+      StepAttributes.of(RepeatExtension.REPEAT, RepeatExtension.repeatOptions().count(3))
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+
+    assertThat(resultStep).isSameAs(step);
+  }
+
+  @Test
+  void repeatConsumerStepShouldIgnoreSkippedExceptionsOnIntermediateAttempts() throws Throwable {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalStateException exception = new IllegalStateException();
+    final ConsumerStep<Object> step = ConsumerStep.of(
+      StepAttributes.of(
+        RepeatExtension.REPEAT,
+        RepeatExtension.repeatOptions().count(3).skip(IllegalStateException.class)
+      ),
+      consumerFailingFirstAttempts(2, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    @SuppressWarnings("unchecked")
+    final ConsumerStep<Object> consumerStep = (ConsumerStep<Object>) resultStep;
+    consumerStep.getBody().accept("context value");
+
+    assertThat(counter.get()).isEqualTo(3);
+  }
+
+  @Test
+  void repeatConsumerStepShouldStopOnButExceptions() {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalStateException exception = new IllegalStateException();
+    final ConsumerStep<Object> step = ConsumerStep.of(
+      StepAttributes.of(
+        RepeatExtension.REPEAT,
+        RepeatExtension.repeatOptions().count(3).but(IllegalStateException.class)
+      ),
+      consumerFailingFirstAttempts(3, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    @SuppressWarnings("unchecked")
+    final ConsumerStep<Object> consumerStep = (ConsumerStep<Object>) resultStep;
+    assertThatThrownBy(() -> consumerStep.getBody().accept("context value"))
+      .isSameAs(exception);
+
+    assertThat(counter.get()).isEqualTo(1);
+  }
+
+  @Test
+  void repeatConsumerStepShouldStopOnNonSkippedExceptions() {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalArgumentException exception = new IllegalArgumentException();
+    final ConsumerStep<Object> step = ConsumerStep.of(
+      StepAttributes.of(
+        RepeatExtension.REPEAT,
+        RepeatExtension.repeatOptions().count(3).skip(IllegalStateException.class)
+      ),
+      consumerFailingFirstAttempts(3, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    @SuppressWarnings("unchecked")
+    final ConsumerStep<Object> consumerStep = (ConsumerStep<Object>) resultStep;
+    assertThatThrownBy(() -> consumerStep.getBody().accept("context value"))
+      .isSameAs(exception);
+
+    assertThat(counter.get()).isEqualTo(1);
+  }
+
+  @Test
+  void repeatConsumerStepShouldPropagateExceptionOfLastAttempt() {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalStateException exception = new IllegalStateException();
+    final ConsumerStep<Object> step = ConsumerStep.of(
+      StepAttributes.of(
+        RepeatExtension.REPEAT,
+        RepeatExtension.repeatOptions().count(2).skip(IllegalStateException.class)
+      ),
+      consumerFailingFirstAttempts(2, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    @SuppressWarnings("unchecked")
+    final ConsumerStep<Object> consumerStep = (ConsumerStep<Object>) resultStep;
+    assertThatThrownBy(() -> consumerStep.getBody().accept("context value"))
+      .isSameAs(exception);
+
+    assertThat(counter.get()).isEqualTo(2);
+  }
+
+  @Test
+  void repeatConsumerStepDelayShouldBeAppliedBetweenAttempts() throws Throwable {
+    final AtomicInteger counter = new AtomicInteger();
+    final ConsumerStep<Object> step = ConsumerStep.of(
+      StepAttributes.of(
+        RepeatExtension.REPEAT,
+        RepeatExtension.repeatOptions().count(3).delay(Duration.ofMillis(50))
+      ),
+      (ThrowingConsumer<Object, ?>) context -> counter.incrementAndGet()
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    @SuppressWarnings("unchecked")
+    final ConsumerStep<Object> consumerStep = (ConsumerStep<Object>) resultStep;
+    consumerStep.getBody().accept("context value");
+
+    assertThat(counter.get()).isEqualTo(3);
+  }
+
+  @Test
+  void repeatSupplierStepShouldIgnoreSkippedExceptionsOnIntermediateAttempts() throws Throwable {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalStateException exception = new IllegalStateException();
+    final SupplierStep<Object> step = SupplierStep.of(
+      StepAttributes.of(
+        RepeatExtension.REPEAT,
+        RepeatExtension.repeatOptions().count(3).skip(IllegalStateException.class)
+      ),
+      supplierFailingFirstAttempts(2, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    assertThat(resultStep)
+      .isInstanceOf(SupplierStep.class)
+      .isNotSameAs(step);
+    @SuppressWarnings("unchecked")
+    final Object result = ((SupplierStep<Object>) resultStep).getBody().get();
+
+    assertThat(result).isEqualTo(3);
+  }
+
+  @Test
+  void repeatSupplierStepShouldStopOnButExceptions() {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalStateException exception = new IllegalStateException();
+    final SupplierStep<Object> step = SupplierStep.of(
+      StepAttributes.of(
+        RepeatExtension.REPEAT,
+        RepeatExtension.repeatOptions().count(3).but(IllegalStateException.class)
+      ),
+      supplierFailingFirstAttempts(3, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    @SuppressWarnings("unchecked")
+    final SupplierStep<Object> supplierStep = (SupplierStep<Object>) resultStep;
+    assertThatThrownBy(supplierStep.getBody()::get)
+      .isSameAs(exception);
+
+    assertThat(counter.get()).isEqualTo(1);
+  }
+
+  @Test
+  void repeatSupplierStepShouldStopOnNonSkippedExceptions() {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalArgumentException exception = new IllegalArgumentException();
+    final SupplierStep<Object> step = SupplierStep.of(
+      StepAttributes.of(
+        RepeatExtension.REPEAT,
+        RepeatExtension.repeatOptions().count(3).skip(IllegalStateException.class)
+      ),
+      supplierFailingFirstAttempts(3, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    @SuppressWarnings("unchecked")
+    final SupplierStep<Object> supplierStep = (SupplierStep<Object>) resultStep;
+    assertThatThrownBy(supplierStep.getBody()::get)
+      .isSameAs(exception);
+
+    assertThat(counter.get()).isEqualTo(1);
+  }
+
+  @Test
+  void repeatSupplierStepDelayShouldBeAppliedBetweenAttempts() throws Throwable {
+    final AtomicInteger counter = new AtomicInteger();
+    final SupplierStep<Object> step = SupplierStep.of(
+      StepAttributes.of(
+        RepeatExtension.REPEAT,
+        RepeatExtension.repeatOptions().count(3).delay(Duration.ofMillis(50))
+      ),
+      (ThrowingSupplier<Object, ?>) counter::incrementAndGet
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    @SuppressWarnings("unchecked")
+    final Object result = ((SupplierStep<Object>) resultStep).getBody().get();
+
+    assertThat(result).isEqualTo(3);
+  }
+
+  @Test
+  void repeatFunctionStepShouldIgnoreSkippedExceptionsOnIntermediateAttempts() throws Throwable {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalStateException exception = new IllegalStateException();
+    final FunctionStep<Object, Object> step = FunctionStep.of(
+      StepAttributes.of(
+        RepeatExtension.REPEAT,
+        RepeatExtension.repeatOptions().count(3).skip(IllegalStateException.class)
+      ),
+      functionFailingFirstAttempts(2, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    assertThat(resultStep)
+      .isInstanceOf(FunctionStep.class)
+      .isNotSameAs(step);
+    @SuppressWarnings("unchecked")
+    final FunctionStep<Object, Object> functionStep = (FunctionStep<Object, Object>) resultStep;
+    final Object result = functionStep.getBody().apply("context value");
+
+    assertThat(result).isEqualTo(3);
+  }
+
+  @Test
+  void repeatFunctionStepShouldStopOnButExceptions() {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalStateException exception = new IllegalStateException();
+    final FunctionStep<Object, Object> step = FunctionStep.of(
+      StepAttributes.of(
+        RepeatExtension.REPEAT,
+        RepeatExtension.repeatOptions().count(3).but(IllegalStateException.class)
+      ),
+      functionFailingFirstAttempts(3, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    @SuppressWarnings("unchecked")
+    final FunctionStep<Object, Object> functionStep = (FunctionStep<Object, Object>) resultStep;
+    assertThatThrownBy(() -> functionStep.getBody().apply("context value"))
+      .isSameAs(exception);
+
+    assertThat(counter.get()).isEqualTo(1);
+  }
+
+  @Test
+  void repeatFunctionStepShouldStopOnNonSkippedExceptions() {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalArgumentException exception = new IllegalArgumentException();
+    final FunctionStep<Object, Object> step = FunctionStep.of(
+      StepAttributes.of(
+        RepeatExtension.REPEAT,
+        RepeatExtension.repeatOptions().count(3).skip(IllegalStateException.class)
+      ),
+      functionFailingFirstAttempts(3, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    @SuppressWarnings("unchecked")
+    final FunctionStep<Object, Object> functionStep = (FunctionStep<Object, Object>) resultStep;
+    assertThatThrownBy(() -> functionStep.getBody().apply("context value"))
+      .isSameAs(exception);
+
+    assertThat(counter.get()).isEqualTo(1);
+  }
+
+  @Test
+  void repeatFunctionStepDelayShouldBeAppliedBetweenAttempts() throws Throwable {
+    final AtomicInteger counter = new AtomicInteger();
+    final FunctionStep<Object, Object> step = FunctionStep.of(
+      StepAttributes.of(
+        RepeatExtension.REPEAT,
+        RepeatExtension.repeatOptions().count(3).delay(Duration.ofMillis(50))
+      ),
+      (ThrowingFunction<Object, Object, ?>) context -> counter.incrementAndGet()
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    @SuppressWarnings("unchecked")
+    final FunctionStep<Object, Object> functionStep = (FunctionStep<Object, Object>) resultStep;
+    final Object result = functionStep.getBody().apply("context value");
+
+    assertThat(result).isEqualTo(3);
+  }
+
+  @Test
+  void repeatOptionsDelayShouldThrowNullPointerExceptionForNullArg() {
+    assertThatNullPointerException()
+      .isThrownBy(() -> RepeatExtension.repeatOptions().delay(null));
+  }
+
+  @Test
+  void repeatOptionsSkipShouldThrowNullPointerExceptionForNullArg() {
+    assertThatNullPointerException()
+      .isThrownBy(() -> RepeatExtension.repeatOptions().skip(null));
+  }
+
+  @Test
+  void repeatOptionsButShouldThrowNullPointerExceptionForNullArg() {
+    assertThatNullPointerException()
+      .isThrownBy(() -> RepeatExtension.repeatOptions().but(null));
   }
 }
