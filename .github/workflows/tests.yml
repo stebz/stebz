@@ -25,9 +25,15 @@ jobs:
       matrix:
         include:
           - java-version: '8'
-            mvn-args: '-pl !stebz-reportportal'
+            mvn-args: '-pl !stebz-reportportal,!stebz-allure'
+            coverage-files: '**/target/site/jacoco/jacoco.xml'
           - java-version: '11'
-    name: Tests (JDK ${{ matrix.java-version }})
+            module: 'stebz-reportportal'
+            coverage-files: 'stebz-reportportal/target/site/jacoco/jacoco.xml'
+          - java-version: '17'
+            module: 'stebz-allure'
+            coverage-files: 'stebz-allure/target/site/jacoco/jacoco.xml'
+    name: Tests (JDK ${{ matrix.java-version }} modules)
     steps:
       - uses: actions/checkout@v7
       - name: Set up JDK
@@ -36,9 +42,18 @@ jobs:
           java-version: ${{ matrix.java-version }}
           distribution: 'temurin'
           cache: maven
-      # stebz-reportportal requires Java 11 to compile, so it is excluded from the JDK 8 job
+      # every module is tested on the minimal JDK it requires: everything except
+      # stebz-reportportal (Java 11) and stebz-allure (Java 17) runs on JDK 8
       - name: Maven test
+        if: matrix.module == null
         run: mvn -B -ntp clean test ${{ matrix.mvn-args }}
+      # build the module dependencies without tests, then run only the module tests
+      - name: Build module dependencies
+        if: matrix.module != null
+        run: mvn -B -ntp clean install -pl ${{ matrix.module }} -am -DskipTests -Dgpg.skip=true
+      - name: Maven test (module only)
+        if: matrix.module != null
+        run: mvn -B -ntp test -pl ${{ matrix.module }}
       - name: Print coverage summary
         run: |
           echo "JaCoCo line coverage:"
@@ -76,10 +91,9 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
       - name: Upload coverage to Codecov
-        if: matrix.java-version == '11'
         uses: codecov/codecov-action@v7
         with:
-          files: '**/target/site/jacoco/jacoco.xml'
+          files: ${{ matrix.coverage-files }}
           fail_ci_if_error: false
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
