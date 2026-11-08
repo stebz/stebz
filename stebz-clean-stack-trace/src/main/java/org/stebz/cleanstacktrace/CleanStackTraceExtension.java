@@ -25,18 +25,27 @@ package org.stebz.cleanstacktrace;
 
 import org.stebz.core.executor.StartupPropertiesReader;
 import org.stebz.core.extension.BeforeStepFailure;
-import org.stebz.core.extension.StebzExtension;
 import org.stebz.core.step.StepObj;
 import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.Set;
 import java.util.function.Predicate;
 
 /**
- * Clean stack trace {@link StebzExtension}.
+ * An extension that removes Stebz frames from exception stack traces when a step fails.
+ * <p>AspectJ frames are removed when the {@code StepAspects} class is available to this extension's class loader or
+ * when explicitly enabled. By default, the extension cleans the stack traces of the exception, its causes, and its
+ * suppressed exceptions.
+ * <p>The {@code stebz.cleanStackTrace.enabled} property enables or disables this extension (default: {@code true}).
+ * The {@code stebz.cleanStackTrace.order} property sets its execution order (default: {@code MIDDLE_ORDER}). The
+ * {@code stebz.cleanStackTrace.clearRelated} property controls whether causes and suppressed exceptions are also
+ * cleaned (default: {@code true}). The {@code stebz.cleanStackTrace.clearStebzLines} property controls removal of Stebz
+ * frames (default: {@code true}). The {@code stebz.cleanStackTrace.clearAspectjLines} property controls removal of
+ * AspectJ frames; when unset, removal is enabled if {@code StepAspects} is available to this extension's class loader.
  */
 public class CleanStackTraceExtension implements BeforeStepFailure {
   private static final String STEBZ_CLASS_NAME_PREFIX = "org.stebz.";
@@ -49,16 +58,16 @@ public class CleanStackTraceExtension implements BeforeStepFailure {
   private final boolean clearRelated;
 
   /**
-   * Ctor.
+   * Creates the extension using the startup properties.
    */
   public CleanStackTraceExtension() {
     this(StartupPropertiesReader.get());
   }
 
   /**
-   * Ctor.
+   * Creates the extension using the specified properties.
    *
-   * @param properties the properties reader
+   * @param properties the reader used to configure this extension
    */
   public CleanStackTraceExtension(final PropertiesReader properties) {
     this.enabled = properties.getBoolean("stebz.cleanStackTrace.enabled", true);
@@ -90,7 +99,7 @@ public class CleanStackTraceExtension implements BeforeStepFailure {
 
   private static boolean isStebzAnnotationsUsed() {
     try {
-      Class.forName("org.stebz.aspect.StepAspects");
+      Class.forName("org.stebz.annotation.aspect.StepAspects", false, CleanStackTraceExtension.class.getClassLoader());
       return true;
     } catch (final ClassNotFoundException ex) {
       return false;
@@ -108,7 +117,8 @@ public class CleanStackTraceExtension implements BeforeStepFailure {
                                 final Throwable exception) {
     if (this.enabled) {
       if (this.clearRelated) {
-        relatedExceptions(new HashSet<>(), exception).forEach(this::clearException);
+        relatedExceptions(Collections.newSetFromMap(new IdentityHashMap<>()), exception)
+          .forEach(this::clearException);
       } else {
         this.clearException(exception);
       }
@@ -128,11 +138,11 @@ public class CleanStackTraceExtension implements BeforeStepFailure {
 
   private static Set<Throwable> relatedExceptions(final Set<Throwable> exceptions,
                                                   final Throwable mainEx) {
-    for (Throwable currentEx = mainEx; currentEx != null; currentEx = currentEx.getCause()) {
-      if (exceptions.add(currentEx)) {
-        for (final Throwable suppressedEx : currentEx.getSuppressed()) {
-          relatedExceptions(exceptions, suppressedEx);
-        }
+    for (Throwable currentEx = mainEx;
+         currentEx != null && exceptions.add(currentEx);
+         currentEx = currentEx.getCause()) {
+      for (final Throwable suppressedEx : currentEx.getSuppressed()) {
+        relatedExceptions(exceptions, suppressedEx);
       }
     }
     return exceptions;
