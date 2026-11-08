@@ -50,7 +50,7 @@ import org.stebz.core.step.executable.SupplierStep;
 import java.lang.reflect.Constructor;
 
 import static org.stebz.annotation.aspect.StepAspects.capturedAttributes;
-import static org.stebz.annotation.aspect.StepAspects.capturedJointPoint;
+import static org.stebz.annotation.aspect.StepAspects.capturedJoinPoint;
 import static org.stebz.annotation.aspect.StepAspects.disableCaptureMode;
 import static org.stebz.annotation.aspect.StepAspects.disableIgnoreMode;
 import static org.stebz.annotation.aspect.StepAspects.enableCaptureMode;
@@ -685,7 +685,7 @@ public final class StepCaptor {
 
   private static RunnableStep runnableStep() {
     final StepAttributes attributes = capturedAttributes();
-    final ProceedingJoinPoint joinPoint = capturedJointPoint();
+    final ProceedingJoinPoint joinPoint = capturedJoinPoint();
     if (attributes == null || joinPoint == null) {
       throw new IllegalArgumentException("reference does not contain any steps");
     }
@@ -700,7 +700,7 @@ public final class StepCaptor {
   @SuppressWarnings("unchecked")
   private static <R> SupplierStep<R> supplierStep(final R result) {
     final StepAttributes attributes = capturedAttributes();
-    final ProceedingJoinPoint joinPoint = capturedJointPoint();
+    final ProceedingJoinPoint joinPoint = capturedJoinPoint();
     if (attributes == null || joinPoint == null) {
       throw new IllegalArgumentException("reference does not contain any steps");
     }

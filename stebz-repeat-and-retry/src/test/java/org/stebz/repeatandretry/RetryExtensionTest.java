@@ -44,7 +44,10 @@ import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
@@ -409,6 +412,42 @@ final class RetryExtensionTest {
     assertThat(elapsedMillis)
       .as("two 50ms delays are expected between three attempts")
       .isGreaterThanOrEqualTo(90L);
+  }
+
+  @Test
+  void retryDelayPreservesThreadInterruptStatus() throws Throwable {
+    final CountDownLatch firstAttemptFinished = new CountDownLatch(1);
+    final AtomicInteger attempts = new AtomicInteger();
+    final RunnableStep step = RunnableStep.of(
+      StepAttributes.of(RetryExtension.RETRY, RetryExtension.retryOptions().count(3).delay(Duration.ofSeconds(5))),
+      () -> {
+        attempts.incrementAndGet();
+        firstAttemptFinished.countDown();
+        throw new IllegalStateException();
+      }
+    );
+    final RunnableStep resultStep = (RunnableStep) intercept(newExtension(new HashMap<>()), step);
+    final AtomicReference<Throwable> failure = new AtomicReference<>();
+    final AtomicReference<Boolean> interruptStatus = new AtomicReference<>();
+    final Thread worker = new Thread(() -> {
+      try {
+        resultStep.getBody().run();
+      } catch (final Throwable ex) {
+        failure.set(ex);
+      } finally {
+        interruptStatus.set(Thread.currentThread().isInterrupted());
+      }
+    });
+
+    worker.start();
+    assertThat(firstAttemptFinished.await(5, TimeUnit.SECONDS)).isTrue();
+    worker.interrupt();
+    worker.join(5_000L);
+
+    assertThat(worker.isAlive()).isFalse();
+    assertThat(failure.get()).isInstanceOf(InterruptedException.class);
+    assertThat(interruptStatus.get()).isTrue();
+    assertThat(attempts.get()).isEqualTo(1);
   }
 
   @Test

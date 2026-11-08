@@ -76,6 +76,7 @@ public interface StepAttributes {
    * @param attribute the attribute
    * @param generator the generator
    * @param <I>       the type of the attribute
+   * @param <O>       the type of the current attribute value
    * @return a {@code StepAttributes} instance with the generated value
    * @throws NullPointerException if {@code attribute} arg or {@code generator} arg is null
    */

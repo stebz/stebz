@@ -171,7 +171,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * {@code SupplierStep} with a body that rethrows any exception.
    *
    * @param generator the exception generator
-   * @return {@code SupplierStep} with body that rethrow any exception
+   * @return {@code SupplierStep} with a body that rethrows any exception
    * @throws NullPointerException if {@code generator} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -194,7 +194,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @param exceptionType the exception type
    * @param generator     the exception generator
    * @param <E>           the type of the exception
-   * @return {@code SupplierStep} with body that rethrow exception
+   * @return {@code SupplierStep} with a body that rethrows the exception
    * @throws NullPointerException if {@code exceptionType} arg or {@code generator} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)
@@ -224,7 +224,7 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
    * @param exceptionType2 the second exception type
    * @param generator      the exception generator
    * @param <E>            the type of exceptions
-   * @return {@code SupplierStep} with body that rethrow exception
+   * @return {@code SupplierStep} with a body that rethrows the matching exception
    * @throws NullPointerException if {@code exceptionType1} arg or {@code exceptionType2} arg or {@code generator} arg
    *                              is null
    * @see #withBody(Object)
@@ -378,10 +378,10 @@ public interface SupplierStep<R> extends ExecutableStep<ThrowingSupplier<R, ?>, 
   }
 
   /**
-   * Returns {@code SupplierStep} with provided block that be executed after step body in case of step failure.
+   * Returns {@code SupplierStep} with the provided block executed after the step body if the step fails.
    *
    * @param block the on failure block
-   * @return {@code SupplierStep} with provided block that be executed after step body in case of step failure
+   * @return {@code SupplierStep} with the provided block executed after the step body if the step fails
    * @throws NullPointerException if {@code block} arg is null
    * @see #withBody(Object)
    * @see #withBodyOf(ThrowingFunction)

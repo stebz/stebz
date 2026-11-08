@@ -96,7 +96,7 @@ public class StepAspects {
   });
   private static final ThreadLocal<QuickStepMode> QUICK_STEP_MODE = new ThreadLocal<>();
   private static final ThreadLocal<StepAttributes> CAPTURED_ATTRIBUTES = new ThreadLocal<>();
-  private static final ThreadLocal<ProceedingJoinPoint> CAPTURED_JOINT_POINT = new ThreadLocal<>();
+  private static final ThreadLocal<ProceedingJoinPoint> CAPTURED_JOIN_POINT = new ThreadLocal<>();
   private static final ThreadLocal<CaptureState> CAPTURE_STATE = new ThreadLocal<>();
 
   /**
@@ -108,7 +108,7 @@ public class StepAspects {
   /**
    * Executes step field getter, creates {@code StepObj} and adds step attributes to step.
    *
-   * @param joinPoint the joint point
+   * @param joinPoint the join point
    * @return step with attributes
    * @throws Throwable if the field getter throws an exception
    */
@@ -133,7 +133,7 @@ public class StepAspects {
   /**
    * Executes method, creates {@code StepObj} and adds step attributes to step.
    *
-   * @param joinPoint the joint point
+   * @param joinPoint the join point
    * @return step with attributes
    * @throws Throwable if the method throws an exception
    */
@@ -159,7 +159,7 @@ public class StepAspects {
   /**
    * Executes constructor, creates {@code StepObj} and adds step attributes to step.
    *
-   * @param joinPoint the joint point
+   * @param joinPoint the join point
    * @throws Throwable if the constructor throws an exception
    */
   @AfterReturning(
@@ -182,7 +182,7 @@ public class StepAspects {
   /**
    * Executes method as step.
    *
-   * @param joinPoint the joint point
+   * @param joinPoint the join point
    * @return method result or {@code null} if the method returns {@code void} or if the step is captured
    * @throws Throwable if the method throws an exception
    */
@@ -209,7 +209,7 @@ public class StepAspects {
     if (quickStepMode == QuickStepMode.CAPTURE) {
       QUICK_STEP_MODE.set(QuickStepMode.FORBIDDEN_CAPTURE);
       CAPTURED_ATTRIBUTES.set(attributes);
-      CAPTURED_JOINT_POINT.set(joinPoint);
+      CAPTURED_JOIN_POINT.set(joinPoint);
       return null;
     }
 
@@ -224,7 +224,7 @@ public class StepAspects {
   /**
    * Executes constructor as step.
    *
-   * @param joinPoint the joint point
+   * @param joinPoint the join point
    * @return constructor result
    * @throws Throwable if the constructor throws an exception
    */
@@ -252,7 +252,7 @@ public class StepAspects {
     if (quickStepMode == QuickStepMode.CAPTURE) {
       QUICK_STEP_MODE.set(QuickStepMode.FORBIDDEN_CAPTURE);
       CAPTURED_ATTRIBUTES.set(attributes);
-      CAPTURED_JOINT_POINT.set(joinPoint);
+      CAPTURED_JOIN_POINT.set(joinPoint);
       return joinPoint.getThis();
     }
 
@@ -274,12 +274,12 @@ public class StepAspects {
     CAPTURE_STATE.set(new CaptureState(
       QUICK_STEP_MODE.get(),
       CAPTURED_ATTRIBUTES.get(),
-      CAPTURED_JOINT_POINT.get(),
+      CAPTURED_JOIN_POINT.get(),
       CAPTURE_STATE.get()
     ));
     QUICK_STEP_MODE.set(QuickStepMode.CAPTURE);
     CAPTURED_ATTRIBUTES.remove();
-    CAPTURED_JOINT_POINT.remove();
+    CAPTURED_JOIN_POINT.remove();
   }
 
   static void disableCaptureMode() {
@@ -287,7 +287,7 @@ public class StepAspects {
     if (captureState == null) {
       QUICK_STEP_MODE.remove();
       CAPTURED_ATTRIBUTES.remove();
-      CAPTURED_JOINT_POINT.remove();
+      CAPTURED_JOIN_POINT.remove();
       return;
     }
     if (captureState.previousState == null) {
@@ -305,10 +305,10 @@ public class StepAspects {
     } else {
       CAPTURED_ATTRIBUTES.set(captureState.capturedAttributes);
     }
-    if (captureState.capturedJointPoint == null) {
-      CAPTURED_JOINT_POINT.remove();
+    if (captureState.capturedJoinPoint == null) {
+      CAPTURED_JOIN_POINT.remove();
     } else {
-      CAPTURED_JOINT_POINT.set(captureState.capturedJointPoint);
+      CAPTURED_JOIN_POINT.set(captureState.capturedJoinPoint);
     }
   }
 
@@ -316,8 +316,8 @@ public class StepAspects {
     return CAPTURED_ATTRIBUTES.get();
   }
 
-  static ProceedingJoinPoint capturedJointPoint() {
-    return CAPTURED_JOINT_POINT.get();
+  static ProceedingJoinPoint capturedJoinPoint() {
+    return CAPTURED_JOIN_POINT.get();
   }
 
   private static MethodHandle attributesFieldSetter(final MethodHandles.Lookup lookup,
@@ -540,16 +540,16 @@ public class StepAspects {
   private static final class CaptureState {
     private final QuickStepMode quickStepMode;
     private final StepAttributes capturedAttributes;
-    private final ProceedingJoinPoint capturedJointPoint;
+    private final ProceedingJoinPoint capturedJoinPoint;
     private final CaptureState previousState;
 
     private CaptureState(final QuickStepMode quickStepMode,
                          final StepAttributes capturedAttributes,
-                         final ProceedingJoinPoint capturedJointPoint,
+                         final ProceedingJoinPoint capturedJoinPoint,
                          final CaptureState previousState) {
       this.quickStepMode = quickStepMode;
       this.capturedAttributes = capturedAttributes;
-      this.capturedJointPoint = capturedJointPoint;
+      this.capturedJoinPoint = capturedJoinPoint;
       this.previousState = previousState;
     }
   }

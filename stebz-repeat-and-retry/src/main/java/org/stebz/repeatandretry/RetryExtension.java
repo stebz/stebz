@@ -191,7 +191,7 @@ public class RetryExtension implements InterceptStep {
           }
         }
         if (attempt != count - 1 && delayMillis > 0L) {
-          Thread.sleep(delayMillis);
+          sleep(delayMillis);
         }
       }
     };
@@ -220,7 +220,7 @@ public class RetryExtension implements InterceptStep {
           }
         }
         if (attempt != count - 1 && delayMillis > 0L) {
-          Thread.sleep(delayMillis);
+          sleep(delayMillis);
         }
       }
     };
@@ -248,7 +248,7 @@ public class RetryExtension implements InterceptStep {
           }
         }
         if (attempt != count - 1 && delayMillis > 0L) {
-          Thread.sleep(delayMillis);
+          sleep(delayMillis);
         }
       }
       return null; /* unreachable */
@@ -277,7 +277,7 @@ public class RetryExtension implements InterceptStep {
           }
         }
         if (attempt != count - 1 && delayMillis > 0L) {
-          Thread.sleep(delayMillis);
+          sleep(delayMillis);
         }
       }
       return null; /* unreachable */
@@ -295,6 +295,15 @@ public class RetryExtension implements InterceptStep {
       }
     }
     return false;
+  }
+
+  private static void sleep(final long delayMillis) throws InterruptedException {
+    try {
+      Thread.sleep(delayMillis);
+    } catch (final InterruptedException ex) {
+      Thread.currentThread().interrupt();
+      throw ex;
+    }
   }
 
   /**

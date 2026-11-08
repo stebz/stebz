@@ -47,6 +47,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>dev.jlet</groupId>
+      <artifactId>jlet</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>org.stebz</groupId>
       <artifactId>stebz-utils</artifactId>
       <scope>compile</scope>

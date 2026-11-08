@@ -55,6 +55,9 @@ import static org.stebz.core.attribute.StepAttribute.PARAMS;
  * @param <S> the type of the step implementing {@code StepObj}
  */
 public interface StepObj<S extends StepObj<S>> {
+  /**
+   * Mask used to replace parameter values that should not appear in reports.
+   */
   String MASKED_PARAM_VALUE = "******";
 
   /**
@@ -113,6 +116,7 @@ public interface StepObj<S extends StepObj<S>> {
    * @param attribute the attribute
    * @param generator the generator
    * @param <I>       the type of the attribute
+   * @param <O>       the type of the current attribute value
    * @return {@code StepObj} with specified attribute value
    * @throws NullPointerException if {@code attribute} arg or {@code generator} arg is null
    */
