@@ -42,7 +42,8 @@ import org.stebz.util.property.PropertiesReader;
 import java.time.Duration;
 
 /**
- * Retry {@link StebzExtension}.
+ * A {@link StebzExtension} that retries a step body after a matching exception when the step has the {@link #RETRY}
+ * attribute or the {@link WithRetry} annotation.
  *
  * @see #RETRY
  * @see #retry
@@ -75,7 +76,7 @@ public class RetryExtension implements InterceptStep {
   }
 
   /**
-   * Ctor
+   * Ctor.
    *
    * @param properties the properties reader
    */
@@ -189,7 +190,7 @@ public class RetryExtension implements InterceptStep {
             }
           }
         }
-        if (delayMillis > 0L) {
+        if (attempt != count - 1 && delayMillis > 0L) {
           Thread.sleep(delayMillis);
         }
       }
@@ -218,7 +219,7 @@ public class RetryExtension implements InterceptStep {
             }
           }
         }
-        if (delayMillis > 0L) {
+        if (attempt != count - 1 && delayMillis > 0L) {
           Thread.sleep(delayMillis);
         }
       }
@@ -246,7 +247,7 @@ public class RetryExtension implements InterceptStep {
             }
           }
         }
-        if (delayMillis > 0L) {
+        if (attempt != count - 1 && delayMillis > 0L) {
           Thread.sleep(delayMillis);
         }
       }
@@ -275,7 +276,7 @@ public class RetryExtension implements InterceptStep {
             }
           }
         }
-        if (delayMillis > 0L) {
+        if (attempt != count - 1 && delayMillis > 0L) {
           Thread.sleep(delayMillis);
         }
       }
@@ -326,8 +327,8 @@ public class RetryExtension implements InterceptStep {
     /**
      * Returns {@code RetryOptions} with given maximum step executions count (including the first execution).
      *
-     * @param count the retry count
-     * @return {@code RetryOptions} with given retry count
+     * @param count the maximum total number of step executions, including the first execution
+     * @return {@code RetryOptions} with the specified maximum total number of executions
      */
     public RetryOptions count(final int count) {
       return new RetryOptions(count, this.delay, this.on, this.but);
@@ -346,10 +347,11 @@ public class RetryExtension implements InterceptStep {
     }
 
     /**
-     * Returns {@code RetryOptions} with given exceptions list when to retry (in case of what exception types).
+     * Returns {@code RetryOptions} with given exception types to retry on (the step is retried if one of these
+     * exceptions is thrown).
      *
-     * @param types the exceptions list when to retry
-     * @return {@code RetryOptions} with given exceptions list when to retry
+     * @param types the exception types that trigger a retry
+     * @return {@code RetryOptions} configured to retry for the specified exception types
      * @throws NullPointerException if {@code types} arg is null
      */
     @SafeVarargs
@@ -359,10 +361,11 @@ public class RetryExtension implements InterceptStep {
     }
 
     /**
-     * Returns {@code RetryOptions} with given exceptions list when not to retry (in case of what exception types).
+     * Returns {@code RetryOptions} with given exception types not to retry on (the step is not retried if one of these
+     * exceptions is thrown).
      *
-     * @param types the exceptions list when not to retry
-     * @return {@code RetryOptions} with given exceptions list when not to retry
+     * @param types the exception types that must not trigger a retry
+     * @return {@code RetryOptions} configured not to retry for the specified exception types
      * @throws NullPointerException if {@code types} arg is null
      */
     @SafeVarargs

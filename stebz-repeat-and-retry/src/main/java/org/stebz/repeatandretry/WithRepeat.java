@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Repeat the step. Annotation attribute alternative to {@link RepeatExtension#REPEAT} attribute.
+ * Repeats a step. This annotation can be used instead of the {@link RepeatExtension#REPEAT} step attribute.
  *
  * @see RepeatExtension
  */
@@ -67,16 +67,16 @@ public @interface WithRepeat {
   TimeUnit unit() default TimeUnit.SECONDS;
 
   /**
-   * Which exception to ignore (in case of what exception types).
+   * Exception types to ignore on intermediate executions. Exceptions thrown by the final execution are propagated.
    *
-   * @return exceptions list to ignore
+   * @return the exception types to ignore on intermediate executions
    */
   Class<? extends Throwable>[] skip() default {};
 
   /**
-   * Which exception not to ignore (in case of what exception types).
+   * Exception types that stop repeating immediately if thrown.
    *
-   * @return exceptions list not to ignore
+   * @return the exception types that stop repeating immediately
    */
   Class<? extends Throwable>[] but() default {};
 }

@@ -33,7 +33,8 @@ import java.lang.annotation.Target;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Retry the step in case of exception. Annotation attribute alternative to {@link RetryExtension#RETRY} attribute.
+ * Retries a step after a matching exception. This annotation can be used instead of the {@link RetryExtension#RETRY}
+ * step attribute.
  *
  * @see RetryExtension
  */
@@ -67,16 +68,16 @@ public @interface WithRetry {
   TimeUnit unit() default TimeUnit.SECONDS;
 
   /**
-   * When to retry (in case of what exception types).
+   * Exception types that trigger a retry.
    *
-   * @return exceptions list when to retry
+   * @return the exception types that trigger a retry
    */
   Class<? extends Throwable>[] on() default {Throwable.class};
 
   /**
-   * When not to retry (in case of what exception types).
+   * Exception types that must not trigger a retry.
    *
-   * @return exceptions list when not to retry
+   * @return the exception types that must not trigger a retry
    */
   Class<? extends Throwable>[] but() default {};
 }

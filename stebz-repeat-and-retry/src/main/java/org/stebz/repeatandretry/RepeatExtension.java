@@ -42,7 +42,8 @@ import org.stebz.util.property.PropertiesReader;
 import java.time.Duration;
 
 /**
- * Repeat {@link StebzExtension}.
+ * A {@link StebzExtension} that executes a step body repeatedly when the step has the {@link #REPEAT} attribute or the
+ * {@link WithRepeat} annotation.
  *
  * @see #REPEAT
  * @see #repeat
@@ -75,7 +76,7 @@ public class RepeatExtension implements InterceptStep {
   }
 
   /**
-   * Ctor
+   * Ctor.
    *
    * @param properties the properties reader
    */
@@ -188,7 +189,7 @@ public class RepeatExtension implements InterceptStep {
             }
           }
         }
-        if (delayMillis > 0L) {
+        if (attempt != count - 1 && delayMillis > 0L) {
           Thread.sleep(delayMillis);
         }
       }
@@ -216,7 +217,7 @@ public class RepeatExtension implements InterceptStep {
             }
           }
         }
-        if (delayMillis > 0L) {
+        if (attempt != count - 1 && delayMillis > 0L) {
           Thread.sleep(delayMillis);
         }
       }
@@ -244,7 +245,7 @@ public class RepeatExtension implements InterceptStep {
             }
           }
         }
-        if (delayMillis > 0L) {
+        if (attempt != count - 1 && delayMillis > 0L) {
           Thread.sleep(delayMillis);
         }
       }
@@ -273,7 +274,7 @@ public class RepeatExtension implements InterceptStep {
             }
           }
         }
-        if (delayMillis > 0L) {
+        if (attempt != count - 1 && delayMillis > 0L) {
           Thread.sleep(delayMillis);
         }
       }
@@ -335,8 +336,8 @@ public class RepeatExtension implements InterceptStep {
     /**
      * Returns {@code RepeatOptions} with given step executions count (including the first execution).
      *
-     * @param count the repeat count
-     * @return {@code RepeatOptions} with given repeat count
+     * @param count the total number of step executions, including the first execution
+     * @return {@code RepeatOptions} with the specified total number of executions
      */
     public RepeatOptions count(final int count) {
       return new RepeatOptions(count, this.delay, this.skip, this.but);
@@ -355,11 +356,11 @@ public class RepeatExtension implements InterceptStep {
     }
 
     /**
-     * Returns {@code RepeatOptions} with given exceptions list which exception to ignore (in case of what exception
-     * types).
+     * Returns {@code RepeatOptions} with the specified exception types to ignore on intermediate executions. An
+     * exception thrown by the final execution is propagated.
      *
-     * @param types the exceptions list to ignore
-     * @return {@code RepeatOptions} with given exceptions list to ignore
+     * @param types the exception types to ignore on intermediate executions
+     * @return {@code RepeatOptions} configured to ignore the specified exception types on intermediate executions
      * @throws NullPointerException if {@code types} arg is null
      */
     @SafeVarargs
@@ -369,11 +370,11 @@ public class RepeatExtension implements InterceptStep {
     }
 
     /**
-     * Returns {@code RepeatOptions} with given exceptions list which exception not to ignore (in case of what exception
-     * types).
+     * Returns {@code RepeatOptions} with given exception types not to ignore (repeating is interrupted immediately if
+     * one of these exceptions is thrown).
      *
-     * @param types the exceptions list not to ignore
-     * @return {@code RepeatOptions} with given exceptions list not to ignore
+     * @param types the exception types that must stop repeating immediately
+     * @return {@code RepeatOptions} configured to stop repeating for the specified exception types
      * @throws NullPointerException if {@code types} arg is null
      */
     @SafeVarargs
