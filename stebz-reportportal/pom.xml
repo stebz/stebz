@@ -29,18 +29,18 @@
   <parent>
     <groupId>org.stebz</groupId>
     <artifactId>stebz-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <relativePath>../stebz-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>stebz-reportportal</artifactId>
-  <packaging>jar</packaging>
 
   <name>Stebz ReportPortal</name>
   <description>Module "stebz-reportportal" of Stebz</description>
 
   <properties>
     <automatic.module.name>org.stebz.reportportal</automatic.module.name>
+    <!-- the only Java 11 module of the project; javadoc is kept at 1.8 intentionally -->
     <java.version>11</java.version>
     <javadoc.version>1.8</javadoc.version>
   </properties>

@@ -1,0 +1,90 @@
+name: Bug report
+description: Report a problem with Stebz
+title: "[Bug] "
+labels: [ "bug" ]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Briefly describe the issue you are experiencing.
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: |
+        A step-by-step reproduction guide with a minimal reproducible example.
+        Use a code block for code:
+        ```java
+        // minimal code that reproduces the issue
+        ```
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead? Include stack traces or report output if relevant.
+    validations:
+      required: true
+  - type: dropdown
+    id: module
+    attributes:
+      label: Stebz module
+      description: Which Stebz module is the issue related to?
+      options:
+        - core / methods / annotations
+        - aaa-keywords / aaa-methods / aaa-annotations
+        - gherkin-keywords / gherkin-methods / gherkin-annotations
+        - stebz-allure listener
+        - stebz-qase listener
+        - stebz-reportportal listener
+        - stebz-testit listener
+        - stebz-system-out listener
+        - an extension (clean-stack-trace, empty-steps, hidden-steps, readable-reflective-name, repeat-and-retry, soft-asserted-steps)
+        - other / not sure
+    validations:
+      required: true
+  - type: input
+    id: stebz-version
+    attributes:
+      label: Stebz version
+      placeholder: e.g. 1.13
+    validations:
+      required: true
+  - type: input
+    id: java-version
+    attributes:
+      label: Java version
+      placeholder: e.g. 17
+    validations:
+      required: true
+  - type: dropdown
+    id: build-tool
+    attributes:
+      label: Build tool
+      options:
+        - Maven
+        - Gradle
+        - Other
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Any relevant logs.
+    validations:
+      required: false
