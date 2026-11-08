@@ -41,12 +41,25 @@ import org.stebz.util.property.PropertiesReader;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
- * Qase {@code StepListener} implementation.
+ * Qase {@code StepListener} implementation: reports steps to Qase as nested steps with names, expected results, and
+ * statuses.
+ * <p>The {@code stebz.qase.enabled} property enables or disables this listener (default: {@code true}). The
+ * {@code stebz.qase.order} property sets its execution order (default: {@code MIDDLE_ORDER}). The
+ * {@code stebz.qase.onlyKeywordSteps} property limits reporting to steps with a keyword (default: {@code false}). The
+ * {@code stebz.qase.keywordPosition} property sets the keyword position, {@code AT_START} or {@code AT_END} (default:
+ * {@code AT_START}). The {@code stebz.qase.keywordToUppercase} property uppercases the keyword (default:
+ * {@code false}). The {@code stebz.qase.processName} property enables name template processing with step parameters
+ * (default: {@code true}). The {@code stebz.qase.contextParam} property enables adding of the step context as a
+ * parameter (default: {@code false}). The {@code stebz.qase.contextParamName} property sets the context parameter name
+ * (default: {@code Context}). The {@code stebz.qase.commentAttachment} property enables adding of the step comment as
+ * an attachment (default: {@code true}). The {@code stebz.qase.commentAttachmentName} property sets the comment
+ * attachment name (default: {@code Comment}).
  */
 public class QaseStepListener implements StepListener {
   private final boolean enabled;
@@ -89,11 +102,13 @@ public class QaseStepListener implements StepListener {
   }
 
   /**
-   * Sets current step name if any. Takes no effect if no step run at the moment.
+   * Sets current step name if any. Takes no effect if no step is running at the moment.
    *
    * @param name the step name
+   * @throws NullPointerException if {@code name} arg is null
    */
   public static void stepName(final String name) {
+    if (name == null) { throw new NullPointerException("name arg is null"); }
     final StepResult stepResult = StepStorage.getCurrentStep();
     if (stepResult != null) {
       stepResult.data.action = name;
@@ -101,7 +116,7 @@ public class QaseStepListener implements StepListener {
   }
 
   /**
-   * Sets current step name if any. Takes no effect if no step run at the moment.
+   * Sets current step name if any. Takes no effect if no step is running at the moment.
    *
    * @param update the step name update function
    * @throws NullPointerException if {@code update} arg is null
@@ -115,11 +130,13 @@ public class QaseStepListener implements StepListener {
   }
 
   /**
-   * Sets current step status if any. Takes no effect if no step run at the moment.
+   * Sets current step status if any. Takes no effect if no step is running at the moment.
    *
    * @param status the step status
+   * @throws NullPointerException if {@code status} arg is null
    */
   public static void stepStatus(final StepResultStatus status) {
+    if (status == null) { throw new NullPointerException("status arg is null"); }
     final StepResult stepResult = StepStorage.getCurrentStep();
     if (stepResult != null) {
       stepResult.execution.status = status;
@@ -127,7 +144,7 @@ public class QaseStepListener implements StepListener {
   }
 
   /**
-   * Sets current step status if any. Takes no effect if no step run at the moment.
+   * Sets current step status if any. Takes no effect if no step is running at the moment.
    *
    * @param exception the step exception
    * @throws NullPointerException if {@code exception} arg is null
@@ -142,7 +159,7 @@ public class QaseStepListener implements StepListener {
   }
 
   /**
-   * Updates current step if any. Takes no effect if no step run at the moment.
+   * Updates current step if any. Takes no effect if no step is running at the moment.
    *
    * @param update the step update function
    * @throws NullPointerException if {@code update} arg is null
@@ -209,10 +226,12 @@ public class QaseStepListener implements StepListener {
     }
 
     final StepResult stepResult = StepStorage.getCurrentStep();
-    if (stepResult.execution.status == StepResultStatus.UNTESTED) {
-      stepResult.execution.status = StepResultStatus.PASSED;
+    if (stepResult != null) {
+      if (stepResult.execution.status == StepResultStatus.UNTESTED) {
+        stepResult.execution.status = StepResultStatus.PASSED;
+      }
+      StepStorage.stopStep();
     }
-    StepStorage.stopStep();
   }
 
   @Override
@@ -227,14 +246,16 @@ public class QaseStepListener implements StepListener {
     }
 
     final StepResult stepResult = StepStorage.getCurrentStep();
-    stepResult.execution.status = StepResultStatus.FAILED;
-    stepResult.throwable = exception;
-    StepStorage.stopStep();
+    if (stepResult != null) {
+      stepResult.execution.status = StepResultStatus.FAILED;
+      stepResult.throwable = exception;
+      StepStorage.stopStep();
+    }
   }
 
   private static boolean isStebzAnnotationsUsed() {
     try {
-      Class.forName("org.stebz.annotation.aspect.StepAspects");
+      Class.forName("org.stebz.annotation.aspect.StepAspects", false, QaseStepListener.class.getClassLoader());
       return true;
     } catch (final ClassNotFoundException ex) {
       return false;
@@ -259,7 +280,7 @@ public class QaseStepListener implements StepListener {
     for (final Map.Entry<String, Object> entry : paramsToProcess.entrySet()) {
       final String paramName = '{' + entry.getKey() + '}';
       if (name.contains(paramName)) {
-        name = name.replaceAll("\\" + paramName, asString(entry.getValue()));
+        name = name.replace(paramName, asString(entry.getValue()));
       }
     }
     return name;
@@ -312,7 +333,7 @@ public class QaseStepListener implements StepListener {
 
   private String keywordValue(final Keyword keyword) {
     return this.keywordToUppercase
-      ? keyword.value().toUpperCase()
+      ? keyword.value().toUpperCase(Locale.ROOT)
       : keyword.value();
   }
 

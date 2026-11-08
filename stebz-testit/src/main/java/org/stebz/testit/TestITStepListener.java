@@ -41,12 +41,30 @@ import ru.testit.services.AdapterManager;
 import ru.testit.services.Utils;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Test IT {@code StepListener} implementation.
+ * Test IT {@code StepListener} implementation: reports steps to Test IT as nested steps with titles, parameters,
+ * descriptions, and statuses.
+ * <p>The {@code stebz.testit.enabled} property enables or disables this listener (default: {@code true}). The
+ * {@code stebz.testit.order} property sets its execution order (default: {@code MIDDLE_ORDER}). The
+ * {@code stebz.testit.onlyKeywordSteps} property limits reporting to steps with a keyword (default: {@code false}). The
+ * {@code stebz.testit.keywordPosition} property sets the keyword position, {@code AT_START} or {@code AT_END} (default:
+ * {@code AT_START}). The {@code stebz.testit.keywordToUppercase} property uppercases the keyword (default:
+ * {@code false}). The {@code stebz.testit.processName} property enables name template processing with step parameters
+ * (default: {@code true}). The {@code stebz.testit.contextParam} property enables adding of the step context as a
+ * parameter (default: {@code false}). The {@code stebz.testit.contextParamName} property sets the context parameter
+ * name (default: {@code Context}). The {@code stebz.testit.contextDesc} property enables adding of the step context to
+ * the description (default: {@code false}). The {@code stebz.testit.contextDescName} property sets the context
+ * description name (default: {@code Context}). The {@code stebz.testit.expectedResultDesc} property enables adding of
+ * the step expected result to the description (default: {@code true}). The {@code stebz.testit.expectedResultDescName}
+ * property sets the expected result description name (default: {@code Expected result}). The
+ * {@code stebz.testit.commentDesc} property enables adding of the step comment to the description (default:
+ * {@code true}). The {@code stebz.testit.commentDescName} property sets the comment description name (default:
+ * {@code Comment}).
  */
 public class TestITStepListener implements StepListener {
   private final boolean enabled;
@@ -98,15 +116,17 @@ public class TestITStepListener implements StepListener {
   }
 
   /**
-   * Adds parameter to current step if any. Takes no effect if no step run at the moment.
+   * Adds parameter to current step if any. Takes no effect if no step is running at the moment.
    *
    * @param name  the step parameter name
    * @param value the step parameter value
    * @param <T>   the type of the step parameter value
    * @return step parameter value
+   * @throws NullPointerException if {@code name} arg is null
    */
   public static <T> T stepParameter(final String name,
                                     final T value) {
+    if (name == null) { throw new NullPointerException("name arg is null"); }
     Adapter.getAdapterManager().updateStep(stepResult -> {
       Map<String, String> parameters = stepResult.getParameters();
       if (parameters == null) {
@@ -119,18 +139,20 @@ public class TestITStepListener implements StepListener {
   }
 
   /**
-   * Sets current step name if any. Takes no effect if no step run at the moment.
+   * Sets current step name if any. Takes no effect if no step is running at the moment.
    *
    * @param name the step name
+   * @throws NullPointerException if {@code name} arg is null
    */
   public static void stepName(final String name) {
+    if (name == null) { throw new NullPointerException("name arg is null"); }
     Adapter.getAdapterManager().updateStep(stepResult ->
       stepResult.setTitle(name)
     );
   }
 
   /**
-   * Sets current step name if any. Takes no effect if no step run at the moment.
+   * Sets current step name if any. Takes no effect if no step is running at the moment.
    *
    * @param update the step name update function
    * @throws NullPointerException if {@code update} arg is null
@@ -143,18 +165,20 @@ public class TestITStepListener implements StepListener {
   }
 
   /**
-   * Sets current step status if any. Takes no effect if no step run at the moment.
+   * Sets current step status if any. Takes no effect if no step is running at the moment.
    *
    * @param status the step status
+   * @throws NullPointerException if {@code status} arg is null
    */
   public static void stepStatus(final ItemStatus status) {
+    if (status == null) { throw new NullPointerException("status arg is null"); }
     Adapter.getAdapterManager().updateStep(stepResult ->
       stepResult.setItemStatus(status)
     );
   }
 
   /**
-   * Sets current step status if any. Takes no effect if no step run at the moment.
+   * Sets current step status if any. Takes no effect if no step is running at the moment.
    *
    * @param exception the step exception
    * @throws NullPointerException if {@code exception} arg is null
@@ -167,7 +191,7 @@ public class TestITStepListener implements StepListener {
   }
 
   /**
-   * Updates current step if any. Takes no effect if no step run at the moment.
+   * Updates current step if any. Takes no effect if no step is running at the moment.
    *
    * @param update the step update function
    * @throws NullPointerException if {@code update} arg is null
@@ -255,7 +279,7 @@ public class TestITStepListener implements StepListener {
 
   private static boolean isStebzAnnotationsUsed() {
     try {
-      Class.forName("org.stebz.annotation.aspect.StepAspects");
+      Class.forName("org.stebz.annotation.aspect.StepAspects", false, TestITStepListener.class.getClassLoader());
       return true;
     } catch (final ClassNotFoundException ex) {
       return false;
@@ -322,7 +346,7 @@ public class TestITStepListener implements StepListener {
 
   private String keywordValue(final Keyword keyword) {
     return this.keywordToUppercase
-      ? keyword.value().toUpperCase()
+      ? keyword.value().toUpperCase(Locale.ROOT)
       : keyword.value();
   }
 
