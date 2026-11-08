@@ -43,7 +43,11 @@ import java.util.Map;
 import static org.stebz.util.Throw.unchecked;
 
 /**
- * Soft assertions {@link StebzExtension}.
+ * Soft asserted steps {@link StebzExtension}: exceptions thrown by steps executed within a {@code softAssertedSteps}
+ * block are collected instead of failing the block immediately, and at the end of the block all collected exceptions
+ * are reported together as a single {@link MultipleFailuresError}.
+ * <p>The {@code stebz.softAssertedSteps.enabled} property enables or disables this extension (default: {@code true}).
+ * The {@code stebz.softAssertedSteps.order} property sets its execution order (default: {@code LATE_ORDER}).
  */
 public class SoftAssertedStepsExtension implements InterceptStepException {
   private static final ThreadLocal<Integer> THREAD_LOCAL_DEPTH = new ThreadLocal<>();
@@ -53,14 +57,14 @@ public class SoftAssertedStepsExtension implements InterceptStepException {
   private final int order;
 
   /**
-   * Ctor.
+   * Creates the extension using the startup properties.
    */
   public SoftAssertedStepsExtension() {
     this(StartupPropertiesReader.get());
   }
 
   /**
-   * Ctor
+   * Creates the extension using the specified properties.
    *
    * @param properties the properties reader
    */
@@ -70,11 +74,12 @@ public class SoftAssertedStepsExtension implements InterceptStepException {
   }
 
   /**
-   * Executes given block of steps with soft assertions.
+   * Executes the given block of steps with soft assertions: exceptions thrown by steps executed within the block are
+   * collected and reported together as a single {@link MultipleFailuresError} at the end of the block.
    *
-   * @param steps the block of steps for soft assertions
+   * @param steps the block of steps
    * @throws NullPointerException  if {@code steps} arg is null
-   * @throws MultipleFailuresError if one or more steps throw an any exception
+   * @throws MultipleFailuresError if one or more steps executed in the block threw an exception
    */
   public static void softAssertedSteps(final ThrowingRunnable<?> steps) {
     if (steps == null) { throw new NullPointerException("steps arg is null"); }
@@ -90,13 +95,14 @@ public class SoftAssertedStepsExtension implements InterceptStepException {
   }
 
   /**
-   * Executes given block of steps with soft assertions.
+   * Executes the given block of steps with soft assertions: exceptions thrown by steps executed within the block are
+   * collected and reported together as a single {@link MultipleFailuresError} at the end of the block.
    *
    * @param value the additional value
-   * @param steps the block of steps for soft assertions
+   * @param steps the block of steps
    * @param <V>   the type of the additional value
    * @throws NullPointerException  if {@code steps} arg is null
-   * @throws MultipleFailuresError if one or more steps throw an any exception
+   * @throws MultipleFailuresError if one or more steps executed in the block threw an exception
    */
   public static <V> void softAssertedSteps(final V value,
                                            final ThrowingConsumer<? super V, ?> steps) {
@@ -113,13 +119,15 @@ public class SoftAssertedStepsExtension implements InterceptStepException {
   }
 
   /**
-   * Executes given block of steps with soft assertions and returns execution result.
+   * Executes the given block of steps with soft assertions and returns the execution result: exceptions thrown by steps
+   * executed within the block are collected and reported together as a single {@link MultipleFailuresError} at the end
+   * of the block.
    *
-   * @param steps the block of steps for soft assertions
+   * @param steps the block of steps
    * @param <R>   the type of the result
    * @return execution result
    * @throws NullPointerException  if {@code steps} arg is null
-   * @throws MultipleFailuresError if one or more steps throw an any exception
+   * @throws MultipleFailuresError if one or more steps executed in the block threw an exception
    */
   public static <R> R softAssertedStepsResult(final ThrowingSupplier<? extends R, ?> steps) {
     if (steps == null) { throw new NullPointerException("steps arg is null"); }
@@ -136,15 +144,17 @@ public class SoftAssertedStepsExtension implements InterceptStepException {
   }
 
   /**
-   * Executes given block of steps with soft assertions and returns execution result.
+   * Executes the given block of steps with soft assertions and returns the execution result: exceptions thrown by steps
+   * executed within the block are collected and reported together as a single {@link MultipleFailuresError} at the end
+   * of the block.
    *
    * @param value the additional value
-   * @param steps the block of steps for soft assertions
+   * @param steps the block of steps
    * @param <V>   the type of the additional value
    * @param <R>   the type of the result
    * @return execution result
    * @throws NullPointerException  if {@code steps} arg is null
-   * @throws MultipleFailuresError if one or more steps throw an any exception
+   * @throws MultipleFailuresError if one or more steps executed in the block threw an exception
    */
   public static <V, R> R softAssertedStepsResult(final V value,
                                                  final ThrowingFunction<? super V, ? extends R, ?> steps) {
@@ -159,6 +169,68 @@ public class SoftAssertedStepsExtension implements InterceptStepException {
       finishSoftAssertions(blockException);
     }
     return null; /* unreachable */
+  }
+
+  /**
+   * Executes the given block of steps with soft assertions: exceptions thrown by steps executed within the block are
+   * collected and reported together as a single {@link MultipleFailuresError} at the end of the block. Alias for
+   * {@link #softAssertedSteps(ThrowingRunnable)}.
+   *
+   * @param steps the block of steps
+   * @throws NullPointerException  if {@code steps} arg is null
+   * @throws MultipleFailuresError if one or more steps executed in the block threw an exception
+   */
+  public static void SoftAssertedSteps(final ThrowingRunnable<?> steps) {
+    softAssertedSteps(steps);
+  }
+
+  /**
+   * Executes the given block of steps with soft assertions: exceptions thrown by steps executed within the block are
+   * collected and reported together as a single {@link MultipleFailuresError} at the end of the block. Alias for
+   * {@link #softAssertedSteps(Object, ThrowingConsumer)}.
+   *
+   * @param value the additional value
+   * @param steps the block of steps
+   * @param <V>   the type of the additional value
+   * @throws NullPointerException  if {@code steps} arg is null
+   * @throws MultipleFailuresError if one or more steps executed in the block threw an exception
+   */
+  public static <V> void SoftAssertedSteps(final V value,
+                                           final ThrowingConsumer<? super V, ?> steps) {
+    softAssertedSteps(value, steps);
+  }
+
+  /**
+   * Executes the given block of steps with soft assertions and returns the execution result: exceptions thrown by steps
+   * executed within the block are collected and reported together as a single {@link MultipleFailuresError} at the end
+   * of the block. Alias for {@link #softAssertedStepsResult(ThrowingSupplier)}.
+   *
+   * @param steps the block of steps
+   * @param <R>   the type of the result
+   * @return execution result
+   * @throws NullPointerException  if {@code steps} arg is null
+   * @throws MultipleFailuresError if one or more steps executed in the block threw an exception
+   */
+  public static <R> R SoftAssertedStepsResult(final ThrowingSupplier<? extends R, ?> steps) {
+    return softAssertedStepsResult(steps);
+  }
+
+  /**
+   * Executes the given block of steps with soft assertions and returns the execution result: exceptions thrown by steps
+   * executed within the block are collected and reported together as a single {@link MultipleFailuresError} at the end
+   * of the block. Alias for {@link #softAssertedStepsResult(Object, ThrowingFunction)}.
+   *
+   * @param value the additional value
+   * @param steps the block of steps
+   * @param <V>   the type of the additional value
+   * @param <R>   the type of the result
+   * @return execution result
+   * @throws NullPointerException  if {@code steps} arg is null
+   * @throws MultipleFailuresError if one or more steps executed in the block threw an exception
+   */
+  public static <V, R> R SoftAssertedStepsResult(final V value,
+                                                 final ThrowingFunction<? super V, ? extends R, ?> steps) {
+    return softAssertedStepsResult(value, steps);
   }
 
   private static void startSoftAssertions() {
@@ -206,6 +278,9 @@ public class SoftAssertedStepsExtension implements InterceptStepException {
     if (blockException != null) {
       LAST_ASSERTION_ERROR.remove();
       throw unchecked(blockException);
+    }
+    if (currentDepth == 0) {
+      LAST_ASSERTION_ERROR.remove();
     }
   }
 

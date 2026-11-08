@@ -35,7 +35,10 @@ import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
 
 /**
- * Hidden steps {@link StebzExtension}.
+ * Hidden steps {@link StebzExtension}: steps executed within a {@code hiddenSteps} block are marked as hidden, so
+ * listeners do not report them.
+ * <p>The {@code stebz.hiddenSteps.enabled} property enables or disables this extension (default: {@code true}). The
+ * {@code stebz.hiddenSteps.order} property sets its execution order (default: {@code MIDDLE_ORDER}).
  */
 public class HiddenStepsExtension implements InterceptStep {
   private static final ThreadLocal<Integer> THREAD_LOCAL_DEPTH = new ThreadLocal<>();
@@ -43,14 +46,14 @@ public class HiddenStepsExtension implements InterceptStep {
   private final int order;
 
   /**
-   * Ctor.
+   * Creates the extension using the startup properties.
    */
   public HiddenStepsExtension() {
     this(StartupPropertiesReader.get());
   }
 
   /**
-   * Ctor.
+   * Creates the extension using the specified properties.
    *
    * @param properties the properties reader
    */
@@ -60,9 +63,9 @@ public class HiddenStepsExtension implements InterceptStep {
   }
 
   /**
-   * Executes given block of steps with hiding.
+   * Executes the given block of steps, hiding each step executed within the block from listeners.
    *
-   * @param steps the block of steps for hiding
+   * @param steps the block of steps
    * @throws NullPointerException if {@code steps} arg is null
    */
   public static void hiddenSteps(final ThrowingRunnable<?> steps) {
@@ -76,10 +79,10 @@ public class HiddenStepsExtension implements InterceptStep {
   }
 
   /**
-   * Executes given block of steps with hiding.
+   * Executes the given block of steps, hiding each step executed within the block from listeners.
    *
    * @param value the additional value
-   * @param steps the block of steps for hiding
+   * @param steps the block of steps
    * @param <V>   the type of the additional value
    * @throws NullPointerException if {@code steps} arg is null
    */
@@ -95,9 +98,10 @@ public class HiddenStepsExtension implements InterceptStep {
   }
 
   /**
-   * Executes given block of steps with hiding and returns result.
+   * Executes the given block of steps, hiding each step executed within the block from listeners, and returns the
+   * execution result.
    *
-   * @param steps the block of steps for hiding
+   * @param steps the block of steps
    * @param <R>   the type of the result
    * @return execution result
    * @throws NullPointerException if {@code steps} arg is null
@@ -113,9 +117,11 @@ public class HiddenStepsExtension implements InterceptStep {
   }
 
   /**
-   * Executes given block of steps with hiding and returns execution result.
+   * Executes the given block of steps, hiding each step executed within the block from listeners, and returns the
+   * execution result.
    *
-   * @param steps the block of steps for hiding
+   * @param value the additional value
+   * @param steps the block of steps
    * @param <V>   the type of the additional value
    * @param <R>   the type of the result
    * @return execution result
@@ -130,6 +136,60 @@ public class HiddenStepsExtension implements InterceptStep {
     } finally {
       finishHiddenSteps();
     }
+  }
+
+  /**
+   * Executes the given block of steps, hiding each step executed within the block from listeners. Alias for
+   * {@link #hiddenSteps(ThrowingRunnable)}.
+   *
+   * @param steps the block of steps
+   * @throws NullPointerException if {@code steps} arg is null
+   */
+  public static void HiddenSteps(final ThrowingRunnable<?> steps) {
+    hiddenSteps(steps);
+  }
+
+  /**
+   * Executes the given block of steps, hiding each step executed within the block from listeners. Alias for
+   * {@link #hiddenSteps(Object, ThrowingConsumer)}.
+   *
+   * @param value the additional value
+   * @param steps the block of steps
+   * @param <V>   the type of the additional value
+   * @throws NullPointerException if {@code steps} arg is null
+   */
+  public static <V> void HiddenSteps(final V value,
+                                     final ThrowingConsumer<? super V, ?> steps) {
+    hiddenSteps(value, steps);
+  }
+
+  /**
+   * Executes the given block of steps, hiding each step executed within the block from listeners, and returns the
+   * execution result. Alias for {@link #hiddenStepsResult(ThrowingSupplier)}.
+   *
+   * @param steps the block of steps
+   * @param <R>   the type of the result
+   * @return execution result
+   * @throws NullPointerException if {@code steps} arg is null
+   */
+  public static <R> R HiddenStepsResult(final ThrowingSupplier<? extends R, ?> steps) {
+    return hiddenStepsResult(steps);
+  }
+
+  /**
+   * Executes the given block of steps, hiding each step executed within the block from listeners, and returns the
+   * execution result. Alias for {@link #hiddenStepsResult(Object, ThrowingFunction)}.
+   *
+   * @param value the additional value
+   * @param steps the block of steps
+   * @param <V>   the type of the additional value
+   * @param <R>   the type of the result
+   * @return execution result
+   * @throws NullPointerException if {@code steps} arg is null
+   */
+  public static <V, R> R HiddenStepsResult(final V value,
+                                           final ThrowingFunction<? super V, ? extends R, ?> steps) {
+    return hiddenStepsResult(value, steps);
   }
 
   private static void startHiddenSteps() {
