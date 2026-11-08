@@ -355,4 +355,25 @@ final class ValTest {
     assertThat(Val.empty().toString())
       .hasToString("Val[<no value>]");
   }
+
+  @Test
+  void isEmptyMethodShouldReturnFalseForPresentVal() {
+    final Val<Object> val = Val.of(new Object());
+
+    assertThat(val.isEmpty())
+      .isFalse();
+    assertThat(val.isPresent())
+      .isTrue();
+  }
+
+  @Test
+  void equalsMethodShouldReturnTrueForSameInstance() {
+    final Val<Integer> val = Val.of(1);
+    final Val<Integer> emptyVal = Val.empty();
+
+    assertThat(val.equals(val))
+      .isTrue();
+    assertThat(emptyVal.equals(emptyVal))
+      .isTrue();
+  }
 }

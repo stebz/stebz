@@ -30,6 +30,7 @@ import dev.jlet.function.ThrowingSupplier;
 import org.junit.jupiter.api.Test;
 import org.stebz.core.attribute.SimpleStepAttribute;
 import org.stebz.core.attribute.StepAttributes;
+import org.stebz.core.executor.StartupPropertiesReader;
 import org.stebz.core.extension.StebzExtension;
 import org.stebz.core.step.StepObj;
 import org.stebz.core.step.executable.ConsumerStep;
@@ -39,12 +40,14 @@ import org.stebz.core.step.executable.SupplierStep;
 import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
 
+import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
@@ -88,6 +91,68 @@ final class RetryExtensionTest {
   static class AnnotationHolder {
     @WithRetry(count = 3)
     void threeTimes() {
+    }
+  }
+
+  private static void setStartupPropertiesReader(final PropertiesReader reader) throws Exception {
+    final Method setMethod = StartupPropertiesReader.class.getDeclaredMethod("set", PropertiesReader.class);
+    setMethod.setAccessible(true);
+    setMethod.invoke(null, reader);
+  }
+
+  private static void clearStartupPropertiesReader() throws Exception {
+    final Method clearMethod = StartupPropertiesReader.class.getDeclaredMethod("clear");
+    clearMethod.setAccessible(true);
+    clearMethod.invoke(null);
+  }
+
+  private static ThrowingConsumer<Object, ?> consumerFailingFirstAttempts(final int timesToFail,
+                                                                          final Throwable exception,
+                                                                          final AtomicInteger counter) {
+    return context -> {
+      if (counter.incrementAndGet() <= timesToFail) {
+        throw exception;
+      }
+    };
+  }
+
+  private static ThrowingSupplier<Object, ?> supplierFailingFirstAttempts(final int timesToFail,
+                                                                          final Throwable exception,
+                                                                          final AtomicInteger counter) {
+    return () -> {
+      if (counter.incrementAndGet() <= timesToFail) {
+        throw exception;
+      }
+      return counter.get();
+    };
+  }
+
+  private static ThrowingFunction<Object, Object, ?> functionFailingFirstAttempts(final int timesToFail,
+                                                                                  final Throwable exception,
+                                                                                  final AtomicInteger counter) {
+    return context -> {
+      if (counter.incrementAndGet() <= timesToFail) {
+        throw exception;
+      }
+      return counter.get();
+    };
+  }
+
+  private static final class CustomStepObj implements StepObj<CustomStepObj> {
+    private final StepAttributes attributes;
+
+    private CustomStepObj(final StepAttributes attributes) {
+      this.attributes = attributes;
+    }
+
+    @Override
+    public StepAttributes getAttributes() {
+      return this.attributes;
+    }
+
+    @Override
+    public CustomStepObj withAttributes(final StepAttributes attributes) {
+      return new CustomStepObj(attributes);
     }
   }
 
@@ -344,5 +409,281 @@ final class RetryExtensionTest {
     assertThat(elapsedMillis)
       .as("two 50ms delays are expected between three attempts")
       .isGreaterThanOrEqualTo(90L);
+  }
+
+  @Test
+  void ctorShouldUseStartupPropertiesReader() throws Exception {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.retry.order", "12345");
+    try {
+      setStartupPropertiesReader(new PropertiesReader.Of(properties));
+      assertThat(new RetryExtension().order())
+        .isEqualTo(12345);
+    } finally {
+      clearStartupPropertiesReader();
+    }
+  }
+
+  @Test
+  void retryStaticMethodShouldReturnDefaultRetryOptions() {
+    assertThat(RetryExtension.retry())
+      .isSameAs(RetryExtension.retryOptions());
+  }
+
+  @Test
+  void retryOptionsFromRetryStaticMethodShouldBeAppliedToStep() throws Throwable {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalStateException exception = new IllegalStateException();
+    final RunnableStep step = RunnableStep.of(
+      StepAttributes.of(RetryExtension.RETRY, RetryExtension.retry()),
+      bodyFailingFirstAttempts(1, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    assertThat(resultStep).isNotSameAs(step);
+    ((RunnableStep) resultStep).getBody().run();
+
+    assertThat(counter.get()).isEqualTo(2);
+  }
+
+  @Test
+  void stepOfCustomTypeShouldBeReturnedUnchanged() {
+    final StepObj<?> step = new CustomStepObj(
+      StepAttributes.of(RetryExtension.RETRY, RetryExtension.retryOptions().count(3))
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+
+    assertThat(resultStep).isSameAs(step);
+  }
+
+  @Test
+  void retryConsumerStepShouldExecuteBodyOnFinalAttemptAfterRetries() throws Throwable {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalStateException exception = new IllegalStateException();
+    final ConsumerStep<Object> step = ConsumerStep.of(
+      StepAttributes.of(
+        RetryExtension.RETRY,
+        RetryExtension.retryOptions().count(3).delay(Duration.ofMillis(50))
+      ),
+      consumerFailingFirstAttempts(2, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    assertThat(resultStep)
+      .isInstanceOf(ConsumerStep.class)
+      .isNotSameAs(step);
+    @SuppressWarnings("unchecked")
+    final ConsumerStep<Object> consumerStep = (ConsumerStep<Object>) resultStep;
+    consumerStep.getBody().accept("context value");
+
+    assertThat(counter.get()).isEqualTo(3);
+  }
+
+  @Test
+  void retryConsumerStepShouldStopOnButExceptions() {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalStateException exception = new IllegalStateException();
+    final ConsumerStep<Object> step = ConsumerStep.of(
+      StepAttributes.of(
+        RetryExtension.RETRY,
+        RetryExtension.retryOptions().count(3).but(IllegalStateException.class)
+      ),
+      consumerFailingFirstAttempts(3, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    @SuppressWarnings("unchecked")
+    final ConsumerStep<Object> consumerStep = (ConsumerStep<Object>) resultStep;
+    assertThatThrownBy(() -> consumerStep.getBody().accept("context value"))
+      .isSameAs(exception);
+
+    assertThat(counter.get()).isEqualTo(1);
+  }
+
+  @Test
+  void retryConsumerStepShouldStopOnNonMatchingExceptions() {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalArgumentException exception = new IllegalArgumentException();
+    final ConsumerStep<Object> step = ConsumerStep.of(
+      StepAttributes.of(
+        RetryExtension.RETRY,
+        RetryExtension.retryOptions().count(3).on(IllegalStateException.class)
+      ),
+      consumerFailingFirstAttempts(3, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    @SuppressWarnings("unchecked")
+    final ConsumerStep<Object> consumerStep = (ConsumerStep<Object>) resultStep;
+    assertThatThrownBy(() -> consumerStep.getBody().accept("context value"))
+      .isSameAs(exception);
+
+    assertThat(counter.get()).isEqualTo(1);
+  }
+
+  @Test
+  void retrySupplierStepShouldReturnResultOfFirstAttemptWithoutRetrying() throws Throwable {
+    final AtomicInteger counter = new AtomicInteger();
+    final SupplierStep<Object> step = SupplierStep.of(
+      StepAttributes.of(
+        RetryExtension.RETRY,
+        RetryExtension.retryOptions().count(3)
+      ),
+      (ThrowingSupplier<Object, ?>) counter::incrementAndGet
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    assertThat(resultStep)
+      .isInstanceOf(SupplierStep.class)
+      .isNotSameAs(step);
+    @SuppressWarnings("unchecked")
+    final Object result = ((SupplierStep<Object>) resultStep).getBody().get();
+
+    assertThat(result).isEqualTo(1);
+  }
+
+  @Test
+  void retrySupplierStepShouldStopOnButExceptions() {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalStateException exception = new IllegalStateException();
+    final SupplierStep<Object> step = SupplierStep.of(
+      StepAttributes.of(
+        RetryExtension.RETRY,
+        RetryExtension.retryOptions().count(3).but(IllegalStateException.class)
+      ),
+      supplierFailingFirstAttempts(3, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    @SuppressWarnings("unchecked")
+    final SupplierStep<Object> supplierStep = (SupplierStep<Object>) resultStep;
+    assertThatThrownBy(supplierStep.getBody()::get)
+      .isSameAs(exception);
+
+    assertThat(counter.get()).isEqualTo(1);
+  }
+
+  @Test
+  void retrySupplierStepShouldStopOnNonMatchingExceptions() {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalArgumentException exception = new IllegalArgumentException();
+    final SupplierStep<Object> step = SupplierStep.of(
+      StepAttributes.of(
+        RetryExtension.RETRY,
+        RetryExtension.retryOptions().count(3).on(IllegalStateException.class)
+      ),
+      supplierFailingFirstAttempts(3, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    @SuppressWarnings("unchecked")
+    final SupplierStep<Object> supplierStep = (SupplierStep<Object>) resultStep;
+    assertThatThrownBy(supplierStep.getBody()::get)
+      .isSameAs(exception);
+
+    assertThat(counter.get()).isEqualTo(1);
+  }
+
+  @Test
+  void retrySupplierStepDelayShouldBeAppliedBetweenAttempts() throws Throwable {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalStateException exception = new IllegalStateException();
+    final SupplierStep<Object> step = SupplierStep.of(
+      StepAttributes.of(
+        RetryExtension.RETRY,
+        RetryExtension.retryOptions().count(3).delay(Duration.ofMillis(50))
+      ),
+      supplierFailingFirstAttempts(2, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    @SuppressWarnings("unchecked")
+    final Object result = ((SupplierStep<Object>) resultStep).getBody().get();
+
+    assertThat(result).isEqualTo(3);
+  }
+
+  @Test
+  void retryFunctionStepShouldReturnResultOfLastAttempt() throws Throwable {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalStateException exception = new IllegalStateException();
+    final FunctionStep<Object, Object> step = FunctionStep.of(
+      StepAttributes.of(
+        RetryExtension.RETRY,
+        RetryExtension.retryOptions().count(3).delay(Duration.ofMillis(50))
+      ),
+      functionFailingFirstAttempts(2, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    assertThat(resultStep)
+      .isInstanceOf(FunctionStep.class)
+      .isNotSameAs(step);
+    @SuppressWarnings("unchecked")
+    final FunctionStep<Object, Object> functionStep = (FunctionStep<Object, Object>) resultStep;
+    final Object result = functionStep.getBody().apply("context value");
+
+    assertThat(result).isEqualTo(3);
+  }
+
+  @Test
+  void retryFunctionStepShouldStopOnButExceptions() {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalStateException exception = new IllegalStateException();
+    final FunctionStep<Object, Object> step = FunctionStep.of(
+      StepAttributes.of(
+        RetryExtension.RETRY,
+        RetryExtension.retryOptions().count(3).but(IllegalStateException.class)
+      ),
+      functionFailingFirstAttempts(3, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    @SuppressWarnings("unchecked")
+    final FunctionStep<Object, Object> functionStep = (FunctionStep<Object, Object>) resultStep;
+    assertThatThrownBy(() -> functionStep.getBody().apply("context value"))
+      .isSameAs(exception);
+
+    assertThat(counter.get()).isEqualTo(1);
+  }
+
+  @Test
+  void retryFunctionStepShouldStopOnNonMatchingExceptions() {
+    final AtomicInteger counter = new AtomicInteger();
+    final IllegalArgumentException exception = new IllegalArgumentException();
+    final FunctionStep<Object, Object> step = FunctionStep.of(
+      StepAttributes.of(
+        RetryExtension.RETRY,
+        RetryExtension.retryOptions().count(3).on(IllegalStateException.class)
+      ),
+      functionFailingFirstAttempts(3, exception, counter)
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+    @SuppressWarnings("unchecked")
+    final FunctionStep<Object, Object> functionStep = (FunctionStep<Object, Object>) resultStep;
+    assertThatThrownBy(() -> functionStep.getBody().apply("context value"))
+      .isSameAs(exception);
+
+    assertThat(counter.get()).isEqualTo(1);
+  }
+
+  @Test
+  void retryOptionsDelayShouldThrowNullPointerExceptionForNullArg() {
+    assertThatNullPointerException()
+      .isThrownBy(() -> RetryExtension.retryOptions().delay(null));
+  }
+
+  @Test
+  void retryOptionsOnShouldThrowNullPointerExceptionForNullArg() {
+    assertThatNullPointerException()
+      .isThrownBy(() -> RetryExtension.retryOptions().on(null));
+  }
+
+  @Test
+  void retryOptionsButShouldThrowNullPointerExceptionForNullArg() {
+    assertThatNullPointerException()
+      .isThrownBy(() -> RetryExtension.retryOptions().but(null));
   }
 }

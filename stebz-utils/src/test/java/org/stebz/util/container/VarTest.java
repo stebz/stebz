@@ -350,4 +350,25 @@ final class VarTest {
     assertThat(Var.empty())
       .hasToString("Var[<no value>]");
   }
+
+  @Test
+  void isEmptyMethodShouldReturnFalseForPresentVar() {
+    final Var<Object> var = Var.of(new Object());
+
+    assertThat(var.isEmpty())
+      .isFalse();
+    assertThat(var.isPresent())
+      .isTrue();
+  }
+
+  @Test
+  void equalsMethodShouldReturnTrueForSameInstance() {
+    final Var<Integer> var = Var.of(1);
+    final Var<Integer> emptyVar = Var.empty();
+
+    assertThat(var.equals(var))
+      .isTrue();
+    assertThat(emptyVar.equals(emptyVar))
+      .isTrue();
+  }
 }

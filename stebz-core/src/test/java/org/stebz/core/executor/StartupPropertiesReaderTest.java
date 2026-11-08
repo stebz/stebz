@@ -61,4 +61,20 @@ final class StartupPropertiesReaderTest {
     assertThatThrownBy(StartupPropertiesReader::get)
       .isInstanceOf(IllegalStateException.class);
   }
+
+  @Test
+  void getOrNullShouldReturnNullIfStartupIsNotInProgress() {
+    assertThat(StartupPropertiesReader.getOrNull()).isNull();
+  }
+
+  @Test
+  void getOrNullShouldReturnReaderIfStartupIsInProgress() {
+    final PropertiesReader reader = new PropertiesReader.Of(new Properties());
+    try {
+      StartupPropertiesReader.set(reader);
+      assertThat(StartupPropertiesReader.getOrNull()).isSameAs(reader);
+    } finally {
+      StartupPropertiesReader.clear();
+    }
+  }
 }

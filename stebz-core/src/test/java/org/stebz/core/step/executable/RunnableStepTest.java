@@ -90,6 +90,41 @@ final class RunnableStepTest {
   }
 
   @Test
+  void ofOriginStaticShouldCopyAttributesAndBody() {
+    final RunnableStep origin = RunnableStep.of("name", EMPTY_RUNNABLE);
+    final RunnableStep copy = RunnableStep.of(origin);
+    assertThat(copy.getName()).isEqualTo("name");
+    assertThat(copy.getBody()).isSameAs(origin.getBody());
+  }
+
+  @Test
+  void ofAttributesAndBodyStaticShouldUseGivenInstances() {
+    final StepAttributes attributes = StepAttributes.of(StepAttribute.NAME, "name");
+    final RunnableStep step = RunnableStep.of(attributes, EMPTY_RUNNABLE);
+    assertThat(step.getAttributes()).isSameAs(attributes);
+    assertThat(step.getBody()).isNotNull();
+  }
+
+  @Test
+  void withIgnoredAndWithRethrownShouldKeepSucceedingBodyBehavior() throws Throwable {
+    final AtomicInteger runs = new AtomicInteger();
+    final RunnableStep step = RunnableStep.of("name", runs::incrementAndGet);
+    step.withIgnored(IllegalStateException.class).getBody().run();
+    step.withIgnored(IllegalStateException.class, IllegalArgumentException.class).getBody().run();
+    step.withIgnored(IllegalStateException.class, IllegalArgumentException.class,
+      UnsupportedOperationException.class).getBody().run();
+    step.withRethrown(ex -> new RuntimeException("generated")).getBody().run();
+    step.withRethrown(IllegalStateException.class, ex -> new RuntimeException("generated"))
+      .getBody().run();
+    step.withRethrown(IllegalStateException.class, IllegalArgumentException.class,
+      ex -> new RuntimeException("generated")).getBody().run();
+    step.withRethrown(IllegalStateException.class, IllegalArgumentException.class,
+        UnsupportedOperationException.class, ex -> new RuntimeException("generated"))
+      .getBody().run();
+    assertThat(runs.get()).isEqualTo(7);
+  }
+
+  @Test
   void ofWithNameShouldCreateStepWithNameAttribute() {
     final RunnableStep step = RunnableStep.of("name", EMPTY_RUNNABLE);
     assertThat(step.getName()).isEqualTo("name");

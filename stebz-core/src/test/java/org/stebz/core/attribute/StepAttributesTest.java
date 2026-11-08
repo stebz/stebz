@@ -197,6 +197,35 @@ final class StepAttributesTest {
   }
 
   @Test
+  void staticOfOfThreePairsShouldCreateAttributes() {
+    final StepAttributes attributes = StepAttributes.of(ATTR1, "value1", ATTR2, "value2", ATTR3, "value3");
+    assertThat(attributes.get(ATTR1)).isEqualTo("value1");
+    assertThat(attributes.get(ATTR2)).isEqualTo("value2");
+    assertThat(attributes.get(ATTR3)).isEqualTo("value3");
+  }
+
+  @Test
+  void staticOfOfFourPairsShouldCreateAttributes() {
+    final StepAttributes attributes = StepAttributes.of(
+      ATTR1, "value1", ATTR2, "value2", ATTR3, "value3", ATTR4, "value4");
+    assertThat(attributes.get(ATTR1)).isEqualTo("value1");
+    assertThat(attributes.get(ATTR2)).isEqualTo("value2");
+    assertThat(attributes.get(ATTR3)).isEqualTo("value3");
+    assertThat(attributes.get(ATTR4)).isEqualTo("value4");
+  }
+
+  @Test
+  void staticBuilderShouldCollectAttributes() {
+    final StepAttributes attributes = StepAttributes.builder()
+      .add(ATTR1, "value1")
+      .add(ATTR2)
+      .build();
+
+    assertThat(attributes.get(ATTR1)).isEqualTo("value1");
+    assertThat(attributes.get(ATTR2)).isNull();
+  }
+
+  @Test
   void emptyShouldReturnSharedEmptyAttributes() {
     assertThat(StepAttributes.empty()).isSameAs(StepAttributes.empty());
   }

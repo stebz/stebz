@@ -235,6 +235,110 @@ final class ConsumerStepTest {
   }
 
   @Test
+  void withIgnoredOfTwoTypesShouldIgnoreExceptionOfSecondType() {
+    assertThatCode(() -> ConsumerStep.of("name", value -> {
+      throw new NumberFormatException("ignored");
+    }).withIgnored(IllegalStateException.class, NumberFormatException.class).getBody().accept("v"))
+      .doesNotThrowAnyException();
+  }
+
+  @Test
+  void withIgnoredOfTwoTypesShouldRethrowExceptionOfThirdType() {
+    assertThatThrownBy(() -> ConsumerStep.of("name", failing("not ignored"))
+      .withIgnored(IllegalArgumentException.class, NumberFormatException.class)
+      .getBody().accept("v"))
+      .isInstanceOf(IllegalStateException.class);
+  }
+
+  @Test
+  void withIgnoredOfThreeTypesShouldIgnoreMatchingException() {
+    assertThatCode(() -> ConsumerStep.of("name", value -> {
+        throw new UnsupportedOperationException("ignored");
+      }).withIgnored(IllegalStateException.class, IllegalArgumentException.class, UnsupportedOperationException.class)
+      .getBody().accept("v"))
+      .doesNotThrowAnyException();
+  }
+
+  @Test
+  void withRethrownOfTwoTypesShouldReplaceMatchingExceptionsOnly() {
+    assertThatThrownBy(() -> ConsumerStep.of("name", value -> {
+      throw new IllegalStateException("origin");
+    }).withRethrown(IllegalStateException.class, IllegalArgumentException.class,
+      ex -> new RuntimeException("generated")).getBody().accept("v"))
+      .isInstanceOf(RuntimeException.class)
+      .hasMessage("generated");
+    assertThatThrownBy(() -> ConsumerStep.of("name", value -> {
+      throw new IllegalArgumentException("origin");
+    }).withRethrown(IllegalStateException.class, IllegalArgumentException.class,
+      ex -> new RuntimeException("generated")).getBody().accept("v"))
+      .isInstanceOf(RuntimeException.class)
+      .hasMessage("generated");
+    assertThatThrownBy(() -> ConsumerStep.of("name", value -> {
+      throw new UnsupportedOperationException("origin");
+    }).withRethrown(IllegalStateException.class, IllegalArgumentException.class,
+      ex -> new RuntimeException("generated")).getBody().accept("v"))
+      .isInstanceOf(UnsupportedOperationException.class)
+      .hasMessage("origin");
+  }
+
+  @Test
+  void withRethrownOfThreeTypesShouldReplaceMatchingExceptionsOnly() {
+    assertThatThrownBy(() -> ConsumerStep.of("name", value -> {
+      throw new IllegalStateException("origin");
+    }).withRethrown(IllegalStateException.class, IllegalArgumentException.class, UnsupportedOperationException.class,
+      ex -> new RuntimeException("generated")).getBody().accept("v"))
+      .isInstanceOf(RuntimeException.class)
+      .hasMessage("generated");
+    assertThatThrownBy(() -> ConsumerStep.of("name", value -> {
+      throw new UnsupportedOperationException("origin");
+    }).withRethrown(IllegalStateException.class, IllegalArgumentException.class, UnsupportedOperationException.class,
+      ex -> new RuntimeException("generated")).getBody().accept("v"))
+      .isInstanceOf(RuntimeException.class)
+      .hasMessage("generated");
+    assertThatThrownBy(() -> ConsumerStep.of("name", value -> {
+      throw new ClassCastException("origin");
+    }).withRethrown(IllegalStateException.class, IllegalArgumentException.class, UnsupportedOperationException.class,
+      ex -> new RuntimeException("generated")).getBody().accept("v"))
+      .isInstanceOf(ClassCastException.class)
+      .hasMessage("origin");
+  }
+
+  @Test
+  void withIgnoredAndWithRethrownShouldKeepSucceedingBodyBehavior() throws Throwable {
+    final AtomicInteger runs = new AtomicInteger();
+    final ConsumerStep<Object> step = ConsumerStep.of("name", counting(runs));
+    step.withIgnored(IllegalStateException.class).getBody().accept("v");
+    step.withIgnored(IllegalStateException.class, IllegalArgumentException.class).getBody().accept("v");
+    step.withIgnored(IllegalStateException.class, IllegalArgumentException.class,
+      UnsupportedOperationException.class).getBody().accept("v");
+    step.withRethrown(ex -> new RuntimeException("generated")).getBody().accept("v");
+    step.withRethrown(IllegalStateException.class, ex -> new RuntimeException("generated"))
+      .getBody().accept("v");
+    step.withRethrown(IllegalStateException.class, IllegalArgumentException.class,
+      ex -> new RuntimeException("generated")).getBody().accept("v");
+    step.withRethrown(IllegalStateException.class, IllegalArgumentException.class,
+        UnsupportedOperationException.class, ex -> new RuntimeException("generated"))
+      .getBody().accept("v");
+    assertThat(runs.get()).isEqualTo(7);
+  }
+
+  @Test
+  void ofOriginStaticShouldCopyAttributesAndBody() {
+    final ConsumerStep<Object> origin = ConsumerStep.of("name", EMPTY_CONSUMER);
+    final ConsumerStep<Object> copy = ConsumerStep.of(origin);
+    assertThat(copy.getName()).isEqualTo("name");
+    assertThat(copy.getBody()).isSameAs(origin.getBody());
+  }
+
+  @Test
+  void ofAttributesAndBodyStaticShouldUseGivenInstances() {
+    final StepAttributes attributes = StepAttributes.of(StepAttribute.NAME, "name");
+    final ConsumerStep<Object> step = ConsumerStep.of(attributes, EMPTY_CONSUMER);
+    assertThat(step.getAttributes()).isSameAs(attributes);
+    assertThat(step.getBody()).isNotNull();
+  }
+
+  @Test
   void withRethrownShouldThrowExceptionForNullArgs() {
     final ConsumerStep<Object> step = ConsumerStep.of("name", EMPTY_CONSUMER);
     assertThatThrownBy(() -> step.withRethrown(null))

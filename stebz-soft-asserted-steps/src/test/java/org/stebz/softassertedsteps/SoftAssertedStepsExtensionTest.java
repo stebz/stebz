@@ -29,6 +29,7 @@ import dev.jlet.function.ThrowingRunnable;
 import dev.jlet.function.ThrowingSupplier;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.MultipleFailuresError;
+import org.stebz.core.executor.StartupPropertiesReader;
 import org.stebz.core.extension.StebzExtension;
 import org.stebz.core.step.StepObj;
 import org.stebz.core.step.executable.RunnableStep;
@@ -36,6 +37,7 @@ import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -435,5 +437,70 @@ final class SoftAssertedStepsExtensionTest {
       .isInstanceOf(NullPointerException.class);
     assertThatThrownBy(() -> SoftAssertedStepsResult(value, (ThrowingFunction<Object, Object, ?>) null))
       .isInstanceOf(NullPointerException.class);
+  }
+
+  private static void setStartupPropertiesReader(final PropertiesReader reader) throws Exception {
+    final Method setMethod = StartupPropertiesReader.class.getDeclaredMethod("set", PropertiesReader.class);
+    setMethod.setAccessible(true);
+    setMethod.invoke(null, reader);
+  }
+
+  private static void clearStartupPropertiesReader() throws Exception {
+    final Method clearMethod = StartupPropertiesReader.class.getDeclaredMethod("clear");
+    clearMethod.setAccessible(true);
+    clearMethod.invoke(null);
+  }
+
+  @Test
+  void ctorShouldUseStartupPropertiesReader() throws Exception {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.softAssertedSteps.order", "12345");
+    try {
+      setStartupPropertiesReader(new PropertiesReader.Of(properties));
+      assertThat(new SoftAssertedStepsExtension().order())
+        .isEqualTo(12345);
+    } finally {
+      clearStartupPropertiesReader();
+    }
+  }
+
+  @Test
+  void softAssertedStepsWithAdditionalValueShouldRethrowNonStepExceptionWithoutCollectedExceptionsAsIs()
+    throws Exception {
+    final Object value = new Object();
+    final Throwable exception = new IllegalStateException("non-step exception");
+
+    assertThatThrownBy(() ->
+      softAssertedSteps(value, (ThrowingConsumer<Object, ?>) consumedValue -> {
+        throw exception;
+      })
+    ).isSameAs(exception);
+    assertThatThreadLocalsAreCleared();
+  }
+
+  @Test
+  void softAssertedStepsResultShouldRethrowNonStepExceptionWithoutCollectedExceptionsAsIs() throws Exception {
+    final Throwable exception = new IllegalStateException("non-step exception");
+
+    assertThatThrownBy(() ->
+      softAssertedStepsResult((ThrowingSupplier<Object, ?>) () -> {
+        throw exception;
+      })
+    ).isSameAs(exception);
+    assertThatThreadLocalsAreCleared();
+  }
+
+  @Test
+  void softAssertedStepsResultWithAdditionalValueShouldRethrowNonStepExceptionWithoutCollectedExceptionsAsIs()
+    throws Exception {
+    final Object value = new Object();
+    final Throwable exception = new IllegalStateException("non-step exception");
+
+    assertThatThrownBy(() ->
+      softAssertedStepsResult(value, (ThrowingFunction<Object, Object, ?>) consumedValue -> {
+        throw exception;
+      })
+    ).isSameAs(exception);
+    assertThatThreadLocalsAreCleared();
   }
 }
