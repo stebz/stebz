@@ -751,12 +751,12 @@ final class RepeatExtensionTest {
   @Test
   void repeatOptionsSkipShouldThrowNullPointerExceptionForNullArg() {
     assertThatNullPointerException()
-      .isThrownBy(() -> RepeatExtension.repeatOptions().skip(null));
+      .isThrownBy(() -> RepeatExtension.repeatOptions().skip((Class<? extends Throwable>[]) null));
   }
 
   @Test
   void repeatOptionsButShouldThrowNullPointerExceptionForNullArg() {
     assertThatNullPointerException()
-      .isThrownBy(() -> RepeatExtension.repeatOptions().but(null));
+      .isThrownBy(() -> RepeatExtension.repeatOptions().but((Class<? extends Throwable>[]) null));
   }
 }

@@ -717,12 +717,12 @@ final class RetryExtensionTest {
   @Test
   void retryOptionsOnShouldThrowNullPointerExceptionForNullArg() {
     assertThatNullPointerException()
-      .isThrownBy(() -> RetryExtension.retryOptions().on(null));
+      .isThrownBy(() -> RetryExtension.retryOptions().on((Class<? extends Throwable>[]) null));
   }
 
   @Test
   void retryOptionsButShouldThrowNullPointerExceptionForNullArg() {
     assertThatNullPointerException()
-      .isThrownBy(() -> RetryExtension.retryOptions().but(null));
+      .isThrownBy(() -> RetryExtension.retryOptions().but((Class<? extends Throwable>[]) null));
   }
 }
