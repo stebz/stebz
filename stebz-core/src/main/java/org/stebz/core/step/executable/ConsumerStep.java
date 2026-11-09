@@ -390,6 +390,17 @@ public interface ConsumerStep<T> extends ExecutableStep<ThrowingConsumer<T, ?>, 
   }
 
   /**
+   * Returns new {@code RunnableStep} with this step attributes, this step body as contextual body and specified
+   * context. Alias for {@link #withContext(Object)} method.
+   *
+   * @param context the context
+   * @return new {@code RunnableStep} with specified context
+   */
+  default RStep around(final T context) {
+    return this.withContext(context);
+  }
+
+  /**
    * Returns {@code ConsumerStep} with empty body.
    *
    * @param <T> the type of the step input value

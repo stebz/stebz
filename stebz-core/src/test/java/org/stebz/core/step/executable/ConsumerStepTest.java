@@ -470,6 +470,18 @@ final class ConsumerStepTest {
   }
 
   @Test
+  void aroundShouldBehaveAsWithContext() throws Throwable {
+    final AtomicInteger runs = new AtomicInteger();
+    final ConsumerStep<Object> step = ConsumerStep.of("name", counting(runs));
+    final RunnableStep contextual = step.around("input");
+    assertThat(contextual.hasContext()).isTrue();
+    assertThat(contextual.getContext()).isEqualTo("input");
+    assertThat(contextual.getName()).isEqualTo("name");
+    contextual.getBody().run();
+    assertThat(runs.get()).isEqualTo(1);
+  }
+
+  @Test
   void toStringShouldContainStepName() {
     assertThat(ConsumerStep.of("name", EMPTY_CONSUMER))
       .hasToString("ConsumerStep[name]");
