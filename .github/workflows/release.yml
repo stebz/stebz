@@ -16,7 +16,7 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 75
     environment: release
     steps:
       - uses: actions/checkout@v7
@@ -42,7 +42,7 @@ jobs:
         env:
           INPUT_REVISION: ${{ inputs.revision }}
       - name: Deploy to Maven Central
-        run: mvn -B -ntp clean deploy -Drevision=${{ steps.revision.outputs.revision }}
+        run: mvn -B -ntp clean deploy -Drevision=${{ steps.revision.outputs.revision }} -DautoPublish=true -DwaitMaxTime=3600
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
