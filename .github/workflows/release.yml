@@ -3,6 +3,12 @@ name: Release
 on:
   push:
     tags: [ 'v*' ]
+  workflow_dispatch:
+    inputs:
+      revision:
+        description: 'Release version to publish (tag name without the v prefix, e.g. 2.0)'
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -10,7 +16,7 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     environment: release
     steps:
       - uses: actions/checkout@v7
@@ -21,12 +27,22 @@ jobs:
           java-version: '17'
           cache: maven
           server-id: central
-          server-username: CENTRAL_USERNAME
-          server-password: CENTRAL_PASSWORD
+          server-username-env-var: CENTRAL_USERNAME
+          server-password-env-var: CENTRAL_PASSWORD
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: GPG_PASSPHRASE
+          gpg-passphrase-env-var: GPG_PASSPHRASE
+      - name: Determine revision
+        id: revision
+        run: |
+          if [ -n "$INPUT_REVISION" ]; then
+            echo "revision=$INPUT_REVISION" >> "$GITHUB_OUTPUT"
+          else
+            echo "revision=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          INPUT_REVISION: ${{ inputs.revision }}
       - name: Deploy to Maven Central
-        run: mvn -B -ntp clean deploy -Drevision=${GITHUB_REF_NAME#v}
+        run: mvn -B -ntp clean deploy -Drevision=${{ steps.revision.outputs.revision }}
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}

@@ -94,7 +94,9 @@
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-bom</artifactId>
-        <version>${project.version}</version>
+        <!-- ${revision} (not ${project.version}) so that the flattened published
+             pom contains the concrete version -->
+        <version>${revision}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
@@ -171,6 +173,18 @@
 
   <build>
     <plugins>
+      <!-- the publishing plugin must be in the model of every published module:
+           the aggregator declares it with extensions=true (activates the deploy
+           lifecycle participant), this declaration makes stebz-parent and all
+           modules inheriting from it publish through it instead of maven-deploy-plugin -->
+      <plugin>
+        <groupId>org.sonatype.central</groupId>
+        <artifactId>central-publishing-maven-plugin</artifactId>
+        <version>0.12.0</version>
+        <configuration>
+          <publishingServerId>central</publishingServerId>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -198,6 +212,9 @@
         <artifactId>flatten-maven-plugin</artifactId>
         <version>1.8.0</version>
         <configuration>
+          <!-- required for this module itself (packaging=pom): without it the flattened
+               POM is not used and the published pom keeps unresolved ${revision} -->
+          <updatePomFile>true</updatePomFile>
           <flattenMode>resolveCiFriendliesOnly</flattenMode>
         </configuration>
         <executions>

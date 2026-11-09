@@ -76,133 +76,144 @@
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-parent</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-utils</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-core</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-methods</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-annotations</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-aaa-keywords</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-aaa-methods</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-aaa-annotations</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-gherkin-keywords</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-gherkin-methods</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-gherkin-annotations</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-clean-stack-trace</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-empty-steps</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-hidden-steps</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-readable-reflective-name</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-repeat-and-retry</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-soft-asserted-steps</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-aaa</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-gherkin</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-allure</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-qase</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-reportportal</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-testit</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>org.stebz</groupId>
         <artifactId>stebz-system-out</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
 
   <build>
     <plugins>
+      <!-- the BOM has no parent, so the publishing plugin is declared here directly
+           (the aggregator only activates it via extensions=true); without this
+           declaration the module falls back to maven-deploy-plugin on deploy -->
+      <plugin>
+        <groupId>org.sonatype.central</groupId>
+        <artifactId>central-publishing-maven-plugin</artifactId>
+        <version>0.12.0</version>
+        <configuration>
+          <publishingServerId>central</publishingServerId>
+        </configuration>
+      </plugin>
       <!-- the BOM pom artifact is published to Maven Central (publishing is aggregated
            in the root pom) and therefore must be flattened and signed -->
       <plugin>
@@ -210,6 +221,7 @@
         <artifactId>flatten-maven-plugin</artifactId>
         <version>1.8.0</version>
         <configuration>
+          <updatePomFile>true</updatePomFile>
           <flattenMode>resolveCiFriendliesOnly</flattenMode>
         </configuration>
         <executions>
