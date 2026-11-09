@@ -444,6 +444,17 @@ public interface FunctionStep<T, R> extends ExecutableStep<ThrowingFunction<T, R
   }
 
   /**
+   * Returns new {@code SupplierStep} with this step attributes, this step body as contextual body and specified
+   * context. Alias for {@link #withContext(Object)} method.
+   *
+   * @param context the context
+   * @return new {@code SupplierStep} with specified context
+   */
+  default SStep<R> around(final T context) {
+    return this.withContext(context);
+  }
+
+  /**
    * Returns this step as {@code ConsumerStep}.
    *
    * @return this step as {@code ConsumerStep}

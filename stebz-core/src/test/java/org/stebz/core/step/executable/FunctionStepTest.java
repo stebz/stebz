@@ -513,6 +513,16 @@ final class FunctionStepTest {
   }
 
   @Test
+  void aroundShouldBehaveAsWithContext() throws Throwable {
+    final FunctionStep<Object, String> step = FunctionStep.of("name", IDENTITY);
+    final SupplierStep<String> contextual = step.around("input");
+    assertThat(contextual.hasContext()).isTrue();
+    assertThat(contextual.getContext()).isEqualTo("input");
+    assertThat(contextual.getName()).isEqualTo("name");
+    assertThat(contextual.getBody().get()).isEqualTo("input");
+  }
+
+  @Test
   void withoutResultShouldReturnConsumerStep() {
     final ConsumerStep<Object> consumer = FunctionStep.of("name", IDENTITY).withoutResult();
     assertThat(consumer.getName()).isEqualTo("name");
