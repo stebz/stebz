@@ -7,11 +7,13 @@ on:
   pull_request:
     branches: [ main ]
     paths-ignore: [ '**.md', 'LICENSE', '.gitignore', '.editorconfig' ]
+  workflow_dispatch:
 
-# cancel the superseded run of the same ref on a new push
+# cancel the superseded run of the same ref on a new push;
+# a manually triggered run is never superseded, so it is never canceled
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
 
 permissions:
   contents: read
