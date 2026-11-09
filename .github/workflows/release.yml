@@ -19,6 +19,17 @@ jobs:
     timeout-minutes: 75
     environment: release
     steps:
+      # manual runs may be started by anyone with write access, so verify the actor is an admin
+      - name: Verify actor is an admin
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          perm=$(gh api "repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission" --jq .permission)
+          if [ "$perm" != "admin" ]; then
+            echo "::error::Only repository admins can run Release manually (actor: ${{ github.actor }}, permission: $perm)"
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
       - uses: actions/checkout@v7
       - name: Set up JDK 17
         uses: actions/setup-java@v6
