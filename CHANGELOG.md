@@ -1,5 +1,52 @@
 # Changelog
 
+## 2.0 (2026/11/09)
+
+* #2 increase test coverage by @evpl in PR #270
+* #154 add stebz-empty-steps module to all bundle modules by @evpl in PR #155
+* #156 add method overload with step name generator parameter by @evpl in PR #157
+* #158 remove duplicate packages in different maven modules by @evpl in PR #167
+* #159 add step methods in Pascal Case style by @evpl in PR #162
+* #165 disable catching of non-step exceptions in the `SoftAssertedStepsExtension` by @evpl in PR #166
+* #166 rename Setup and Teardown keywords to Set Up and Tear Down by @evpl in PR #164
+* #168 rename config properties according to package hierarchy by @evpl in PR #170
+* #169 ignore case in config property names by @evpl in PR #171
+* #172 add `StepObj` with method for default attribute value by @evpl in PR #174
+* #173 rename `StepObj` body method to getBody by @evpl in PR #175
+* #178 add input and output type for `StepAttribute` by @evpl in PR #180
+* #179 add Asterisk keyword for aaa and gherkin keywords by @evpl in PR #181
+* #182 add subtype aliases for step objects by @evpl in PR #183
+* #182 add org.stebz.core.step.executable.alias missing package info by @evpl
+* #182 fix return types for FunctionStep by @evpl in PR #197
+* #184 add `StepObj` is method by @evpl in PR #186
+* #185 rename `StepObj` withHidden method to withHiding, getHidden to isHidden by @evpl in PR #187
+* #185 rename HIDDEN attribute to HIDING by @evpl in PR #188
+* #189 add `StepObj` withIgnored method by @evpl in PR #190
+* #189 add `StepObj` withIgnored method with multiple parameters by @evpl in PR #196
+* #191 rename `StepObj` attributes method to getAttributes by @evpl in PR #192
+* #194 add `StepObj` withRethrown method by @evpl in PR #195
+* #200 add `StepObj` withMaskedParam and withMaskedParams methods by @evpl in PR #203
+* #201 add Technical Gherkin keyword by @evpl in PR #202
+* #204 add withContext and withoutResult methods by @evpl in PR #205
+* #206 hide context parameter in report by default by @evpl in PR #207
+* #210 allow RunnableStep and SupplierStep to save the context by @evpl in PR #211
+* #212 refactor the `Param` and `WithParam` annotations by @evpl in PR #213
+* #214 remove unused `StepCaptor` ref method by @evpl in PR #215
+* #216 global refactoring by @evpl in PR #217 #218 #224 #225 #226 #227 #228 #229 #230 #231 #232 #233
+* #220 add methods for creating a step attribute that uses a class name as a key by @evpl in PR #221
+* #222 add a class as a key for `StepAttributeMarker` by @evpl in PR #223
+* #271 update Allure major version to 3.1.1 by @evpl in PR #272
+* bump AspectJ version to 1.9.27 in PR #209 #219
+* bump Qase version to 4.1.66 in PR #269
+* bump ReportPortal version to 5.4.15 in PR #264
+* bump Test IT version to 4.2.4 in PR #193 #199 #208 #267
+* bump Maven plugins versions in PR #238 #240 #247 #249 #250 #251 #254 #256 #259 #261
+* bump GitHub Actions versions in PR #234 #235 #236 #237
+* add CODEOWNERS by @evpl
+* fix dependabot.yml by @evpl
+* change line separator to LF by @evpl
+* rewrite README.md by @evpl
+
 ## 1.13 (2026/02/24)
 
 * #147 add steps and stepsResult methods by @evpl in PR #148

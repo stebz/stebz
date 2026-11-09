@@ -61,7 +61,7 @@ body:
     id: stebz-version
     attributes:
       label: Stebz version
-      placeholder: e.g. 1.13
+      placeholder: e.g. 2.0
     validations:
       required: true
   - type: input
