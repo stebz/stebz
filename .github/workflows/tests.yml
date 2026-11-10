@@ -9,8 +9,6 @@ on:
     paths-ignore: [ '**.md', 'LICENSE', '.gitignore', '.editorconfig' ]
   workflow_dispatch:
 
-# cancel the superseded run of the same ref on a new push;
-# a manually triggered run is never superseded, so it is never canceled
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
@@ -20,7 +18,7 @@ permissions:
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false

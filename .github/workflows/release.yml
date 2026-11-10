@@ -13,9 +13,15 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   release:
-    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    runs-on: ubuntu-24.04
     timeout-minutes: 75
     environment: release
     steps:
@@ -58,3 +64,20 @@ jobs:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      # works for both tag pushes and manual runs: an existing tag is reused,
+      # a missing one is created at the current commit
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REVISION: ${{ steps.revision.outputs.revision }}
+        run: |
+          TAG="v$REVISION"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists, nothing to do"
+          elif gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG exists, creating release for it"
+            gh release create "$TAG" --title "$TAG" --generate-notes --verify-tag
+          else
+            echo "Tag $TAG does not exist, creating it at $GITHUB_SHA"
+            gh release create "$TAG" --title "$TAG" --generate-notes --target "$GITHUB_SHA"
+          fi
