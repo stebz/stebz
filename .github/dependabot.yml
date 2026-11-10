@@ -1,37 +1,18 @@
 version: 2
 updates:
   - package-ecosystem: maven
-    directory: "/stebz-parent"
+    directory: "/"
     schedule:
       interval: "cron"
-      cronjob: "0 3 * * *"
+      cronjob: "0 18 * * *"
     open-pull-requests-limit: 10
     ignore:
       - dependency-name: "org.stebz:*"
       - dependency-name: "org.junit.jupiter:junit-jupiter-api"
       - dependency-name: "org.junit.platform:junit-platform-launcher"
 
-  # plugin versions declared directly in the root aggregator pom
-  - package-ecosystem: maven
-    directory: "/"
-    schedule:
-      interval: "cron"
-      cronjob: "0 3 * * *"
-    open-pull-requests-limit: 10
-
-  # plugin versions declared directly in the BOM pom
-  - package-ecosystem: maven
-    directory: "/stebz-bom"
-    schedule:
-      interval: "cron"
-      cronjob: "0 3 * * *"
-    open-pull-requests-limit: 10
-    ignore:
-      - dependency-name: "org.stebz:*"
-
-  # GitHub Actions used in the workflows
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: "cron"
-      cronjob: "0 3 * * *"
+      cronjob: "0 18 * * *"
