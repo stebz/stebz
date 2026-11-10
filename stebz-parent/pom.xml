@@ -210,7 +210,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
-        <version>1.8.0</version>
+        <version>1.9.0</version>
         <configuration>
           <!-- required for this module itself (packaging=pom): without it the flattened
                POM is not used and the published pom keeps unresolved ${revision} -->
