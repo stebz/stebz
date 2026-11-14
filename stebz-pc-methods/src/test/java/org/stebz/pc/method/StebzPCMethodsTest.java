@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.stebz.method;
+package org.stebz.pc.method;
 
 import dev.jlet.function.ThrowingConsumer;
 import dev.jlet.function.ThrowingFunction;
@@ -81,6 +81,32 @@ final class StebzPCMethodsTest {
   @Test
   void pcAroundMethodIsAliasForAroundMethod() {
     final PCAround<String> around = StebzPCMethods.pcAround("context value");
+    final List<Object> received = new ArrayList<>();
+    final ThrowingConsumer<String, ?> body = received::add;
+
+    around.Step(new ConsumerStep.Of<>(body));
+
+    assertThat(received).containsExactly("context value");
+    assertThat(StaticStepListener.lastContext)
+      .isEqualTo(NullableOptional.of("context value"));
+  }
+
+  @Test
+  void aroundMethodIsAliasForAroundMethod() {
+    final PCAround<String> around = StebzPCMethods.Around("context value");
+    final List<Object> received = new ArrayList<>();
+    final ThrowingConsumer<String, ?> body = received::add;
+
+    around.Step(new ConsumerStep.Of<>(body));
+
+    assertThat(received).containsExactly("context value");
+    assertThat(StaticStepListener.lastContext)
+      .isEqualTo(NullableOptional.of("context value"));
+  }
+
+  @Test
+  void pcAroundMethodIsAliasForAroundMethodInPascalCase() {
+    final PCAround<String> around = StebzPCMethods.PCAround("context value");
     final List<Object> received = new ArrayList<>();
     final ThrowingConsumer<String, ?> body = received::add;
 

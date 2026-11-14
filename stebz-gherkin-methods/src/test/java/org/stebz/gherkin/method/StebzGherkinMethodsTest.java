@@ -91,6 +91,32 @@ final class StebzGherkinMethodsTest {
   }
 
   @Test
+  void aroundMethodIsAliasForAroundMethod() {
+    final GherkinAround<String> around = StebzGherkinMethods.Around("context value");
+    final List<Object> received = new ArrayList<>();
+    final ThrowingConsumer<String, ?> body = received::add;
+
+    around.Given(new ConsumerStep.Of<>(body));
+
+    assertThat(received).containsExactly("context value");
+    assertThat(StaticStepListener.lastContext)
+      .isEqualTo(NullableOptional.of("context value"));
+  }
+
+  @Test
+  void gherkinAroundMethodIsAliasForAroundMethodInPascalCase() {
+    final GherkinAround<String> around = StebzGherkinMethods.GherkinAround("context value");
+    final List<Object> received = new ArrayList<>();
+    final ThrowingConsumer<String, ?> body = received::add;
+
+    around.Given(new ConsumerStep.Of<>(body));
+
+    assertThat(received).containsExactly("context value");
+    assertThat(StaticStepListener.lastContext)
+      .isEqualTo(NullableOptional.of("context value"));
+  }
+
+  @Test
   void givenMethodExecutesGivenRunnableStep() {
     final List<String> bodies = new ArrayList<>();
     final RunnableStep originStep = new RunnableStep.Of(() -> bodies.add("step body"));

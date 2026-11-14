@@ -81,6 +81,28 @@ public final class StebzAAAMethods {
   }
 
   /**
+   * Returns {@link AAAAround} object of given value. Alias for {@link #around(Object)} method.
+   *
+   * @param value the value
+   * @param <T>   the type of the value
+   * @return {@link AAAAround} object of given value
+   */
+  public static <T> AAAAround<T> Around(final T value) {
+    return around(value);
+  }
+
+  /**
+   * Returns {@link AAAAround} object of given value. Alias for {@link #around(Object)} method.
+   *
+   * @param value the value
+   * @param <T>   the type of the value
+   * @return {@link AAAAround} object of given value
+   */
+  public static <T> AAAAround<T> AAAAround(final T value) {
+    return around(value);
+  }
+
+  /**
    * Executes given step with {@link AAAKeywords#setUp()} keyword.
    *
    * @param step the step

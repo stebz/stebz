@@ -91,6 +91,32 @@ final class StebzAAAMethodsTest {
   }
 
   @Test
+  void aroundMethodIsAliasForAroundMethod() {
+    final AAAAround<String> around = StebzAAAMethods.Around("context value");
+    final List<Object> received = new ArrayList<>();
+    final ThrowingConsumer<String, ?> body = received::add;
+
+    around.Arrange(new ConsumerStep.Of<>(body));
+
+    assertThat(received).containsExactly("context value");
+    assertThat(StaticStepListener.lastContext)
+      .isEqualTo(NullableOptional.of("context value"));
+  }
+
+  @Test
+  void aaaAroundMethodIsAliasForAroundMethodInPascalCase() {
+    final AAAAround<String> around = StebzAAAMethods.AAAAround("context value");
+    final List<Object> received = new ArrayList<>();
+    final ThrowingConsumer<String, ?> body = received::add;
+
+    around.Arrange(new ConsumerStep.Of<>(body));
+
+    assertThat(received).containsExactly("context value");
+    assertThat(StaticStepListener.lastContext)
+      .isEqualTo(NullableOptional.of("context value"));
+  }
+
+  @Test
   void setUpMethodExecutesGivenRunnableStep() {
     final List<String> bodies = new ArrayList<>();
     final RunnableStep originStep = new RunnableStep.Of(() -> bodies.add("step body"));

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.stebz.method;
+package org.stebz.pc.method;
 
 import dev.jlet.function.ThrowingConsumer;
 import dev.jlet.function.ThrowingFunction;
@@ -72,6 +72,28 @@ public final class StebzPCMethods {
    * @return {@link PCAround} object of given value
    */
   public static <T> PCAround<T> pcAround(final T value) {
+    return around(value);
+  }
+
+  /**
+   * Returns {@link PCAround} object of given value. Alias for {@link #around(Object)} method.
+   *
+   * @param value the value
+   * @param <T>   the type of the value
+   * @return {@link PCAround} object of given value
+   */
+  public static <T> PCAround<T> Around(final T value) {
+    return around(value);
+  }
+
+  /**
+   * Returns {@link PCAround} object of given value. Alias for {@link #around(Object)} method.
+   *
+   * @param value the value
+   * @param <T>   the type of the value
+   * @return {@link PCAround} object of given value
+   */
+  public static <T> PCAround<T> PCAround(final T value) {
     return around(value);
   }
 

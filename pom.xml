@@ -38,6 +38,7 @@
     <module>stebz-utils</module>
     <module>stebz-core</module>
     <module>stebz-methods</module>
+    <module>stebz-pc-methods</module>
     <module>stebz-annotations</module>
     <module>stebz-aaa-keywords</module>
     <module>stebz-aaa-methods</module>
@@ -52,6 +53,7 @@
     <module>stebz-repeat-and-retry</module>
     <module>stebz-soft-asserted-steps</module>
     <module>stebz</module>
+    <module>stebz-pc</module>
     <module>stebz-aaa</module>
     <module>stebz-gherkin</module>
     <module>stebz-allure</module>
