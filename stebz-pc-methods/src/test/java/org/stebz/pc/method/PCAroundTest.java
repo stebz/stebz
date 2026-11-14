@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.stebz.method;
+package org.stebz.pc.method;
 
 import dev.jlet.function.ThrowingConsumer;
 import dev.jlet.function.ThrowingFunction;

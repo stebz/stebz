@@ -55,11 +55,6 @@
     </dependency>
     <dependency>
       <groupId>org.stebz</groupId>
-      <artifactId>stebz-methods</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.stebz</groupId>
       <artifactId>stebz-annotations</artifactId>
       <scope>compile</scope>
     </dependency>
