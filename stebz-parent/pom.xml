@@ -81,7 +81,7 @@
     <allure.version>3.1.1</allure.version>
     <qase.version>4.1.66</qase.version>
     <reportportal.version>5.4.15</reportportal.version>
-    <testit.version>4.2.4</testit.version>
+    <testit.version>4.2.5</testit.version>
     <rxjava.version>2.2.21</rxjava.version>
     <junit.version>5.14.0</junit.version>
     <junitPlatformLauncher.version>1.14.0</junitPlatformLauncher.version>
