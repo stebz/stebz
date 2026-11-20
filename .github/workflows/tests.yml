@@ -105,6 +105,6 @@ jobs:
         uses: codecov/codecov-action@v7
         with:
           files: ${{ matrix.coverage-files }}
-          fail_ci_if_error: false
+          fail_ci_if_error: true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
