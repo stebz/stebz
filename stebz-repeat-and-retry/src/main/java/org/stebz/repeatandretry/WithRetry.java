@@ -23,7 +23,7 @@
  */
 package org.stebz.repeatandretry;
 
-import org.stebz.annotation.StepAttributeMarker;
+import org.stebz.annotation.marker.StepAttributeMarker;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

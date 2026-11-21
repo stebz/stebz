@@ -23,6 +23,9 @@
  */
 package org.stebz.readablereflectivename;
 
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.Signature;
+import org.aspectj.lang.reflect.ConstructorSignature;
 import org.junit.jupiter.api.Test;
 import org.stebz.core.attribute.StepAttributes;
 import org.stebz.core.executor.StartupPropertiesReader;
@@ -32,18 +35,50 @@ import org.stebz.core.step.executable.RunnableStep;
 import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.stebz.annotation.attribute.ReflectiveStepAttributes.REFLECTIVE_NAME;
+import static org.stebz.annotation.aspect.StepAspects.JOIN_POINT;
 import static org.stebz.core.attribute.StepAttribute.NAME;
 
 /**
  * Tests for {@link ReadableReflectiveNameExtension}.
  */
 final class ReadableReflectiveNameExtensionTest {
+
+  private static final class Constructor_Fixture {
+  }
+
+  private static JoinPoint joinPoint(final String name) {
+    final Signature signature = (Signature) Proxy.newProxyInstance(
+      Signature.class.getClassLoader(),
+      new Class<?>[]{Signature.class},
+      (proxy, method, args) -> method.getName().equals("getName") ? name : null
+    );
+    return (JoinPoint) Proxy.newProxyInstance(
+      JoinPoint.class.getClassLoader(),
+      new Class<?>[]{JoinPoint.class},
+      (proxy, method, args) -> method.getName().equals("getSignature") ? signature : null
+    );
+  }
+
+  private static JoinPoint constructorJoinPoint() throws Exception {
+    final Constructor<?> constructor = Constructor_Fixture.class.getDeclaredConstructor();
+    final ConstructorSignature signature = (ConstructorSignature) Proxy.newProxyInstance(
+      ConstructorSignature.class.getClassLoader(),
+      new Class<?>[]{ConstructorSignature.class},
+      (proxy, method, args) -> method.getName().equals("getConstructor") ? constructor : null
+    );
+    return (JoinPoint) Proxy.newProxyInstance(
+      JoinPoint.class.getClassLoader(),
+      new Class<?>[]{JoinPoint.class},
+      (proxy, method, args) -> method.getName().equals("getSignature") ? signature : null
+    );
+  }
 
   private static ReadableReflectiveNameExtension newExtension(final Map<String, String> properties) {
     return new ReadableReflectiveNameExtension(new PropertiesReader.Of(properties));
@@ -76,7 +111,7 @@ final class ReadableReflectiveNameExtensionTest {
   @Test
   void disabledExtensionShouldReturnStepUnchanged() {
     final RunnableStep step = RunnableStep.of(
-      StepAttributes.of(NAME, "this_is_step_name", REFLECTIVE_NAME, "this_is_step_name"),
+      StepAttributes.of(NAME, "this_is_step_name", JOIN_POINT, joinPoint("this_is_step_name")),
       RunnableStep.emptyBody()
     );
 
@@ -89,20 +124,20 @@ final class ReadableReflectiveNameExtensionTest {
   @Test
   void underscoresShouldBeReplacedWithSpacesWhenNameIsNotCustomized() {
     final RunnableStep step = RunnableStep.of(
-      StepAttributes.of(NAME, "this_is_step_name", REFLECTIVE_NAME, "this_is_step_name"),
+      StepAttributes.of(NAME, "this_is_step_name", JOIN_POINT, joinPoint("this_is_step_name")),
       RunnableStep.emptyBody()
     );
 
     final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
 
     assertThat(resultStep.getName()).isEqualTo("this is step name");
-    assertThat(resultStep.get(REFLECTIVE_NAME)).isEqualTo("this_is_step_name");
+    assertThat(resultStep.get(JOIN_POINT).getSignature().getName()).isEqualTo("this_is_step_name");
   }
 
   @Test
   void consecutiveUnderscoresShouldBeReplacedEachWithSingleSpace() {
     final RunnableStep step = RunnableStep.of(
-      StepAttributes.of(NAME, "step__name", REFLECTIVE_NAME, "step__name"),
+      StepAttributes.of(NAME, "step__name", JOIN_POINT, joinPoint("step__name")),
       RunnableStep.emptyBody()
     );
 
@@ -114,7 +149,7 @@ final class ReadableReflectiveNameExtensionTest {
   @Test
   void customizedStepNameShouldBeKept() {
     final RunnableStep step = RunnableStep.of(
-      StepAttributes.of(NAME, "Custom step name", REFLECTIVE_NAME, "reflective_name"),
+      StepAttributes.of(NAME, "Custom step name", JOIN_POINT, joinPoint("reflective_name")),
       RunnableStep.emptyBody()
     );
 
@@ -138,13 +173,30 @@ final class ReadableReflectiveNameExtensionTest {
   @Test
   void stepNameWithoutUnderscoresShouldBeKeptUnchanged() {
     final RunnableStep step = RunnableStep.of(
-      StepAttributes.of(NAME, "step name", REFLECTIVE_NAME, "step name"),
+      StepAttributes.of(NAME, "step name", JOIN_POINT, joinPoint("step name")),
       RunnableStep.emptyBody()
     );
 
     final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
 
     assertThat(resultStep.getName()).isEqualTo("step name");
+  }
+
+  @Test
+  void constructorNameWithUnderscoresShouldBeMadeReadable() throws Exception {
+    final RunnableStep step = RunnableStep.of(
+      StepAttributes.of(
+        NAME,
+        "Constructor_Fixture",
+        JOIN_POINT,
+        constructorJoinPoint()
+      ),
+      RunnableStep.emptyBody()
+    );
+
+    final StepObj<?> resultStep = intercept(newExtension(new HashMap<>()), step);
+
+    assertThat(resultStep.getName()).isEqualTo("Constructor Fixture");
   }
 
   @Test

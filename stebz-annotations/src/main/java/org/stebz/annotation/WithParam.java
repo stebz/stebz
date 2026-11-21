@@ -24,6 +24,7 @@
 package org.stebz.annotation;
 
 import org.stebz.annotation.aspect.StepAspects;
+import org.stebz.annotation.marker.StepAttributeMarker;
 import org.stebz.core.attribute.StepAttribute;
 
 import java.lang.annotation.Documented;
@@ -48,7 +49,7 @@ import java.lang.annotation.Target;
 public @interface WithParam {
 
   /**
-   * Returns parameter name. Non empty value overrides {@link #name()}.
+   * Returns parameter name. Non-empty value overrides {@link #name()}.
    *
    * @return parameter name
    */
@@ -67,13 +68,6 @@ public @interface WithParam {
    * @return parameter value
    */
   String val() default "";
-
-  /**
-   * Returns {@code true} if parameter should be masked, otherwise returns {@code false}.
-   *
-   * @return {@code true} if parameter should be masked, otherwise {@code false}
-   */
-  boolean masked() default false;
 
   /**
    * Step attribute annotation. Adds several parameters to a step. Maps to {@link StepAttribute#PARAMS} attribute via

@@ -29,9 +29,9 @@ import io.qase.commons.StepStorage;
 import io.qase.commons.models.domain.Attachment;
 import io.qase.commons.models.domain.StepResult;
 import io.qase.commons.models.domain.StepResultStatus;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.stebz.annotation.attribute.ReflectiveStepAttributes;
 import org.stebz.core.attribute.Keyword;
 import org.stebz.core.executor.StartupPropertiesReader;
 import org.stebz.core.listener.StepListener;
@@ -45,6 +45,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
+import static org.stebz.annotation.aspect.StepAspects.JOIN_POINT;
 
 /**
  * Qase {@code StepListener} implementation: reports steps to Qase as nested steps with names, expected results, and
@@ -288,7 +290,7 @@ public class QaseStepListener implements StepListener {
 
   private static void addReflectionParams(final StepObj<?> step,
                                           final Map<String, Object> paramsToProcess) {
-    final org.aspectj.lang.JoinPoint joinPoint = step.get(ReflectiveStepAttributes.JOIN_POINT);
+    final JoinPoint joinPoint = step.get(JOIN_POINT);
     if (joinPoint != null) {
       final Object thisObj = joinPoint.getThis();
       if (thisObj != null) {

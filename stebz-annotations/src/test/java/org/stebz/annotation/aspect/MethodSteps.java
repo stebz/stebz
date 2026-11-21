@@ -27,7 +27,6 @@ import org.stebz.annotation.Param;
 import org.stebz.annotation.Step;
 import org.stebz.annotation.WithComment;
 import org.stebz.annotation.WithExpectedResult;
-import org.stebz.annotation.WithHidden;
 import org.stebz.annotation.WithKeyword;
 import org.stebz.annotation.WithName;
 import org.stebz.annotation.WithParam;
@@ -79,6 +78,12 @@ final class MethodSteps {
     return RunnableStep.empty();
   }
 
+  public static RunnableStep paramValueOverridesNameStep(
+    @Param(value = "value name", name = "name value", val = "constant value") final String param
+  ) {
+    return RunnableStep.empty();
+  }
+
   @Step
   @WithParam(name = "param name", val = "param value")
   public static void quickStaticMethodStep() {
@@ -86,7 +91,6 @@ final class MethodSteps {
   }
 
   @Step
-  @WithHidden
   public String quickInstanceMethodStep(final String param) {
     return param;
   }
@@ -110,9 +114,10 @@ final class MethodSteps {
   @Step
   @WithParams
   public static void quickMethodWithParamModifiers(
-    @Param(value = "masked param", masked = true) final String param1,
+    @Param.Masked("masked value") final String param1,
     @Param(name = "val param", val = "constant value") final String param2,
-    @Param(hidden = true) final String param3
+    @Param.Hidden final String param3,
+    @Param.Masked("") final String param4
   ) {
   }
 

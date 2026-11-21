@@ -23,6 +23,7 @@
  */
 package org.stebz.annotation.aspect;
 
+import dev.jlet.function.ThrowingSupplier;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -33,15 +34,13 @@ import org.aspectj.lang.reflect.FieldSignature;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.stebz.annotation.Param;
 import org.stebz.annotation.Step;
-import org.stebz.annotation.StepAttributeMarker;
 import org.stebz.annotation.WithComment;
 import org.stebz.annotation.WithExpectedResult;
-import org.stebz.annotation.WithHidden;
 import org.stebz.annotation.WithKeyword;
 import org.stebz.annotation.WithName;
 import org.stebz.annotation.WithParam;
 import org.stebz.annotation.WithParams;
-import org.stebz.annotation.attribute.StepSourceType;
+import org.stebz.annotation.marker.StepAttributeMarker;
 import org.stebz.core.attribute.Keyword;
 import org.stebz.core.attribute.SimpleStepAttribute;
 import org.stebz.core.attribute.StepAttribute;
@@ -65,24 +64,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.stebz.annotation.attribute.ReflectiveStepAttributes.DECLARED_ANNOTATIONS;
-import static org.stebz.annotation.attribute.ReflectiveStepAttributes.JOIN_POINT;
-import static org.stebz.annotation.attribute.ReflectiveStepAttributes.REFLECTIVE_NAME;
-import static org.stebz.annotation.attribute.ReflectiveStepAttributes.STEP_SOURCE;
-import static org.stebz.annotation.attribute.ReflectiveStepAttributes.STEP_SOURCE_TYPE;
 import static org.stebz.core.attribute.StepAttribute.COMMENT;
 import static org.stebz.core.attribute.StepAttribute.EXPECTED_RESULT;
-import static org.stebz.core.attribute.StepAttribute.HIDING;
 import static org.stebz.core.attribute.StepAttribute.KEYWORD;
 import static org.stebz.core.attribute.StepAttribute.NAME;
 import static org.stebz.core.attribute.StepAttribute.PARAMS;
 
 /**
  * Step aspects.
+ *
+ * @see #JOIN_POINT
  */
 @Aspect
 public class StepAspects {
-  private static final String PARAM_VALUE_MASK = "******";
+  /**
+   * Join point step attribute.
+   */
+  public static final SimpleStepAttribute<JoinPoint> JOIN_POINT =
+    SimpleStepAttribute.nullable("reflective:join_point");
+
   private static final Map<Class<?>, StepAttribute<?, ?, ?>> CACHED_CUSTOM_ATTRS = new ConcurrentHashMap<>();
   private static final Map<String, Keyword> CACHED_KEYWORDS = new ConcurrentHashMap<>();
   private static final Cached<StepAttributesSetters> STEP_ATTRIBUTES_SETTERS = new Cached<>(() -> {
@@ -112,8 +112,8 @@ public class StepAspects {
    * @return step with attributes
    * @throws Throwable if the field getter throws an exception
    */
-  @Around("get(@(@org.stebz.annotation.StepAttributeMarker *) org.stebz.core.step.StepObj+ *)")
-  public Object fieldStepObjWithAttributes(final ProceedingJoinPoint joinPoint) throws Throwable {
+  @Around("get(@(@org.stebz.annotation.marker.StepAttributeMarker *) org.stebz.core.step.StepObj+ *)")
+  public Object addFieldStepObjAttributes(final ProceedingJoinPoint joinPoint) throws Throwable {
     final StepObj<?> step = (StepObj<?>) joinPoint.proceed();
     if (step == null) {
       return null;
@@ -122,9 +122,8 @@ public class StepAspects {
     final Field field = signature.getField();
     final StepAttributes attributes = extractAttributes(
       step.getAttributes(),
-      joinPoint, StepSourceType.FIELD, field,
+      joinPoint,
       field.getDeclaredAnnotations(),
-      field.getName(),
       null, null, null
     );
     return step.withAttributes(attributes);
@@ -137,9 +136,9 @@ public class StepAspects {
    * @return step with attributes
    * @throws Throwable if the method throws an exception
    */
-  @Around("execution(@(@org.stebz.annotation.StepAttributeMarker *) org.stebz.core.step.StepObj+ *(..))" +
-    " || execution(org.stebz.core.step.StepObj+ *(.., @org.stebz.annotation.Param (*), ..))")
-  public Object methodStepObjWithAttribute(final ProceedingJoinPoint joinPoint) throws Throwable {
+  @Around("execution(@(@org.stebz.annotation.marker.StepAttributeMarker *) org.stebz.core.step.StepObj+ *(..))" +
+    " || execution(org.stebz.core.step.StepObj+ *(.., @(@org.stebz.annotation.marker.StepParameterMarker *) (*), ..))")
+  public Object addMethodStepObjAttribute(final ProceedingJoinPoint joinPoint) throws Throwable {
     final StepObj<?> step = (StepObj<?>) joinPoint.proceed();
     if (step == null) {
       return null;
@@ -148,9 +147,8 @@ public class StepAspects {
     final Method method = signature.getMethod();
     final StepAttributes attributes = extractAttributes(
       step.getAttributes(),
-      joinPoint, StepSourceType.METHOD, method,
+      joinPoint,
       method.getDeclaredAnnotations(),
-      method.getName(),
       method.getParameters(), signature.getParameterNames(), joinPoint.getArgs()
     );
     return step.withAttributes(attributes);
@@ -163,17 +161,16 @@ public class StepAspects {
    * @throws Throwable if the constructor throws an exception
    */
   @AfterReturning(
-    "execution(@(@org.stebz.annotation.StepAttributeMarker *) org.stebz.core.step.executable..*.Of+.new(..))" +
-      " || execution(org.stebz.core.step.executable..*.Of+.new(.., @org.stebz.annotation.Param (*), ..))")
-  public void ctorStepObjWithAttributes(final JoinPoint joinPoint) throws Throwable {
+    "execution(@(@org.stebz.annotation.marker.StepAttributeMarker *) org.stebz.core.step.executable..*.Of+.new(..))" +
+      " || execution(org.stebz.core.step.executable..*.Of+.new(.., @(@org.stebz.annotation.marker.StepParameterMarker *) (*), ..))")
+  public void addCtorStepObjAttributes(final JoinPoint joinPoint) throws Throwable {
     final StepObj<?> step = (StepObj<?>) joinPoint.getThis();
     final ConstructorSignature signature = (ConstructorSignature) joinPoint.getSignature();
     final Constructor<?> constructor = signature.getConstructor();
     final StepAttributes attributes = extractAttributes(
       step.getAttributes(),
-      joinPoint, StepSourceType.CONSTRUCTOR, constructor,
+      joinPoint,
       constructor.getDeclaredAnnotations(),
-      constructor.getDeclaringClass().getSimpleName(),
       constructor.getParameters(), signature.getParameterNames(), joinPoint.getArgs()
     );
     STEP_ATTRIBUTES_SETTERS.get().setAttributes(step, attributes);
@@ -186,8 +183,8 @@ public class StepAspects {
    * @return method result or {@code null} if the method returns {@code void} or if the step is captured
    * @throws Throwable if the method throws an exception
    */
-  @Around("execution(@(@org.stebz.annotation.StepAttributeMarker *) !org.stebz.core.step.StepObj+ *(..))")
-  public Object quickMethodStep(final ProceedingJoinPoint joinPoint) throws Throwable {
+  @Around("execution(@(@org.stebz.annotation.marker.StepExecutionMarker *) !org.stebz.core.step.StepObj+ *(..))")
+  public Object executeMethodStep(final ProceedingJoinPoint joinPoint) throws Throwable {
     final QuickStepMode quickStepMode = QUICK_STEP_MODE.get();
     if (quickStepMode == QuickStepMode.IGNORE) {
       return joinPoint.proceed();
@@ -200,9 +197,8 @@ public class StepAspects {
     final Method method = signature.getMethod();
     final StepAttributes attributes = extractAttributes(
       StepAttributes.empty(),
-      joinPoint, StepSourceType.METHOD, method,
+      joinPoint,
       method.getDeclaredAnnotations(),
-      method.getName(),
       method.getParameters(), signature.getParameterNames(), joinPoint.getArgs()
     );
 
@@ -228,8 +224,8 @@ public class StepAspects {
    * @return constructor result
    * @throws Throwable if the constructor throws an exception
    */
-  @Around("execution(@(@org.stebz.annotation.StepAttributeMarker *) !org.stebz.core.step.StepObj+.new(..))")
-  public Object quickCtorStep(final ProceedingJoinPoint joinPoint) throws Throwable {
+  @Around("execution(@(@org.stebz.annotation.marker.StepExecutionMarker *) !org.stebz.core.step.StepObj+.new(..))")
+  public Object executeCtorStep(final ProceedingJoinPoint joinPoint) throws Throwable {
     final QuickStepMode quickStepMode = QUICK_STEP_MODE.get();
     if (quickStepMode == QuickStepMode.IGNORE) {
       joinPoint.proceed();
@@ -243,9 +239,8 @@ public class StepAspects {
     final Constructor<?> constructor = signature.getConstructor();
     final StepAttributes attributes = extractAttributes(
       StepAttributes.empty(),
-      joinPoint, StepSourceType.CONSTRUCTOR, constructor,
+      joinPoint,
       constructor.getDeclaredAnnotations(),
-      constructor.getDeclaringClass().getSimpleName(),
       constructor.getParameters(), signature.getParameterNames(), joinPoint.getArgs()
     );
 
@@ -262,12 +257,18 @@ public class StepAspects {
     }));
   }
 
-  static void enableIgnoreMode() {
+  static <T> T inIgnoreMode(final ThrowingSupplier<? extends T, ?> action) throws Throwable {
+    final QuickStepMode quickStepMode = QUICK_STEP_MODE.get();
     QUICK_STEP_MODE.set(QuickStepMode.IGNORE);
-  }
-
-  static void disableIgnoreMode() {
-    QUICK_STEP_MODE.remove();
+    try {
+      return action.get();
+    } finally {
+      if (quickStepMode == null) {
+        QUICK_STEP_MODE.remove();
+      } else {
+        QUICK_STEP_MODE.set(quickStepMode);
+      }
+    }
   }
 
   static void enableCaptureMode() {
@@ -331,27 +332,22 @@ public class StepAspects {
   @SuppressWarnings("unchecked")
   private static StepAttributes extractAttributes(final StepAttributes originAttributes,
                                                   final JoinPoint joinPoint,
-                                                  final StepSourceType stepSourceType,
-                                                  final Object stepSource,
                                                   final Annotation[] declaredAnnotations,
-                                                  final String reflectiveName,
                                                   final Parameter[] parameters, /* nullable */
                                                   final String[] parameterNames, /* nullable */
                                                   final Object[] parameterValues /* nullable */) {
     final Map<Class<?>, Annotation> attrAnnotations = extractAttrAnnotations(declaredAnnotations);
     final StepAttributes.Builder builder = originAttributes.asBuilder();
+    final String reflectiveName = joinPoint.getSignature() instanceof ConstructorSignature
+      ? ((ConstructorSignature) joinPoint.getSignature()).getConstructor().getDeclaringClass().getSimpleName()
+      : joinPoint.getSignature().getName();
     addKeyword(builder, attrAnnotations);
     addName(builder, attrAnnotations, reflectiveName);
     addComment(builder, attrAnnotations);
     addParams(builder, attrAnnotations, originAttributes.get(PARAMS), parameters, parameterNames, parameterValues);
-    addHidden(builder, attrAnnotations);
     addExpectedResult(builder, attrAnnotations);
     removeDefaultAnnotations(attrAnnotations);
     builder.add(JOIN_POINT, joinPoint);
-    builder.add(STEP_SOURCE_TYPE, stepSourceType);
-    builder.add(STEP_SOURCE, stepSource);
-    builder.add(DECLARED_ANNOTATIONS, declaredAnnotations);
-    builder.add(REFLECTIVE_NAME, reflectiveName);
     if (!attrAnnotations.isEmpty()) {
       attrAnnotations.forEach((key, value) -> builder.add(
         (StepAttribute<Object, Object, Object>) CACHED_CUSTOM_ATTRS.computeIfAbsent(key, SimpleStepAttribute::nullable),
@@ -382,7 +378,6 @@ public class StepAspects {
     annotations.remove(Step.class);
     annotations.remove(WithComment.class);
     annotations.remove(WithExpectedResult.class);
-    annotations.remove(WithHidden.class);
     annotations.remove(WithKeyword.class);
     annotations.remove(WithName.class);
     annotations.remove(WithParam.class);
@@ -439,14 +434,6 @@ public class StepAspects {
     }
   }
 
-  private static void addHidden(final StepAttributes.Builder builder,
-                                final Map<Class<?>, Annotation> annotations) {
-    final WithHidden annotation = (WithHidden) annotations.get(WithHidden.class);
-    if (annotation != null) {
-      builder.add(HIDING, annotation.value());
-    }
-  }
-
   private static void addExpectedResult(final StepAttributes.Builder builder,
                                         final Map<Class<?>, Annotation> annotations) {
     final WithExpectedResult annotation = (WithExpectedResult) annotations.get(WithExpectedResult.class);
@@ -467,28 +454,29 @@ public class StepAspects {
     if (values != null && values.length != 0) {
       final boolean addByDefault = annotations.containsKey(WithParams.class) || annotations.containsKey(Step.class);
       for (int idx = 0; idx < parameters.length; idx++) {
+        if (parameters[idx].getAnnotation(Param.Hidden.class) != null) {
+          continue;
+        }
         final String paramName = names != null && names[idx] != null
           ? names[idx]
           : "arg" + idx;
-        final Param annot = parameters[idx].getAnnotation(Param.class);
-        if (annot == null) {
+        final Param paramAnnot = parameters[idx].getAnnotation(Param.class);
+        final Param.Masked maskedAnnot = parameters[idx].getAnnotation(Param.Masked.class);
+        if (paramAnnot == null && maskedAnnot == null) {
           if (addByDefault) {
             paramsMap.put(paramName, values[idx]);
           }
         } else {
-          if (annot.hidden()) {
-            continue;
-          }
           paramsMap.put(
-            !annot.value().isEmpty()
-              ? annot.value()
-              : !annot.name().isEmpty()
-              ? annot.name()
+            paramAnnot != null && !paramAnnot.value().isEmpty()
+              ? paramAnnot.value()
+              : paramAnnot != null && !paramAnnot.name().isEmpty()
+              ? paramAnnot.name()
               : paramName,
-            annot.masked()
-              ? PARAM_VALUE_MASK
-              : !annot.val().isEmpty()
-              ? annot.val()
+            maskedAnnot != null
+              ? maskedAnnot.value()
+              : paramAnnot != null && !paramAnnot.val().isEmpty()
+              ? paramAnnot.val()
               : values[idx]
           );
         }
@@ -497,31 +485,21 @@ public class StepAspects {
 
     final WithParam paramAnnotation = (WithParam) annotations.get(WithParam.class);
     if (paramAnnotation != null) {
-      final String name = !paramAnnotation.value().isEmpty()
-        ? paramAnnotation.value()
-        : paramAnnotation.name();
+      final String name = paramAnnotation.value().isEmpty()
+        ? paramAnnotation.name()
+        : paramAnnotation.value();
       if (!name.isEmpty()) {
-        paramsMap.put(
-          name,
-          paramAnnotation.masked()
-            ? PARAM_VALUE_MASK
-            : paramAnnotation.val()
-        );
+        paramsMap.put(name, paramAnnotation.val());
       }
     }
     final WithParam.List listAnnotation = (WithParam.List) annotations.get(WithParam.List.class);
     if (listAnnotation != null) {
       for (final WithParam param : listAnnotation.value()) {
-        final String name = !param.value().isEmpty()
-          ? param.value()
-          : param.name();
+        final String name = param.value().isEmpty()
+          ? param.name()
+          : param.value();
         if (!name.isEmpty()) {
-          paramsMap.put(
-            name,
-            param.masked()
-              ? PARAM_VALUE_MASK
-              : param.val()
-          );
+          paramsMap.put(name, param.val());
         }
       }
     }

@@ -25,9 +25,10 @@ package org.stebz.aaa.annotation;
 
 import org.stebz.aaa.keyword.AAAKeywords;
 import org.stebz.annotation.Step;
-import org.stebz.annotation.StepAttributeMarker;
+import org.stebz.annotation.marker.StepAttributeMarker;
 import org.stebz.annotation.WithKeyword;
 import org.stebz.annotation.WithName;
+import org.stebz.annotation.marker.StepExecutionMarker;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -42,6 +43,7 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@StepExecutionMarker
 @StepAttributeMarker(AAAAnnotations.class)
 public @interface SetUp {
 

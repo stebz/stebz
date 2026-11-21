@@ -23,12 +23,10 @@
  */
 package org.stebz.annotation.aspect;
 
+import org.aspectj.lang.reflect.ConstructorSignature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.stebz.annotation.WithComment;
-import org.stebz.annotation.WithName;
-import org.stebz.annotation.attribute.StepSourceType;
 import org.stebz.core.attribute.Keyword;
 import org.stebz.core.attribute.SimpleStepAttribute;
 import org.stebz.core.step.StepObj;
@@ -37,22 +35,11 @@ import org.stebz.core.step.executable.FunctionStep;
 import org.stebz.core.step.executable.RunnableStep;
 import org.stebz.core.step.executable.SupplierStep;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
-import static org.stebz.annotation.attribute.ReflectiveStepAttributes.DECLARED_ANNOTATIONS;
-import static org.stebz.annotation.attribute.ReflectiveStepAttributes.JOIN_POINT;
-import static org.stebz.annotation.attribute.ReflectiveStepAttributes.REFLECTIVE_NAME;
-import static org.stebz.annotation.attribute.ReflectiveStepAttributes.STEP_SOURCE;
-import static org.stebz.annotation.attribute.ReflectiveStepAttributes.STEP_SOURCE_TYPE;
+import static org.stebz.annotation.aspect.StepAspects.JOIN_POINT;
+import static org.stebz.annotation.aspect.StepAspects.inIgnoreMode;
 
 /**
  * Tests for {@link StepAspects}.
@@ -68,7 +55,7 @@ final class StepAspectsTest {
   }
 
   /**
-   * Tests for {@link StepAspects#fieldStepObjWithAttributes}.
+   * Tests for {@link StepAspects#addFieldStepObjAttributes}.
    */
   @Nested
   class FieldStepTests {
@@ -113,27 +100,16 @@ final class StepAspectsTest {
     @Test
     void fieldReflectiveAttributes() {
       final RunnableStep step = FieldSteps.staticFieldRunnableStep;
-      final List<Class<? extends Annotation>> declaredAnnotations = Arrays.stream(step.get(DECLARED_ANNOTATIONS))
-        .map(Annotation::annotationType)
-        .collect(Collectors.toList());
 
       assertThat(step.get(JOIN_POINT))
         .isNotNull();
-      assertThat(step.get(STEP_SOURCE_TYPE))
-        .isSameAs(StepSourceType.FIELD);
-      assertThat(step.get(STEP_SOURCE))
-        .isInstanceOf(Field.class)
-        .extracting(f -> ((Field) f).getName())
+      assertThat(step.get(JOIN_POINT).getSignature().getName())
         .isEqualTo("staticFieldRunnableStep");
-      assertThat(step.get(REFLECTIVE_NAME))
-        .isEqualTo("staticFieldRunnableStep");
-      assertThat(declaredAnnotations)
-        .containsExactlyInAnyOrder(WithName.class, WithComment.class);
     }
   }
 
   /**
-   * Tests for {@link StepAspects#methodStepObjWithAttribute}.
+   * Tests for {@link StepAspects#addMethodStepObjAttribute}.
    */
   @Nested
   class StepObjMethodTests {
@@ -202,10 +178,16 @@ final class StepAspectsTest {
         .containsExactly(
           entry("renamed param", "value")
         );
-      assertThat(step.get(STEP_SOURCE_TYPE))
-        .isSameAs(StepSourceType.METHOD);
       assertThat(StaticStepListener.startedSteps)
         .isEmpty();
+    }
+
+    @Test
+    void parameterValueOverridesName() {
+      final RunnableStep step = MethodSteps.paramValueOverridesNameStep("argument value");
+
+      assertThat(step.getParams())
+        .containsExactly(entry("value name", "constant value"));
     }
 
     @Test
@@ -214,22 +196,30 @@ final class StepAspectsTest {
 
       assertThat(step.get(JOIN_POINT))
         .isNotNull();
-      assertThat(step.get(STEP_SOURCE_TYPE))
-        .isSameAs(StepSourceType.METHOD);
-      assertThat(step.get(STEP_SOURCE))
-        .isInstanceOf(Method.class)
-        .extracting(m -> ((Method) m).getName())
-        .isEqualTo("staticMethodRunnableStep");
-      assertThat(step.get(REFLECTIVE_NAME))
+      assertThat(step.get(JOIN_POINT).getSignature().getName())
         .isEqualTo("staticMethodRunnableStep");
     }
   }
 
   /**
-   * Tests for {@link StepAspects#quickMethodStep}.
+   * Tests for {@link StepAspects#executeMethodStep}.
    */
   @Nested
   class QuickMethodTests {
+
+    @Test
+    void nestedIgnoreModeRestoresOuterMode() throws Throwable {
+      inIgnoreMode(() -> {
+        inIgnoreMode(() -> null);
+        MethodSteps.quickStaticMethodStep();
+        return null;
+      });
+
+      assertThat(MethodSteps.quickStaticMethodBodyCount)
+        .hasValue(1);
+      assertThat(StaticStepListener.startedSteps)
+        .isEmpty();
+    }
 
     @Test
     void quickStaticMethodIsExecutedAsStep() {
@@ -270,7 +260,7 @@ final class StepAspectsTest {
           entry("param", "value")
         );
       assertThat(step.isHidden())
-        .isTrue();
+        .isFalse();
     }
 
     @Test
@@ -306,12 +296,13 @@ final class StepAspectsTest {
 
     @Test
     void quickMethodParamModifiers() {
-      MethodSteps.quickMethodWithParamModifiers("value1", "value2", "value3");
+      MethodSteps.quickMethodWithParamModifiers("value1", "value2", "value3", "value4");
 
       assertThat(StaticStepListener.startedSteps.get(0).getParams())
         .containsExactly(
-          entry("masked param", "******"),
-          entry("val param", "constant value")
+          entry("param1", "masked value"),
+          entry("val param", "constant value"),
+          entry("param4", "")
         );
     }
 
@@ -386,7 +377,7 @@ final class StepAspectsTest {
   }
 
   /**
-   * Tests for {@link StepAspects#ctorStepObjWithAttributes} and {@link StepAspects#quickCtorStep}.
+   * Tests for {@link StepAspects#addCtorStepObjAttributes} and {@link StepAspects#executeCtorStep}.
    */
   @Nested
   class ConstructorTests {
@@ -413,14 +404,8 @@ final class StepAspectsTest {
 
       assertThat(step.get(JOIN_POINT))
         .isNotNull();
-      assertThat(step.get(STEP_SOURCE_TYPE))
-        .isSameAs(StepSourceType.CONSTRUCTOR);
-      assertThat(step.get(STEP_SOURCE))
-        .isInstanceOf(Constructor.class)
-        .extracting(c -> ((Constructor<?>) c).getDeclaringClass().getSimpleName())
-        .isEqualTo("ConstructorStep");
-      assertThat(step.get(REFLECTIVE_NAME))
-        .isEqualTo("ConstructorStep");
+      assertThat(step.get(JOIN_POINT).getSignature())
+        .isInstanceOf(ConstructorSignature.class);
     }
 
     @Test

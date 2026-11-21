@@ -32,9 +32,9 @@ import io.qameta.allure.model.Status;
 import io.qameta.allure.model.StepResult;
 import io.qameta.allure.util.NamingUtils;
 import io.qameta.allure.util.ResultsUtils;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.stebz.annotation.attribute.ReflectiveStepAttributes;
 import org.stebz.core.attribute.Keyword;
 import org.stebz.core.executor.StartupPropertiesReader;
 import org.stebz.core.listener.StepListener;
@@ -47,6 +47,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.stebz.annotation.aspect.StepAspects.JOIN_POINT;
 
 /**
  * Allure {@code StepListener} implementation: reports steps to Allure as nested steps with names, parameters, and
@@ -365,7 +367,7 @@ public class AllureStepListener implements StepListener {
 
   private static void addReflectionParams(final StepObj<?> step,
                                           final Map<String, Object> paramsToProcess) {
-    final org.aspectj.lang.JoinPoint joinPoint = step.get(ReflectiveStepAttributes.JOIN_POINT);
+    final JoinPoint joinPoint = step.get(JOIN_POINT);
     if (joinPoint != null) {
       final Object thisObj = joinPoint.getThis();
       if (thisObj != null) {

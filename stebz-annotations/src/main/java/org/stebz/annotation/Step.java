@@ -23,6 +23,8 @@
  */
 package org.stebz.annotation;
 
+import org.stebz.annotation.marker.StepAttributeMarker;
+import org.stebz.annotation.marker.StepExecutionMarker;
 import org.stebz.core.attribute.StepAttribute;
 
 import java.lang.annotation.Documented;
@@ -42,6 +44,7 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@StepExecutionMarker
 @StepAttributeMarker
 public @interface Step {
 

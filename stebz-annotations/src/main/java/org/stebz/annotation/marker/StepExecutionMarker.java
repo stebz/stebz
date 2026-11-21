@@ -21,10 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.stebz.annotation;
-
-import org.stebz.annotation.aspect.StepAspects;
-import org.stebz.core.attribute.StepAttribute;
+package org.stebz.annotation.marker;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -33,20 +30,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Step attribute annotation. Maps to {@link StepAttribute#HIDING} attribute via {@link StepAspects}.
- *
- * @see StepAttribute#HIDING
+ * Marks annotations that execute the annotated method or constructor as a step via
+ * {@link org.stebz.annotation.aspect.StepAspects}.
  */
 @Documented
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
+@Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@StepAttributeMarker
-public @interface WithHidden {
-
-  /**
-   * Returns hidden attribute value.
-   *
-   * @return hidden attribute value
-   */
-  boolean value() default true;
+public @interface StepExecutionMarker {
 }
