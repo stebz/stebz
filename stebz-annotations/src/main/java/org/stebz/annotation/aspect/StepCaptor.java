@@ -52,9 +52,8 @@ import java.lang.reflect.Constructor;
 import static org.stebz.annotation.aspect.StepAspects.capturedAttributes;
 import static org.stebz.annotation.aspect.StepAspects.capturedJoinPoint;
 import static org.stebz.annotation.aspect.StepAspects.disableCaptureMode;
-import static org.stebz.annotation.aspect.StepAspects.disableIgnoreMode;
 import static org.stebz.annotation.aspect.StepAspects.enableCaptureMode;
-import static org.stebz.annotation.aspect.StepAspects.enableIgnoreMode;
+import static org.stebz.annotation.aspect.StepAspects.inIgnoreMode;
 
 /**
  * Step captor. Contains methods for step capturing.
@@ -62,6 +61,7 @@ import static org.stebz.annotation.aspect.StepAspects.enableIgnoreMode;
  * <ul>
  *   <li>the body of the captured step is not executed during capturing, it is executed on each execution of the
  *   returned step</li>
+ *   <li>code in the reference outside the captured step is executed during capturing</li>
  *   <li>a method with a result returns {@code null} during capturing, so the reference must not use this result</li>
  *   <li>only one step can be captured within a single reference, otherwise {@link IllegalArgumentException} is
  *   thrown</li>
@@ -776,13 +776,8 @@ public final class StepCaptor {
 
     @SuppressWarnings("unchecked")
     private static <R> R newInstance(final Constructor<?> ctor,
-                                     final Object[] args) throws ReflectiveOperationException {
-      enableIgnoreMode();
-      try {
-        return (R) ctor.newInstance(args);
-      } finally {
-        disableIgnoreMode();
-      }
+                                     final Object[] args) throws Throwable {
+      return inIgnoreMode(() -> (R) ctor.newInstance(args));
     }
   }
 }

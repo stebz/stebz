@@ -21,26 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.stebz.annotation.attribute;
-
 /**
- * Step source type.
+ * Marker annotations for step attributes, execution annotations and parameter annotations.
  */
-public enum StepSourceType {
-  /**
-   * Constructor source type.
-   */
-  CONSTRUCTOR,
-  /**
-   * Field source type.
-   */
-  FIELD,
-  /**
-   * Method source type.
-   */
-  METHOD,
-  /**
-   * Unknown source type.
-   */
-  UNKNOWN
-}
+package org.stebz.annotation.marker;

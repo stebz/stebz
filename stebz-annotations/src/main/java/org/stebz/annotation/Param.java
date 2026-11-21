@@ -24,6 +24,7 @@
 package org.stebz.annotation;
 
 import org.stebz.annotation.aspect.StepAspects;
+import org.stebz.annotation.marker.StepParameterMarker;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -31,16 +32,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static org.stebz.core.step.StepObj.MASKED_PARAM_VALUE;
+
 /**
  * Parameter annotation. Allows to add or override step parameters of a method or constructor via {@link StepAspects}.
  */
 @Documented
-@Target({ElementType.PARAMETER})
+@Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
+@StepParameterMarker
 public @interface Param {
 
   /**
-   * Returns parameter name. Non empty value overrides {@link #name()}.
+   * Returns parameter name. Non-empty value overrides {@link #name()}.
    *
    * @return parameter name
    */
@@ -61,16 +65,31 @@ public @interface Param {
   String val() default "";
 
   /**
-   * Returns {@code true} if parameter should be masked, otherwise returns {@code false}.
-   *
-   * @return {@code true} if parameter should be masked, otherwise {@code false}
+   * Masks the parameter value in the step params attribute. The actual parameter value is replaced by {@link #value()};
+   * an empty annotation value is used as an empty displayed value.
    */
-  boolean masked() default false;
+  @Documented
+  @Target(ElementType.PARAMETER)
+  @Retention(RetentionPolicy.RUNTIME)
+  @StepParameterMarker
+  @interface Masked {
+
+    /**
+     * Returns the value displayed for the parameter in the step params attribute. The actual parameter value is not
+     * used while this annotation is present, including when this value is empty.
+     *
+     * @return displayed masked value
+     */
+    String value() default MASKED_PARAM_VALUE;
+  }
 
   /**
-   * Returns {@code true} if parameter should be hidden, otherwise returns {@code false}.
-   *
-   * @return {@code true} if parameter should be hidden, otherwise {@code false}
+   * Excludes the parameter from the step params attribute.
    */
-  boolean hidden() default false;
+  @Documented
+  @Target(ElementType.PARAMETER)
+  @Retention(RetentionPolicy.RUNTIME)
+  @StepParameterMarker
+  @interface Hidden {
+  }
 }

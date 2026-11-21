@@ -23,6 +23,9 @@
  */
 package org.stebz.gherkin.annotation;
 
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.Signature;
+import org.aspectj.lang.reflect.ConstructorSignature;
 import org.junit.jupiter.api.Test;
 import org.stebz.core.attribute.Keyword;
 import org.stebz.core.extension.StebzExtension;
@@ -34,12 +37,14 @@ import org.stebz.util.property.PropertiesReader;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.stebz.annotation.attribute.ReflectiveStepAttributes.REFLECTIVE_NAME;
+import static org.stebz.annotation.aspect.StepAspects.JOIN_POINT;
 import static org.stebz.core.attribute.StepAttribute.NAME;
 import static org.stebz.gherkin.annotation.GherkinAnnotations.GHERKIN_KEYWORD;
 
@@ -47,6 +52,36 @@ import static org.stebz.gherkin.annotation.GherkinAnnotations.GHERKIN_KEYWORD;
  * Tests for {@link GherkinAnnotations} {@code interceptStep} logic.
  */
 final class GherkinAnnotationsInterceptTest {
+
+  private static final class ConstructorFixture {
+  }
+
+  private static JoinPoint joinPoint(final String name) {
+    final Signature signature = (Signature) Proxy.newProxyInstance(
+      Signature.class.getClassLoader(),
+      new Class<?>[]{Signature.class},
+      (proxy, method, args) -> method.getName().equals("getName") ? name : null
+    );
+    return (JoinPoint) Proxy.newProxyInstance(
+      JoinPoint.class.getClassLoader(),
+      new Class<?>[]{JoinPoint.class},
+      (proxy, method, args) -> method.getName().equals("getSignature") ? signature : null
+    );
+  }
+
+  private static JoinPoint constructorJoinPoint() throws Exception {
+    final Constructor<?> constructor = ConstructorFixture.class.getDeclaredConstructor();
+    final ConstructorSignature signature = (ConstructorSignature) Proxy.newProxyInstance(
+      ConstructorSignature.class.getClassLoader(),
+      new Class<?>[]{ConstructorSignature.class},
+      (proxy, method, args) -> method.getName().equals("getConstructor") ? constructor : null
+    );
+    return (JoinPoint) Proxy.newProxyInstance(
+      JoinPoint.class.getClassLoader(),
+      new Class<?>[]{JoinPoint.class},
+      (proxy, method, args) -> method.getName().equals("getSignature") ? signature : null
+    );
+  }
 
   private static GherkinAnnotations newExtension(final Map<String, String> properties) {
     return new GherkinAnnotations(new PropertiesReader.Of(properties));
@@ -72,6 +107,25 @@ final class GherkinAnnotationsInterceptTest {
     properties.put("stebz.gherkin.annotation.order", "12345");
     assertThat(newExtension(properties).order())
       .isEqualTo(12345);
+  }
+
+  @Test
+  void ctorShouldUseStartupPropertiesReader() throws Exception {
+    final Map<String, String> properties = new HashMap<>();
+    properties.put("stebz.gherkin.annotation.order", "12345");
+    final Method setMethod = org.stebz.core.executor.StartupPropertiesReader.class
+      .getDeclaredMethod("set", PropertiesReader.class);
+    setMethod.setAccessible(true);
+    final Method clearMethod = org.stebz.core.executor.StartupPropertiesReader.class
+      .getDeclaredMethod("clear");
+    clearMethod.setAccessible(true);
+    try {
+      setMethod.invoke(null, new PropertiesReader.Of(properties));
+      assertThat(new GherkinAnnotations().order())
+        .isEqualTo(12345);
+    } finally {
+      clearMethod.invoke(null);
+    }
   }
 
   @Test
@@ -143,7 +197,7 @@ final class GherkinAnnotationsInterceptTest {
   @Test
   void emptyAnnotationValueUsesReflectiveName() {
     final RunnableStep step = RunnableStep.empty()
-      .with(REFLECTIVE_NAME, "reflective name")
+      .with(JOIN_POINT, joinPoint("reflective name"))
       .with(GHERKIN_KEYWORD, givenAnnotation());
 
     final StepObj<?> intercepted = newExtension(new HashMap<>())
@@ -152,6 +206,20 @@ final class GherkinAnnotationsInterceptTest {
       .isEqualTo("Given");
     assertThat(intercepted.getName())
       .isEqualTo("reflective name");
+  }
+
+  @Test
+  void emptyAnnotationValueUsesConstructorSimpleName() throws Exception {
+    final RunnableStep step = RunnableStep.empty()
+      .with(JOIN_POINT, constructorJoinPoint())
+      .with(GHERKIN_KEYWORD, givenAnnotation());
+
+    final StepObj<?> intercepted = newExtension(new HashMap<>())
+      .interceptStep(step, NullableOptional.empty());
+    assertThat(intercepted.getKeyword().value())
+      .isEqualTo("Given");
+    assertThat(intercepted.getName())
+      .isEqualTo("ConstructorFixture");
   }
 
   @Test

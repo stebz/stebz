@@ -24,6 +24,7 @@
 package org.stebz.annotation.aspect;
 
 import org.stebz.annotation.Param;
+import org.stebz.annotation.Step;
 import org.stebz.annotation.WithName;
 import org.stebz.annotation.WithParam;
 import org.stebz.annotation.WithParams;
@@ -36,11 +37,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 final class QuickConstructorStep {
   static final AtomicInteger ctorBodyCount = new AtomicInteger();
 
+  @Step
   @WithName("name value")
   @WithParam(name = "param name", val = "param value")
   @WithParams
-  QuickConstructorStep(@Param(masked = true) final String param1,
-                       @Param(hidden = true) final String param2) {
+  QuickConstructorStep(@Param.Masked final String param1,
+                       @Param.Hidden final String param2) {
     ctorBodyCount.incrementAndGet();
   }
 }

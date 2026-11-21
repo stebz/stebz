@@ -32,7 +32,6 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.jupiter.api.Test;
-import org.stebz.annotation.attribute.ReflectiveStepAttributes;
 import org.stebz.core.attribute.Keyword;
 import org.stebz.core.attribute.StepAttributes;
 import org.stebz.core.executor.StartupPropertiesReader;
@@ -49,6 +48,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.stebz.annotation.aspect.StepAspects.JOIN_POINT;
 import static org.stebz.core.attribute.StepAttribute.COMMENT;
 import static org.stebz.core.attribute.StepAttribute.EXPECTED_RESULT;
 import static org.stebz.core.attribute.StepAttribute.HIDING;
@@ -109,7 +109,7 @@ final class QaseStepListenerTest {
       builder.add(NAME, name);
     }
     builder.add(HIDING, false);
-    builder.add(ReflectiveStepAttributes.JOIN_POINT, joinPoint(thisObj));
+    builder.add(JOIN_POINT, joinPoint(thisObj));
     return RunnableStep.of(builder.build(), RunnableStep.emptyBody());
   }
 

@@ -24,9 +24,10 @@
 package org.stebz.gherkin.annotation;
 
 import org.stebz.annotation.Step;
-import org.stebz.annotation.StepAttributeMarker;
+import org.stebz.annotation.marker.StepAttributeMarker;
 import org.stebz.annotation.WithKeyword;
 import org.stebz.annotation.WithName;
+import org.stebz.annotation.marker.StepExecutionMarker;
 import org.stebz.gherkin.keyword.GherkinKeywords;
 
 import java.lang.annotation.Documented;
@@ -43,6 +44,7 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@StepExecutionMarker
 @StepAttributeMarker(GherkinAnnotations.class)
 public @interface ___ {
 

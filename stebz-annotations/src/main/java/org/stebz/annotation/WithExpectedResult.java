@@ -24,6 +24,7 @@
 package org.stebz.annotation;
 
 import org.stebz.annotation.aspect.StepAspects;
+import org.stebz.annotation.marker.StepAttributeMarker;
 import org.stebz.core.attribute.StepAttribute;
 
 import java.lang.annotation.Documented;

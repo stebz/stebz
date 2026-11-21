@@ -24,6 +24,8 @@
 package org.stebz.gherkin.annotation;
 
 import dev.jlet.function.ThrowingFunction;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.reflect.ConstructorSignature;
 import org.stebz.core.attribute.Keyword;
 import org.stebz.core.attribute.SimpleStepAttribute;
 import org.stebz.core.executor.StartupPropertiesReader;
@@ -39,7 +41,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.stebz.annotation.attribute.ReflectiveStepAttributes.REFLECTIVE_NAME;
+import static org.stebz.annotation.aspect.StepAspects.JOIN_POINT;
 import static org.stebz.core.attribute.StepAttribute.KEYWORD;
 import static org.stebz.core.attribute.StepAttribute.NAME;
 
@@ -154,9 +156,14 @@ public class GherkinAnnotations implements InterceptStep {
     if (!name.isEmpty()) {
       return step.with(KEYWORD, keyword);
     }
-    name = step.get(REFLECTIVE_NAME);
-    if (!name.isEmpty()) {
-      return step.with(KEYWORD, keyword, NAME, name);
+    final JoinPoint joinPoint = step.get(JOIN_POINT);
+    if (joinPoint != null) {
+      name = joinPoint.getSignature() instanceof ConstructorSignature
+        ? ((ConstructorSignature) joinPoint.getSignature()).getConstructor().getDeclaringClass().getSimpleName()
+        : joinPoint.getSignature().getName();
+      if (!name.isEmpty()) {
+        return step.with(KEYWORD, keyword, NAME, name);
+      }
     }
     return step.with(KEYWORD, keyword);
   }

@@ -130,7 +130,7 @@ final class StepCaptorTest {
           entry("param", "value")
         );
       assertThat(step.isHidden())
-        .isTrue();
+        .isFalse();
       assertThat(step.getBody().get())
         .isEqualTo("value");
     }
@@ -145,7 +145,7 @@ final class StepCaptorTest {
       assertThat(step.getName())
         .isEqualTo("quickInstanceMethodStep");
       assertThat(step.isHidden())
-        .isTrue();
+        .isFalse();
       assertThat(step.getBody().get())
         .isEqualTo(100);
       assertThat(StaticStepListener.startedSteps)

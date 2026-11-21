@@ -28,9 +28,9 @@ import com.epam.reportportal.service.step.StepRequestUtils;
 import com.epam.reportportal.utils.formatting.templating.TemplateConfiguration;
 import com.epam.reportportal.utils.formatting.templating.TemplateProcessing;
 import com.epam.ta.reportportal.ws.model.StartTestItemRQ;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.stebz.annotation.attribute.ReflectiveStepAttributes;
 import org.stebz.core.attribute.Keyword;
 import org.stebz.core.executor.StartupPropertiesReader;
 import org.stebz.core.listener.StepListener;
@@ -44,6 +44,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.stebz.annotation.aspect.StepAspects.JOIN_POINT;
 
 /**
  * ReportPortal {@code StepListener} implementation: reports steps to ReportPortal as nested steps with names,
@@ -239,7 +241,7 @@ public class ReportPortalStepListener implements StepListener {
 
   private static void addReflectionParams(final StepObj<?> step,
                                           final Map<String, Object> paramsToProcess) {
-    final org.aspectj.lang.JoinPoint joinPoint = step.get(ReflectiveStepAttributes.JOIN_POINT);
+    final JoinPoint joinPoint = step.get(JOIN_POINT);
     if (joinPoint != null) {
       final Object thisObj = joinPoint.getThis();
       if (thisObj != null) {

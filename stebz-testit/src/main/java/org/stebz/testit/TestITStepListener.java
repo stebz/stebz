@@ -25,9 +25,9 @@ package org.stebz.testit;
 
 import dev.jlet.function.ThrowingConsumer;
 import dev.jlet.function.ThrowingFunction;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.stebz.annotation.attribute.ReflectiveStepAttributes;
 import org.stebz.core.attribute.Keyword;
 import org.stebz.core.executor.StartupPropertiesReader;
 import org.stebz.core.listener.StepListener;
@@ -45,6 +45,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.stebz.annotation.aspect.StepAspects.JOIN_POINT;
 
 /**
  * Test IT {@code StepListener} implementation: reports steps to Test IT as nested steps with titles, parameters,
@@ -329,7 +331,7 @@ public class TestITStepListener implements StepListener {
 
   private static void addReflectionParams(final StepObj<?> step,
                                           final Map<String, String> paramsToProcess) {
-    final org.aspectj.lang.JoinPoint joinPoint = step.get(ReflectiveStepAttributes.JOIN_POINT);
+    final JoinPoint joinPoint = step.get(JOIN_POINT);
     if (joinPoint != null) {
       final Object thisObj = joinPoint.getThis();
       if (thisObj != null) {

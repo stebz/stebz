@@ -23,6 +23,8 @@
  */
 package org.stebz.readablereflectivename;
 
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.reflect.ConstructorSignature;
 import org.stebz.core.executor.StartupPropertiesReader;
 import org.stebz.core.extension.InterceptStep;
 import org.stebz.core.extension.StebzExtension;
@@ -30,7 +32,7 @@ import org.stebz.core.step.StepObj;
 import org.stebz.util.container.NullableOptional;
 import org.stebz.util.property.PropertiesReader;
 
-import static org.stebz.annotation.attribute.ReflectiveStepAttributes.REFLECTIVE_NAME;
+import static org.stebz.annotation.aspect.StepAspects.JOIN_POINT;
 
 /**
  * Readable reflective name {@link StebzExtension}.
@@ -69,10 +71,15 @@ public class ReadableReflectiveNameExtension implements InterceptStep {
     if (!this.enabled) {
       return step;
     }
-    final String reflectiveName = step.get(REFLECTIVE_NAME);
-    if (!reflectiveName.equals(step.getName()) || reflectiveName.indexOf('_') == -1) {
-      return step;
+    final JoinPoint joinPoint = step.get(JOIN_POINT);
+    if (joinPoint != null) {
+      final String reflectiveName = joinPoint.getSignature() instanceof ConstructorSignature
+        ? ((ConstructorSignature) joinPoint.getSignature()).getConstructor().getDeclaringClass().getSimpleName()
+        : joinPoint.getSignature().getName();
+      if (reflectiveName.equals(step.getName()) && reflectiveName.indexOf('_') != -1) {
+        return step.withName(reflectiveName.replace('_', ' '));
+      }
     }
-    return step.withName(reflectiveName.replace('_', ' '));
+    return step;
   }
 }
