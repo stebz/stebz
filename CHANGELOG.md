@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.1 (2026/11/22)
+
+* #274 add `around` aliases for `withContext` step methods by @evpl in PR #275
+* #279 add the `stebz-pc-methods` and `stebz-pc` modules with Pascal Case step APIs by @evpl in PR #280
+* #282 add marker annotations and parameter-level annotations for step parameters by @evpl in PR #283
+  * add `@StepParameterMarker` for custom parameter annotations
+  * add `@Param.Masked` and `@Param.Hidden`
+  * allow `@Param` to rename a parameter and set a constant or masked value
+  * improve marker annotation support for method, constructor and field steps
+* bump Test IT Java Commons from 4.2.4 to 4.2.5 by @evpl
+* bump Maven Flatten Plugin from 1.8.0 to 1.9.0 by @evpl
+* improve Maven Central publishing and release automation by @evpl
+* improve Codecov configuration and test workflow reporting by @evpl
+* fix Dependabot configuration and add the pull request template by @evpl
+
 ## 2.0 (2026/11/09)
 
 * #2 increase test coverage by @evpl in PR #270

@@ -89,6 +89,8 @@ you only ever add what you actually need.
   prefers.
 * **Annotations.** Prefer declarative steps? Annotate fields, methods and constructors with `@Step`, `@WithName`,
   `@WithParams` and friends, and Stebz turns them into full-fledged steps via AspectJ.
+* **Pascal Case API.** Use `Step`, `Around`, `Steps` and other Pascal Case aliases for projects that prefer that
+  naming style.
 * **Extensions.** Cross-cutting step behavior — hiding, soft assertions, repeating, retrying, clean stack traces,
   readable reflective names — is plugged in as extensions, and you can write your own.
 * **Reporting integrations.** Every step is streamed to Allure, Qase, ReportPortal or Test IT (or just to the
@@ -205,8 +207,8 @@ Maven:
 <dependencies>
   <dependency>
     <groupId>org.stebz</groupId>
-    <artifactId>stebz</artifactId> <!-- or stebz-aaa / stebz-gherkin -->
-    <version>2.0</version>
+    <artifactId>stebz</artifactId> <!-- or stebz-pc / stebz-aaa / stebz-gherkin -->
+    <version>2.1</version>
   </dependency>
 </dependencies>
 ```
@@ -217,7 +219,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation 'org.stebz:stebz:2.0'
+  implementation 'org.stebz:stebz:2.1'
 }
 ```
 <!-- @formatter:on -->
@@ -227,7 +229,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation("org.stebz:stebz:2.0")
+  implementation("org.stebz:stebz:2.1")
 }
 ```
 <!-- @formatter:on -->
@@ -254,12 +256,12 @@ Example — Allure with the Gherkin bundle:
   <dependency>
     <groupId>org.stebz</groupId>
     <artifactId>stebz-gherkin</artifactId>
-    <version>2.0</version>
+    <version>2.1</version>
   </dependency>
   <dependency>
     <groupId>org.stebz</groupId>
     <artifactId>stebz-allure</artifactId>
-    <version>2.0</version>
+    <version>2.1</version>
   </dependency>
   <dependency>
     <groupId>io.qameta.allure</groupId>
@@ -285,7 +287,7 @@ Maven:
     <dependency>
       <groupId>org.stebz</groupId>
       <artifactId>stebz-bom</artifactId>
-      <version>2.0</version>
+      <version>2.1</version>
       <scope>import</scope>
       <type>pom</type>
     </dependency>
@@ -299,7 +301,7 @@ Gradle (Groovy):
 <!-- @formatter:off -->
 ```groovy
 dependencies {
-  implementation platform('org.stebz:stebz-bom:2.0')
+  implementation platform('org.stebz:stebz-bom:2.1')
 }
 ```
 <!-- @formatter:on -->
@@ -309,7 +311,7 @@ Gradle (Kotlin):
 <!-- @formatter:off -->
 ```kotlin
 dependencies {
-  implementation(platform("org.stebz:stebz-bom:2.0"))
+  implementation(platform("org.stebz:stebz-bom:2.1"))
 }
 ```
 <!-- @formatter:on -->
@@ -417,6 +419,7 @@ have to think about this table — but every module can also be consumed individ
 | `stebz-gherkin-keywords`     | `stebz-core`                                  | Gherkin keywords                                      |
 | `stebz-gherkin-methods`      | `stebz-core`, `stebz-gherkin-keywords`        | `Given` / `When` / `Then` step-running methods        |
 | `stebz-gherkin-annotations`  | `stebz-annotations`, `stebz-gherkin-keywords` | `@Given` / `@When` / `@Then` annotations              |
+| `stebz-pc-methods`           | `stebz-core`                                  | Pascal Case step-running methods and aliases           |
 
 **Extensions:**
 
@@ -436,6 +439,7 @@ have to think about this table — but every module can also be consumed individ
 | `stebz`            | main modules + all extensions                       |
 | `stebz-aaa`        | `stebz` + AAA keywords, methods and annotations     |
 | `stebz-gherkin`    | `stebz` + Gherkin keywords, methods and annotations |
+| `stebz-pc`         | Pascal Case methods plus the main modules and extensions |
 
 **Integrations:**
 
@@ -615,6 +619,10 @@ around(context(100, "USD"))
 
 Tuples from `Of2` to `Of8` are supported out of the box.
 
+The context helpers also have `around` aliases: `ConsumerStep.around(context)` and
+`FunctionStep.around(context)` are aliases for `withContext(context)`, and `FunctionStep.withoutResult()` /
+`SupplierStep.withoutResult()` discard a step result while keeping the step body.
+
 ## Attributes
 
 ### Default attributes
@@ -712,8 +720,24 @@ public class User {
 | `@WithParam`            | adds one custom param; `@WithParam.List` adds several           |
 | `@WithExpectedResult`   | sets the `expected result` attribute                            |
 | `@WithComment`          | sets the `comment` attribute                                    |
-| `@WithHidden`           | sets the `hidden` attribute                                     |
-| `@Param`                | renames a method / constructor parameter in the report          |
+| `@Param`                | renames a parameter or sets a constant value for it              |
+| `@Param.Masked`         | replaces a parameter value with a masked display value           |
+| `@Param.Hidden`         | excludes a parameter from the step params attribute              |
+
+Parameter annotations can customize values collected by `@WithParams` or `@Step`:
+
+<!-- @formatter:off -->
+```java
+@WithName("authorize {username}")
+@WithParams
+public static void authorize(
+  @Param("username") String login,
+  @Param.Masked("***") String password,
+  @Param.Hidden String internalSessionId) {
+  // step body
+}
+```
+<!-- @formatter:on -->
 
 ### Custom attribute annotations
 
@@ -744,6 +768,22 @@ import org.stebz.core.attribute.SimpleStepAttribute;
 
 SimpleStepAttribute<Issue> issueAttr = SimpleStepAttribute.nullable(Issue.class);
 Issue issue = step.get(issueAttr);   // Issue(value=PRJ-42)
+```
+<!-- @formatter:on -->
+
+Parameter annotations can also be custom. Mark a parameter annotation with `@StepParameterMarker`; Stebz will
+include it while processing parameters for annotated methods and constructors:
+
+<!-- @formatter:off -->
+```java
+import org.stebz.annotation.marker.StepParameterMarker;
+
+@Target(ElementType.PARAMETER)
+@Retention(RetentionPolicy.RUNTIME)
+@StepParameterMarker
+public @interface MaskedParam {
+  String value();
+}
 ```
 <!-- @formatter:on -->
 
