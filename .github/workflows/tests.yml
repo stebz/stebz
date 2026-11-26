@@ -52,7 +52,13 @@ jobs:
         with:
           java-version: ${{ matrix.java-version }}
           distribution: 'temurin'
-          cache: maven
+      - name: Cache Maven dependencies
+        uses: actions/cache@v6
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            maven-
       # every module is tested on the minimal JDK it requires: everything except
       # stebz-reportportal (Java 11) and stebz-allure (Java 17) runs on JDK 8
       - name: Maven test
